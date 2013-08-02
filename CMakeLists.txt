@@ -1,0 +1,96 @@
+# Projekt name
+
+cmake_minimum_required(VERSION 2.6)
+
+project (libSplash)
+
+# install prefix
+IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    SET(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}" CACHE PATH "install prefix" FORCE)
+ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT) 
+
+# options
+
+OPTION(DEBUG_VERBOSE "enable verbose debug output" OFF)
+OPTION(SPLASH_RELEASE "disable all debug asserts" ON)
+IF(NOT SPLASH_RELEASE)
+    SET(CMAKE_CXX_FLAGS_DEBUG "-g -Wall")
+    SET(CMAKE_BUILD_TYPE Debug)
+
+    IF(DEBUG_VERBOSE)
+        ADD_DEFINITIONS(-DSDC_DEBUG_OUTPUT)
+    ENDIF(DEBUG_VERBOSE)
+
+    MESSAGE("building debug version")
+ELSE(NOT SPLASH_RELEASE)
+    SET(CMAKE_BUILD_TYPE Release)
+    MESSAGE("building release version")
+ENDIF(NOT SPLASH_RELEASE)
+
+
+
+# HDF5 is required package
+FIND_PACKAGE(HDF5 REQUIRED)
+INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
+LINK_DIRECTORIES(${HDF5_LIBRARY_DIRS})
+
+# add includes and sources
+INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/src/include")
+AUX_SOURCE_DIRECTORY("${CMAKE_CURRENT_SOURCE_DIR}/src" LIBRARY_SOURCES)
+AUX_SOURCE_DIRECTORY("${CMAKE_CURRENT_SOURCE_DIR}/tools" TOOLS_SOURCES)
+
+
+# build libsplash shared
+ADD_LIBRARY(splash SHARED ${LIBRARY_SOURCES})
+TARGET_LINK_LIBRARIES (splash z hdf5)
+
+#build libsplash static
+ADD_LIBRARY(splash_static STATIC ${LIBRARY_SOURCES})
+SET_TARGET_PROPERTIES(splash_static PROPERTIES OUTPUT_NAME splash)
+TARGET_LINK_LIBRARIES (splash_static z hdf5)
+
+# build tools
+OPTION(WITH_TOOLS "enable splashtools" ON)
+IF(WITH_TOOLS)
+    MESSAGE("building splashtools")
+
+    # Boost from system
+    FIND_PACKAGE(Boost REQUIRED COMPONENTS program_options)
+    INCLUDE_DIRECTORIES(AFTER ${Boost_INCLUDE_DIRS})
+    LINK_DIRECTORIES(${Boost_LIBRARY_DIR})
+    SET(TOOLS_LIBS splash_static m ${Boost_LIBRARIES})
+
+    # MPI for tools
+    OPTION(TOOLS_MPI "enable splashtools MPI support" OFF)
+    IF(TOOLS_MPI)
+        ADD_DEFINITIONS(-DENABLE_MPI=1)
+        FIND_PACKAGE(MPI REQUIRED)
+        INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
+        SET(TOOLS_LIBS ${TOOLS_LIBS} ${MPI_LIBRARIES})
+        MESSAGE("building tools MPI version")
+    ENDIF(TOOLS_MPI)
+
+    ADD_EXECUTABLE(splashtools ${TOOLS_SOURCES})
+    TARGET_LINK_LIBRARIES(splashtools ${TOOLS_LIBS})
+ENDIF(WITH_TOOLS)
+
+
+# install
+INSTALL(TARGETS splash LIBRARY DESTINATION lib)
+INSTALL(TARGETS splash_static ARCHIVE DESTINATION lib)
+
+IF(WITH_TOOLS)
+    INSTALL(TARGETS splashtools RUNTIME DESTINATION bin)
+ENDIF(WITH_TOOLS)
+
+# copy all important subfolders to install folder
+SET(SPLASH_COPY_ON_INSTALL "include" CACHE LIST "folders copied during install")
+FOREACH(dir ${SPLASH_COPY_ON_INSTALL})
+  IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/${dir}/")
+    INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/${dir}/."
+      DESTINATION "${CMAKE_INSTALL_PREFIX}/${dir}"
+      PATTERN .svn EXCLUDE
+    )
+  ENDIF()
+ENDFOREACH()
+

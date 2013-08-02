@@ -1,0 +1,399 @@
+\documentclass[a4paper,10pt,BCOR12mm]{report}
+\NeedsTeXFormat{LaTeX2e}
+
+\usepackage[USenglish]{babel}
+
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+
+\usepackage{ifpdf}
+%\ifpdf
+\usepackage[pdfauthor={ZIH, TU Dresden},pdftitle={libSplash User Manual},colorlinks={true},linkcolor={blue},filecolor={blue},pagecolor={blue},urlcolor={blue}]{hyperref}
+%\fi
+
+\usepackage{url}
+
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter\ ~#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ ~#1}}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+\newcommand{\command}[1]{\small \texttt{#1}}
+
+\begin{document}
+
+\thispagestyle{empty}
+
+\begin{figure*}[ht]
+\begin{minipage}[b]{0.45\linewidth}
+	\centering
+	\noindent\includegraphics[width=5cm]{zih_logo}\\
+\end{minipage}
+\hspace{0.05\linewidth}
+\begin{minipage}[b]{0.45\linewidth}
+	\centering
+	\noindent\includegraphics[width=5cm]{hzdr_logo}\\
+\end{minipage}
+\end{figure*}
+
+\vspace{1cm}
+
+{\bfseries\Huge
+%\rule[0.75cm]{\textwidth}{1pt}
+\noindent
+libSplash \\[.5cm]
+User Manual\\
+\rule{0pt}{0.75cm}\rule{\textwidth}{1pt}
+}
+
+{\centering
+Last update: \today
+}
+
+\vspace{1cm}
+
+{\noindent}TU Dresden\\
+Center for Information Services and \\High Performance Computing (ZIH)\\
+01062 Dresden\\
+Germany\\[1ex]
+\url{http://www.tu-dresden.de/zih}\\
+%\url{http://www.tu-dresden.de/zih/vampirtrace}\\[1ex]
+%Contact: \href{mailto:vampirsupport@zih.tu-dresden.de}{vampirsupport@zih.tu-dresden.de}
+
+\vspace{1cm}
+
+{\noindent}Helmholtz Zentrum Dresden Rossendorf\\
+Bautzner Landstrasse 400\\
+01328 Dresden\\
+Germany\\[1ex]
+\url{http://www.hzdr.de}\\
+
+\tableofcontents
+
+\newpage
+
+%-----------------------------------------------------------
+
+\chapter{Introduction}
+
+\section{About libSplash}
+
+libSplash is a combined project of the Center for Information Services and HPC (ZIH) of the Technical University of Dresden and the Helmholtz-Zentrum Dresden-Rossendorf (HZDR).
+The project aims at developing a HDF5-based I/O library for HPC simulations. It is created as an easy-to-use frontend for the standard HDF5 library with support for MPI processes in a cluster environment.
+While the standard HDF5 library provides detailed low-level control, libSplash simplifies tasks commonly found in large-scale HPC simulations, such as iterative computations and MPI distributed processes.
+
+\section{About this Manual}
+
+This manual describes the general ideas and usage modes of libSplash and its most important classes.
+For a detailed explanation of all available classes, interfaces and methods, please refer to the
+Doxygen HTML documentation.
+
+\newpage
+
+\section{Installation}
+
+\subsection{Requirements}
+
+Building libSplash from source requires to checkout the trunk via Subversion using the command\\
+\command{svn co https://fusionforge.zih.tu-dresden.de/svn/datacollector/trunk/}
+Building libSplash requires HDF5 in version 1.8.6 or higher.
+To use the CMakeLists.txt file which comes with the source code,
+you must have CMake version 2.6 installed.
+
+\subsection{Compiling}
+
+To compile libSplash, it is recommended to create a new \command{build} folder
+and execute \command{cmake CMAKE\_INSTALL\_PREFIX=\textless INSTALL\_PATH \textgreater \textless CMakeLists.txt\_PATH \textgreater}\\
+Than run \command{make install} to build and install libSplash library and binaries to the chosen installation directory.
+This will build libSplash as an shared object library (\emph{libsplash.so}) as well as all tools.
+
+\subsection{Linking}
+
+To use libSplash in your project, you must link against the created shared object library
+\emph{libsplash.so}.
+
+
+\section{Usage}
+
+libSplash consists of two parts: the basic \texttt{DataCollector} interface and the extended \texttt{DomainCollector} interface.
+
+\texttt{DataCollector} is the basic interface for most operations, such as accessing files as well as reading and writing Datasets and Attributes.
+This interface is implemented in the \texttt{SerialDataCollector} class.
+
+\texttt{DomainCollector} extends this interface with operations on \emph{Domains} which can represent the simulation area,
+a logical data field or a similar logical program structure. This is helpful to allow easy post-mortem access to the stored data from
+an analysis or visualization tool.
+
+%-----------------------------------------------------------
+
+\chapter{SerialDataCollector}
+
+\section{Files}
+
+libSplash stores data in HDF5 files with the extension \emph{.h5}.
+The filename structure is \emph{(common name)\_(mpi position).h5}.
+\emph{common name} is the name chosen by the user for the libSplash files, e.g.
+'simulation\_data'.
+\emph{mpi position} is the three-dimensional position of the MPI process creating this
+file, starting at (0, 0, 0).
+This format is chosen even if no MPI environment is used to create the files.
+
+Example:
+\begin{itemize}
+	\item If libSplash is used from a non-parallel program using one process, only the file \emph{simulation\_data\_0\_0\_0.h5} is created.
+
+	\item If libSplash is used by a MPI parallel program with 2x2 processes, the files
+	\emph{simulation\_data\_0\_0\_0.h5}, \emph{simulation\_data\_1\_0\_0.h5},
+	\emph{simulation\_data\_0\_1\_0.h5} and \emph{simulation\_data\_1\_1\_0.h5} are created.
+\end{itemize}
+
+\subsection{File Structure}
+
+Each libSplash file uses a similar internal file structure which is composed from groups (folders),
+datasets, attributes and references.
+
+\begin{itemize}
+	\item \textbf{header}
+	This group stores general information about this file and the creation context (e.g.
+	the number of MPI processes participating in creating all related files).
+
+	\item \textbf{data}
+	This group stores the actual (simulation) data and their annotated attributes. Indexed
+	sub-groups are used to reflect an iterative program pattern. In the following example, every 10th
+	iteration is stored using libSplash.
+	\begin{itemize}
+		\item \textbf{0}
+		Iteration 0
+		\begin{itemize}
+			\item dataset\_A
+			\item dataset\_B
+		\end{itemize}
+
+		\item \textbf{10}
+		Iteration 10
+		\begin{itemize}
+			\item dataset\_A
+			\item dataset\_B
+		\end{itemize}
+
+		\item ...
+	\end{itemize}
+
+	\item \textbf{common}
+	???
+\end{itemize}
+
+
+\subsection{Opening Files}
+
+Before data can be stored or read, files must be opened by calling
+\texttt{DataCollector::open}. This method requires the common part of the filename
+and an object of type \texttt{FileCreationAttr}.
+This object defines the file access type as well as the number of
+participating MPI processes, the MPI position of the calling process and further information.
+The following file access types are available:
+\begin{itemize}
+	\item \texttt{FAT\_CREATE}
+	A new file is created. Any existing file with this name if overwritten.
+	\texttt{FileCreationAttr} is used to determine the MPI position part of the filename.
+
+	\item \texttt{FAT\_WRITE}
+	An existing file is opened for reading and writing.
+	\texttt{FileCreationAttr} is used to determine the MPI position part of the filename.
+	If the file does not exist, it is created.
+	Otherwise, any write access to existing datasets will overwrite them.
+
+	\item \texttt{FAT\_READ}
+	An existing file is opened in read-only mode.
+	\texttt{FileCreationAttr} is used to determine the MPI position part of the filename.
+	If the file does not exist, an exception is thrown.
+
+	\item \texttt{FAT\_READ\_MERGED}
+	All existing files belonging to a single parallel run are opened simultaneously in read-only mode.
+	Data from all files can be read transparently as if written to a single file.
+
+\end{itemize}
+
+\subsection{Closing Files}
+
+After all file operations are finished and before opening or creating a new file,
+already opened files must be closed by a call to \texttt{DataCollector::close}.
+Otherwise, file information can be inconsistent and required data may not
+be stored properly.
+
+%-----------------------------------------------------------
+
+\section{Datasets}
+
+\emph{Datasets} are the general way for storing user data, e.g. simulation results or intermediate
+systems states. They can be one-, two- or three-dimensional and each element can be
+a basic type (e.g. \texttt{int}) or structured type (i.e. a \texttt{struct}).
+Subclasses of the abstract class \texttt{CollectionType} are used to define the
+\emph{Datatype} of a Dataset when storing data (or attributes to data).
+The range of available types can be easily extended by defining a new subclass
+(see \emph{include/basetypes} for a list of existing types).
+
+Datasets are stored in the \emph{data} group of libSplash files and must be
+related to a specific index beneath this group.
+
+\subsection{Writing}
+\label{lab:sdc:write}
+
+To write data, use any of the \texttt{DataCollector::write} methods.
+They require the used datatype, the number
+of dimensions (\texttt{rank}, 1-3), the size of the actual data, buffers and offsets in
+each dimension as a \texttt{Dimensions} object, the name for the dataset and a pointer
+holding the data.
+Any existing dataset in this group with the same is name is overwritten.
+
+Please note that the user is responsible to pass a correct \texttt{CollectionType} to
+any \texttt{write} call. Otherwise, user data may be interpreted incorrectly.
+
+\subsection{Reading}
+
+To read data, use any of the \texttt{DataCollector::read} methods.
+They work similar to \texttt{DataCollector::write} but do not require
+a \texttt{CollectionType} or \texttt{rank}, as these information are implicitly given from
+the read dataset.
+The destination buffer for reading must be allocated by the user. However, \texttt{read} methods
+can be passed a \texttt{NULL} pointer to not read any data but only return the required dimensions of the
+destination buffer.
+
+\subsection{Appending}
+
+Appending data is possible only for one-dimensional datasets.
+It is achieved using any of the \texttt{DataCollector::append} methods.
+In contrast to writing a dataset, any existing data remains unchanged and
+new elements are appended at the end.
+If the dataset for appending does not exist, it is created.
+
+\subsection{Removing}
+
+Datasets as well as whole program iterations can be removed from a file using\\ \texttt{DataCollector::remove}.
+However, it may depend on the linked HDF5 library if file size actually decreases.
+
+%-----------------------------------------------------------
+
+\section{Attributes}
+
+\emph{Attributes} are annotations to Datasets which can be used to store meta information.
+Attributes can be of any \texttt{CollectionType} but must only contain a single element
+of that type (in contrast to Datasets, which are multi-dimensional arrays).
+At the moment, it is not possible to annotate Attributes at groups.
+
+\subsection{Writing}
+
+Attributes are written using the \texttt{DataCollector::writeAttribute} method.
+It must be passed the location of the annotated Dataset (id and name) and the type and
+name of the Attribute.
+
+\subsection{Reading}
+
+To read an Attribute, use the \texttt{DataCollector::readAttribute} method.
+It must be passed the location of the annotated Dataset (id and name) and the
+name of the Attribute. If no Attribute with this name and location exists, an
+exception is thrown.
+
+If the file has been opened for transparent merged read using \texttt{FAT\_READ\_MERGED},
+additionally a MPI position can be defined to specify from which subfile to read
+the required Attribute.
+If this MPI position is set to \texttt{NULL}, the Attribute is read from the file with
+MPI position (0, 0, 0).
+
+\subsection{Global Attributes}
+
+\emph{Global Attributes} are not specific to a single Dataset but belong to the whole
+file or to each subfile, respectively.
+To write and read Global Attributes, use\\ \texttt{DataCollector::writeGlobalAttribute} and\\
+\texttt{DataCollector::readGlobalAttribute} methods.
+Reading and writing is similar to normal Attributes, including the optional MPI position
+when reading Global Attributes in \texttt{FAT\_READ\_MERGED} mode.
+
+%-----------------------------------------------------------
+
+\section{References}
+
+References are links to another Dataset within one HDF5 file.
+It can reference the whole Dataset as well as a user-defined subset, specified
+by \emph{offset}, \emph{count} and \emph{stride}.
+After a reference is created using \texttt{DataCollector::createReference},
+it can be accessed like a normal Dataset.
+
+%-----------------------------------------------------------
+
+\chapter{DomainCollector}
+
+The \texttt{DomainCollector} class extends \texttt{SerialDataCollector} with \emph{Domain}-specific operations.
+A Domain is a logical data structure which can represent for example the simulation area of a iterative simulation program.
+Each MPI process may write a sub-Domain (i.e. a sub-part) of the whole Domain area.
+When accessing stored Domain data for analysis, it is possible to read data as stored in the HDF5 file as well as requesting
+a part of the simulation Domain. This request is than handled transparently by libSplash.
+
+Domain data can be of two types:
+\begin{itemize}
+	\item \textbf{GridType}
+	This type is used for data stored as 1-3-dimensional arrays, such as fields or volumes where each element has a specified position within the domain grid.
+
+	\item \textbf{PolyType}
+	This type is used for unordered 1-dimensional data, e.g. particles within a volume.
+\end{itemize}
+
+\section{Writing Domains}
+
+To write Domain data, use any of the \texttt{DomainCollector::writeDomain} calls.
+Each requires information on the source data and buffer to read from, a name for the Dataset, the Datatype as well as
+Domain information: the stored domain offset and area and the type of data stored (GridType or PolyType).
+
+\section{Reading Domains}
+
+To read Domain data, use \texttt{DomainCollector::readDomain}.
+It must be passed the name and area of the requested Domain partition (sub-Domain).
+The Domain type and a \texttt{DataContainer} holding the read data are returned.
+
+When reading Domain data, read calls to multiple HDF5 Datasets may be necessary if the requested
+sub-Domain spans multiple Datasets. Therefor, the returned DataContainer holds multiple
+\texttt{DomainData} objects.
+Each DomainData object stores a part of the requested data along with sub-Domain-specific information.
+If GridType data is read, only a single DomainData object may be returned as data from multiple Datasets can
+be transparently combined into one new array.
+Otherwise, when reading PolyType data, the DataContainer is likely to hold multiple DomainData objects, one for
+each physical read.
+These DomainData object can be queried successively or by their 1-3.dimensional index (\texttt{DataContainer::get} and \texttt{DataContainer::getIndex}).
+Additionally, all elements from all DomainData objects within one DataContainer can be queried continuously using \texttt{DataContainer::getNumElements} and
+\texttt{DataContainer::getElement}.
+
+\section{Appending Domains}
+
+Appending Domain data follows the same restrictions as appending normal Datasets (see \ref{lab:sdc:write}).
+
+%-----------------------------------------------------------
+
+\chapter{Misc}
+
+\section{splashtools}
+
+\textbf{splashtools} is a convenience tool to check/modify/... HDF5 files created with libSplash.
+Features include:
+\begin{itemize}
+	\item Transparently delete timesteps in all HDF5 files belonging to a single run.
+	\item Check files for syntactic and semantic consistency.
+\end{itemize}
+Run \command{splashtools --help} for a complete list of all current features.
+
+
+\section{Tests}
+
+The libSplash repository contains tests for self-testing the library. They can be found in the
+\command{tests} subdirectory. To build the tests, move to the \command{tests} subdirectory and execute\\
+\command{mkdir build; cd build; cmake ..; make}.\\
+From the \command{tests} directory, all tests can be run using the \command{run\_tests.sh} shell script.
+To build the tests, \textbf{cppunit} and \textbf{OpenMPI} must be installed.
+
+%-----------------------------------------------------------
+
+
+
+\end{document}

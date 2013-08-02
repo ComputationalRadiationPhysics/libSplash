@@ -1,0 +1,32 @@
+#!/bin/bash
+
+cd build
+
+mkdir h5
+
+echo -e "\nTesting simple data read/write...\n"
+./SimpleDataTest.cpp.out
+
+echo -e "\nTesting reading/writing attributes...\n"
+./AttributesTest.cpp.out
+
+echo -e "\nTesting append data...\n"
+./AppendTest.cpp.out
+
+echo -e "\nTesting file accesses...\n"
+./FileAccessTest.cpp.out
+
+echo -e "\nTesting striding access...\n"
+./StridingTest.cpp.out
+
+echo -e "\nTesting removing datasets...\n"
+./RemoveTest.cpp.out
+
+echo -e "\nTesting domains...\n"
+mpirun -n 8 ./DomainsTest.cpp.out
+
+#echo -e "\nTesting merged read...\n"
+#mpirun -n 1 ./MergedReadTest.cpp.out
+
+cd ..
+
