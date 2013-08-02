@@ -6,7 +6,7 @@ Requirements
 
 **Building** libSplash from source requires to checkout the trunk via Git
 using the command
-`$ svn co https://fusionforge.zih.tu-dresden.de/svn/datacollector/trunk/`
+`$ git clone git@github.com:ComputationalRadiationPhysics/libSplash.git`
 Building libSplash **requires HDF5** in version 1.8.6 or higher.
 To use the CMakeLists.txt file which comes with the source code, you must have **CMake version 2.6**
 or higher installed.
