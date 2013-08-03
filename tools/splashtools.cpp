@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -85,7 +85,6 @@ void deleteFromStepInFile(DataCollector *dc, int32_t step)
     {
         if (entries[i] >= step)
         {
-            std::cout << "removing group " << entries[i] << std::endl;
             dc->remove(entries[i]);
         }
     }
@@ -245,60 +244,94 @@ void indexToPos(int index, Dimensions mpiSize, Dimensions &mpiPos)
 
 int deleteFromStep(Options& options)
 {
-    DataCollector *dc = new SerialDataCollector(100);
-
     DataCollector::FileCreationAttr fileCAttr;
-    DataCollector::initFileCreationAttr(fileCAttr);
-
+    DataCollector *dc = NULL;
+    
     if (options.singleFile)
     {
         if (options.mpiRank == 0)
         {
-            std::cout << "[" << options.mpiRank << "]" <<
-                    "deleting from step " << options.step << std::endl;
+            dc = new SerialDataCollector(1);
+            DataCollector::initFileCreationAttr(fileCAttr);
             fileCAttr.fileAccType = DataCollector::FAT_WRITE;
 
+            std::cout << "deleting in file " << options.filename << std::endl;
             dc->open(options.filename.c_str(), fileCAttr);
             deleteFromStepInFile(dc, options.step);
             dc->close();
+
+            delete dc;
+            dc = NULL;
         }
     } else
     {
+        // open master file to detect number of files
+        uint32_t fileMPISizeBuffer[3];
+        Dimensions fileMPISizeDim(0, 0, 0);
+        int fileMPISize = 0;
+
+        if (options.mpiRank == 0)
+        {
+            dc = new SerialDataCollector(1);
+            DataCollector::initFileCreationAttr(fileCAttr);
+            fileCAttr.fileAccType = DataCollector::FAT_READ;
+
+            dc->open(options.filename.c_str(), fileCAttr);
+            dc->getMPISize(fileMPISizeDim);
+            dc->close();
+            
+            std::cout << "[0] deleting in " << fileMPISizeDim.getDimSize() << 
+                    " files from collection " << options.filename << std::endl;
+
+            for (int i = 0; i < 3; ++i)
+                fileMPISizeBuffer[i] = fileMPISizeDim[i];
+
+            delete dc;
+            dc = NULL;
+        }
+
+#ifdef ENABLE_MPI
+        MPI_Bcast(fileMPISizeBuffer, 3, MPI_INTEGER4, 0, MPI_COMM_WORLD);
+#endif
+
         if (options.mpiRank != 0)
+            fileMPISizeDim.set(fileMPISizeBuffer[0], fileMPISizeBuffer[1], fileMPISizeBuffer[2]);
+
+        fileMPISize = fileMPISizeBuffer[0] * fileMPISizeBuffer[1] * fileMPISizeBuffer[2];
+
+        // get file index range for each process
+        filesToProcesses(options, fileMPISize);
+
+        if (options.fileIndexStart == -1)
             return RESULT_OK;
-        
-        fileCAttr.fileAccType = DataCollector::FAT_READ;
 
-        // get mpi size and max id from reference file
-        dc->open(options.filename.c_str(), fileCAttr);
+        dc = new SerialDataCollector(1);
 
-        Dimensions fileMPISize(0, 0, 0);
-        dc->getMPISize(fileMPISize);
+        for (int i = options.fileIndexStart; i <= options.fileIndexEnd; ++i)
+        {
+            Dimensions mpi_pos(0, 0, 0);
+            // get mpi position from index
+            indexToPos(i, fileMPISizeDim, mpi_pos);
 
-        dc->close();
+            // delete steps in this file
+            std::stringstream mpiFilename;
+            mpiFilename << options.filename << "_" << mpi_pos[0] << "_" <<
+                    mpi_pos[1] << "_" << mpi_pos[2] << ".h5";
 
-        std::cout << "[" << options.mpiRank << "]" <<
-                "deleting from step " << options.step << std::endl;
-        std::cout << "[" << options.mpiRank << "]" <<
-                "mpi size = " << fileMPISize.toString() << std::endl;
+            DataCollector::initFileCreationAttr(fileCAttr);
+            fileCAttr.fileAccType = DataCollector::FAT_WRITE;
 
-        fileCAttr.fileAccType = DataCollector::FAT_WRITE;
-        for (uint32_t z = 0; z < fileMPISize[2]; ++z)
-            for (uint32_t y = 0; y < fileMPISize[1]; ++y)
-                for (uint32_t x = 0; x < fileMPISize[0]; ++x)
-                {
-                    fileCAttr.mpiPosition.set(x, y, z);
-                    std::cout << "[" << options.mpiRank << "]" <<
-                            " Removing from mpi position " <<
-                            fileCAttr.mpiPosition.toString() << std::endl;
+            dc->open(mpiFilename.str().c_str(), fileCAttr);
+            deleteFromStepInFile(dc, options.step);
+            dc->close();
+        }
 
-                    dc->open(options.filename.c_str(), fileCAttr);
-                    deleteFromStepInFile(dc, options.step);
-                    dc->close();
-                }
+        delete dc;
+        dc = NULL;
+
+        return RESULT_OK;
     }
 
-    delete dc;
     return RESULT_OK;
 }
 
