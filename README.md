@@ -45,7 +45,7 @@ See our notes in [INSTALL.md](doc/INSTALL.md).
 Usage
 -----
 
-See [UserManual.pdf](doc/UserManual.pdf) for more information.
+See [UserManual.pdf](doc/manual/UserManual.pdf?raw=true) for more information.
 
 
 Active Team
