@@ -47,6 +47,7 @@ typedef struct
     bool singleFile;
     bool checkIntegrity;
     bool deleteStep;
+    bool verbose;
     std::string filename;
     int32_t step;
     int mpiRank;
@@ -71,6 +72,7 @@ void initOptions(Options& options)
     options.mpiSize = 1;
     options.singleFile = false;
     options.step = 0;
+    options.verbose = false;
 }
 
 void deleteFromStepInFile(DataCollector *dc, int32_t step)
@@ -108,6 +110,7 @@ int parseCmdLine(int argc, char **argv, Options& options)
                 ("file,f", po::value<std::string > (&options.filename), "HDF5 libSplash file to edit")
                 ("delete,d", po::value<int32_t > (&options.step), "Delete [d,*) simulation steps")
                 ("check,c", po::value<bool > (&options.checkIntegrity)->zero_tokens(), "Check file integrity")
+                ("verbose,v", po::value<bool > (&options.verbose)->zero_tokens(), "Verbose output")
                 ;
 
         // parse command line options and config file and store values in vm
@@ -133,7 +136,7 @@ int parseCmdLine(int argc, char **argv, Options& options)
             if (options.filename.find(".h5") != std::string::npos)
             {
                 options.singleFile = true;
-                if (options.mpiRank == 0)
+                if ((options.mpiRank == 0) && (options.verbose))
                     std::cout << "[" << options.mpiRank << "]" <<
                         "single file mode" << std::endl;
             }
@@ -179,7 +182,7 @@ int testIntegrity(Options &options, std::string filename)
     if (!file)
     {
         std::cout << "[" << options.mpiRank << "]" <<
-                "failed to execute '" << command << "'" << std::endl;
+                " failed to execute '" << command << "'" << std::endl;
         delete[] command;
         return RESULT_ERROR;
     }
@@ -192,19 +195,23 @@ int testIntegrity(Options &options, std::string filename)
     if (status == -1)
     {
         std::cout << "[" << options.mpiRank << "]" <<
-                "popen failed with status " << status << std::endl;
+                " popen failed with status " << status << std::endl;
         return RESULT_ERROR;
     } else
     {
         if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
         {
             std::cout << "[" << options.mpiRank << "]" <<
-                    "h5check returned error (status " << status << ")" << std::endl;
+                    " h5check returned error (status " << status << ") for file '" <<
+                    filename << "'" << std::endl;
             return RESULT_ERROR;
         } else
         {
-            std::cout << "[" << options.mpiRank << "]" <<
-                    "file '" << filename << "' ok" << std::endl;
+            if (options.verbose)
+            {
+                std::cout << "[" << options.mpiRank << "]" <<
+                        " file '" << filename << "' ok" << std::endl;
+            }
             return RESULT_OK;
         }
     }
@@ -240,25 +247,49 @@ void indexToPos(int index, Dimensions mpiSize, Dimensions &mpiPos)
     mpiPos[0] = index / (mpiSize[1] * mpiSize[2]);
 }
 
+int detectFileMPISize(const char *filename, Dimensions &fileMPISizeDim)
+{
+    int result = RESULT_OK;
+
+    DataCollector *dc = new SerialDataCollector(1);
+    DataCollector::FileCreationAttr fileCAttr;
+    DataCollector::initFileCreationAttr(fileCAttr);
+    fileCAttr.fileAccType = DataCollector::FAT_READ;
+
+    try
+    {
+        dc->open(filename, fileCAttr);
+        dc->getMPISize(fileMPISizeDim);
+        dc->close();
+    } catch (DCException e)
+    {
+        std::cerr << "[0] Detecting file MPI size failed!" << std::endl <<
+                e.what() << std::endl;
+        fileMPISizeDim.set(0, 0, 0);
+        result = RESULT_ERROR;
+    }
+
+    delete dc;
+    dc = NULL;
+
+    return result;
+}
+
 /* tool functions */
 
-int deleteFromStep(Options& options)
+int executeToolFunction(Options& options,
+        int (*toolFunc)(Options& options, DataCollector *dc, const char *filename))
 {
-    DataCollector::FileCreationAttr fileCAttr;
     DataCollector *dc = NULL;
-    
+    int result = RESULT_OK;
+
     if (options.singleFile)
     {
         if (options.mpiRank == 0)
         {
             dc = new SerialDataCollector(1);
-            DataCollector::initFileCreationAttr(fileCAttr);
-            fileCAttr.fileAccType = DataCollector::FAT_WRITE;
 
-            std::cout << "deleting in file " << options.filename << std::endl;
-            dc->open(options.filename.c_str(), fileCAttr);
-            deleteFromStepInFile(dc, options.step);
-            dc->close();
+            result = toolFunc(options, dc, options.filename.c_str());
 
             delete dc;
             dc = NULL;
@@ -272,22 +303,10 @@ int deleteFromStep(Options& options)
 
         if (options.mpiRank == 0)
         {
-            dc = new SerialDataCollector(1);
-            DataCollector::initFileCreationAttr(fileCAttr);
-            fileCAttr.fileAccType = DataCollector::FAT_READ;
-
-            dc->open(options.filename.c_str(), fileCAttr);
-            dc->getMPISize(fileMPISizeDim);
-            dc->close();
-            
-            std::cout << "[0] deleting in " << fileMPISizeDim.getDimSize() << 
-                    " files from collection " << options.filename << std::endl;
+            result = detectFileMPISize(options.filename.c_str(), fileMPISizeDim);
 
             for (int i = 0; i < 3; ++i)
                 fileMPISizeBuffer[i] = fileMPISizeDim[i];
-
-            delete dc;
-            dc = NULL;
         }
 
 #ifdef ENABLE_MPI
@@ -296,6 +315,9 @@ int deleteFromStep(Options& options)
 
         if (options.mpiRank != 0)
             fileMPISizeDim.set(fileMPISizeBuffer[0], fileMPISizeBuffer[1], fileMPISizeBuffer[2]);
+
+        if (fileMPISizeDim.getDimSize() == 0)
+            return RESULT_ERROR;
 
         fileMPISize = fileMPISizeBuffer[0] * fileMPISizeBuffer[1] * fileMPISizeBuffer[2];
 
@@ -318,88 +340,49 @@ int deleteFromStep(Options& options)
             mpiFilename << options.filename << "_" << mpi_pos[0] << "_" <<
                     mpi_pos[1] << "_" << mpi_pos[2] << ".h5";
 
-            DataCollector::initFileCreationAttr(fileCAttr);
-            fileCAttr.fileAccType = DataCollector::FAT_WRITE;
-
-            dc->open(mpiFilename.str().c_str(), fileCAttr);
-            deleteFromStepInFile(dc, options.step);
-            dc->close();
+            result |= toolFunc(options, dc, mpiFilename.str().c_str());
         }
 
         delete dc;
         dc = NULL;
 
-        return RESULT_OK;
-    }
-
-    return RESULT_OK;
-}
-
-int testFileIntegrity(Options& options)
-{
-    if (options.singleFile)
-    {
-        if (options.mpiRank == 0)
-            return testIntegrity(options, options.filename);
-    } else
-    {
-        // open master file to detect number of files
-        uint32_t fileMPISizeBuffer[3];
-        Dimensions fileMPISizeDim(0, 0, 0);
-        int fileMPISize = 0;
-
-        if (options.mpiRank == 0)
-        {
-            DataCollector *dc = new SerialDataCollector(1);
-
-            DataCollector::FileCreationAttr fileCAttr;
-            DataCollector::initFileCreationAttr(fileCAttr);
-            fileCAttr.fileAccType = DataCollector::FAT_READ;
-
-            dc->open(options.filename.c_str(), fileCAttr);
-            dc->getMPISize(fileMPISizeDim);
-            dc->close();
-
-            for (int i = 0; i < 3; ++i)
-                fileMPISizeBuffer[i] = fileMPISizeDim[i];
-
-            delete dc;
-        }
-
-#ifdef ENABLE_MPI
-        MPI_Bcast(fileMPISizeBuffer, 3, MPI_INTEGER4, 0, MPI_COMM_WORLD);
-#endif
-
-        if (options.mpiRank != 0)
-            fileMPISizeDim.set(fileMPISizeBuffer[0], fileMPISizeBuffer[1], fileMPISizeBuffer[2]);
-
-        fileMPISize = fileMPISizeBuffer[0] * fileMPISizeBuffer[1] * fileMPISizeBuffer[2];
-
-        // get file index range for each process
-        filesToProcesses(options, fileMPISize);
-
-        if (options.fileIndexStart == -1)
-            return RESULT_OK;
-
-        int result = RESULT_OK;
-        for (int i = options.fileIndexStart; i <= options.fileIndexEnd; ++i)
-        {
-            Dimensions mpiPos(0, 0, 0);
-            // get mpi position from index
-            indexToPos(i, fileMPISizeDim, mpiPos);
-
-            // test file integrity
-            std::stringstream mpiFilename;
-            mpiFilename << options.filename << "_" << mpiPos[0] << "_" <<
-                    mpiPos[1] << "_" << mpiPos[2] << ".h5";
-
-            result |= testIntegrity(options, mpiFilename.str());
-        }
-
         return result;
     }
 
-    return RESULT_OK;
+    return result;
+}
+
+int deleteFromStep(Options& options, DataCollector *dc, const char *filename)
+{
+    int result = RESULT_OK;
+    DataCollector::FileCreationAttr fileCAttr;
+    DataCollector::initFileCreationAttr(fileCAttr);
+    fileCAttr.fileAccType = DataCollector::FAT_WRITE;
+
+    if (options.verbose)
+    {
+        std::cout << "[" << options.mpiRank << "] Deleting from step " <<
+                options.step << " in file " << filename << std::endl;
+    }
+
+    try
+    {
+        dc->open(filename, fileCAttr);
+        deleteFromStepInFile(dc, options.step);
+        dc->close();
+    } catch (DCException e)
+    {
+        std::cerr << "Deleting in file " << filename << " failed!" << std::endl <<
+                e.what() << std::endl;
+        result = RESULT_ERROR;
+    }
+
+    return result;
+}
+
+int testFileIntegrity(Options& options, DataCollector *dc, const char *filename)
+{
+    return testIntegrity(options, filename);
 }
 
 /* main */
@@ -420,10 +403,10 @@ int main(int argc, char **argv)
     if (result == RESULT_OK)
     {
         if (options.checkIntegrity)
-            result = testFileIntegrity(options);
+            result = executeToolFunction(options, testFileIntegrity);
 
         if (options.deleteStep)
-            result = deleteFromStep(options);
+            result = executeToolFunction(options, deleteFromStep);
     }
 
 #ifdef ENABLE_MPI
