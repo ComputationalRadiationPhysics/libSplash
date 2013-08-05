@@ -225,8 +225,9 @@ namespace DCollector
         bool opened;
         bool isReference;
 
-        // property list for dataset creation
+        // property lists
         hid_t dsetProperties;
+        hid_t dsetWriteProperties;
 
         bool compression;
     private:

@@ -98,7 +98,7 @@ namespace DCollector
      *******************************************************************************/
 
     SerialDataCollector::SerialDataCollector(uint32_t maxFileHandles) :
-    handles(maxFileHandles),
+    handles(maxFileHandles, HandleMgr::FNS_MPI),
     fileStatus(FST_CLOSED),
     maxID(-1),
     mpiSize(0, 0, 0)

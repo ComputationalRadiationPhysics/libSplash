@@ -1,2 +1,4 @@
 /build/
+/tests/build/
 /nbproject/
+/doc/doxygenDoku/

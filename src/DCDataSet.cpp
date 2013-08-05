@@ -54,6 +54,7 @@ namespace DCollector
     dimType()
     {
         dsetProperties = H5Pcreate(H5P_DATASET_CREATE);
+        dsetWriteProperties = H5P_DEFAULT;
     }
 
     DCDataSet::~DCDataSet()
@@ -245,7 +246,7 @@ namespace DCollector
                 dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
         H5Dwrite(dataset, H5T_STD_REF_DSETREG, H5S_ALL, H5S_ALL,
-                H5P_DEFAULT, &regionRef);
+                dsetWriteProperties, &regionRef);
 
         isReference = true;
         opened = true;
@@ -567,7 +568,7 @@ namespace DCollector
                 throw DCException(getExceptionString("write: Invalid target hyperslap selection"));
 
             // write data to the dataset
-            if (H5Dwrite(dataset, this->datatype, dsp_src, dataspace, H5P_DEFAULT, data) < 0)
+            if (H5Dwrite(dataset, this->datatype, dsp_src, dataspace, dsetWriteProperties, data) < 0)
                 throw DCException(getExceptionString("write: Failed to write dataset"));
 
             if (rank > 1)
@@ -640,7 +641,7 @@ namespace DCollector
             throw DCException(getExceptionString("append: Invalid source hyperslap selection"));
 
 
-        if (H5Dwrite(dataset, this->datatype, dsp_src, dataspace, H5P_DEFAULT, data) < 0)
+        if (H5Dwrite(dataset, this->datatype, dsp_src, dataspace, dsetWriteProperties, data) < 0)
             throw DCException(getExceptionString("append: Failed to append dataset"));
 
         H5Sclose(dsp_src);
