@@ -130,6 +130,18 @@ namespace DCollector
         void openWrite(const char *filename,
                 FileCreationAttr &attr) throw (DCException);
 
+        void readDataSet(H5Handle h5File,
+                int32_t id,
+                const char* name,
+                bool parallelRead,
+                const Dimensions dstBuffer,
+                const Dimensions dstOffset,
+                const Dimensions srcSize,
+                const Dimensions srcOffset,
+                Dimensions &sizeRead,
+                uint32_t& srcRank,
+                void* dst) throw (DCException);
+
         void writeDataSet(
                 hid_t &group,
                 const Dimensions globalSize,
@@ -349,7 +361,7 @@ namespace DCollector
         void read(int32_t id,
                 const CollectionType& type,
                 const char* name,
-                Dimensions &srcData,
+                Dimensions &sizeRead,
                 void* data) throw (DCException);
         /**
          * {@link DataCollector#read}
@@ -357,9 +369,27 @@ namespace DCollector
         void read(int32_t id,
                 const CollectionType& type,
                 const char* name,
-                Dimensions dstBuffer,
-                Dimensions &srcData,
-                Dimensions dstOffset,
+                const Dimensions dstBuffer,
+                Dimensions &sizeRead,
+                const Dimensions dstOffset,
+                void* data) throw (DCException);
+
+        void read(int32_t id,
+                const Dimensions localSize,
+                const Dimensions globalOffset,
+                const CollectionType& type,
+                const char* name,
+                Dimensions &sizeRead,
+                void* data) throw (DCException);
+
+        void read(int32_t id,
+                const Dimensions localSize,
+                const Dimensions globalOffset,
+                const CollectionType& type,
+                const char* name,
+                const Dimensions dstBuffer,
+                Dimensions &sizeRead,
+                const Dimensions dstOffset,
                 void* data) throw (DCException);
     private:
 

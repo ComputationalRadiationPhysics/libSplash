@@ -77,10 +77,6 @@ std::string ParallelDataCollector::getExceptionString(std::string func, std::str
 
 void ParallelDataCollector::indexToPos(int index, Dimensions mpiSize, Dimensions &mpiPos)
 {
-    /*mpiPos[2] = index % mpiSize[2];
-    mpiPos[1] = (index / mpiSize[2]) % mpiSize[1];
-    mpiPos[0] = index / (mpiSize[1] * mpiSize[2]);*/
-
     mpiPos[2] = index / (mpiSize[0] * mpiSize[1]);
     mpiPos[1] = (index % (mpiSize[0] * mpiSize[1])) / mpiSize[0];
     mpiPos[0] = index % mpiSize[0];
@@ -350,7 +346,42 @@ void ParallelDataCollector::read(int32_t id,
         void* data)
 throw (DCException)
 {
-    throw DCException("Not yet implemented!");
+    if (fileStatus != FST_READING && fileStatus != FST_WRITING)
+        throw DCException(getExceptionString("read", "this access is not permitted"));
+
+    uint32_t rank = 0;
+    readDataSet(handles.get(id), id, name, false, dstBuffer, dstOffset,
+            Dimensions(0, 0, 0), Dimensions(0, 0, 0), sizeRead, rank, data);
+}
+
+void ParallelDataCollector::read(int32_t id,
+        const Dimensions localSize,
+        const Dimensions globalOffset,
+        const CollectionType& type,
+        const char* name,
+        Dimensions &sizeRead,
+        void* data) throw (DCException)
+{
+    this->read(id, localSize, globalOffset, type, name, localSize,
+            sizeRead, Dimensions(0, 0, 0), data);
+}
+
+void ParallelDataCollector::read(int32_t id,
+        const Dimensions localSize,
+        const Dimensions globalOffset,
+        const CollectionType& type,
+        const char* name,
+        const Dimensions dstBuffer,
+        Dimensions &sizeRead,
+        const Dimensions dstOffset,
+        void* data) throw (DCException)
+{
+    if (fileStatus != FST_READING && fileStatus != FST_WRITING)
+        throw DCException(getExceptionString("read", "this access is not permitted"));
+
+    uint32_t rank = 0;
+    readDataSet(handles.get(id), id, name, true, dstBuffer, dstOffset,
+            localSize, globalOffset, sizeRead, rank, data);
 }
 
 void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32_t rank,
@@ -520,7 +551,7 @@ throw (DCException)
 {
     Options *options = (Options*) userData;
 
-    options->maxID = std::max(options->maxID, (int32_t)index);
+    options->maxID = std::max(options->maxID, (int32_t) index);
 }
 
 void ParallelDataCollector::writeHeader(hid_t fHandle, uint32_t id,
@@ -593,6 +624,60 @@ throw (DCException)
     this->options.enableCompression = attr.enableCompression;
 
     handles.open(Dimensions(1, 1, 1), filename, fileAccProperties, H5F_ACC_RDWR);
+}
+
+void ParallelDataCollector::readDataSet(H5Handle h5File,
+        int32_t id,
+        const char* name,
+        bool parallelRead,
+        const Dimensions dstBuffer,
+        const Dimensions dstOffset,
+        const Dimensions srcSize,
+        const Dimensions srcOffset,
+        Dimensions &sizeRead,
+        uint32_t& srcRank,
+        void* dst)
+throw (DCException)
+{
+#if defined SDC_DEBUG_OUTPUT
+    std::cerr << "# ParallelDataCollector::readInternal #" << std::endl;
+#endif
+
+    if (h5File < 0 || name == NULL)
+        throw DCException(getExceptionString("readInternal", "invalid parameters"));
+
+    std::stringstream group_id_name;
+    group_id_name << SDC_GROUP_DATA << "/" << id;
+    std::string group_id_string = group_id_name.str();
+
+    hid_t group_id = H5Gopen(h5File, group_id_string.c_str(), H5P_DEFAULT);
+    if (group_id < 0)
+        throw DCException(getExceptionString("readInternal", "group not found", group_id_string.c_str()));
+
+    Dimensions src_size(srcSize);
+    Dimensions src_offset(srcOffset);
+    
+    try
+    {
+        DCParallelDataSet dataset(name);
+        dataset.open(group_id);
+        if (!parallelRead)
+        {
+            dataset.read(dstBuffer, dstOffset, src_size, src_offset, sizeRead, srcRank, NULL);
+            src_size.set(sizeRead);
+            src_offset.set(0, 0, 0);
+        }
+
+        dataset.read(dstBuffer, dstOffset, src_size, src_offset, sizeRead, srcRank, dst);
+        dataset.close();
+    } catch (DCException e)
+    {
+        H5Gclose(group_id);
+        throw e;
+    }
+
+    // cleanup
+    H5Gclose(group_id);
 }
 
 void ParallelDataCollector::writeDataSet(hid_t &group, const Dimensions globalSize,
