@@ -228,6 +228,7 @@ namespace DCollector
         // property lists
         hid_t dsetProperties;
         hid_t dsetWriteProperties;
+        hid_t dsetReadProperties;
 
         bool compression;
     private:

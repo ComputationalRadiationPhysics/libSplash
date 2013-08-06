@@ -55,6 +55,7 @@ namespace DCollector
     {
         dsetProperties = H5Pcreate(H5P_DATASET_CREATE);
         dsetWriteProperties = H5P_DEFAULT;
+        dsetReadProperties = H5P_DEFAULT;
     }
 
     DCDataSet::~DCDataSet()
@@ -414,7 +415,7 @@ namespace DCollector
                         H5Sselect_valid(dataspace) <= 0)
                     throw DCException(getExceptionString("read: Source dataspace hyperslab selection is not valid!"));
 
-                if (H5Dread(dataset, this->datatype, dst_dataspace, dataspace, H5P_DEFAULT, dst) < 0)
+                if (H5Dread(dataset, this->datatype, dst_dataspace, dataspace, dsetReadProperties, dst) < 0)
                     throw DCException(getExceptionString("read: Failed to read dataset"));
 
             }
@@ -457,7 +458,7 @@ namespace DCollector
                                     throw DCException(getExceptionString("read: Target dataspace hyperslab selection is not valid!"));
 
 
-                                if (H5Dread(dataset, this->datatype, dst_dataspace, dataspace, H5P_DEFAULT, dst) < 0)
+                                if (H5Dread(dataset, this->datatype, dst_dataspace, dataspace, dsetReadProperties, dst) < 0)
                                     throw DCException(getExceptionString("read: Failed to read dataset"));
                             }
                 }
@@ -473,7 +474,7 @@ namespace DCollector
                             H5Sselect_valid(dataspace) <= 0)
                         throw DCException(getExceptionString("read: Source dataspace hyperslab selection is not valid!"));
 
-                    if (H5Dread(dataset, this->datatype, dst_dataspace, dataspace, H5P_DEFAULT, dst) < 0)
+                    if (H5Dread(dataset, this->datatype, dst_dataspace, dataspace, dsetReadProperties, dst) < 0)
                         throw DCException(getExceptionString("read: Failed to read dataset"));
                 }
             }

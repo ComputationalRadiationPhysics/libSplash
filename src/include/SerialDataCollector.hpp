@@ -376,9 +376,9 @@ namespace DCollector
         void read(int32_t id,
                 const CollectionType& type,
                 const char* name,
-                Dimensions dstBuffer,
+                const Dimensions dstBuffer,
                 Dimensions &srcData,
-                Dimensions dstOffset,
+                const Dimensions dstOffset,
                 void* data) throw (DCException);
     };
 
