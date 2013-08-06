@@ -2,3 +2,7 @@
 /tests/build/
 /nbproject/
 /doc/doxygenDoku/
+*.aux
+*.toc
+*.out
+*.log
