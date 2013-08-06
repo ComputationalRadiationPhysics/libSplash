@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #ifndef SERIALDATACOLLECTOR_H
@@ -248,8 +248,8 @@ namespace DCollector
          * {@link DataCollector#getEntryIDs}
          */
         void getEntryIDs(int32_t *ids, size_t *count) throw (DCException);
-        
-		void getEntriesForID(int32_t id, DCEntry *entries, size_t *count) throw (DCException);
+
+        void getEntriesForID(int32_t id, DCEntry *entries, size_t *count) throw (DCException);
 
         /**
          * {@link DataCollector#write}
@@ -316,6 +316,14 @@ namespace DCollector
          */
         void remove(int32_t id,
                 const char *name) throw (DCException);
+
+        /**
+         * {@link DataCollector#createReference}
+         */
+        void createReference(int32_t srcID,
+                const char *srcName,
+                int32_t dstID,
+                const char *dstName) throw (DCException);
 
         /**
          * {@link DataCollector#createReference}

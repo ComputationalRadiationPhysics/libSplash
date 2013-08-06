@@ -75,10 +75,15 @@ void Parallel_ReferencesTest::testCreateReference()
             Dimensions(2, 2, 1), Dimensions(1, 5, 1), Dimensions(2, 1, 1)),
             DCException);
 
+    CPPUNIT_ASSERT_THROW(dataCollector->createReference(0, "data", 2, "obj_ref"),
+            DCException);
+
     // bound to fail as feature no supported by Parallel HDF5
     CPPUNIT_ASSERT_THROW(dataCollector->createReference(2, "data", 2, "ref",
             Dimensions(5, 7, 2), Dimensions(0, 0, 0), Dimensions(1, 1, 1)),
             DCException);
+
+    dataCollector->createReference(2, "data", 2, "obj_ref");
 
     delete[] dataWrite;
     dataWrite = NULL;

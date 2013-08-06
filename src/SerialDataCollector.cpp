@@ -582,6 +582,76 @@ namespace DCollector
         } else
             throw DCException(getExceptionString("remove", "group does not exist", group_id_name.str().c_str()));
     }
+    
+    void SerialDataCollector::createReference(int32_t srcID,
+            const char *srcName,
+            int32_t dstID,
+            const char *dstName)
+    throw (DCException)
+    {
+        if (srcName == NULL || dstName == NULL)
+            throw DCException(getExceptionString("createReference", "a parameter was NULL"));
+
+        if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
+            throw DCException(getExceptionString("createReference", "this access is not permitted"));
+
+        if (srcID == dstID && srcName == dstName)
+            throw DCException(getExceptionString("createReference",
+                "a reference must not be identical to the referenced data", srcName));
+
+        // open source group
+        std::stringstream group_id_name;
+        group_id_name << SDC_GROUP_DATA << "/" << srcID;
+
+        hid_t src_group_id = H5Gopen(handles.get(0), group_id_name.str().c_str(), H5P_DEFAULT);
+        if (src_group_id < 0)
+            throw DCException(getExceptionString("createReference", "source group not found",
+                group_id_name.str().c_str()));
+
+        // open destination group
+        group_id_name.str("");
+        group_id_name << SDC_GROUP_DATA << "/" << dstID;
+
+        // if destination group does not exist, it is created
+        hid_t dst_group_id = -1;
+        if (H5Lexists(handles.get(0), group_id_name.str().c_str(), H5P_LINK_ACCESS_DEFAULT))
+            dst_group_id = H5Gopen(handles.get(0), group_id_name.str().c_str(), H5P_DEFAULT);
+        else
+            dst_group_id = H5Gcreate(handles.get(0), group_id_name.str().c_str(), H5P_LINK_CREATE_DEFAULT,
+                H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
+
+        if (dst_group_id < 0)
+        {
+            H5Gclose(src_group_id);
+            throw DCException(getExceptionString("createReference",
+                    "destination group could be be created/not found",
+                    group_id_name.str().c_str()));
+        }
+
+        // open source dataset
+        try
+        {
+            DCDataSet src_dataset(srcName);
+            src_dataset.open(src_group_id);
+
+            DCDataSet dst_dataset(dstName);
+            // create the actual reference as a new dataset
+            dst_dataset.createReference(dst_group_id, src_group_id, src_dataset);
+
+            dst_dataset.close();
+            src_dataset.close();
+
+        } catch (DCException e)
+        {
+            H5Gclose(src_group_id);
+            H5Gclose(dst_group_id);
+            throw e;
+        }
+
+        // close groups
+        H5Gclose(src_group_id);
+        H5Gclose(dst_group_id);
+    }
 
     void SerialDataCollector::createReference(int32_t srcID,
             const char *srcName,
