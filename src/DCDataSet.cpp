@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #include <string>
@@ -50,6 +50,7 @@ namespace DCollector
     name(name),
     opened(false),
     isReference(false),
+    checkExistence(true),
     compression(false),
     dimType()
     {
@@ -78,11 +79,11 @@ namespace DCollector
     bool DCDataSet::open(hid_t &group)
     throw (DCException)
     {
-        //if (!H5Lexists(group, name.c_str(), H5P_LINK_ACCESS_DEFAULT))
-          //  return false;
-        
+        if (checkExistence && !H5Lexists(group, name.c_str(), H5P_LINK_ACCESS_DEFAULT))
+            return false;
+
         dataset = H5Dopen(group, name.c_str(), H5P_DATASET_ACCESS_DEFAULT);
-        
+
         if (dataset < 0)
             throw DCException(getExceptionString("open: Failed to open dataset"));
 
@@ -168,9 +169,8 @@ namespace DCollector
         // note that this won't free the memory occupied by this
         // dataset, however, there currently is no function to delete
         // a dataset
-        ///\todo serial vs parallel
-        //if (H5Lexists(group, name.c_str(), H5P_LINK_ACCESS_DEFAULT))
-        //    H5Gunlink(group, name.c_str());
+        if (checkExistence && H5Lexists(group, name.c_str(), H5P_LINK_ACCESS_DEFAULT))
+            H5Gunlink(group, name.c_str());
 
         this->rank = rank;
         this->compression = compression;
@@ -191,8 +191,7 @@ namespace DCollector
 
             delete[] max_dims;
             max_dims = NULL;
-        }
-        else
+        } else
             dataspace = H5Screate(H5S_NULL);
 
 
@@ -202,7 +201,7 @@ namespace DCollector
 
         // create the new dataset
         dataset = H5Dcreate(group, this->name.c_str(), this->datatype, dataspace,
-                H5P_DEFAULT, this->dsetProperties, H5P_DEFAULT);
+                H5P_DEFAULT, dsetProperties, H5P_DEFAULT);
 
         if (dataset < 0)
             throw DCException(getExceptionString("create: Failed to create dataset"));
@@ -222,7 +221,7 @@ namespace DCollector
         if (opened)
             throw DCException(getExceptionString("createReference: dataset is already open"));
 
-        if (H5Lexists(refGroup, name.c_str(), H5P_LINK_ACCESS_DEFAULT))
+        if (checkExistence && H5Lexists(refGroup, name.c_str(), H5P_LINK_ACCESS_DEFAULT))
             throw DCException(getExceptionString("createReference: this reference already exists"));
 
         getLogicalSize().set(count);
@@ -233,22 +232,30 @@ namespace DCollector
         stride.swapDims(this->rank);
 
         // select region hyperslab in source dataset
-        H5Sselect_hyperslab(srcDataSet.getDataSpace(), H5S_SELECT_SET,
+        if (H5Sselect_hyperslab(srcDataSet.getDataSpace(), H5S_SELECT_SET,
                 offset.getPointer(), stride.getPointer(),
-                count.getPointer(), NULL);
+                count.getPointer(), NULL) < 0 ||
+                H5Sselect_valid(srcDataSet.getDataSpace()) <= 0)
+            throw DCException(getExceptionString("createReference: failed to select hyperslap for reference"));
 
-        H5Rcreate(&regionRef, srcGroup, srcDataSet.getName().c_str(), H5R_DATASET_REGION,
-                srcDataSet.getDataSpace());
+        if (H5Rcreate(&regionRef, srcGroup, srcDataSet.getName().c_str(), H5R_DATASET_REGION,
+                srcDataSet.getDataSpace()) < 0)
+            throw DCException(getExceptionString("createReference: failed to create region reference"));
 
         hsize_t dims = 1;
-        hsize_t max_dim = H5S_UNLIMITED;
-        dataspace = H5Screate_simple(1, &dims, &max_dim);
+        dataspace = H5Screate_simple(1, &dims, NULL);
+        if (dataspace < 0)
+            throw DCException(getExceptionString("createReference: failed to create dataspace for reference"));
 
         dataset = H5Dcreate(refGroup, name.c_str(), H5T_STD_REF_DSETREG,
-                dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                dataspace, H5P_DEFAULT, dsetProperties, H5P_DEFAULT);
+        
+        if (dataset < 0)
+            throw DCException(getExceptionString("createReference: failed to create dataset for reference"));
 
-        H5Dwrite(dataset, H5T_STD_REF_DSETREG, H5S_ALL, H5S_ALL,
-                dsetWriteProperties, &regionRef);
+        if (H5Dwrite(dataset, H5T_STD_REF_DSETREG, H5S_ALL, H5S_ALL,
+                dsetWriteProperties, &regionRef) < 0)
+            throw DCException(getExceptionString("createReference: failed to write region for reference"));
 
         isReference = true;
         opened = true;
@@ -297,16 +304,14 @@ namespace DCollector
                     result = DCDT_UINT64;
                 else
                     result = DCDT_UINT32;
-            }
-            else
+            } else
             {
                 if (type_size == sizeof (int64_t))
                     result = DCDT_INT64;
                 else
                     result = DCDT_INT32;
             }
-        }
-        else
+        } else
             if (type_class == H5T_FLOAT)
         {
             // float or double
@@ -418,8 +423,7 @@ namespace DCollector
                 if (H5Dread(dataset, this->datatype, dst_dataspace, dataspace, dsetReadProperties, dst) < 0)
                     throw DCException(getExceptionString("read: Failed to read dataset"));
 
-            }
-            else
+            } else
             {
                 Dimensions client_size(1, 1, 1);
                 Dimensions local_mpi_size(1, 1, 1);
@@ -461,8 +465,7 @@ namespace DCollector
                                 if (H5Dread(dataset, this->datatype, dst_dataspace, dataspace, dsetReadProperties, dst) < 0)
                                     throw DCException(getExceptionString("read: Failed to read dataset"));
                             }
-                }
-                else
+                } else
                 {
                     if (H5Sselect_hyperslab(dst_dataspace, H5S_SELECT_SET, dstOffset.getPointer(), NULL,
                             srcSize.getPointer(), NULL) < 0 ||
@@ -480,7 +483,7 @@ namespace DCollector
             }
 
             H5Sclose(dst_dataspace);
-            
+
             srcSize.swapDims(rank);
         }
 
@@ -568,7 +571,7 @@ namespace DCollector
                     NULL, srcData.getPointer(), NULL) < 0 ||
                     H5Sselect_valid(dataspace) <= 0)
                 throw DCException(getExceptionString("write: Invalid target hyperslap selection"));
-            
+
             // write data to the dataset
             if (H5Dwrite(dataset, this->datatype, dsp_src, dataspace, dsetWriteProperties, data) < 0)
                 throw DCException(getExceptionString("write: Failed to write dataset"));

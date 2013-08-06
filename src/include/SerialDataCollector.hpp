@@ -322,7 +322,6 @@ namespace DCollector
          */
         void createReference(int32_t srcID,
                 const char *srcName,
-                const CollectionType& colType,
                 int32_t dstID,
                 const char *dstName,
                 Dimensions count,

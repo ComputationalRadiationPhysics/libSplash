@@ -282,7 +282,6 @@ namespace DCollector
          * 
          * @param srcID id of the simulation step holding the source dataset
          * @param srcName name of the existing source dataset
-         * @param colType type of the existing source dataset
          * @param dstID if of the simulation step holding the created reference dataset.
          * If this group does not exist, it is created.
          * @param dstName name of the created reference dataset
@@ -292,7 +291,6 @@ namespace DCollector
          */
         virtual void createReference(int32_t srcID,
                 const char *srcName,
-                const CollectionType& colType,
                 int32_t dstID,
                 const char *dstName,
                 Dimensions count,

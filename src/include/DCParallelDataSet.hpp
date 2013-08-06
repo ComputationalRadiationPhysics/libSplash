@@ -26,6 +26,8 @@ namespace DCollector
             
             dsetReadProperties = H5Pcreate(H5P_DATASET_XFER);
             H5Pset_dxpl_mpio(dsetReadProperties, H5FD_MPIO_COLLECTIVE);
+            
+            checkExistence = false;
         }
 
         virtual ~DCParallelDataSet()

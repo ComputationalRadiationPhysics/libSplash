@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #include <time.h>
@@ -87,31 +87,35 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
     fileCAttr.fileAccType = DataCollector::FAT_READ;
     dataCollector->open(HDF5_FILE, fileCAttr);
 
-	printf("printing file entries:\n");
-	DataCollector::DCEntry *entries = NULL;
-	size_t numEntries = 0;
+#if defined TESTS_DEBUG
+    printf("printing file entries:\n");
+#endif
+    DataCollector::DCEntry *entries = NULL;
+    size_t numEntries = 0;
 
-	int32_t *ids = NULL;
-	size_t numIDs = 0;
-	dataCollector->getEntryIDs(NULL, &numIDs);
-	CPPUNIT_ASSERT(numIDs == 2);
-	ids = new int32_t[numIDs];
-	dataCollector->getEntryIDs(ids, NULL);
-	
-	for (uint32_t j = 0; j < numIDs; ++j)
-	{
-		dataCollector->getEntriesForID(ids[j], NULL, &numEntries);
-		CPPUNIT_ASSERT(numEntries == 1);
-		entries = new DataCollector::DCEntry[numEntries];
-		dataCollector->getEntriesForID(ids[j], entries, NULL);
+    int32_t *ids = NULL;
+    size_t numIDs = 0;
+    dataCollector->getEntryIDs(NULL, &numIDs);
+    CPPUNIT_ASSERT(numIDs == 2);
+    ids = new int32_t[numIDs];
+    dataCollector->getEntryIDs(ids, NULL);
 
-		for (uint32_t i = 0; i < numEntries; ++i)
-			printf("id=%d name=%s\n", ids[j], entries[i].name.c_str());
+    for (uint32_t j = 0; j < numIDs; ++j)
+    {
+        dataCollector->getEntriesForID(ids[j], NULL, &numEntries);
+        CPPUNIT_ASSERT(numEntries == 1);
+        entries = new DataCollector::DCEntry[numEntries];
+        dataCollector->getEntriesForID(ids[j], entries, NULL);
 
-		delete[] entries;
-	}
+#if defined TESTS_DEBUG
+        for (uint32_t i = 0; i < numEntries; ++i)
+            printf("id=%d name=%s\n", ids[j], entries[i].name.c_str());
+#endif
 
-	delete[] ids;
+        delete[] entries;
+    }
+
+    delete[] ids;
 
     int *dataRead = new int[bufferSize];
     for (uint32_t i = 0; i < bufferSize; i++)
