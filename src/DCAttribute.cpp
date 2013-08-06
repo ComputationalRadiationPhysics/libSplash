@@ -17,15 +17,14 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #include <H5public.h>
 #include <sstream>
 
 #include "DCAttribute.hpp"
-#include "include/DCAttribute.hpp"
 
 namespace DCollector
 {
@@ -53,7 +52,7 @@ namespace DCollector
             H5Aclose(attr);
             throw DCException(getExceptionString(name, "Could not get type of attribute"));
         }
-        
+
         if (H5Aread(attr, attr_type, dst) < 0)
         {
             H5Aclose(attr);

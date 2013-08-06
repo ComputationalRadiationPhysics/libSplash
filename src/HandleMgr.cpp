@@ -37,8 +37,11 @@ fileNameScheme(fileNameScheme),
 fileFlags(0),
 singleFile(true),
 fileCreateCallback(NULL),
+fileCreateUserData(NULL),
 fileOpenCallback(NULL),
-fileCloseCallback(NULL)
+fileOpenUserData(NULL),
+fileCloseCallback(NULL),
+fileCloseUserData(NULL)
 {
     if (maxHandles == 0)
         this->maxHandles = std::numeric_limits<uint32_t>::max() - 1;
@@ -104,7 +107,7 @@ Dimensions HandleMgr::posFromIndex(uint32_t index)
                 (index / mpiSize[0]) % mpiSize[1],
                 index / (mpiSize[1] * mpiSize[0]));
         else
-            pos.set(index, 1, 1);
+            pos.set(index, 0, 0);
     }
 
     return pos;
@@ -122,7 +125,7 @@ throw (DCException)
     uint32_t index = 0;
     if (!singleFile)
         index = indexFromPos(mpiPos);
-
+    
     HandleMap::iterator iter = handles.find(index);
     if (iter == handles.end())
     {
@@ -130,8 +133,11 @@ throw (DCException)
         {
             HandleMap::iterator rmHandle = handles.find(leastAccIndex.index);
             if (fileCloseCallback)
-                fileCloseCallback(rmHandle->second.handle);
-                        
+            {
+                fileCloseCallback(rmHandle->second.handle,
+                    leastAccIndex.index, fileCloseUserData);
+            }
+
             if (H5Fclose(rmHandle->second.handle) < 0)
             {
                 std::cerr <<
@@ -166,9 +172,9 @@ throw (DCException)
                     filenameStream.str().c_str()));
 
             createdFiles.insert(index);
-            
+
             if (fileCreateCallback)
-                fileCreateCallback(newHandle);
+                fileCreateCallback(newHandle, index, fileCreateUserData);
         } else
         {
             // file open or already created
@@ -180,9 +186,9 @@ throw (DCException)
             if (newHandle < 0)
                 throw DCException(getExceptionString("get", "Failed to open file",
                     filenameStream.str().c_str()));
-            
+
             if (fileOpenCallback)
-                fileOpenCallback(newHandle);
+                fileOpenCallback(newHandle, index, fileOpenUserData);
         }
 
 
@@ -222,8 +228,8 @@ void HandleMgr::close()
     for (; iter != handles.end(); ++iter)
     {
         if (fileCloseCallback)
-            fileCloseCallback(iter->second.handle);
-        
+            fileCloseCallback(iter->second.handle, iter->first, fileCloseUserData);
+
         if (H5Fclose(iter->second.handle) < 0)
         {
             std::cerr <<
@@ -235,17 +241,20 @@ void HandleMgr::close()
     handles.clear();
 }
 
-void HandleMgr::registerFileCreate(FileCreateCallback callback)
+void HandleMgr::registerFileCreate(FileCreateCallback callback, void *userData)
 {
     fileCreateCallback = callback;
+    fileCreateUserData = userData;
 }
 
-void HandleMgr::registerFileOpen(FileOpenCallback callback)
+void HandleMgr::registerFileOpen(FileOpenCallback callback, void *userData)
 {
     fileOpenCallback = callback;
+    fileOpenUserData = userData;
 }
 
-void HandleMgr::registerFileClose(FileCloseCallback callback)
+void HandleMgr::registerFileClose(FileCloseCallback callback, void *userData)
 {
     fileCloseCallback = callback;
+    fileCloseUserData = userData;
 }

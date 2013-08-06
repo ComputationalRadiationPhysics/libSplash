@@ -66,9 +66,9 @@ namespace DCollector
             FNS_MPI = 0, FNS_ITERATIONS
         };
         
-        typedef void (*FileCreateCallback)(H5Handle handle);
-        typedef void (*FileOpenCallback)(H5Handle handle);
-        typedef void (*FileCloseCallback)(H5Handle handle);
+        typedef void (*FileCreateCallback)(H5Handle handle, uint32_t index, void *userData);
+        typedef void (*FileOpenCallback)(H5Handle handle, uint32_t index, void *userData);
+        typedef void (*FileCloseCallback)(H5Handle handle, uint32_t index, void *userData);
         
         /**
          * Constructor
@@ -119,11 +119,11 @@ namespace DCollector
          */
         H5Handle get(Dimensions mpiPos) throw (DCException);
         
-        void registerFileCreate(FileCreateCallback callback);
+        void registerFileCreate(FileCreateCallback callback, void *userData);
 
-        void registerFileOpen(FileOpenCallback callback);
+        void registerFileOpen(FileOpenCallback callback, void *userData);
 
-        void registerFileClose(FileCloseCallback callback);
+        void registerFileClose(FileCloseCallback callback, void *userData);
 
     private:
         uint32_t maxHandles;
@@ -143,8 +143,11 @@ namespace DCollector
         
         // callback handles
         FileCreateCallback fileCreateCallback;
+        void *fileCreateUserData;
         FileOpenCallback fileOpenCallback;
+        void *fileOpenUserData;
         FileCloseCallback fileCloseCallback;
+        void *fileCloseUserData;
 
         static std::string getExceptionString(std::string func,
                 std::string msg, const char *info);

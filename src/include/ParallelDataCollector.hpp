@@ -68,9 +68,22 @@ namespace DCollector
          */
         static std::string getExceptionString(std::string func, std::string msg,
                 const char *info = NULL);
-        
+
         static void indexToPos(int index, Dimensions mpiSize, Dimensions &mpiPos);
     protected:
+
+        typedef struct
+        {
+            // internal MPI structures
+            MPI_Comm mpiComm;
+            MPI_Info mpiInfo;
+            int mpiRank;
+            int mpiSize;
+            Dimensions mpiPos;
+            Dimensions mpiTopology;
+            // enable data compression
+            bool enableCompression;
+        } Options;
 
         /**
          * internal type to save file access mode
@@ -80,13 +93,7 @@ namespace DCollector
             FST_CLOSED, FST_WRITING, FST_READING, FST_CREATING
         };
 
-        // internal MPI structures
-        MPI_Comm mpiComm;
-        MPI_Info mpiInfo;
-        int mpiRank;
-        int mpiSize;
-        Dimensions mpiPos;
-        Dimensions mpiTopology;
+        Options options;
 
         // internal hdf5 file handles
         HandleMgr handles;
@@ -97,10 +104,11 @@ namespace DCollector
         // current file access type
         FileStatusType fileStatus;
 
-        // enable data compression
-        bool enableCompression;
+        static void writeHeader(hid_t fHandle, uint32_t id,
+                bool enableCompression, Dimensions mpiTopology) throw (DCException);
 
-        static void fileCreateCallback(H5Handle handle);
+        static void fileCreateCallback(H5Handle handle, uint32_t index,
+                void *userData) throw (DCException);
 
         void openCreate(const char *filename,
                 FileCreationAttr &attr) throw (DCException);

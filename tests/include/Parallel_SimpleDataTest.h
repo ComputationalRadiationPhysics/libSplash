@@ -54,11 +54,12 @@ private:
     /**
      * sub function for testWriteRead to allow several data/border sizes to be tested.
      */
-    bool subtestWriteRead(uint32_t iteration, const Dimensions gridSize,
-            const Dimensions borderSize, uint32_t dimensions);
+    bool subtestWriteRead(uint32_t iteration, int currentMpiRank, const Dimensions mpiSize,
+            const Dimensions gridSize, uint32_t dimensions, MPI_Comm mpiComm);
 
     ColTypeInt ctInt;
-    IParallelDataCollector *dataCollector;
+    IParallelDataCollector *parallelDataCollector;
+    DataCollector *dataCollector;
 
     int totalMpiSize;
     int myMpiRank;
