@@ -20,9 +20,11 @@
  */
 
 #include <assert.h>
+#include <mpi/mpi.h>
 
 #include "ParallelDataCollector.hpp"
 #include "DCParallelDataSet.hpp"
+#include "DCAttribute.hpp"
 
 using namespace DCollector;
 
@@ -32,9 +34,8 @@ using namespace DCollector;
 
 void ParallelDataCollector::setFileAccessParams(hid_t& fileAccProperties)
 {
-    fileAccProperties = H5P_FILE_ACCESS_DEFAULT;
-
-    H5Pset_fapl_mpio(fileAccProperties, mpiComm, mpiInfo);
+    fileAccProperties = H5Pcreate(H5P_FILE_ACCESS);
+    H5Pset_fapl_mpio(fileAccProperties, options.mpiComm, options.mpiInfo);
 
     int metaCacheElements = 0;
     size_t rawCacheElements = 0;
@@ -76,9 +77,13 @@ std::string ParallelDataCollector::getExceptionString(std::string func, std::str
 
 void ParallelDataCollector::indexToPos(int index, Dimensions mpiSize, Dimensions &mpiPos)
 {
-    mpiPos[2] = index % mpiSize[2];
+    /*mpiPos[2] = index % mpiSize[2];
     mpiPos[1] = (index / mpiSize[2]) % mpiSize[1];
-    mpiPos[0] = index / (mpiSize[1] * mpiSize[2]);
+    mpiPos[0] = index / (mpiSize[1] * mpiSize[2]);*/
+
+    mpiPos[2] = index / (mpiSize[0] * mpiSize[1]);
+    mpiPos[1] = (index % (mpiSize[0] * mpiSize[1])) / mpiSize[0];
+    mpiPos[0] = index % mpiSize[0];
 }
 
 /*******************************************************************************
@@ -87,14 +92,16 @@ void ParallelDataCollector::indexToPos(int index, Dimensions mpiSize, Dimensions
 
 ParallelDataCollector::ParallelDataCollector(MPI_Comm comm, MPI_Info info,
         const Dimensions topology, int mpiRank, uint32_t maxFileHandles) :
-mpiComm(comm),
-mpiInfo(info),
-mpiRank(mpiRank),
-mpiSize(topology.getDimSize()),
-mpiTopology(topology),
 handles(maxFileHandles, HandleMgr::FNS_ITERATIONS),
 fileStatus(FST_CLOSED)
 {
+    options.enableCompression = false;
+    options.mpiComm = comm;
+    options.mpiInfo = info;
+    options.mpiRank = mpiRank;
+    options.mpiSize = topology.getDimSize();
+    options.mpiTopology.set(topology);
+
     if (H5open() < 0)
         throw DCException(getExceptionString("ParallelDataCollector",
             "failed to initialize/open HDF5 library"));
@@ -107,16 +114,14 @@ fileStatus(FST_CLOSED)
     // set some default file access parameters
     setFileAccessParams(fileAccProperties);
 
-    handles.registerFileCreate(fileCreateCallback);
+    handles.registerFileCreate(fileCreateCallback, &options);
 
-    std::cout << "[" << mpiRank << "] ParallelDataCollector with topology " <<
-            mpiTopology.toString() << std::endl;
-
-    indexToPos(mpiRank, mpiTopology, mpiPos);
+    indexToPos(mpiRank, options.mpiTopology, options.mpiPos);
 }
 
 ParallelDataCollector::~ParallelDataCollector()
 {
+    H5Pclose(fileAccProperties);
 }
 
 void ParallelDataCollector::open(const char* filename, FileCreationAttr &attr)
@@ -158,7 +163,7 @@ int32_t ParallelDataCollector::getMaxID()
 
 void ParallelDataCollector::getMPISize(Dimensions& mpiSize)
 {
-    mpiSize.set(mpiTopology);
+    mpiSize.set(options.mpiTopology);
 }
 
 void ParallelDataCollector::getEntryIDs(int32_t *ids, size_t *count)
@@ -237,7 +242,7 @@ void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32
         const Dimensions srcData, const char* name, const void* data)
 throw (DCException)
 {
-    write(id, srcData * mpiTopology, srcData * mpiPos,
+    write(id, srcData * options.mpiTopology, srcData * options.mpiPos,
             type, rank, srcData, Dimensions(1, 1, 1),
             srcData, Dimensions(0, 0, 0), name, data);
 }
@@ -247,7 +252,7 @@ void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32
         const char* name, const void* data)
 throw (DCException)
 {
-    write(id, srcData * mpiTopology, srcData * mpiPos,
+    write(id, srcData * options.mpiTopology, srcData * options.mpiPos,
             type, rank, srcBuffer, Dimensions(1, 1, 1),
             srcData, srcOffset, name, data);
 }
@@ -257,7 +262,7 @@ void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32
         const Dimensions srcOffset, const char* name, const void* data)
 throw (DCException)
 {
-    write(id, srcData * mpiTopology, srcData * mpiPos,
+    write(id, srcData * options.mpiTopology, srcData * options.mpiPos,
             type, rank, srcBuffer, srcStride, srcData,
             srcOffset, name, data);
 }
@@ -299,12 +304,12 @@ void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
     // create group for this id/iteration
     std::stringstream group_id_name;
     group_id_name << SDC_GROUP_DATA << "/" << id;
-
+    
     hid_t group_id = -1;
     H5Handle file_handle = handles.get(id);
-    if (H5Lexists(file_handle, group_id_name.str().c_str(), H5P_LINK_ACCESS_DEFAULT))
-        group_id = H5Gopen(file_handle, group_id_name.str().c_str(), H5P_DEFAULT);
-    else
+
+    group_id = H5Gopen(file_handle, group_id_name.str().c_str(), H5P_DEFAULT);
+    if (group_id < 0)
         group_id = H5Gcreate(file_handle, group_id_name.str().c_str(), H5P_LINK_CREATE_DEFAULT,
             H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
 
@@ -369,8 +374,11 @@ throw (DCException)
  * PROTECTED FUNCTIONS
  *******************************************************************************/
 
-void ParallelDataCollector::fileCreateCallback(H5Handle handle)
+void ParallelDataCollector::fileCreateCallback(H5Handle handle, uint32_t index, void *userData)
+throw (DCException)
 {
+    Options *options = (Options*) userData;
+
     // the custom group holds user-specified attributes
     hid_t group_custom = H5Gcreate(handle, SDC_GROUP_CUSTOM, H5P_LINK_CREATE_DEFAULT,
             H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
@@ -388,6 +396,45 @@ void ParallelDataCollector::fileCreateCallback(H5Handle handle)
             "failed to create custom group", SDC_GROUP_DATA));
 
     H5Gclose(group_data);
+
+    writeHeader(handle, index, options->enableCompression, options->mpiTopology);
+}
+
+void ParallelDataCollector::writeHeader(hid_t fHandle, uint32_t id,
+        bool enableCompression, Dimensions mpiTopology)
+throw (DCException)
+{
+    // create group for header information (position, grid size, ...)
+    hid_t group_header = H5Gcreate(fHandle, SDC_GROUP_HEADER, H5P_LINK_CREATE_DEFAULT,
+            H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
+    if (group_header < 0)
+        throw DCException(getExceptionString("writeHeader",
+            "Failed to create header group", NULL));
+
+    try
+    {
+        ColTypeDim dim_t;
+
+        int32_t index = id;
+
+        // create master specific header attributes
+        DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, H5T_NATIVE_INT32,
+                group_header, &index);
+
+        DCAttribute::writeAttribute(SDC_ATTR_COMPRESSION, H5T_NATIVE_HBOOL,
+                group_header, &enableCompression);
+
+        DCAttribute::writeAttribute(SDC_ATTR_MPI_SIZE, dim_t.getDataType(),
+                group_header, mpiTopology.getPointer());
+
+    } catch (DCException attr_error)
+    {
+        throw DCException(getExceptionString("writeHeader",
+                "Failed to write header attribute.",
+                attr_error.what()));
+    }
+
+    H5Gclose(group_header);
 }
 
 void ParallelDataCollector::openCreate(const char *filename,
@@ -395,7 +442,7 @@ void ParallelDataCollector::openCreate(const char *filename,
 throw (DCException)
 {
     this->fileStatus = FST_CREATING;
-    this->enableCompression = attr.enableCompression;
+    this->options.enableCompression = attr.enableCompression;
 
 #if defined SDC_DEBUG_OUTPUT
     if (attr.enableCompression)
@@ -420,7 +467,7 @@ void ParallelDataCollector::openWrite(const char* filename, FileCreationAttr& at
 throw (DCException)
 {
     fileStatus = FST_WRITING;
-    this->enableCompression = attr.enableCompression;
+    this->options.enableCompression = attr.enableCompression;
 
     handles.open(Dimensions(1, 1, 1), filename, fileAccProperties, H5F_ACC_RDWR);
 }
@@ -437,7 +484,7 @@ void ParallelDataCollector::writeDataSet(hid_t &group, const Dimensions globalSi
 #endif
     DCParallelDataSet dataset(name);
     // always create dataset but write data only if all dimensions > 0
-    dataset.create(datatype, group, globalSize, rank, this->enableCompression);
+    dataset.create(datatype, group, globalSize, rank, this->options.enableCompression);
     if (srcData.getDimSize() > 0)
         dataset.write(srcBuffer, srcStride, srcOffset, srcData, globalOffset, data);
     dataset.close();

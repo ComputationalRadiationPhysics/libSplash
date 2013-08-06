@@ -77,11 +77,11 @@ namespace DCollector
     bool DCDataSet::open(hid_t &group)
     throw (DCException)
     {
-        if (!H5Lexists(group, name.c_str(), H5P_LINK_ACCESS_DEFAULT))
-            return false;
-
+        //if (!H5Lexists(group, name.c_str(), H5P_LINK_ACCESS_DEFAULT))
+          //  return false;
+        
         dataset = H5Dopen(group, name.c_str(), H5P_DATASET_ACCESS_DEFAULT);
-
+        
         if (dataset < 0)
             throw DCException(getExceptionString("open: Failed to open dataset"));
 
@@ -167,8 +167,9 @@ namespace DCollector
         // note that this won't free the memory occupied by this
         // dataset, however, there currently is no function to delete
         // a dataset
-        if (H5Lexists(group, name.c_str(), H5P_LINK_ACCESS_DEFAULT))
-            H5Gunlink(group, name.c_str());
+        ///\todo serial vs parallel
+        //if (H5Lexists(group, name.c_str(), H5P_LINK_ACCESS_DEFAULT))
+        //    H5Gunlink(group, name.c_str());
 
         this->rank = rank;
         this->compression = compression;
@@ -199,8 +200,8 @@ namespace DCollector
             throw DCException(getExceptionString("create: Failed to create dataspace"));
 
         // create the new dataset
-        dataset = H5Dcreate(group, this->name.c_str(), this->datatype, dataspace, H5P_LINK_CREATE_DEFAULT,
-                this->dsetProperties, H5P_DATASET_ACCESS_DEFAULT);
+        dataset = H5Dcreate(group, this->name.c_str(), this->datatype, dataspace,
+                H5P_DEFAULT, this->dsetProperties, H5P_DEFAULT);
 
         if (dataset < 0)
             throw DCException(getExceptionString("create: Failed to create dataset"));
@@ -566,7 +567,7 @@ namespace DCollector
                     NULL, srcData.getPointer(), NULL) < 0 ||
                     H5Sselect_valid(dataspace) <= 0)
                 throw DCException(getExceptionString("write: Invalid target hyperslap selection"));
-
+            
             // write data to the dataset
             if (H5Dwrite(dataset, this->datatype, dsp_src, dataspace, dsetWriteProperties, data) < 0)
                 throw DCException(getExceptionString("write: Failed to write dataset"));
