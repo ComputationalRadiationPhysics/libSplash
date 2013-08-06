@@ -552,6 +552,62 @@ throw (DCException)
 void ParallelDataCollector::createReference(int32_t srcID,
         const char *srcName,
         int32_t dstID,
+        const char *dstName)
+throw (DCException)
+{
+    if (srcName == NULL || dstName == NULL)
+        throw DCException(getExceptionString("createReference", "a parameter was NULL"));
+
+    if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
+        throw DCException(getExceptionString("createReference", "this access is not permitted"));
+
+    if (srcID != dstID)
+        throw DCException(getExceptionString("createReference",
+            "source and destination ID must be identical", NULL));
+
+    if (srcName == dstName)
+        throw DCException(getExceptionString("createReference",
+            "a reference must not be identical to the referenced data", srcName));
+
+    // open source group
+    std::stringstream group_id_name;
+    group_id_name << SDC_GROUP_DATA << "/" << srcID;
+
+    hid_t src_group_id = H5Gopen(handles.get(srcID), group_id_name.str().c_str(), H5P_DEFAULT);
+    if (src_group_id < 0)
+    {
+        throw DCException(getExceptionString("createReference",
+                "source/destination group not found",
+                group_id_name.str().c_str()));
+    }
+
+    // open source dataset
+    try
+    {
+        DCParallelDataSet src_dataset(srcName);
+        src_dataset.open(src_group_id);
+
+        DCParallelDataSet dst_dataset(dstName);
+        // create the actual reference as a new dataset
+        // identical src and dst groups
+        dst_dataset.createReference(src_group_id, src_group_id, src_dataset);
+
+        dst_dataset.close();
+        src_dataset.close();
+
+    } catch (DCException e)
+    {
+        H5Gclose(src_group_id);
+        throw e;
+    }
+
+    // close group
+    H5Gclose(src_group_id);
+}
+
+void ParallelDataCollector::createReference(int32_t srcID,
+        const char *srcName,
+        int32_t dstID,
         const char *dstName,
         Dimensions count,
         Dimensions offset,
@@ -574,7 +630,7 @@ throw (DCException)
 
     throw DCException(getExceptionString("createReference",
             "feature currently not supported by Parallel HDF5", NULL));
-    
+
     // open source group
     /*std::stringstream group_id_name;
     group_id_name << SDC_GROUP_DATA << "/" << srcID;

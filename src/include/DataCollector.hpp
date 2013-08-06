@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 /**
@@ -276,6 +276,11 @@ namespace DCollector
          */
         virtual void remove(int32_t id,
                 const char *name) = 0;
+
+        virtual void createReference(int32_t srcID,
+                const char *srcName,
+                int32_t dstID,
+                const char *dstName) = 0;
 
         /**
          * Creates a reference to an existing dataset in the same hdf5 file.

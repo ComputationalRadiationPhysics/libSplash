@@ -72,6 +72,8 @@ void ReferencesTest::testCreateReference()
     dataCollector->createReference(0, "data", 1, "ref2", 
             Dimensions(2, 2, 1), Dimensions(1, 5, 1), Dimensions(2, 1, 1));
     
+    dataCollector->createReference(0, "data", 2, "obj_ref");
+    
     delete[] dataWrite;
     dataWrite = NULL;
 

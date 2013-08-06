@@ -209,9 +209,45 @@ namespace DCollector
         isReference = false;
         opened = true;
     }
+    
+    void DCDataSet::createReference(hid_t refGroup,
+            hid_t srcGroup,
+            DCDataSet &srcDataSet)
+    throw (DCException)
+    {
+        if (opened)
+            throw DCException(getExceptionString("createReference: dataset is already open"));
 
-    void DCDataSet::createReference(hid_t& refGroup,
-            hid_t& srcGroup,
+        if (checkExistence && H5Lexists(refGroup, name.c_str(), H5P_LINK_ACCESS_DEFAULT))
+            throw DCException(getExceptionString("createReference: this reference already exists"));
+
+        getLogicalSize().set(srcDataSet.getLogicalSize());
+        this->rank = srcDataSet.getRank();
+
+        if (H5Rcreate(&regionRef, srcGroup, srcDataSet.getName().c_str(), H5R_OBJECT, -1) < 0)
+            throw DCException(getExceptionString("createReference: failed to create region reference"));
+
+        hsize_t dims = 1;
+        dataspace = H5Screate_simple(1, &dims, NULL);
+        if (dataspace < 0)
+            throw DCException(getExceptionString("createReference: failed to create dataspace for reference"));
+
+        dataset = H5Dcreate(refGroup, name.c_str(), H5T_STD_REF_OBJ,
+                dataspace, H5P_DEFAULT, dsetProperties, H5P_DEFAULT);
+        
+        if (dataset < 0)
+            throw DCException(getExceptionString("createReference: failed to create dataset for reference"));
+
+        if (H5Dwrite(dataset, H5T_STD_REF_OBJ, H5S_ALL, H5S_ALL,
+                dsetWriteProperties, &regionRef) < 0)
+            throw DCException(getExceptionString("createReference: failed to write reference"));
+
+        isReference = true;
+        opened = true;
+    }
+
+    void DCDataSet::createReference(hid_t refGroup,
+            hid_t srcGroup,
             DCDataSet &srcDataSet,
             Dimensions count,
             Dimensions offset,
@@ -255,7 +291,7 @@ namespace DCollector
 
         if (H5Dwrite(dataset, H5T_STD_REF_DSETREG, H5S_ALL, H5S_ALL,
                 dsetWriteProperties, &regionRef) < 0)
-            throw DCException(getExceptionString("createReference: failed to write region for reference"));
+            throw DCException(getExceptionString("createReference: failed to write reference"));
 
         isReference = true;
         opened = true;

@@ -316,10 +316,7 @@ namespace DCollector
         void createReference(int32_t srcID,
                 const char *srcName,
                 int32_t dstID,
-                const char *dstName,
-                Dimensions count,
-                Dimensions offset,
-                Dimensions stride) throw (DCException);
+                const char *dstName) throw (DCException);
 
         /**
          * {@link DataCollector#readGlobalAttribute}
@@ -391,7 +388,16 @@ namespace DCollector
                 const Dimensions dstOffset,
                 void* data) throw (DCException);
     private:
-
+        /**
+         * {@link DataCollector#createReference}
+         */
+        void createReference(int32_t srcID,
+                const char *srcName,
+                int32_t dstID,
+                const char *dstName,
+                Dimensions count,
+                Dimensions offset,
+                Dimensions stride) throw (DCException);
     };
 
 }
