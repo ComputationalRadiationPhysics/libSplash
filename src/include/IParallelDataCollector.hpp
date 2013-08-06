@@ -70,12 +70,14 @@ namespace DCollector
          * Writes data to hdf5 file.
          *
          * @param id id for fileentry. e.g. iteration
+         * @param globalSize dimensions for global collective buffer
+         * @param globalOffset 3D-offset in the globalSize-buffer this process writes to
          * @param type type information for data. available types must be
          * implemented by concrete DataCollector
          * @param rank maximum dimension (must be between 1-3)
-         * @param srcData intended 3D dimension for dataset
+         * @param srcData intended 3D dimension for local dataset
          * @param name name for the dataset, e.g. 'ions'
-         * @param data data buffer to write to file
+         * @param data data local buffer to write to file
          */
         virtual void write(int32_t id,
                 const Dimensions globalSize,
@@ -90,11 +92,13 @@ namespace DCollector
          * Writes data to hdf5 file.
          *
          * @param id id for fileentry. e.g. iteration
+         * @param globalSize dimensions for global collective buffer
+         * @param globalOffset 3D-offset in the globalSize-buffer this process writes to
          * @param type type information for data. available types must be
          * implemented by concrete DataCollector
          * @param rank maximum dimension (must be between 1-3)
          * @param srcBuffer dimensions of memory buffer
-         * @param srcData intended 3D dimension for dataset
+         * @param srcData intended 3D dimension for local dataset
          * @param srcOffset offset of dataset in memory buffer
          * @param name name for the dataset, e.g. 'ions'
          * @param data data buffer to write to file
@@ -114,12 +118,14 @@ namespace DCollector
          * Writes data to hdf5 file.
          *
          * @param id id for fileentry. e.g. iteration
+         * @param globalSize dimensions for global collective buffer
+         * @param globalOffset 3D-offset in the globalSize-buffer this process writes to
          * @param type type information for data. available types must be
          * implemented by concrete DataCollector
          * @param rank maximum dimension (must be between 1-3)
          * @param srcBuffer dimensions of memory buffer
          * @param srcStride sizeof striding in each dimension. 1 means 'no stride'
-         * @param srcData intended 3D dimension for dataset
+         * @param srcData intended 3D dimension for local dataset
          * @param srcOffset offset of dataset in memory buffer
          * @param name name for the dataset, e.g. 'ions'
          * @param data data buffer to write to file

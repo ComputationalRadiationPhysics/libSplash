@@ -38,8 +38,8 @@
  * \image html zih_logo.jpg
  * \image html hzdr_logo.jpg
  *
- * @authors Felix Schmitt (felix.schmitt@zih.tu-dresden.de)
- * @authors Rene Widera (r.widera@hzdr.de)
+ * @authors Felix Schmitt
+ * @authors René Widera
  */
 
 #ifndef _DATACOLLECTOR_H
