@@ -224,6 +224,7 @@ namespace DCollector
         std::string name;
         bool opened;
         bool isReference;
+        bool checkExistence;
 
         // property lists
         hid_t dsetProperties;

@@ -551,7 +551,6 @@ throw (DCException)
 
 void ParallelDataCollector::createReference(int32_t srcID,
         const char *srcName,
-        const CollectionType& colType,
         int32_t dstID,
         const char *dstName,
         Dimensions count,
@@ -559,7 +558,58 @@ void ParallelDataCollector::createReference(int32_t srcID,
         Dimensions stride)
 throw (DCException)
 {
-    throw DCException("Not yet implemented!");
+    if (srcName == NULL || dstName == NULL)
+        throw DCException(getExceptionString("createReference", "a parameter was NULL"));
+
+    if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
+        throw DCException(getExceptionString("createReference", "this access is not permitted"));
+
+    if (srcID != dstID)
+        throw DCException(getExceptionString("createReference",
+            "source and destination ID must be identical", NULL));
+
+    if (srcName == dstName)
+        throw DCException(getExceptionString("createReference",
+            "a reference must not be identical to the referenced data", srcName));
+
+    throw DCException(getExceptionString("createReference",
+            "feature currently not supported by Parallel HDF5", NULL));
+    
+    // open source group
+    /*std::stringstream group_id_name;
+    group_id_name << SDC_GROUP_DATA << "/" << srcID;
+
+    hid_t src_group_id = H5Gopen(handles.get(srcID), group_id_name.str().c_str(), H5P_DEFAULT);
+    if (src_group_id < 0)
+    {
+        throw DCException(getExceptionString("createReference",
+                "source/destination group not found",
+                group_id_name.str().c_str()));
+    }
+
+    // open source dataset
+    try
+    {
+        DCParallelDataSet src_dataset(srcName);
+        src_dataset.open(src_group_id);
+
+        DCParallelDataSet dst_dataset(dstName);
+        // create the actual reference as a new dataset
+        // identical src and dst groups
+        dst_dataset.createReference(src_group_id, src_group_id,
+                src_dataset, count, offset, stride);
+
+        dst_dataset.close();
+        src_dataset.close();
+
+    } catch (DCException e)
+    {
+        H5Gclose(src_group_id);
+        throw e;
+    }
+
+    // close group
+    H5Gclose(src_group_id);*/
 }
 
 /*******************************************************************************
@@ -616,13 +666,14 @@ throw (DCException)
         ColTypeDim dim_t;
 
         int32_t index = id;
+        bool compression = enableCompression;
 
         // create master specific header attributes
         DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, H5T_NATIVE_INT32,
                 group_header, &index);
 
         DCAttribute::writeAttribute(SDC_ATTR_COMPRESSION, H5T_NATIVE_HBOOL,
-                group_header, &enableCompression);
+                group_header, &compression);
 
         DCAttribute::writeAttribute(SDC_ATTR_MPI_SIZE, dim_t.getDataType(),
                 group_header, mpiTopology.getPointer());
