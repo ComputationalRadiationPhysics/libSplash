@@ -167,7 +167,13 @@ void ParallelDataCollector::getMPISize(Dimensions& mpiSize)
 void ParallelDataCollector::getEntryIDs(int32_t *ids, size_t *count)
 throw (DCException)
 {
-    return;
+    size_t num_ids = options.maxID > -1 ? 1 : 0;
+
+    if (count != NULL)
+        *count = num_ids;
+
+    if (ids != NULL && (num_ids > 0))
+        ids[0] = options.maxID;
 }
 
 void ParallelDataCollector::getEntriesForID(int32_t id, DCEntry *entries,
