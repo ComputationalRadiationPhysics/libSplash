@@ -39,8 +39,8 @@ namespace DCollector
 {
 
     /**
-     * Realizes an IParallelDataCollector which creates a single hdf5 file for
-     * each all mpi processes and accesses the file using collective MPI I/O.
+     * Realizes an IParallelDataCollector which creates a single HDF5 file for
+     * all MPI processes and accesses the file using collective MPI I/O.
      *
      * see IParallelDataCollector interface for function documentation.
      */
@@ -89,6 +89,8 @@ namespace DCollector
             Dimensions mpiTopology;
             // enable data compression
             bool enableCompression;
+            // id for maximum accessed iteration
+            int32_t maxID;
         } Options;
 
         /**
@@ -114,6 +116,9 @@ namespace DCollector
                 bool enableCompression, Dimensions mpiTopology) throw (DCException);
 
         static void fileCreateCallback(H5Handle handle, uint32_t index,
+                void *userData) throw (DCException);
+
+        static void fileOpenCallback(H5Handle handle, uint32_t index,
                 void *userData) throw (DCException);
 
         void openCreate(const char *filename,
@@ -308,15 +313,15 @@ namespace DCollector
         /**
          * {@link DataCollector#readGlobalAttribute}
          */
-        void readGlobalAttribute(
-                const char *name,
-                void* data,
-                Dimensions *mpiPosition = NULL) throw (DCException);
+        void readGlobalAttribute(int32_t id,
+                const char* name,
+                void* data) throw (DCException);
 
         /**
          * {@link DataCollector#writeGlobalAttribute}
          */
-        void writeGlobalAttribute(const CollectionType& type,
+        void writeGlobalAttribute(int32_t id,
+                const CollectionType& type,
                 const char *name,
                 const void* data) throw (DCException);
 

@@ -101,6 +101,7 @@ fileStatus(FST_CLOSED)
     options.mpiRank = mpiRank;
     options.mpiSize = topology.getDimSize();
     options.mpiTopology.set(topology);
+    options.maxID = -1;
 
     if (H5open() < 0)
         throw DCException(getExceptionString("ParallelDataCollector",
@@ -115,6 +116,7 @@ fileStatus(FST_CLOSED)
     setFileAccessParams(fileAccProperties);
 
     handles.registerFileCreate(fileCreateCallback, &options);
+    handles.registerFileOpen(fileOpenCallback, &options);
 
     indexToPos(mpiRank, options.mpiTopology, options.mpiPos);
 }
@@ -158,7 +160,7 @@ void ParallelDataCollector::close()
 
 int32_t ParallelDataCollector::getMaxID()
 {
-    return 0;
+    return options.maxID;
 }
 
 void ParallelDataCollector::getMPISize(Dimensions& mpiSize)
@@ -176,24 +178,65 @@ void ParallelDataCollector::getEntriesForID(int32_t id, DCEntry *entries,
         size_t *count)
 throw (DCException)
 {
-    return;
-}
-
-void ParallelDataCollector::readGlobalAttribute(
-        const char* name,
-        void* data,
-        Dimensions *mpiPosition)
-throw (DCException)
-{
     throw DCException("Not yet implemented!");
 }
 
-void ParallelDataCollector::writeGlobalAttribute(const CollectionType& type,
+void ParallelDataCollector::readGlobalAttribute(int32_t id,
         const char* name,
+        void *data)
+throw (DCException)
+{
+    if (name == NULL || data == NULL)
+        throw DCException(getExceptionString("readGlobalAttribute", "a parameter was null"));
+
+    if (fileStatus == FST_CLOSED || fileStatus == FST_CREATING)
+        throw DCException(getExceptionString("readGlobalAttribute", "this access is not permitted"));
+
+    hid_t group_custom = H5Gopen(handles.get(id), SDC_GROUP_CUSTOM, H5P_DEFAULT);
+    if (group_custom < 0)
+    {
+        throw DCException(getExceptionString("readGlobalAttribute",
+                "failed to open custom group", SDC_GROUP_CUSTOM));
+    }
+
+    try
+    {
+        DCAttribute::readAttribute(name, group_custom, data);
+    } catch (DCException e)
+    {
+        throw DCException(getExceptionString("readGlobalAttribute", "failed to open attribute", name));
+    }
+
+    H5Gclose(group_custom);
+}
+
+void ParallelDataCollector::writeGlobalAttribute(int32_t id,
+        const CollectionType& type,
+        const char *name,
         const void* data)
 throw (DCException)
 {
-    throw DCException("Not yet implemented!");
+    if (name == NULL || data == NULL)
+        throw DCException(getExceptionString("writeGlobalAttribute", "a parameter was null"));
+
+    if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
+        throw DCException(getExceptionString("writeGlobalAttribute", "this access is not permitted"));
+
+    hid_t group_custom = H5Gopen(handles.get(id), SDC_GROUP_CUSTOM, H5P_DEFAULT);
+    if (group_custom < 0)
+        throw DCException(getExceptionString("writeGlobalAttribute",
+            "custom group not found", SDC_GROUP_CUSTOM));
+
+    try
+    {
+        DCAttribute::writeAttribute(name, type.getDataType(), group_custom, data);
+    } catch (DCException e)
+    {
+        std::cerr << e.what() << std::endl;
+        throw DCException(getExceptionString("writeGlobalAttribute", "failed to write attribute", name));
+    }
+
+    H5Gclose(group_custom);
 }
 
 void ParallelDataCollector::readAttribute(int32_t id,
@@ -203,7 +246,43 @@ void ParallelDataCollector::readAttribute(int32_t id,
         Dimensions *mpiPosition)
 throw (DCException)
 {
-    throw DCException("Not yet implemented!");
+    // mpiPosition is ignored
+    if (attrName == NULL || dataName == NULL || data == NULL)
+        throw DCException(getExceptionString("readAttribute", "a parameter was null"));
+
+    if (fileStatus == FST_CLOSED || fileStatus == FST_CREATING)
+        throw DCException(getExceptionString("readAttribute", "this access is not permitted"));
+
+    std::stringstream group_id_name;
+    group_id_name << SDC_GROUP_DATA << "/" << id;
+    std::string group_id_string = group_id_name.str();
+
+    hid_t group_id = H5Gopen(handles.get(id), group_id_string.c_str(), H5P_DEFAULT);
+    if (group_id < 0)
+        throw DCException(getExceptionString("readAttribute", "group not found",
+            group_id_string.c_str()));
+
+    hid_t dataset_id = -1;
+    dataset_id = H5Dopen(group_id, dataName, H5P_DEFAULT);
+    if (dataset_id < 0)
+    {
+        H5Gclose(group_id);
+        throw DCException(getExceptionString("readAttribute", "dataset not found", dataName));
+    }
+
+    try
+    {
+        DCAttribute::readAttribute(attrName, dataset_id, data);
+    } catch (DCException)
+    {
+        H5Dclose(dataset_id);
+        H5Gclose(group_id);
+        throw;
+    }
+    H5Dclose(dataset_id);
+
+    // cleanup
+    H5Gclose(group_id);
 }
 
 void ParallelDataCollector::writeAttribute(int32_t id,
@@ -213,7 +292,43 @@ void ParallelDataCollector::writeAttribute(int32_t id,
         const void* data)
 throw (DCException)
 {
-    throw DCException("Not yet implemented!");
+    if (attrName == NULL || dataName == NULL || data == NULL)
+        throw DCException(getExceptionString("writeAttribute", "a parameter was null"));
+
+    if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
+        throw DCException(getExceptionString("writeAttribute", "this access is not permitted"));
+
+    std::stringstream group_id_name;
+    group_id_name << SDC_GROUP_DATA << "/" << id;
+    std::string group_id_string = group_id_name.str();
+
+    hid_t group_id = H5Gopen(handles.get(id), group_id_string.c_str(), H5P_DEFAULT);
+    if (group_id < 0)
+    {
+        throw DCException(getExceptionString("writeAttribute", "group not found",
+                group_id_string.c_str()));
+    }
+
+    hid_t dataset_id = H5Dopen(group_id, dataName, H5P_DEFAULT);
+    if (dataset_id < 0)
+    {
+        H5Gclose(group_id);
+        throw DCException(getExceptionString("writeAttribute", "dataset not found", dataName));
+    }
+
+    try
+    {
+        DCAttribute::writeAttribute(attrName, type.getDataType(), dataset_id, data);
+    } catch (DCException)
+    {
+        H5Dclose(dataset_id);
+        H5Gclose(group_id);
+        throw;
+    }
+    H5Dclose(dataset_id);
+
+    // cleanup
+    H5Gclose(group_id);
 }
 
 void ParallelDataCollector::read(int32_t id,
@@ -304,7 +419,7 @@ void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
     // create group for this id/iteration
     std::stringstream group_id_name;
     group_id_name << SDC_GROUP_DATA << "/" << id;
-    
+
     hid_t group_id = -1;
     H5Handle file_handle = handles.get(id);
 
@@ -398,6 +513,14 @@ throw (DCException)
     H5Gclose(group_data);
 
     writeHeader(handle, index, options->enableCompression, options->mpiTopology);
+}
+
+void ParallelDataCollector::fileOpenCallback(H5Handle handle, uint32_t index, void *userData)
+throw (DCException)
+{
+    Options *options = (Options*) userData;
+
+    options->maxID = std::max(options->maxID, (int32_t)index);
 }
 
 void ParallelDataCollector::writeHeader(hid_t fHandle, uint32_t id,

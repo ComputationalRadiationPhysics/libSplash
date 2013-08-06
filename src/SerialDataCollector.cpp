@@ -203,10 +203,10 @@ namespace DCollector
     {
         // mpiPosition is allowed to be NULL here
         if (name == NULL || data == NULL)
-            throw DCException(getExceptionString("readCustomAttribute", "a parameter was null"));
+            throw DCException(getExceptionString("readGlobalAttribute", "a parameter was null"));
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_CREATING)
-            throw DCException(getExceptionString("readCustomAttribute", "this access is not permitted"));
+            throw DCException(getExceptionString("readGlobalAttribute", "this access is not permitted"));
 
         std::stringstream group_custom_name;
         if (mpiPosition == NULL || fileStatus == FST_MERGING)
@@ -229,14 +229,14 @@ namespace DCollector
 
         hid_t group_custom = H5Gopen(handles.get(mpi_rank), custom_string.c_str(), H5P_DEFAULT);
         if (group_custom < 0)
-            throw DCException(getExceptionString("readCustomAttribute", "failed to open custom group", custom_string.c_str()));
+            throw DCException(getExceptionString("readGlobalAttribute", "failed to open custom group", custom_string.c_str()));
 
         try
         {
             DCAttribute::readAttribute(name, group_custom, data);
         } catch (DCException e)
         {
-            throw DCException(getExceptionString("readCustomAttribute", "failed to open attribute", name));
+            throw DCException(getExceptionString("readGlobalAttribute", "failed to open attribute", name));
         }
 
         H5Gclose(group_custom);
@@ -248,14 +248,14 @@ namespace DCollector
     throw (DCException)
     {
         if (name == NULL || data == NULL)
-            throw DCException(getExceptionString("writeCustomAttribute", "a parameter was null"));
+            throw DCException(getExceptionString("writeGlobalAttribute", "a parameter was null"));
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
-            throw DCException(getExceptionString("writeCustomAttribute", "this access is not permitted"));
+            throw DCException(getExceptionString("writeGlobalAttribute", "this access is not permitted"));
 
         hid_t group_custom = H5Gopen(handles.get(0), SDC_GROUP_CUSTOM, H5P_DEFAULT);
         if (group_custom < 0)
-            throw DCException(getExceptionString("writeCustomAttribute", "custom group not found", SDC_GROUP_CUSTOM));
+            throw DCException(getExceptionString("writeGlobalAttribute", "custom group not found", SDC_GROUP_CUSTOM));
 
         try
         {
@@ -263,7 +263,7 @@ namespace DCollector
         } catch (DCException e)
         {
             std::cerr << e.what() << std::endl;
-            throw DCException(getExceptionString("writeCustomAttribute", "failed to write attribute", name));
+            throw DCException(getExceptionString("writeGlobalAttribute", "failed to write attribute", name));
         }
 
         H5Gclose(group_custom);
