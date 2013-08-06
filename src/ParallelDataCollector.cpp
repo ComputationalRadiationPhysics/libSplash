@@ -494,13 +494,53 @@ throw (DCException)
 void ParallelDataCollector::remove(int32_t id)
 throw (DCException)
 {
-    throw DCException("Not yet implemented!");
+#if defined SDC_DEBUG_OUTPUT
+    std::cerr << "removing group " << id << std::endl;
+#endif
+
+    if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
+        throw DCException(getExceptionString("remove", "this access is not permitted"));
+
+    std::stringstream group_id_name;
+    group_id_name << SDC_GROUP_DATA << "/" << id;
+
+    if (H5Gunlink(handles.get(id), group_id_name.str().c_str()) < 0)
+        throw DCException(getExceptionString("remove", "failed to remove group"));
+
+    // update maxID
+    options.maxID = -1;
 }
 
 void ParallelDataCollector::remove(int32_t id, const char* name)
 throw (DCException)
 {
-    throw DCException("Not yet implemented!");
+#if defined SDC_DEBUG_OUTPUT
+    std::cerr << "removing dataset " << name << " from group " << id << std::endl;
+#endif
+
+    if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
+        throw DCException(getExceptionString("remove", "this access is not permitted"));
+
+    if (name == NULL)
+        throw DCException(getExceptionString("remove", "a parameter was NULL"));
+
+    std::stringstream group_id_name;
+    group_id_name << SDC_GROUP_DATA << "/" << id;
+
+    hid_t group_id = H5Gopen(handles.get(id), group_id_name.str().c_str(), H5P_DEFAULT);
+    if (group_id < 0)
+    {
+        throw DCException(getExceptionString("remove", "failed to open group",
+                group_id_name.str().c_str()));
+    }
+
+    if (H5Gunlink(group_id, name) < 0)
+    {
+        H5Gclose(group_id);
+        throw DCException(getExceptionString("remove", "failed to remove dataset", name));
+    }
+
+    H5Gclose(group_id);
 }
 
 void ParallelDataCollector::createReference(int32_t srcID,
@@ -656,7 +696,7 @@ throw (DCException)
 
     Dimensions src_size(srcSize);
     Dimensions src_offset(srcOffset);
-    
+
     try
     {
         DCParallelDataSet dataset(name);

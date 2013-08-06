@@ -54,7 +54,6 @@ Parallel_AttributesTest::Parallel_AttributesTest()
 
 Parallel_AttributesTest::~Parallel_AttributesTest()
 {
-
 }
 
 void Parallel_AttributesTest::testDataAttributes()
