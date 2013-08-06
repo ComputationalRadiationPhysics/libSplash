@@ -141,6 +141,29 @@ namespace DCollector
                 const Dimensions srcOffset,
                 const char* name,
                 const void* data) = 0;
+
+        virtual void readGlobalAttribute(int32_t id,
+                const char* name,
+                void* data) = 0;
+
+        virtual void writeGlobalAttribute(int32_t id,
+                const CollectionType& type,
+                const char *name,
+                const void* data) = 0;
+
+    private:
+
+        void readGlobalAttribute(const char *name,
+                void* data,
+                Dimensions *mpiPosition = NULL)
+        {
+        }
+
+        void writeGlobalAttribute(const CollectionType& type,
+                const char *name,
+                const void* data)
+        {
+        }
     };
 }
 
