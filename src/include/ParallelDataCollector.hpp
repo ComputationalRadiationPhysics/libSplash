@@ -283,7 +283,7 @@ namespace DCollector
                 const void* data);
 
         /**
-         * {@link DataCollector#append}
+         * Currently not supported!
          */
         void append(int32_t id,
                 const CollectionType& type,
@@ -292,7 +292,7 @@ namespace DCollector
                 const void *data) throw (DCException);
 
         /**
-         * {@link DataCollector#append}
+         * Currently not supported!
          */
         void append(int32_t id,
                 const CollectionType& type,
