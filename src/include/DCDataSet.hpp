@@ -86,9 +86,24 @@ namespace DCollector
         void create(const CollectionType& colType, hid_t &group, const Dimensions size,
                 uint32_t rank, bool compression) throw (DCException);
 
+        /**
+         * Create an object reference
+         * @param refGroup handle to group for reference
+         * @param srcGroup handle to group with source dataset
+         * @param srcDataSet source dataset
+         */
         void createReference(hid_t refGroup, hid_t srcGroup, DCDataSet &srcDataSet)
         throw (DCException);
 
+        /**
+         * Creates a dataset region reference
+         * @param refGroup handle to group for reference
+         * @param srcGroup handle to group with source dataset
+         * @param srcDataSet source dataset
+         * @param count reference region count
+         * @param offset reference region offset
+         * @param stride reference region stride
+         */
         void createReference(hid_t refGroup, hid_t srcGroup, DCDataSet &srcDataSet,
                 Dimensions count,
                 Dimensions offset,
@@ -203,6 +218,10 @@ namespace DCollector
         DCDataType getDCDataType() throw (DCException);
 
 
+        /**
+         * Returns the size of the underlying HDF5 datatype
+         * @return size of HDF5 datatype
+         */
         size_t getDataTypeSize() throw (DCException);
 
         /**

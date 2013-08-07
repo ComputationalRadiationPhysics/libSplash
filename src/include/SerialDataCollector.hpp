@@ -139,6 +139,13 @@ namespace DCollector
                 Dimensions& srcBuffer,
                 void* data) throw (DCException);
 
+        /**
+         * Returns the rank (number of dimensions) for a dataset
+         * @param h5File file handle
+         * @param id id of the group to read from
+         * @param name name of the dataset
+         * @return rank
+         */
         size_t getRank(H5Handle h5File,
                 int32_t id,
                 const char* name);

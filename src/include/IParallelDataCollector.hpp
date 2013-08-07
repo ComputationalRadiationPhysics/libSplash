@@ -67,7 +67,7 @@ namespace DCollector
                 const void* data) = 0;
 
         /**
-         * Writes data to hdf5 file.
+         * Writes data to HDF5 file.
          *
          * @param id id for fileentry. e.g. iteration
          * @param globalSize dimensions for global collective buffer
@@ -89,7 +89,7 @@ namespace DCollector
                 const void* data) = 0;
 
         /**
-         * Writes data to hdf5 file.
+         * Writes data to HDF5 file.
          *
          * @param id id for fileentry. e.g. iteration
          * @param globalSize dimensions for global collective buffer
@@ -115,7 +115,7 @@ namespace DCollector
                 const void* data) = 0;
 
         /**
-         * Writes data to hdf5 file.
+         * Writes data to HDF5 file.
          *
          * @param id id for fileentry. e.g. iteration
          * @param globalSize dimensions for global collective buffer
@@ -142,10 +142,26 @@ namespace DCollector
                 const char* name,
                 const void* data) = 0;
 
+        /**
+         * Reads global attribute from HDF5 file.
+         *
+         * @param id id for iteration
+         * @param name name for the attribute
+         * @param data data buffer to read attribute to
+         */
         virtual void readGlobalAttribute(int32_t id,
                 const char* name,
                 void* data) = 0;
 
+        /**
+         * Writes global attribute to HDF5 file (default group).
+         *
+         * @param id id for iteration
+         * @param type type information for data. available types must be
+         * implemented by concrete DataCollector
+         * @param name name of the attribute
+         * @param data data buffer to write to attribute
+         */
         virtual void writeGlobalAttribute(int32_t id,
                 const CollectionType& type,
                 const char *name,
