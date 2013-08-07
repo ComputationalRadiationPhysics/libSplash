@@ -25,8 +25,8 @@ Than run make install to build and install libSplash library and binaries to the
 installation directory. This will build libSplash as an shared object library (libsplash.so)
 as well as all tools.
 
-If you do not want to build splashtools, pass `$ -DWITH_TOOLS=OFF` to your cmake command.
-To enable MPI parallel splashtools, pass `$ -DTOOLS_MPI=ON` to your cmake command.
+If you do not want to build splashtools, pass `-DWITH_TOOLS=OFF` to your cmake command.
+To enable MPI parallel splashtools, pass `-DTOOLS_MPI=ON` to your cmake command.
 
 
 Linking
@@ -39,16 +39,16 @@ libsplash.so or against the statically linked archive libsplash.a.
 Tests
 -----
 
-libSplash includes several tests in the `$ tests` subdirectory.
+libSplash includes several tests in the `tests` subdirectory.
 Tests differ for the serial and parallel version (see below) of libSplash.
-You can build the tests by running cmake on the `$ tests/CMakeLists.txt` file.
+You can build the tests by running cmake on the `tests/CMakeLists.txt` file.
 
 
 Documentation
 -------------
 
 You can create your own version of the HTML documentation by running
-`$ doxygen` on the `$ doc/Doxyfile`.
+`$ doxygen` on the `doc/Doxyfile`.
 
 
 Parallel libSplash
