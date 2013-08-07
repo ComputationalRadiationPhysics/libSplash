@@ -105,8 +105,8 @@ fileStatus(FST_CLOSED)
 
     // surpress automatic output of HDF5 exception messages
     if (H5Eset_auto2(H5E_DEFAULT, NULL, NULL) < 0)
-      throw DCException(getExceptionString("ParallelDataCollector",
-        "failed to disable error printing"));
+        throw DCException(getExceptionString("ParallelDataCollector",
+            "failed to disable error printing"));
 
     // set some default file access parameters
     setFileAccessParams(fileAccProperties);
@@ -787,7 +787,7 @@ throw (DCException)
     {
         DCParallelDataSet dataset(name);
         dataset.open(group_id);
-        if (!parallelRead)
+        if (!parallelRead && (src_size.getDimSize() == 0))
         {
             dataset.read(dstBuffer, dstOffset, src_size, src_offset, sizeRead, srcRank, NULL);
             src_size.set(sizeRead);
@@ -863,3 +863,45 @@ throw (DCException)
     }
 }
 
+size_t ParallelDataCollector::getRank(H5Handle h5File,
+        int32_t id, const char* name)
+{
+#if defined SDC_DEBUG_OUTPUT
+    std::cerr << "# ParallelDataCollector::getRank #" << std::endl;
+#endif
+
+    if (h5File < 0 || name == NULL)
+        throw DCException(getExceptionString("getRank", "invalid parameters"));
+
+    std::stringstream group_id_name;
+    group_id_name << SDC_GROUP_DATA << "/" << id;
+    std::string group_id_string = group_id_name.str();
+
+    hid_t group_id = H5Gopen(h5File, group_id_string.c_str(), H5P_DEFAULT);
+    if (group_id < 0)
+    {
+        throw DCException(getExceptionString("getRank", "group not found",
+                group_id_string.c_str()));
+    }
+
+    size_t rank = 0;
+
+    try
+    {
+        DCParallelDataSet dataset(name);
+        dataset.open(group_id);
+
+        rank = dataset.getRank();
+
+        dataset.close();
+    } catch (DCException e)
+    {
+        H5Gclose(group_id);
+        throw e;
+    }
+
+    // cleanup
+    H5Gclose(group_id);
+
+    return rank;
+}

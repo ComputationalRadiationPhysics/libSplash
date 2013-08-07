@@ -45,7 +45,7 @@ ENDIF(NOT SPLASH_RELEASE)
 SET(SPLASH_LIBS z hdf5)
 
 # serial or parallel version of libSplash
-SET(SPLASH_CLASSES DCAttribute DCDataSet HandleMgr SerialDataCollector)
+SET(SPLASH_CLASSES DCAttribute DCDataSet HandleMgr SerialDataCollector DomainCollector)
 OPTION(PARALLEL "enable parallel MPI I/O" OFF)
 IF(PARALLEL)
     #parallel version 
@@ -65,7 +65,6 @@ IF(PARALLEL)
 ELSE(PARALLEL)
     #serial version
 
-    SET(SPLASH_CLASSES ${SPLASH_CLASSES} DomainCollector)
     MESSAGE("building serial version")
 ENDIF(PARALLEL)
 
