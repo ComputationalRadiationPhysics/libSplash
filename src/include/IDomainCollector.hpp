@@ -86,7 +86,7 @@ namespace DCollector
          * Returns the total domain that is spanned by all
          * datasets.
          * The user is responsible to guarantee that the actual subdomains
-         * form a line/rectangle/cuboid.
+         * form a line/rectangle/cuboid that starts at (0, 0, 0)
          * 
          * @param id id of the group to read from
          * @param name name of the dataset
