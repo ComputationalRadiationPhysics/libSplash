@@ -4,13 +4,26 @@ cmake_minimum_required(VERSION 2.6)
 
 project (libSplash)
 
+#set helper pathes to find libraries and packages
+set(CMAKE_PREFIX_PATH "$ENV{MPI_ROOT}" "$ENV{BOOST_ROOT}" "$ENV{HDF5_ROOT}")
+
+#-------------------------------------------------------------------------------
+
 # install prefix
 IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     SET(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}" CACHE PATH "install prefix" FORCE)
 ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT) 
 
-# options
+#-------------------------------------------------------------------------------
 
+# HDF5 is required package
+FIND_PACKAGE(HDF5 REQUIRED)
+INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
+LINK_DIRECTORIES(${HDF5_LIBRARY_DIRS})
+
+#-------------------------------------------------------------------------------
+
+# options
 OPTION(DEBUG_VERBOSE "enable verbose debug output" OFF)
 OPTION(SPLASH_RELEASE "disable all debug asserts" ON)
 IF(NOT SPLASH_RELEASE)
@@ -27,35 +40,71 @@ ELSE(NOT SPLASH_RELEASE)
     MESSAGE("building release version")
 ENDIF(NOT SPLASH_RELEASE)
 
+#-------------------------------------------------------------------------------
 
+SET(SPLASH_LIBS z hdf5)
 
-# HDF5 is required package
-FIND_PACKAGE(HDF5 REQUIRED)
-INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
-LINK_DIRECTORIES(${HDF5_LIBRARY_DIRS})
+# serial or parallel version of libSplash
+SET(SPLASH_CLASSES DCAttribute DCDataSet HandleMgr SerialDataCollector)
+OPTION(PARALLEL "enable parallel MPI I/O" OFF)
+IF(PARALLEL)
+    #parallel version 
 
-#IF(NOT HDF5_ENABLE_PARALLEL)
-	#MESSAGE(FATAL_ERROR "HDF5 library does not support parallel I/O")
-#ENDIF(NOT HDF5_ENABLE_PARALLEL)
+    # This test does not currently work, disabled
+    #IF(NOT HDF5_ENABLE_PARALLEL)
+    #    MESSAGE(FATAL_ERROR "Your HDF5 library does not support parallel I/O")
+    #ENDIF(NOT HDF5_ENABLE_PARALLEL)
 
-# MPI is required package
-FIND_PACKAGE(MPI REQUIRED)
-INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
+    # MPI is required package
+    FIND_PACKAGE(MPI REQUIRED)
+    INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
+    SET(SPLASH_LIBS ${SPLASH_LIBS} ${MPI_LIBRARIES})
+
+    SET(SPLASH_CLASSES ${SPLASH_CLASSES} ParallelDataCollector)
+    MESSAGE("building parallel version")
+ELSE(PARALLEL)
+    #serial version
+
+    SET(SPLASH_CLASSES ${SPLASH_CLASSES} DomainCollector)
+    MESSAGE("building serial version")
+ENDIF(PARALLEL)
+
+#-------------------------------------------------------------------------------
 
 # add includes and sources
 INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/src/include")
-AUX_SOURCE_DIRECTORY("${CMAKE_CURRENT_SOURCE_DIR}/src" LIBRARY_SOURCES)
+FOREACH(class ${SPLASH_CLASSES})
+    SET(LIBRARY_SOURCES "${LIBRARY_SOURCES};${CMAKE_CURRENT_SOURCE_DIR}/src/${class}.cpp")
+ENDFOREACH()
 AUX_SOURCE_DIRECTORY("${CMAKE_CURRENT_SOURCE_DIR}/tools" TOOLS_SOURCES)
 
+#-------------------------------------------------------------------------------
 
 # build libsplash shared
 ADD_LIBRARY(splash SHARED ${LIBRARY_SOURCES})
-TARGET_LINK_LIBRARIES (splash z hdf5 mpi mpi_cxx)
+TARGET_LINK_LIBRARIES (splash ${SPLASH_LIBS})
 
 #build libsplash static
 ADD_LIBRARY(splash_static STATIC ${LIBRARY_SOURCES})
 SET_TARGET_PROPERTIES(splash_static PROPERTIES OUTPUT_NAME splash)
-TARGET_LINK_LIBRARIES (splash_static z hdf5 mpi mpi_cxx)
+TARGET_LINK_LIBRARIES (splash_static ${SPLASH_LIBS})
+
+# install libs
+INSTALL(TARGETS splash LIBRARY DESTINATION lib)
+INSTALL(TARGETS splash_static ARCHIVE DESTINATION lib)
+
+# copy all important subfolders to install folder
+SET(SPLASH_COPY_ON_INSTALL "include" CACHE LIST "folders copied during install")
+FOREACH(dir ${SPLASH_COPY_ON_INSTALL})
+  IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/${dir}/")
+    INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/${dir}/."
+      DESTINATION "${CMAKE_INSTALL_PREFIX}/${dir}"
+      PATTERN .svn EXCLUDE
+    )
+  ENDIF()
+ENDFOREACH()
+
+#-------------------------------------------------------------------------------
 
 # build tools
 OPTION(WITH_TOOLS "enable splashtools" ON)
@@ -71,6 +120,12 @@ IF(WITH_TOOLS)
     # MPI for tools
     OPTION(TOOLS_MPI "enable splashtools MPI support" OFF)
     IF(TOOLS_MPI)
+        IF(NOT PARALLEL)
+            # MPI is required package but not yet included
+            FIND_PACKAGE(MPI REQUIRED)
+            INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
+        ENDIF(NOT PARALLEL)
+
         ADD_DEFINITIONS(-DENABLE_MPI=1)
         SET(TOOLS_LIBS ${TOOLS_LIBS} ${MPI_LIBRARIES})
         MESSAGE("building tools MPI version")
@@ -78,25 +133,11 @@ IF(WITH_TOOLS)
 
     ADD_EXECUTABLE(splashtools ${TOOLS_SOURCES})
     TARGET_LINK_LIBRARIES(splashtools ${TOOLS_LIBS})
-ENDIF(WITH_TOOLS)
 
-
-# install
-INSTALL(TARGETS splash LIBRARY DESTINATION lib)
-INSTALL(TARGETS splash_static ARCHIVE DESTINATION lib)
-
-IF(WITH_TOOLS)
+    #install tools
     INSTALL(TARGETS splashtools RUNTIME DESTINATION bin)
 ENDIF(WITH_TOOLS)
 
-# copy all important subfolders to install folder
-SET(SPLASH_COPY_ON_INSTALL "include" CACHE LIST "folders copied during install")
-FOREACH(dir ${SPLASH_COPY_ON_INSTALL})
-  IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/${dir}/")
-    INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/${dir}/."
-      DESTINATION "${CMAKE_INSTALL_PREFIX}/${dir}"
-      PATTERN .svn EXCLUDE
-    )
-  ENDIF()
-ENDFOREACH()
+
+
 
