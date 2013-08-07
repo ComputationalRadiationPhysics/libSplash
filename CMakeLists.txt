@@ -60,7 +60,7 @@ IF(PARALLEL)
     INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
     SET(SPLASH_LIBS ${SPLASH_LIBS} ${MPI_LIBRARIES})
 
-    SET(SPLASH_CLASSES ${SPLASH_CLASSES} ParallelDataCollector)
+    SET(SPLASH_CLASSES ${SPLASH_CLASSES} ParallelDataCollector ParallelDomainCollector)
     MESSAGE("building parallel version")
 ELSE(PARALLEL)
     #serial version

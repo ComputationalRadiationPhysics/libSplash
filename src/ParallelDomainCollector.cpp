@@ -21,6 +21,8 @@
 
 #include <mpi/mpi.h>
 
+#include "basetypes/ColTypeInt.hpp"
+
 #include "ParallelDomainCollector.hpp"
 
 using namespace DCollector;
@@ -52,31 +54,29 @@ size_t ParallelDomainCollector::getTotalElements(int32_t id,
         const char* name)
 throw (DCException)
 {
-    if (fileStatus == FST_CLOSED)
+    if (this->fileStatus == FST_CLOSED)
         throw DCException(getExceptionString("getTotalElements",
             "this access is not permitted", NULL));
 
     Dimensions total_elements;
     readAttribute(id, name, DOMCOL_ATTR_ELEMENTS, total_elements.getPointer());
 
-    return total_elements;
+    return total_elements.getDimSize();
 }
 
 Domain ParallelDomainCollector::getTotalDomain(int32_t id,
         const char* name)
 throw (DCException)
 {
-    if (fileStatus == FST_CLOSED)
+    if (this->fileStatus == FST_CLOSED)
         throw DCException(getExceptionString("getTotalDomain",
             "this access is not permitted", NULL));
 
     Dimensions size(1, 1, 1);
     Dimensions offset(0, 0, 0);
 
-    readAttribute(id, name, DOMCOL_ATTR_SIZE,
-            size.getPointer());
-    readAttribute(id, name, DOMCOL_ATTR_START,
-            offset.getPointer());
+    readAttribute(id, name, DOMCOL_ATTR_SIZE, size.getPointer());
+    readAttribute(id, name, DOMCOL_ATTR_START, offset.getPointer());
 
     Domain domain(offset, size);
     return domain;
@@ -90,8 +90,8 @@ bool ParallelDomainCollector::readDomainDataForRank(
         Dimensions requestOffset,
         Dimensions requestSize,
         bool lazyLoad)
+throw (DCException)
 {
-    bool readResult = false;
     Domain request_domain(requestOffset, requestSize);
 
     Domain client_domain;
@@ -338,7 +338,7 @@ DataContainer *ParallelDomainCollector::readDomain(int32_t id,
         Dimensions requestOffset,
         Dimensions requestSize,
         DomDataClass* dataClass,
-        bool lazyLoad = false)
+        bool lazyLoad)
 throw (DCException)
 {
     if (fileStatus == FST_CLOSED)
@@ -586,18 +586,27 @@ void ParallelDomainCollector::gatherMPIWrites(const Dimensions localSize,
         Dimensions &globalDomainSize, Dimensions &globalDomainOffset)
 throw (DCException)
 {
-    gatherMPIWrites(localSize, globalSize, globalOffset);
+    ParallelDataCollector::gatherMPIWrites(localSize, globalSize, globalOffset);
 
     uint64_t send_offsets[3] = {localDomainOffset[0], localDomainOffset[1], localDomainOffset[2]};
     uint64_t send_sizes[3] = {localDomainSize[0], localDomainSize[1], localDomainSize[2]};
     uint64_t recv_offsets[3], recv_sizes[3];
+    
+    if ((options.mpiPos[1] != 0) || (options.mpiPos[2] != 0))
+        send_sizes[0] = 0;
+    
+    if ((options.mpiPos[0] != 0) || (options.mpiPos[2] != 0))
+        send_sizes[1] = 0;
+    
+    if ((options.mpiPos[0] != 0) || (options.mpiPos[1] != 0))
+        send_sizes[2] = 0;
 
     if (MPI_Allreduce(send_offsets, recv_offsets, 3, MPI_INTEGER8, MPI_MIN,
             options.mpiComm) != MPI_SUCCESS)
         throw DCException(getExceptionString("gatherMPIWrites",
-            "MPI_Allreduce 81) failed", NULL));
+            "MPI_Allreduce (1) failed", NULL));
 
-    if (MPI_Allreduce(send_sizes, recv_sizes, 3, MPI_INTEGER8, MPI_MAX,
+    if (MPI_Allreduce(send_sizes, recv_sizes, 3, MPI_INTEGER8, MPI_SUM,
             options.mpiComm) != MPI_SUCCESS)
         throw DCException(getExceptionString("gatherMPIWrites",
             "MPI_Allreduce (2) failed", NULL));

@@ -184,7 +184,8 @@ namespace DCollector
         void gatherMPIWrites(const Dimensions localSize,
                 const Dimensions localDomainSize, const Dimensions localDomainOffset,
                 Dimensions &globalSize, Dimensions &globalOffset,
-                Dimensions &globalDomainSize, Dimensions &globalDomainOffset);
+                Dimensions &globalDomainSize, Dimensions &globalDomainOffset)
+        throw (DCException);
 
         bool readDomainDataForRank(
                 DataContainer *dataContainer,
@@ -193,7 +194,7 @@ namespace DCollector
                 const char* name,
                 Dimensions requestOffset,
                 Dimensions requestSize,
-                bool lazyLoad);
+                bool lazyLoad) throw (DCException);
 
     };
 
