@@ -33,6 +33,8 @@ namespace DCollector
 
         /**
          * {@link DataCollector#write}
+         * The global size and the write offset for the calling process are
+         * determined automatically via MPI among all participating processes.
          */
         virtual void write(int32_t id,
                 const CollectionType& type,
@@ -43,6 +45,8 @@ namespace DCollector
 
         /**
          * {@link DataCollector#write}
+         * The global size and the write offset for the calling process are
+         * determined automatically via MPI among all participating processes.
          */
         virtual void write(int32_t id,
                 const CollectionType& type,
@@ -55,6 +59,8 @@ namespace DCollector
 
         /**
          * {@link DataCollector#write}
+         * The global size and the write offset for the calling process are
+         * determined automatically via MPI among all participating processes.
          */
         virtual void write(int32_t id,
                 const CollectionType& type,
