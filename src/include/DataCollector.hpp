@@ -66,6 +66,9 @@ namespace DCollector
             FAT_CREATE, FAT_READ, FAT_READ_MERGED, FAT_WRITE
         };
 
+        /**
+         * Attributes passed when calling {@link DataCollector#open}
+         */
         typedef struct _FileCreationAttr
         {
 
@@ -92,7 +95,7 @@ namespace DCollector
         } DCEntry;
 
         /**
-         * Initialises FileCreationAttr with default values.
+         * Initializes FileCreationAttr with default values.
          * (compression = false, access type = create, position = (0, 0, 0), size = (1, 1, 1))
          * 
          * @param attr file attributes to initialize
@@ -105,6 +108,9 @@ namespace DCollector
             attr.mpiSize.set(1, 1, 1);
         }
 
+        /**
+         * Destructor
+         */
         virtual ~DataCollector()
         {
         };
@@ -155,7 +161,7 @@ namespace DCollector
         virtual void getEntriesForID(int32_t id, DCEntry *entries, size_t *count) = 0;
 
         /**
-         * Writes data to hdf5 file.
+         * Writes data to HDF5 file.
          *
          * @param id id for fileentry. e.g. iteration
          * @param type type information for data. available types must be
@@ -173,7 +179,7 @@ namespace DCollector
                 const void* data) = 0;
 
         /**
-         * Writes data to hdf5 file.
+         * Writes data to HDF5 file.
          *
          * @param id id for fileentry. e.g. iteration
          * @param type type information for data. available types must be
@@ -195,7 +201,7 @@ namespace DCollector
                 const void* data) = 0;
 
         /**
-         * Writes data to hdf5 file.
+         * Writes data to HDF5 file.
          *
          * @param id id for fileentry. e.g. iteration
          * @param type type information for data. available types must be
@@ -219,7 +225,7 @@ namespace DCollector
                 const void* data) = 0;
 
         /**
-         * Appends 1-dimensional data in a hdf5 file.
+         * Appends 1-dimensional data in a HDF5 file.
          *
          * The target dataset is created if necessary.
          * If it already exists, data is appended to the end.
@@ -237,7 +243,7 @@ namespace DCollector
                 const void *data) = 0;
 
         /**
-         * Appends 1-dimensional data in a hdf5 file using striding.
+         * Appends 1-dimensional data in a HDF5 file using striding.
          *
          * The target dataset is created if necessary.
          * If it already exists, data is appended to the end.
@@ -262,14 +268,14 @@ namespace DCollector
                 const void *data) = 0;
 
         /**
-         * Removes a simulation step from the hdf5 file.
+         * Removes a simulation step from the HDF5 file.
          * 
          * @param id id of the step to be removed
          */
         virtual void remove(int32_t id) = 0;
 
         /**
-         * Removes a dataset from a hdf5 file.
+         * Removes a dataset from a HDF5 file.
          * 
          * @param id id of the simulation step holding the dataset
          * @param name name of the dataset to be removed
@@ -277,13 +283,22 @@ namespace DCollector
         virtual void remove(int32_t id,
                 const char *name) = 0;
 
+        /**
+         * Creates an object reference to an existing dataset in the same HDF5 file.
+         * 
+         * @param srcID id of the simulation step holding the source dataset
+         * @param srcName name of the existing source dataset
+         * @param dstID if of the simulation step holding the created reference dataset.
+         * If this group does not exist, it is created.
+         * @param dstName name of the created reference dataset
+         */
         virtual void createReference(int32_t srcID,
                 const char *srcName,
                 int32_t dstID,
                 const char *dstName) = 0;
 
         /**
-         * Creates a reference to an existing dataset in the same hdf5 file.
+         * Creates a dataset region reference to an existing dataset in the same HDF5 file.
          * 
          * @param srcID id of the simulation step holding the source dataset
          * @param srcName name of the existing source dataset
@@ -303,7 +318,7 @@ namespace DCollector
                 Dimensions stride) = 0;
 
         /**
-         * Reads global attribute from hdf5 file.
+         * Reads global attribute from HDF5 file.
          *
          * @param name name for the attribute
          * @param data data buffer to read attribute to
@@ -317,7 +332,7 @@ namespace DCollector
                 Dimensions *mpiPosition = NULL) = 0;
 
         /**
-         * Writes global attribute to hdf5 file (default group).
+         * Writes global attribute to HDF5 file (default group).
          *
          * @param type type information for data. available types must be
          * implemented by concrete DataCollector
@@ -362,7 +377,7 @@ namespace DCollector
                 const void *data) = 0;
 
         /**
-         * Reads data from hdf5 file.
+         * Reads data from HDF5 file.
          * If data is to be read (instead of only a buffer size),
          * the destination buffer (data) has to be allocated already.
          *
@@ -384,7 +399,7 @@ namespace DCollector
                 void* data) = 0;
 
         /**
-         * Reads data from hdf5 file.
+         * Reads data from HDF5 file.
          * If data is to be read (instead of only a buffer size),
          * the destination buffer (data) has to be allocated already.
          *

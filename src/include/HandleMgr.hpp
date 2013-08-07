@@ -34,6 +34,9 @@
 namespace DCollector
 {
 
+    /**
+     * opaque type for an HDF5 handle
+     */
     typedef hid_t H5Handle;
 
     /**
@@ -73,6 +76,7 @@ namespace DCollector
         /**
          * Constructor
          * @param maxHandles maximum number of allowed open file handles
+         * @param fileNameScheme file naming scheme, either MPI oder ITERATIONS
          */
         HandleMgr(uint32_t maxHandles, FileNameScheme fileNameScheme);
 
@@ -119,10 +123,25 @@ namespace DCollector
          */
         H5Handle get(Dimensions mpiPos) throw (DCException);
         
+        /**
+         * Register callback for after file has been created
+         * @param callback callback function
+         * @param userData any user data to be passed to the callback
+         */
         void registerFileCreate(FileCreateCallback callback, void *userData);
 
+        /**
+         * Register callback for after file has been opened
+         * @param callback callback function
+         * @param userData any user data to be passed to the callback
+         */
         void registerFileOpen(FileOpenCallback callback, void *userData);
 
+        /**
+         * Register callback fo before file is closed
+         * @param callback callback function
+         * @param userData any user data to be passed to the callback
+         */
         void registerFileClose(FileCloseCallback callback, void *userData);
 
     private:

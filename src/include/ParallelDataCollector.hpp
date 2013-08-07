@@ -370,6 +370,9 @@ namespace DCollector
                 const Dimensions dstOffset,
                 void* data) throw (DCException);
 
+        /**
+         * {@link IParallelDataCollector#read}
+         */
         void read(int32_t id,
                 const Dimensions localSize,
                 const Dimensions globalOffset,
@@ -378,6 +381,9 @@ namespace DCollector
                 Dimensions &sizeRead,
                 void* data) throw (DCException);
 
+        /**
+         * {@link IParallelDataCollector#read}
+         */
         void read(int32_t id,
                 const Dimensions localSize,
                 const Dimensions globalOffset,
