@@ -27,13 +27,13 @@ INCLUDE_DIRECTORIES(include ../src/include $ENV{MPI_INC} )
 #-------------------------------------------------------------------------------
 
 FILE(GLOB SRCFILESOTHER "dependencies/*.cpp")
-SET(TESTS Append Attributes Benchmark FileAccess MergedRead References Remove SimpleData Striding)
+SET(TESTS Append Attributes Benchmark Domains FileAccess MergedRead References Remove SimpleData Striding)
 
 OPTION(PARALLEL "enable tests for parallel libSplash" OFF)
 IF(PARALLEL)
     SET(TESTS ${TESTS} Parallel_Attributes Parallel_References Parallel_Remove Parallel_SimpleData)
 ELSE(PARALLEL)
-    SET(TESTS ${TESTS} Domains)
+    SET(TESTS ${TESTS})
 ENDIF(PARALLEL)
 
 FOREACH(TEST_NAME ${TESTS})

@@ -46,21 +46,6 @@ namespace DCollector
     {
     }
 
-    bool DomainCollector::testIntersection(Domain& d1, Domain& d2)
-    {
-        Dimensions d1_start = d1.getStart();
-        Dimensions d2_start = d2.getStart();
-        Dimensions d1_end = d1.getEnd();
-        Dimensions d2_end = d2.getEnd();
-
-        return (d1_start[0] <= d2_end[0] && d1_end[0] >= d2_start[0] &&
-                d1_start[1] <= d2_end[1] && d1_end[1] >= d2_start[1] &&
-                d1_start[2] <= d2_end[2] && d1_end[2] >= d2_start[2]) ||
-                (d2_start[0] <= d1_end[0] && d2_end[0] >= d1_start[0] &&
-                d2_start[1] <= d1_end[1] && d2_end[1] >= d1_start[1] &&
-                d2_start[2] <= d1_end[2] && d2_end[2] >= d1_start[2]);
-    }
-
     size_t DomainCollector::getTotalElements(int32_t id,
             const char* name)
     throw (DCException)
@@ -541,18 +526,18 @@ namespace DCollector
     {
         if (domainData == NULL)
         {
-            throw DCException("DomainCollector::readDomain: Invalid parameter, DomainData must not be NULL");
+            throw DCException("DomainCollector::readDomainLazy: Invalid parameter, DomainData must not be NULL");
         }
 
         DomainH5Ref *loadingRef = domainData->getLoadingReference();
         if (loadingRef == NULL)
         {
-            throw DCException("DomainCollector::readDomain: This DomainData does not allow lazy loading");
+            throw DCException("DomainCollector::readDomainLazy: This DomainData does not allow lazy loading");
         }
 
         if (loadingRef->dataClass == UndefinedType)
         {
-            throw DCException("DomainCollector::readDomain: DomainData has invalid data class");
+            throw DCException("DomainCollector::readDomainLazy: DomainData has invalid data class");
         }
 
         if (loadingRef->dataClass == PolyType)
@@ -576,11 +561,11 @@ namespace DCollector
 #endif
 
             if (!(elements_read == loadingRef->dstBuffer))
-                throw DCException("DomainCollector::readDomain: Sizes are not equal but should be (1).");
+                throw DCException("DomainCollector::readDomainLazy: Sizes are not equal but should be (1).");
 
         } else
         {
-            throw DCException("DomainCollector::readDomain: data class not supported");
+            throw DCException("DomainCollector::readDomainLazy: data class not supported");
         }
     }
 

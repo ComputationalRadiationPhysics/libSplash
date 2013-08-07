@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #include <cstring>
@@ -582,7 +582,7 @@ namespace DCollector
         } else
             throw DCException(getExceptionString("remove", "group does not exist", group_id_name.str().c_str()));
     }
-    
+
     void SerialDataCollector::createReference(int32_t srcID,
             const char *srcName,
             int32_t dstID,
@@ -898,11 +898,11 @@ namespace DCollector
             const char* name)
     {
 #if defined SDC_DEBUG_OUTPUT
-        std::cerr << "# SerialDataCollector::getDataTypeInfo #" << std::endl;
+        std::cerr << "# SerialDataCollector::getRank #" << std::endl;
 #endif
 
         if (h5File < 0 || name == NULL)
-            throw DCException(getExceptionString("getDataTypeInfo", "invalid parameters"));
+            throw DCException(getExceptionString("getRank", "invalid parameters"));
 
         std::stringstream group_id_name;
         group_id_name << SDC_GROUP_DATA << "/" << id;
@@ -910,7 +910,10 @@ namespace DCollector
 
         hid_t group_id = H5Gopen(h5File, group_id_string.c_str(), H5P_DEFAULT);
         if (group_id < 0)
-            throw DCException(getExceptionString("getDataTypeInfo", "group not found", group_id_string.c_str()));
+        {
+            throw DCException(getExceptionString("getRank", "group not found",
+                    group_id_string.c_str()));
+        }
 
         size_t rank = 0;
 

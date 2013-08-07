@@ -17,39 +17,47 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
 
+#ifndef PARALLELDOMAINCOLLECTOR_HPP
+#define	PARALLELDOMAINCOLLECTOR_HPP
 
-#ifndef DOMAINCOLLECTOR_HPP
-#define	DOMAINCOLLECTOR_HPP
-
-#include "IDomainCollector.hpp"
-#include "SerialDataCollector.hpp"
-#include "Dimensions.hpp"
-#include "DCException.hpp"
+#include "IParallelDomainCollector.hpp"
+#include "ParallelDataCollector.hpp"
 
 namespace DCollector
 {
 
-    /**
-     * DomainCollector extends SerialDataCollector with domain management features.
-     * It allows to efficiently read subdomains (sub-partitions) from
-     * multi-process hdf5 files with entries annotated with domain information.
-     */
-    class DomainCollector : public IDomainCollector, public SerialDataCollector
+    class ParallelDomainCollector : public IParallelDomainCollector, public ParallelDataCollector
     {
+    private:
+        /**
+         * Internal function for formatting exception messages.
+         * 
+         * @param func name of the throwing function
+         * @param msg exception message
+         * @param info optional info text to be appended, e.g. the group name
+         * @return formatted exception message string
+         */
+        static std::string getExceptionString(std::string func, std::string msg,
+                const char *info);
+
     public:
         /**
          * Constructor
-         * @param maxFileHandles maximum number of concurrently opened file handles (0=unlimited)
+         * @param comm the MPI_Comm object
+         * @param info the MPI_Info object
+         * @param topology number of MPI processes in each dimension
+         * @param mpiRank MPI rank in comm
+         * @param maxFileHandles maximum number of concurrently opened file handles
          */
-        DomainCollector(uint32_t maxFileHandles);
+        ParallelDomainCollector(MPI_Comm comm, MPI_Info info, const Dimensions topology,
+                int mpiRank, uint32_t maxFileHandles);
 
         /**
          * Destructor
          */
-        virtual ~DomainCollector();
+        virtual ~ParallelDomainCollector();
 
         /**
          * {@link IDomainCollector#getTotalElements}
@@ -57,17 +65,25 @@ namespace DCollector
         size_t getTotalElements(int32_t id,
                 const char* name) throw (DCException);
 
-
+        /**
+         * {@link IDomainCollector#getTotalDomain}
+         */
         Domain getTotalDomain(int32_t id,
                 const char* name) throw (DCException);
 
+        /**
+         * {@link IDomainCollector#readDomain}
+         */
         DataContainer *readDomain(int32_t id,
                 const char* name,
-                Dimensions domainOffset,
-                Dimensions domainSize,
+                Dimensions requestOffset,
+                Dimensions requestSize,
                 DomDataClass* dataClass,
                 bool lazyLoad = false) throw (DCException);
 
+        /**
+         * {@link IDomainCollector#readDomainLazy}
+         */
         void readDomainLazy(DomainData *domainData) throw (DCException);
 
         void writeDomain(int32_t id,
@@ -105,6 +121,47 @@ namespace DCollector
                 DomDataClass dataClass,
                 const void* data) throw (DCException);
 
+        void writeDomain(int32_t id,
+                const Dimensions globalSize,
+                const Dimensions globalOffset,
+                const CollectionType& type,
+                uint32_t rank,
+                const Dimensions srcData,
+                const char* name,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
+                DomDataClass dataClass,
+                const void* data) throw (DCException);
+
+        void writeDomain(int32_t id,
+                const Dimensions globalSize,
+                const Dimensions globalOffset,
+                const CollectionType& type,
+                uint32_t rank,
+                const Dimensions srcBuffer,
+                const Dimensions srcData,
+                const Dimensions srcOffset,
+                const char* name,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
+                DomDataClass dataClass,
+                const void* data) throw (DCException);
+
+        void writeDomain(int32_t id,
+                const Dimensions globalSize,
+                const Dimensions globalOffset,
+                const CollectionType& type,
+                uint32_t rank,
+                const Dimensions srcBuffer,
+                const Dimensions srcStride,
+                const Dimensions srcData,
+                const Dimensions srcOffset,
+                const char* name,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
+                DomDataClass dataClass,
+                const void* data) throw (DCException);
+
         void appendDomain(int32_t id,
                 const CollectionType& type,
                 uint32_t count,
@@ -124,26 +181,23 @@ namespace DCollector
                 const void *data) throw (DCException);
 
     protected:
-        bool readDomainInfoForRank(
-                Dimensions mpiPosition,
-                int32_t id,
-                const char* name,
-                Dimensions requestOffset,
-                Dimensions requestSize,
-                Domain &fileDomain);
+        void gatherMPIWrites(const Dimensions localSize,
+                const Dimensions localDomainSize, const Dimensions localDomainOffset,
+                Dimensions &globalSize, Dimensions &globalOffset,
+                Dimensions &globalDomainSize, Dimensions &globalDomainOffset);
 
         bool readDomainDataForRank(
                 DataContainer *dataContainer,
                 DomDataClass *dataClass,
-                Dimensions mpiPosition,
                 int32_t id,
                 const char* name,
                 Dimensions requestOffset,
                 Dimensions requestSize,
                 bool lazyLoad);
+
     };
 
 }
 
-#endif	/* DOMAINCOLLECTOR_HPP */
+#endif	/* PARALLELDOMAINCOLLECTOR_HPP */
 
