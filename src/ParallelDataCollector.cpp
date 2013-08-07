@@ -105,8 +105,8 @@ fileStatus(FST_CLOSED)
 
     // surpress automatic output of HDF5 exception messages
     if (H5Eset_auto2(H5E_DEFAULT, NULL, NULL) < 0)
-        throw DCException(getExceptionString("ParallelDataCollector",
-            "failed to disable error printing"));
+      throw DCException(getExceptionString("ParallelDataCollector",
+        "failed to disable error printing"));
 
     // set some default file access parameters
     setFileAccessParams(fileAccProperties);
@@ -394,7 +394,10 @@ void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32
         const Dimensions srcData, const char* name, const void* data)
 throw (DCException)
 {
-    write(id, srcData * options.mpiTopology, srcData * options.mpiPos,
+    Dimensions globalSize, globalOffset;
+    gatherMPIWrites(srcData, globalSize, globalOffset);
+
+    write(id, globalSize, globalOffset,
             type, rank, srcData, Dimensions(1, 1, 1),
             srcData, Dimensions(0, 0, 0), name, data);
 }
@@ -404,7 +407,10 @@ void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32
         const char* name, const void* data)
 throw (DCException)
 {
-    write(id, srcData * options.mpiTopology, srcData * options.mpiPos,
+    Dimensions globalSize, globalOffset;
+    gatherMPIWrites(srcData, globalSize, globalOffset);
+
+    write(id, globalSize, globalOffset,
             type, rank, srcBuffer, Dimensions(1, 1, 1),
             srcData, srcOffset, name, data);
 }
@@ -414,7 +420,10 @@ void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32
         const Dimensions srcOffset, const char* name, const void* data)
 throw (DCException)
 {
-    write(id, srcData * options.mpiTopology, srcData * options.mpiPos,
+    Dimensions globalSize, globalOffset;
+    gatherMPIWrites(srcData, globalSize, globalOffset);
+
+    write(id, globalSize, globalOffset,
             type, rank, srcBuffer, srcStride, srcData,
             srcOffset, name, data);
 }
@@ -849,5 +858,44 @@ void ParallelDataCollector::writeDataSet(hid_t &group, const Dimensions globalSi
     if (srcData.getDimSize() > 0)
         dataset.write(srcBuffer, srcStride, srcOffset, srcData, globalOffset, data);
     dataset.close();
+}
+
+void ParallelDataCollector::gatherMPIWrites(const Dimensions localSize,
+        Dimensions &globalSize, Dimensions &globalOffset)
+throw (DCException)
+{
+    uint64_t write_sizes[options.mpiSize * 3];
+    uint64_t local_write_size[3] = {localSize[0], localSize[1], localSize[2]};
+
+    globalSize.set(0, 0, 0);
+    globalOffset.set(0, 0, 0);
+
+    if (MPI_Allgather(local_write_size, 3, MPI_INTEGER8,
+            write_sizes, 3, MPI_INTEGER8, options.mpiComm) != MPI_SUCCESS)
+        throw DCException(getExceptionString("gatherMPIWrites",
+            "MPI_Allgather failed", NULL));
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        size_t index;
+        for (size_t dim = 0; dim < options.mpiTopology[i]; ++dim)
+        {
+            switch (i)
+            {
+                case 0:
+                    index = dim;
+                    break;
+                case 1:
+                    index = dim * options.mpiTopology[0];
+                    break;
+                default:
+                    index = dim * options.mpiTopology[0] * options.mpiTopology[1];
+            }
+
+            globalSize[i] += write_sizes[index * 3 + i];
+            if (dim < options.mpiPos[i])
+                globalOffset[i] += write_sizes[index * 3 + i];
+        }
+    }
 }
 
