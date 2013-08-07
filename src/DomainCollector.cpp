@@ -125,6 +125,9 @@ namespace DCollector
                 }
             }
         }
+        
+        if (offset.getDimSize() != 0)
+            throw DCException("DomainCollector::getTotalDomain: Invalid offset for total domain (must be (0, 0, 0) )");
 
         Domain domain(offset, total_size - offset);
         return domain;

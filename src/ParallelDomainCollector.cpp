@@ -78,7 +78,14 @@ throw (DCException)
     readAttribute(id, name, DOMCOL_ATTR_SIZE, size.getPointer());
     readAttribute(id, name, DOMCOL_ATTR_START, offset.getPointer());
 
+    if (offset.getDimSize() != 0)
+    {
+        throw DCException(getExceptionString("getTotalDomain",
+                "Invalid offset for total domain (must be (0, 0, 0) )", NULL));
+    }
+
     Domain domain(offset, size);
+
     return domain;
 }
 
@@ -345,7 +352,7 @@ throw (DCException)
         throw DCException(getExceptionString("readDomain",
             "this access is not permitted", NULL));
 
-    DataContainer *data_container = new DataContainer();
+    DataContainer * data_container = new DataContainer();
 
 #if (DC_DEBUG == 1)
     std::cerr << "requestOffset = " << requestOffset.toString() << std::endl;
@@ -413,10 +420,11 @@ throw (DCException)
 
         if (!(elements_read == loadingRef->dstBuffer))
             throw DCException(getExceptionString("readDomainLazy",
-                    "Sizes are not equal but should be (1).", NULL));
+                "Sizes are not equal but should be (1).", NULL));
 
     } else
     {
+
         throw DCException(getExceptionString("readDomainLazy",
                 "data class not supported", NULL));
     }
@@ -433,6 +441,7 @@ void ParallelDomainCollector::writeDomain(int32_t id,
         const void* data)
 throw (DCException)
 {
+
     Dimensions globalSize, globalOffset, globalDomSize, globalDomOffset;
     gatherMPIWrites(srcData, domainSize, domainOffset,
             globalSize, globalOffset, globalDomSize, globalDomOffset);
@@ -455,6 +464,7 @@ void ParallelDomainCollector::writeDomain(int32_t id,
         const void* data)
 throw (DCException)
 {
+
     Dimensions globalSize, globalOffset, globalDomSize, globalDomOffset;
     gatherMPIWrites(srcData, domainSize, domainOffset,
             globalSize, globalOffset, globalDomSize, globalDomOffset);
@@ -478,6 +488,7 @@ void ParallelDomainCollector::writeDomain(int32_t id,
         const void* data)
 throw (DCException)
 {
+
     Dimensions globalSize, globalOffset, globalDomSize, globalDomOffset;
     gatherMPIWrites(srcData, domainSize, domainOffset,
             globalSize, globalOffset, globalDomSize, globalDomOffset);
@@ -500,6 +511,7 @@ void ParallelDomainCollector::writeDomain(int32_t id,
         const void* data)
 throw (DCException)
 {
+
     writeDomain(id, globalSize, globalOffset,
             type, rank, srcData, Dimensions(1, 1, 1), srcData,
             Dimensions(0, 0, 0), name, globalDomainOffset, globalDomainSize,
@@ -521,6 +533,7 @@ void ParallelDomainCollector::writeDomain(int32_t id,
         const void* data)
 throw (DCException)
 {
+
     writeDomain(id, globalSize, globalOffset,
             type, rank, srcBuffer, Dimensions(1, 1, 1), srcData, srcOffset,
             name, globalDomainOffset, globalDomainSize, dataClass, data);
@@ -542,6 +555,7 @@ void ParallelDomainCollector::writeDomain(int32_t id,
         const void* data)
 throw (DCException)
 {
+
     ColTypeDim dim_t;
     ColTypeInt int_t;
 
@@ -563,6 +577,7 @@ void ParallelDomainCollector::appendDomain(int32_t id,
         const void *data)
 throw (DCException)
 {
+
     appendDomain(id, type, count, 0, 1, name, domainOffset, domainSize, data);
 }
 
@@ -577,6 +592,7 @@ void ParallelDomainCollector::appendDomain(int32_t id,
         const void *data)
 throw (DCException)
 {
+
     throw DCException("Not yet implemented");
 }
 
@@ -588,29 +604,32 @@ throw (DCException)
 {
     ParallelDataCollector::gatherMPIWrites(localSize, globalSize, globalOffset);
 
-    uint64_t send_offsets[3] = {localDomainOffset[0], localDomainOffset[1], localDomainOffset[2]};
+    //uint64_t send_offsets[3] = {localDomainOffset[0], localDomainOffset[1], localDomainOffset[2]};
+    //uint64_t recv_offsets[3];
     uint64_t send_sizes[3] = {localDomainSize[0], localDomainSize[1], localDomainSize[2]};
-    uint64_t recv_offsets[3], recv_sizes[3];
-    
+    uint64_t recv_sizes[3];
+
     if ((options.mpiPos[1] != 0) || (options.mpiPos[2] != 0))
         send_sizes[0] = 0;
-    
+
     if ((options.mpiPos[0] != 0) || (options.mpiPos[2] != 0))
         send_sizes[1] = 0;
-    
+
     if ((options.mpiPos[0] != 0) || (options.mpiPos[1] != 0))
         send_sizes[2] = 0;
 
-    if (MPI_Allreduce(send_offsets, recv_offsets, 3, MPI_INTEGER8, MPI_MIN,
+    /*if (MPI_Allreduce(send_offsets, recv_offsets, 3, MPI_INTEGER8, MPI_MIN,
             options.mpiComm) != MPI_SUCCESS)
         throw DCException(getExceptionString("gatherMPIWrites",
-            "MPI_Allreduce (1) failed", NULL));
+            "MPI_Allreduce (1) failed", NULL));*/
 
     if (MPI_Allreduce(send_sizes, recv_sizes, 3, MPI_INTEGER8, MPI_SUM,
             options.mpiComm) != MPI_SUCCESS)
         throw DCException(getExceptionString("gatherMPIWrites",
             "MPI_Allreduce (2) failed", NULL));
 
-    globalDomainOffset.set(recv_offsets[0], recv_offsets[1], recv_offsets[2]);
+    // every total domain (all combined MPI processes) is required to start at
+    // (0, 0, 0)
+    globalDomainOffset.set(0, 0, 0);
     globalDomainSize.set(recv_sizes[0], recv_sizes[1], recv_sizes[2]);
 }
