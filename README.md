@@ -46,6 +46,8 @@ Usage
 -----
 
 See [UserManual.pdf](doc/manual/UserManual.pdf?raw=true) for more information.
+See [INSTALL.md](doc/INSTALL.md) on how to build the HTML documentation using
+[doxygen](http://www.doxygen.org).
 
 
 Active Team
