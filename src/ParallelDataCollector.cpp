@@ -258,12 +258,12 @@ throw (DCException)
     std::stringstream group_id_name;
     group_id_name << SDC_GROUP_DATA << "/" << id;
     std::string group_id_string = group_id_name.str();
-
+    
     hid_t group_id = H5Gopen(handles.get(id), group_id_string.c_str(), H5P_DEFAULT);
     if (group_id < 0)
         throw DCException(getExceptionString("readAttribute", "group not found",
             group_id_string.c_str()));
-
+    
     hid_t dataset_id = -1;
     dataset_id = H5Dopen(group_id, dataName, H5P_DEFAULT);
     if (dataset_id < 0)
@@ -271,7 +271,7 @@ throw (DCException)
         H5Gclose(group_id);
         throw DCException(getExceptionString("readAttribute", "dataset not found", dataName));
     }
-
+    
     try
     {
         DCAttribute::readAttribute(attrName, dataset_id, data);
@@ -282,7 +282,7 @@ throw (DCException)
         throw;
     }
     H5Dclose(dataset_id);
-
+    
     // cleanup
     H5Gclose(group_id);
 }
@@ -722,7 +722,9 @@ void ParallelDataCollector::openCreate(const char *filename,
 throw (DCException)
 {
     this->fileStatus = FST_CREATING;
-    this->options.enableCompression = attr.enableCompression;
+    
+    // filters are currently not supported by parallel HDF5
+    //this->options.enableCompression = attr.enableCompression;
 
 #if defined SDC_DEBUG_OUTPUT
     if (attr.enableCompression)
@@ -746,8 +748,10 @@ throw (DCException)
 void ParallelDataCollector::openWrite(const char* filename, FileCreationAttr& attr)
 throw (DCException)
 {
-    fileStatus = FST_WRITING;
-    this->options.enableCompression = attr.enableCompression;
+    this->fileStatus = FST_WRITING;
+    
+    // filters are currently not supported by parallel HDF5
+    //this->options.enableCompression = attr.enableCompression;
 
     handles.open(Dimensions(1, 1, 1), filename, fileAccProperties, H5F_ACC_RDWR);
 }

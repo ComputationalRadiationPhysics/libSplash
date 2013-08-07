@@ -115,15 +115,17 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
     fileCAttr.enableCompression = false;
     parallelDataCollector->open(HDF5_FILE, fileCAttr);
 
-    // initial part of the test: data is written to the file,
-    // once with and once without borders
     int *dataWrite = new int[bufferSize];
 
     for (uint32_t i = 0; i < bufferSize; i++)
         dataWrite[i] = currentMpiRank + 1;
 
-    parallelDataCollector->write(iteration, ctInt, dimensions, gridSize, "data", dataWrite);
+    parallelDataCollector->write(iteration, ctInt, dimensions, gridSize,
+            "data", dataWrite);
     parallelDataCollector->close();
+    
+    delete[] dataWrite;
+    dataWrite = NULL;
 
     MPI_CHECK(MPI_Barrier(mpiComm));
 
@@ -179,7 +181,7 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
             size_read, data_read);
     readCollector->close();
     delete readCollector;
-    
+
     CPPUNIT_ASSERT(size_read == gridSize);
 
     for (size_t k = 0; k < gridSize[2]; ++k)
@@ -207,7 +209,7 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
         if (!results_correct)
             break;
     }
-    
+
     delete[] data_read;
 
     MPI_CHECK(MPI_Barrier(mpiComm));

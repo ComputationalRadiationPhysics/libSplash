@@ -31,7 +31,7 @@ SET(TESTS Append Attributes Benchmark Domains FileAccess MergedRead References R
 
 OPTION(PARALLEL "enable tests for parallel libSplash" OFF)
 IF(PARALLEL)
-    SET(TESTS ${TESTS} Parallel_Attributes Parallel_References Parallel_Remove Parallel_SimpleData)
+    SET(TESTS ${TESTS} Parallel_Attributes Parallel_Domains Parallel_References Parallel_Remove Parallel_SimpleData)
 ELSE(PARALLEL)
     SET(TESTS ${TESTS})
 ENDIF(PARALLEL)

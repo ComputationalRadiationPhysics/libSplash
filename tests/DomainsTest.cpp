@@ -94,7 +94,7 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
 #endif
 
         dataCollector->writeDomain(0, ctInt, rank, gridSize, "grid_data",
-                domain_offset, gridSize, DomainCollector::GridType, data_write);
+                domain_offset, gridSize, IDomainCollector::GridType, data_write);
 
         dataCollector->close();
         
@@ -156,7 +156,7 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
             std::cout << "partition_size = " << partition_size.toString() << std::endl;
 #endif
 
-            DomainCollector::DomDataClass data_class = DomainCollector::UndefinedType;
+            IDomainCollector::DomDataClass data_class = IDomainCollector::UndefinedType;
 
 			Domain total_domain;
 			total_domain = dataCollector->getTotalDomain(0, "grid_data");
@@ -172,7 +172,7 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
 #endif
 
             // check the container
-            CPPUNIT_ASSERT(data_class == DomainCollector::GridType);
+            CPPUNIT_ASSERT(data_class == IDomainCollector::GridType);
             CPPUNIT_ASSERT(container->getNumSubdomains() == 1);
 
             // check all DomainData entries in the container
@@ -312,7 +312,7 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, const uint32_t nu
 #endif
 
         dataCollector->writeDomain(0, ctFloat, 1, Dimensions(mpi_elements, 1, 1),
-                "poly_data", domain_offset, grid_size, DomainCollector::PolyType, data_write);
+                "poly_data", domain_offset, grid_size, IDomainCollector::PolyType, data_write);
 
         dataCollector->close();
 
@@ -356,7 +356,7 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, const uint32_t nu
             std::cout << "partition_size = " << partition_size.toString() << std::endl;
 #endif
 
-            DomainCollector::DomDataClass data_class = DomainCollector::UndefinedType;
+            IDomainCollector::DomDataClass data_class = IDomainCollector::UndefinedType;
 
             // read data container
             DataContainer *container = dataCollector->readDomain(0, "poly_data",
@@ -367,7 +367,7 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, const uint32_t nu
 #endif
 
             // check the container
-            CPPUNIT_ASSERT(data_class == DomainCollector::PolyType);
+            CPPUNIT_ASSERT(data_class == IDomainCollector::PolyType);
             CPPUNIT_ASSERT(container->getNumSubdomains() >= 1);
 
             // check all DomainData entries in the container
@@ -504,7 +504,7 @@ void DomainsTest::testAppendDomains()
         dataCollector->open(hdf5_file_append, fattr);
 
         // read data container
-        DomainCollector::DomDataClass data_class = DomainCollector::UndefinedType;
+        IDomainCollector::DomDataClass data_class = IDomainCollector::UndefinedType;
         DataContainer *container = dataCollector->readDomain(0, "append_data",
                 Dimensions(0, 0, 0), grid_size, &data_class);
 
@@ -513,7 +513,7 @@ void DomainsTest::testAppendDomains()
 #endif
 
         // check the container
-        CPPUNIT_ASSERT(data_class == DomainCollector::PolyType);
+        CPPUNIT_ASSERT(data_class == IDomainCollector::PolyType);
         CPPUNIT_ASSERT(container->getNumSubdomains() == 1);
 
         DomainData *subdomain = container->getIndex(0);

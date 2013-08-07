@@ -45,20 +45,20 @@ namespace DCollector
         hid_t attr = H5Aopen(parent, name, H5P_DEFAULT);
         if (attr < 0)
             throw DCException(getExceptionString(name, "Attribute could not be opened for reading"));
-
+        
         hid_t attr_type = H5Aget_type(attr);
         if (attr_type < 0)
         {
             H5Aclose(attr);
             throw DCException(getExceptionString(name, "Could not get type of attribute"));
         }
-
+        
         if (H5Aread(attr, attr_type, dst) < 0)
         {
             H5Aclose(attr);
             throw DCException(getExceptionString(name, "Attribute could not be read"));
         }
-
+        
         H5Aclose(attr);
     }
 

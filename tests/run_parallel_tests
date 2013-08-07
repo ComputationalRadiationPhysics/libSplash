@@ -30,6 +30,9 @@ echo -e "\nTesting references...\n"
 echo -e "\nTesting simple data read/write (parallel)...\n"
 mpirun -n 8 ./Parallel_SimpleDataTest.cpp.out
 
+echo -e "\nTesting domains (parallel)...\n"
+mpirun -n 8 ./Parallel_DomainsTest.cpp.out
+
 echo -e "\nTesting reading/writing attributes (parallel)...\n"
 mpirun -n 4 ./Parallel_AttributesTest.cpp.out
 
