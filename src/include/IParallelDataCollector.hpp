@@ -35,6 +35,7 @@ namespace DCollector
          * {@link DataCollector#write}
          * The global size and the write offset for the calling process are
          * determined automatically via MPI among all participating processes.
+         * Note: This is not possible when writing 2D data with a 3D MPI topology.
          */
         virtual void write(int32_t id,
                 const CollectionType& type,
@@ -47,6 +48,7 @@ namespace DCollector
          * {@link DataCollector#write}
          * The global size and the write offset for the calling process are
          * determined automatically via MPI among all participating processes.
+         * Note: This is not possible when writing 2D data with a 3D MPI topology.
          */
         virtual void write(int32_t id,
                 const CollectionType& type,
@@ -61,6 +63,7 @@ namespace DCollector
          * {@link DataCollector#write}
          * The global size and the write offset for the calling process are
          * determined automatically via MPI among all participating processes.
+         * Note: This is not possible when writing 2D data with a 3D MPI topology.
          */
         virtual void write(int32_t id,
                 const CollectionType& type,

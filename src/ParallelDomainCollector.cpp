@@ -24,6 +24,7 @@
 #include "basetypes/ColTypeInt.hpp"
 
 #include "ParallelDomainCollector.hpp"
+#include "DCParallelDataSet.hpp"
 
 using namespace DCollector;
 
@@ -157,7 +158,7 @@ throw (DCException)
 
             try
             {
-                DCDataSet tmp_dataset(name);
+                DCParallelDataSet tmp_dataset(name);
                 tmp_dataset.open(group_id);
 
                 datatype_size = tmp_dataset.getDataTypeSize();
@@ -241,7 +242,7 @@ throw (DCException)
 
             try
             {
-                DCDataSet tmp_dataset(name);
+                DCParallelDataSet tmp_dataset(name);
                 tmp_dataset.open(group_id);
 
                 datatype_size = tmp_dataset.getDataTypeSize();
@@ -441,9 +442,8 @@ void ParallelDomainCollector::writeDomain(int32_t id,
         const void* data)
 throw (DCException)
 {
-
     Dimensions globalSize, globalOffset, globalDomSize, globalDomOffset;
-    gatherMPIWrites(srcData, domainSize, domainOffset,
+    gatherMPIWrites(rank, srcData, domainSize, domainOffset,
             globalSize, globalOffset, globalDomSize, globalDomOffset);
 
     writeDomain(id, globalSize, globalOffset,
@@ -464,9 +464,8 @@ void ParallelDomainCollector::writeDomain(int32_t id,
         const void* data)
 throw (DCException)
 {
-
     Dimensions globalSize, globalOffset, globalDomSize, globalDomOffset;
-    gatherMPIWrites(srcData, domainSize, domainOffset,
+    gatherMPIWrites(rank, srcData, domainSize, domainOffset,
             globalSize, globalOffset, globalDomSize, globalDomOffset);
 
     writeDomain(id, globalSize, globalOffset,
@@ -488,9 +487,8 @@ void ParallelDomainCollector::writeDomain(int32_t id,
         const void* data)
 throw (DCException)
 {
-
     Dimensions globalSize, globalOffset, globalDomSize, globalDomOffset;
-    gatherMPIWrites(srcData, domainSize, domainOffset,
+    gatherMPIWrites(rank, srcData, domainSize, domainOffset,
             globalSize, globalOffset, globalDomSize, globalDomOffset);
 
     writeDomain(id, globalSize, globalOffset,
@@ -511,7 +509,6 @@ void ParallelDomainCollector::writeDomain(int32_t id,
         const void* data)
 throw (DCException)
 {
-
     writeDomain(id, globalSize, globalOffset,
             type, rank, srcData, Dimensions(1, 1, 1), srcData,
             Dimensions(0, 0, 0), name, globalDomainOffset, globalDomainSize,
@@ -533,7 +530,6 @@ void ParallelDomainCollector::writeDomain(int32_t id,
         const void* data)
 throw (DCException)
 {
-
     writeDomain(id, globalSize, globalOffset,
             type, rank, srcBuffer, Dimensions(1, 1, 1), srcData, srcOffset,
             name, globalDomainOffset, globalDomainSize, dataClass, data);
@@ -555,7 +551,6 @@ void ParallelDomainCollector::writeDomain(int32_t id,
         const void* data)
 throw (DCException)
 {
-
     ColTypeDim dim_t;
     ColTypeInt int_t;
 
@@ -577,7 +572,6 @@ void ParallelDomainCollector::appendDomain(int32_t id,
         const void *data)
 throw (DCException)
 {
-
     appendDomain(id, type, count, 0, 1, name, domainOffset, domainSize, data);
 }
 
@@ -592,17 +586,16 @@ void ParallelDomainCollector::appendDomain(int32_t id,
         const void *data)
 throw (DCException)
 {
-
     throw DCException("Not yet implemented");
 }
 
-void ParallelDomainCollector::gatherMPIWrites(const Dimensions localSize,
+void ParallelDomainCollector::gatherMPIWrites(int rank, const Dimensions localSize,
         const Dimensions localDomainSize, const Dimensions localDomainOffset,
         Dimensions &globalSize, Dimensions &globalOffset,
         Dimensions &globalDomainSize, Dimensions &globalDomainOffset)
 throw (DCException)
 {
-    ParallelDataCollector::gatherMPIWrites(localSize, globalSize, globalOffset);
+    ParallelDataCollector::gatherMPIWrites(rank, localSize, globalSize, globalOffset);
 
     //uint64_t send_offsets[3] = {localDomainOffset[0], localDomainOffset[1], localDomainOffset[2]};
     //uint64_t recv_offsets[3];

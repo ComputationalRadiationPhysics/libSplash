@@ -37,7 +37,7 @@ class Parallel_DomainsTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST_SUITE(Parallel_DomainsTest);
 
     CPPUNIT_TEST(testGridDomains);
-    //CPPUNIT_TEST(testPolyDomains);
+    CPPUNIT_TEST(testPolyDomains);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -48,13 +48,17 @@ public:
 
 private:
     void testGridDomains();
+    void testPolyDomains();
+    
     void subTestGridDomains(int32_t iteration,
             int currentMpiRank,
             const Dimensions mpiSize, const Dimensions mpiPos,
             const Dimensions gridSize, uint32_t dimensions, MPI_Comm mpiComm);
-
-    //void testPolyDomains();
-    //void subTestPolyDomains(const Dimensions mpiSize, const uint32_t numElements);
+    
+    void subTestPolyDomains(int32_t iteration,
+            int currentMpiRank,
+            const Dimensions mpiSize, const Dimensions mpiPos,
+            const uint32_t numElements, uint32_t dimensions, MPI_Comm mpiComm);
 
     int totalMpiSize;
     int myMpiRank;

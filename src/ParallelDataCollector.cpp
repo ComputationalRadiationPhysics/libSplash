@@ -258,12 +258,12 @@ throw (DCException)
     std::stringstream group_id_name;
     group_id_name << SDC_GROUP_DATA << "/" << id;
     std::string group_id_string = group_id_name.str();
-    
+
     hid_t group_id = H5Gopen(handles.get(id), group_id_string.c_str(), H5P_DEFAULT);
     if (group_id < 0)
         throw DCException(getExceptionString("readAttribute", "group not found",
             group_id_string.c_str()));
-    
+
     hid_t dataset_id = -1;
     dataset_id = H5Dopen(group_id, dataName, H5P_DEFAULT);
     if (dataset_id < 0)
@@ -271,7 +271,7 @@ throw (DCException)
         H5Gclose(group_id);
         throw DCException(getExceptionString("readAttribute", "dataset not found", dataName));
     }
-    
+
     try
     {
         DCAttribute::readAttribute(attrName, dataset_id, data);
@@ -282,7 +282,7 @@ throw (DCException)
         throw;
     }
     H5Dclose(dataset_id);
-    
+
     // cleanup
     H5Gclose(group_id);
 }
@@ -395,7 +395,7 @@ void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32
 throw (DCException)
 {
     Dimensions globalSize, globalOffset;
-    gatherMPIWrites(srcData, globalSize, globalOffset);
+    gatherMPIWrites(rank, srcData, globalSize, globalOffset);
 
     write(id, globalSize, globalOffset,
             type, rank, srcData, Dimensions(1, 1, 1),
@@ -408,7 +408,7 @@ void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32
 throw (DCException)
 {
     Dimensions globalSize, globalOffset;
-    gatherMPIWrites(srcData, globalSize, globalOffset);
+    gatherMPIWrites(rank, srcData, globalSize, globalOffset);
 
     write(id, globalSize, globalOffset,
             type, rank, srcBuffer, Dimensions(1, 1, 1),
@@ -421,7 +421,7 @@ void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32
 throw (DCException)
 {
     Dimensions globalSize, globalOffset;
-    gatherMPIWrites(srcData, globalSize, globalOffset);
+    gatherMPIWrites(rank, srcData, globalSize, globalOffset);
 
     write(id, globalSize, globalOffset,
             type, rank, srcBuffer, srcStride, srcData,
@@ -722,7 +722,7 @@ void ParallelDataCollector::openCreate(const char *filename,
 throw (DCException)
 {
     this->fileStatus = FST_CREATING;
-    
+
     // filters are currently not supported by parallel HDF5
     //this->options.enableCompression = attr.enableCompression;
 
@@ -749,7 +749,7 @@ void ParallelDataCollector::openWrite(const char* filename, FileCreationAttr& at
 throw (DCException)
 {
     this->fileStatus = FST_WRITING;
-    
+
     // filters are currently not supported by parallel HDF5
     //this->options.enableCompression = attr.enableCompression;
 
@@ -828,14 +828,14 @@ void ParallelDataCollector::writeDataSet(hid_t &group, const Dimensions globalSi
     dataset.close();
 }
 
-void ParallelDataCollector::gatherMPIWrites(const Dimensions localSize,
+void ParallelDataCollector::gatherMPIWrites(int rank, const Dimensions localSize,
         Dimensions &globalSize, Dimensions &globalOffset)
 throw (DCException)
 {
     uint64_t write_sizes[options.mpiSize * 3];
     uint64_t local_write_size[3] = {localSize[0], localSize[1], localSize[2]};
 
-    globalSize.set(0, 0, 0);
+    globalSize.set(1, 1, 1);
     globalOffset.set(0, 0, 0);
 
     if (MPI_Allgather(local_write_size, 3, MPI_INTEGER8,
@@ -843,10 +843,25 @@ throw (DCException)
         throw DCException(getExceptionString("gatherMPIWrites",
             "MPI_Allgather failed", NULL));
 
-    for (size_t i = 0; i < 3; ++i)
+    Dimensions tmp_mpi_topology(options.mpiTopology);
+    Dimensions tmp_mpi_pos(options.mpiPos);
+    if (rank == 1)
     {
+        tmp_mpi_topology.set(options.mpiTopology.getDimSize(), 1, 1);
+        tmp_mpi_pos.set(options.mpiRank, 0, 0);
+    }
+
+    if ((rank == 2) && (tmp_mpi_topology[2] > 1))
+    {
+        throw DCException(getExceptionString("gatherMPIWrites",
+                "cannot auto-detect global size/offset for 2D data when writing with 3D topology", NULL));
+    }
+
+    for (int i = 0; i < rank; ++i)
+    {
+        globalSize[i] = 0;
         size_t index;
-        for (size_t dim = 0; dim < options.mpiTopology[i]; ++dim)
+        for (size_t dim = 0; dim < tmp_mpi_topology[i]; ++dim)
         {
             switch (i)
             {
@@ -854,14 +869,14 @@ throw (DCException)
                     index = dim;
                     break;
                 case 1:
-                    index = dim * options.mpiTopology[0];
+                    index = dim * tmp_mpi_topology[0];
                     break;
                 default:
-                    index = dim * options.mpiTopology[0] * options.mpiTopology[1];
+                    index = dim * tmp_mpi_topology[0] * tmp_mpi_topology[1];
             }
 
             globalSize[i] += write_sizes[index * 3 + i];
-            if (dim < options.mpiPos[i])
+            if (dim < tmp_mpi_pos[i])
                 globalOffset[i] += write_sizes[index * 3 + i];
         }
     }

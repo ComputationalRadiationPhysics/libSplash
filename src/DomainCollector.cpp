@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #include <algorithm>
@@ -125,14 +125,14 @@ namespace DCollector
                 }
             }
         }
-        
+
         if (offset.getDimSize() != 0)
             throw DCException("DomainCollector::getTotalDomain: Invalid offset for total domain (must be (0, 0, 0) )");
 
         Domain domain(offset, total_size - offset);
         return domain;
     }
-    
+
     bool DomainCollector::readDomainInfoForRank(
             Dimensions mpiPosition,
             int32_t id,
@@ -148,7 +148,7 @@ namespace DCollector
 
         readAttribute(id, name, DOMCOL_ATTR_SIZE,
                 fileDomain.getSize().getPointer(), &mpiPosition);
-        
+
         return testIntersection(request_domain, fileDomain);
     }
 
@@ -345,21 +345,30 @@ namespace DCollector
                 {
                     dst_offset[i] = std::max((int64_t) client_domain.getStart()[i] - (int64_t) requestOffset[i], 0L);
 
+                    dst_offset[i] = std::max((int64_t) client_domain.getStart()[i] -
+                            (int64_t) requestOffset[i], 0L);
+
                     if (requestOffset[i] <= client_start[i])
                     {
+                        // request starts before/equal client offset
                         src_offset[i] = 0;
 
                         if (requestOffset[i] + requestSize[i] >= client_start[i] + client_size[i])
+                            // end of request stretches beyond client limits
                             src_size[i] = client_size[i];
                         else
+                            // end of request within client limits
                             src_size[i] = requestOffset[i] + requestSize[i] - client_start[i];
                     } else
                     {
+                        // request starts after client offset
                         src_offset[i] = requestOffset[i] - client_start[i];
 
                         if (requestOffset[i] + requestSize[i] >= client_start[i] + client_size[i])
+                            // end of request stretches beyond client limits
                             src_size[i] = client_size[i] - src_offset[i];
                         else
+                            // end of request within client limits
                             src_size[i] = requestOffset[i] + requestSize[i] -
                                 (client_start[i] + src_offset[i]);
                     }
@@ -418,7 +427,7 @@ namespace DCollector
     {
         if ((fileStatus != FST_MERGING) && (fileStatus != FST_READING))
             throw DCException("DomainCollector::readDomain: this access is not permitted");
-        
+
         DataContainer *data_container = new DataContainer();
 
 #if (DC_DEBUG == 1)
@@ -445,36 +454,36 @@ namespace DCollector
         do
         {
             Domain file_domain;
-            
+
             for (size_t i = 0; i < 3; ++i)
             {
-                current_mpi_pos[i] = min_rank[i] + 
-                        ceil(((double)max_rank[i] - (double)min_rank[i]) / 2.0);
+                current_mpi_pos[i] = min_rank[i] +
+                        ceil(((double) max_rank[i] - (double) min_rank[i]) / 2.0);
             }
-            
-            if(readDomainInfoForRank(current_mpi_pos, id, name,
+
+            if (readDomainInfoForRank(current_mpi_pos, id, name,
                     requestOffset, point_dim, file_domain))
             {
                 break;
             }
-            
+
             for (size_t i = 0; i < 3; ++i)
             {
                 if (requestOffset[i] >= file_domain.getStart()[i])
                     min_rank[i] = current_mpi_pos[i];
-                
+
                 if (requestOffset[i] < file_domain.getStart()[i])
                     max_rank[i] = current_mpi_pos[i] - 1;
             }
         } while (true);
-        
+
         // found top-left corner of requested domain
         // In every file, domain attributes are read and evaluated.
         // If the file domain and the requested domain intersect,
         // the file domain is added to the DataContainer.
         for (size_t i = 0; i < 3; ++i)
             max_rank[i] = mpiSize[i] - 1;
-        
+
         bool found_last_entry = false;
         Dimensions last_mpi_pos(current_mpi_pos);
         for (size_t z = current_mpi_pos[2]; z <= max_rank[2]; z++)
@@ -506,14 +515,14 @@ namespace DCollector
                             break;
                         }
                     }
-                    
+
                     last_mpi_pos.set(mpi_position);
                 }
-                
+
                 if (found_last_entry)
                     break;
             }
-            
+
             if (found_last_entry)
                 break;
         }
