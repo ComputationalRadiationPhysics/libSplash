@@ -209,7 +209,7 @@ namespace DCollector
         isReference = false;
         opened = true;
     }
-    
+
     void DCDataSet::createReference(hid_t refGroup,
             hid_t srcGroup,
             DCDataSet &srcDataSet)
@@ -234,7 +234,7 @@ namespace DCollector
 
         dataset = H5Dcreate(refGroup, name.c_str(), H5T_STD_REF_OBJ,
                 dataspace, H5P_DEFAULT, dsetProperties, H5P_DEFAULT);
-        
+
         if (dataset < 0)
             throw DCException(getExceptionString("createReference: failed to create dataset for reference"));
 
@@ -285,7 +285,7 @@ namespace DCollector
 
         dataset = H5Dcreate(refGroup, name.c_str(), H5T_STD_REF_DSETREG,
                 dataspace, H5P_DEFAULT, dsetProperties, H5P_DEFAULT);
-        
+
         if (dataset < 0)
             throw DCException(getExceptionString("createReference: failed to create dataset for reference"));
 
@@ -607,7 +607,7 @@ namespace DCollector
                     NULL, srcData.getPointer(), NULL) < 0 ||
                     H5Sselect_valid(dataspace) <= 0)
                 throw DCException(getExceptionString("write: Invalid target hyperslap selection"));
-            
+
             // write data to the dataset
             if (H5Dwrite(dataset, this->datatype, dsp_src, dataspace, dsetWriteProperties, data) < 0)
                 throw DCException(getExceptionString("write: Failed to write dataset"));

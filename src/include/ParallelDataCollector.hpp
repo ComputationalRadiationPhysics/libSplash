@@ -294,24 +294,15 @@ namespace DCollector
                 const void* data);
 
         /**
-         * Currently not supported!
+         * {@link IParallelDataCollector#reserve}
          */
-        void append(int32_t id,
+        void reserve(int32_t id,
+                const Dimensions size,
+                Dimensions *globalSize,
+                Dimensions *globalOffset,
+                uint32_t rank,
                 const CollectionType& type,
-                uint32_t count,
-                const char *name,
-                const void *data) throw (DCException);
-
-        /**
-         * Currently not supported!
-         */
-        void append(int32_t id,
-                const CollectionType& type,
-                uint32_t count,
-                uint32_t offset,
-                uint32_t striding,
-                const char *name,
-                const void *data) throw (DCException);
+                const char* name) throw (DCException);
 
         /**
          * {@link DataCollector#remove}

@@ -36,6 +36,7 @@ class Parallel_SimpleDataTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST_SUITE(Parallel_SimpleDataTest);
 
     CPPUNIT_TEST(testWriteRead);
+    CPPUNIT_TEST(testFill);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -50,15 +51,24 @@ private:
      * read data on conformacy.
      */
     void testWriteRead();
+    
+    void testFill();
 
     bool testData(const Dimensions mpiSize, const Dimensions gridSize,
             int *data);
 
     /**
-     * sub function for testWriteRead to allow several data/border sizes to be tested.
+     * sub function for testWriteRead to allow several data sizes to be tested.
      */
     bool subtestWriteRead(int32_t iteration, int currentMpiRank, const Dimensions mpiSize,
             const Dimensions mpiPos, const Dimensions gridSize,
+            uint32_t dimensions, MPI_Comm mpiComm);
+    
+    /**
+     * sub function for testWriteRead to allow several numbers of elements.
+     */
+    bool subtestFill(int32_t iteration, int currentMpiRank, const Dimensions mpiSize,
+            const Dimensions mpiPos, uint32_t elements,
             uint32_t dimensions, MPI_Comm mpiComm);
 
     ColTypeInt ctInt;

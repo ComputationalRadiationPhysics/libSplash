@@ -255,7 +255,7 @@ namespace DCollector
          * @param offset offset in elements to start reading from
          * @param stride striding to be used for reading. 
          * data must contain at least (striding * count) elements. 
-         * 1 mean 'no striding'
+         * 1 means 'no striding'
          * @param name name for the dataset to create/append to, e.g. 'ions'
          * @param data data buffer to append
          */
