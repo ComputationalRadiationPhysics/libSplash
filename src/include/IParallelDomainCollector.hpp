@@ -34,6 +34,7 @@ namespace DCollector
          * {@link IDomainCollector#writeDomain}
          * The global size and the write offset for the calling process are
          * determined automatically via MPI among all participating processes.
+         * Note: This is not possible when writing 2D data with a 3D MPI topology.
          * 
          * The global domain size and the domain offset for the calling process are
          * determined automatically via MPI among all participating processes.
@@ -52,6 +53,7 @@ namespace DCollector
          * {@link IDomainCollector#writeDomain}
          * The global size and the write offset for the calling process are
          * determined automatically via MPI among all participating processes.
+         * Note: This is not possible when writing 2D data with a 3D MPI topology.
          * 
          * The global domain size and the domain offset for the calling process are
          * determined automatically via MPI among all participating processes.
@@ -72,6 +74,7 @@ namespace DCollector
          * {@link IDomainCollector#writeDomain}
          * The global size and the write offset for the calling process are
          * determined automatically via MPI among all participating processes.
+         * Note: This is not possible when writing 2D data with a 3D MPI topology.
          * 
          * The global domain size and the domain offset for the calling process are
          * determined automatically via MPI among all participating processes.

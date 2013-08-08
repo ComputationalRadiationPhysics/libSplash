@@ -155,8 +155,8 @@ namespace DCollector
                 const char* name,
                 const void* data) throw (DCException);
 
-        void gatherMPIWrites(const Dimensions localSize, Dimensions &globalSize,
-                Dimensions &globalOffset) throw (DCException);
+        void gatherMPIWrites(int rank, const Dimensions localSize,
+                Dimensions &globalSize, Dimensions &globalOffset) throw (DCException);
 
         /**
          * Returns the rank (number of dimensions) for a dataset

@@ -181,7 +181,7 @@ namespace DCollector
                 const void *data) throw (DCException);
 
     protected:
-        void gatherMPIWrites(const Dimensions localSize,
+        void gatherMPIWrites(int rank, const Dimensions localSize,
                 const Dimensions localDomainSize, const Dimensions localDomainOffset,
                 Dimensions &globalSize, Dimensions &globalOffset,
                 Dimensions &globalDomainSize, Dimensions &globalDomainOffset)
