@@ -97,14 +97,34 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
                 domain_offset, gridSize, DomainCollector::GridType, data_write);
 
         dataCollector->close();
+        
+        int *data_read = new int[gridSize.getDimSize()];
+        fattr.fileAccType = DataCollector::FAT_READ;
+        
+        dataCollector->open(hdf5_file_grid, fattr);
+        DomainCollector::DomDataClass data_class = DomainCollector::UndefinedType;
+        DataContainer *container = dataCollector->readDomain(0, "grid_data",
+                domain_offset, gridSize, &data_class, false);
+        dataCollector->close();
+        
+        CPPUNIT_ASSERT(container != NULL);
+        CPPUNIT_ASSERT(container->getNumSubdomains() == 1);
+        CPPUNIT_ASSERT(container->getNumElements() == gridSize.getDimSize());
+        
+        for (size_t i = 0; i < gridSize.getDimSize(); ++i)
+            CPPUNIT_ASSERT(*((int*)(container->getElement(i))) == mpi_rank);
+        
+        delete container;
+        
+        delete[] data_read;
 
         delete[] data_write;
         data_write = NULL;
     }
-
+    
     MPI_Barrier(MPI_COMM_WORLD);
 
-    if (mpi_rank == 0)
+    /*if (mpi_rank == 0)
     {
         // now read and test domain subdomains
         DataCollector::FileCreationAttr fattr;
@@ -199,7 +219,7 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
         }
 
         dataCollector->close();
-    }
+    }*/
 }
 
 void DomainsTest::testGridDomains()

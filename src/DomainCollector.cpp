@@ -448,7 +448,7 @@ namespace DCollector
             mpi_size.set(1, 1, 1);
 
         Dimensions min_rank(0, 0, 0);
-        Dimensions max_rank(mpiSize);
+        Dimensions max_rank(mpi_size);
         max_rank = max_rank - Dimensions(1, 1, 1);
         Dimensions current_mpi_pos(0, 0, 0);
         Dimensions point_dim(1, 1, 1);
@@ -493,7 +493,7 @@ namespace DCollector
         // If the file domain and the requested domain intersect,
         // the file domain is added to the DataContainer.
         for (size_t i = 0; i < 3; ++i)
-            max_rank[i] = mpiSize[i] - 1;
+            max_rank[i] = mpi_size[i] - 1;
         
         bool found_last_entry = false;
         for (size_t z = current_mpi_pos[2]; z <= max_rank[2]; z++)
