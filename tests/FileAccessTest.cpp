@@ -89,5 +89,14 @@ void FileAccessTest::testWriteAfterCreate()
     CPPUNIT_ASSERT(data == 2);
     
     dataCollector->close();
+    
+    // erase file
+    attr.fileAccType = DataCollector::FAT_CREATE;
+    dataCollector->open(HDF5_FILE, attr);
+    
+    CPPUNIT_ASSERT_THROW(dataCollector->read(1, ctInt, "data", data_size, &data),
+            DCException);
+    
+    dataCollector->close();
 }
 
