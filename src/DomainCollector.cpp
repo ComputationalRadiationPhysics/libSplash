@@ -454,9 +454,13 @@ namespace DCollector
         Dimensions point_dim(1, 1, 1);
 
         // try to find top-left corner of requested domain
+        // stop if no new file can be tested for the requested domain
+        Dimensions last_mpi_pos(current_mpi_pos);
+        bool found_start = false;
         do
         {
             Domain file_domain;
+            last_mpi_pos = current_mpi_pos;
             
             for (size_t i = 0; i < 3; ++i)
             {
@@ -467,6 +471,7 @@ namespace DCollector
             if(readDomainInfoForRank(current_mpi_pos, id, name,
                     requestOffset, point_dim, file_domain))
             {
+                found_start = true;
                 break;
             }
             
@@ -478,7 +483,10 @@ namespace DCollector
                 if (requestOffset[i] < file_domain.getStart()[i])
                     max_rank[i] = current_mpi_pos[i] - 1;
             }
-        } while (true);
+        } while (last_mpi_pos != current_mpi_pos);
+        
+        if (!found_start)
+            return data_container;
         
         // found top-left corner of requested domain
         // In every file, domain attributes are read and evaluated.
@@ -488,7 +496,6 @@ namespace DCollector
             max_rank[i] = mpiSize[i] - 1;
         
         bool found_last_entry = false;
-        Dimensions last_mpi_pos(current_mpi_pos);
         for (size_t z = current_mpi_pos[2]; z <= max_rank[2]; z++)
         {
             for (size_t y = current_mpi_pos[1]; y <= max_rank[1]; y++)
@@ -518,8 +525,6 @@ namespace DCollector
                             break;
                         }
                     }
-                    
-                    last_mpi_pos.set(mpi_position);
                 }
                 
                 if (found_last_entry)
