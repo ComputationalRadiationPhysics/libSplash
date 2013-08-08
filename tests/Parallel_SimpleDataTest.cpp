@@ -123,7 +123,7 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
     parallelDataCollector->write(iteration, ctInt, dimensions, gridSize,
             "data", dataWrite);
     parallelDataCollector->close();
-    
+
     delete[] dataWrite;
     dataWrite = NULL;
 
@@ -297,6 +297,185 @@ void Parallel_SimpleDataTest::testWriteRead()
 
                                 iteration++;
                             }
+
+                    delete parallelDataCollector;
+                    parallelDataCollector = NULL;
+
+                    MPI_Comm_free(&mpi_current_comm);
+
+                } else
+                    iteration += (8 - 1) * (8 - 5) * (8 - 5);
+
+                MPI_CHECK(MPI_Barrier(MPI_COMM_WORLD));
+
+            }
+
+    MPI_CHECK(MPI_Barrier(MPI_COMM_WORLD));
+}
+
+bool Parallel_SimpleDataTest::subtestFill(int32_t iteration,
+        int currentMpiRank,
+        const Dimensions mpiSize, const Dimensions mpiPos,
+        uint32_t elements, uint32_t dimensions, MPI_Comm mpiComm)
+{
+    bool results_correct = true;
+    DataCollector::FileCreationAttr fileCAttr;
+
+#if defined TESTS_DEBUG
+    if (currentMpiRank == 0)
+        std::cout << "iteration: " << iteration << std::endl;
+#endif
+
+    // write data to file
+    DataCollector::initFileCreationAttr(fileCAttr);
+    fileCAttr.fileAccType = DataCollector::FAT_CREATE;
+    fileCAttr.enableCompression = false;
+    parallelDataCollector->open(HDF5_FILE, fileCAttr);
+
+    int dataWrite = currentMpiRank + 1;
+    uint32_t num_elements = (currentMpiRank + 1) * elements;
+    Dimensions grid_size(num_elements, 1, 1);
+
+    Dimensions globalOffset, globalSize;
+    parallelDataCollector->reserve(iteration, grid_size,
+            &globalSize, &globalOffset, 1, ctInt, "reserved_data");
+
+    uint32_t elements_written = 0;
+    for (size_t i = 0; i < mpiSize.getDimSize() * num_elements; ++i)
+    {
+        Dimensions write_size(1, 1, 1);
+        if (i >= num_elements)
+            write_size.set(0, 0, 0);
+
+        Dimensions write_offset(globalOffset + Dimensions(elements_written, 0, 0));
+
+        parallelDataCollector->write(iteration, globalSize, write_offset, ctInt, 1,
+                write_size, "reserved_data", &dataWrite);
+
+        if (i < num_elements)
+            elements_written++;
+    }
+
+    parallelDataCollector->close();
+
+    MPI_CHECK(MPI_Barrier(mpiComm));
+
+    // test written data using various mechanisms
+    fileCAttr.fileAccType = DataCollector::FAT_READ;
+    // need a complete filename here
+    std::stringstream filename_stream;
+    filename_stream << HDF5_FILE << "_" << iteration << ".h5";
+
+    Dimensions size_read;
+    Dimensions full_grid_size = globalSize;
+
+
+    // test using SerialDataCollector
+    if (currentMpiRank == 0)
+    {
+        int *data_read = new int[full_grid_size.getDimSize()];
+        memset(data_read, 0, sizeof (int) * full_grid_size.getDimSize());
+
+        DataCollector *dataCollector = new SerialDataCollector(1);
+        dataCollector->open(filename_stream.str().c_str(), fileCAttr);
+
+        dataCollector->read(iteration, ctInt, "data", size_read, data_read);
+        dataCollector->close();
+        delete dataCollector;
+
+        CPPUNIT_ASSERT(size_read == full_grid_size);
+        CPPUNIT_ASSERT(size_read[1] == size_read[2] == 1);
+
+        int this_rank = 0;
+        uint32_t elements_this_rank = num_elements;
+        for (uint32_t i = 0; i < size_read.getDimSize(); ++i)
+        {
+            if (i == elements_this_rank)
+            {
+                this_rank++;
+                elements_this_rank += num_elements * (this_rank + 1);
+            }
+
+            CPPUNIT_ASSERT(data_read[i] == this_rank + 1);
+        }
+
+        delete[] data_read;
+    }
+
+    MPI_CHECK(MPI_Barrier(mpiComm));
+
+    return results_correct;
+}
+
+void Parallel_SimpleDataTest::testFill()
+{
+    uint32_t dimensions = 3;
+    int32_t iteration = 0;
+
+    for (uint32_t mpi_z = 1; mpi_z < 3; ++mpi_z)
+        for (uint32_t mpi_y = 1; mpi_y < 3; ++mpi_y)
+            for (uint32_t mpi_x = 1; mpi_x < 3; ++mpi_x)
+            {
+                Dimensions mpi_size(mpi_x, mpi_y, mpi_z);
+                size_t num_ranks = mpi_size.getDimSize();
+
+                int ranks[num_ranks];
+                for (uint32_t i = 0; i < num_ranks; ++i)
+                    ranks[i] = i;
+
+                MPI_Group world_group, comm_group;
+                MPI_Comm mpi_current_comm;
+                MPI_CHECK(MPI_Comm_group(MPI_COMM_WORLD, &world_group));
+                MPI_CHECK(MPI_Group_incl(world_group, num_ranks, ranks, &comm_group));
+                MPI_CHECK(MPI_Comm_create(MPI_COMM_WORLD, comm_group, &mpi_current_comm));
+
+                // filter mpi ranks
+                if (myMpiRank < num_ranks)
+                {
+                    int my_current_mpi_rank;
+                    MPI_Comm_rank(mpi_current_comm, &my_current_mpi_rank);
+
+                    Dimensions current_mpi_pos;
+                    indexToPos(my_current_mpi_rank, mpi_size, current_mpi_pos);
+
+#if defined TESTS_DEBUG
+                    if (my_current_mpi_rank == 0)
+                    {
+                        std::cout << std::endl << "** testing mpi size " <<
+                                mpi_size.toString() << std::endl;
+                    }
+#endif
+
+                    parallelDataCollector = new ParallelDataCollector(mpi_current_comm,
+                            MPI_INFO_NULL, mpi_size, my_current_mpi_rank, 10);
+
+                    for (uint32_t elements = 1; elements < 8; elements++)
+                    {
+                        if (my_current_mpi_rank == 0)
+                        {
+#if defined TESTS_DEBUG
+                            std::cout << std::endl << "** testing grid_size = " <<
+                                    grid_size.toString() << " with mpi size " <<
+                                    mpi_size.toString() << std::endl;
+#else
+                            std::cout << "." << std::flush;
+#endif
+                        }
+
+                        MPI_CHECK(MPI_Barrier(mpi_current_comm));
+
+                        CPPUNIT_ASSERT(subtestFill(iteration,
+                                my_current_mpi_rank,
+                                mpi_size,
+                                current_mpi_pos,
+                                elements,
+                                dimensions,
+                                mpi_current_comm));
+
+                        MPI_CHECK(MPI_Barrier(mpi_current_comm));
+
+                        iteration++;
+                    }
 
                     delete parallelDataCollector;
                     parallelDataCollector = NULL;

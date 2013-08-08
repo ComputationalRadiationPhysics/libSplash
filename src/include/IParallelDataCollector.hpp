@@ -152,6 +152,26 @@ namespace DCollector
                 const void* data) = 0;
 
         /**
+         * Reserves a dataset for parallel access. 
+         * 
+         * @param id id for fileentry. e.g. iteration
+         * @param size intended 3D dimension for local dataset
+         * @param globalSize if not NULL, returns the global size of the dataset
+         * @param globalOffset if not NULL, returns the global offset for the calling process
+         * @param rank maximum dimension (must be between 1-3)
+         * @param type type information for data. available types must be
+         * implemented by concrete DataCollector
+         * @param name name for the dataset, e.g. 'ions'
+         */
+        virtual void reserve(int32_t id,
+                const Dimensions size,
+                Dimensions *globalSize,
+                Dimensions *globalOffset,
+                uint32_t rank,
+                const CollectionType& type,
+                const char* name) = 0;
+
+        /**
          * Reads global attribute from HDF5 file.
          *
          * @param id id for iteration
@@ -188,6 +208,26 @@ namespace DCollector
                 const char *name,
                 const void* data)
         {
+        }
+
+        void append(int32_t id,
+                const CollectionType& type,
+                uint32_t count,
+                const char *name,
+                const void *data)
+        {
+
+        }
+
+        void append(int32_t id,
+                const CollectionType& type,
+                uint32_t count,
+                uint32_t offset,
+                uint32_t stride,
+                const char *name,
+                const void *data)
+        {
+
         }
     };
 }

@@ -244,7 +244,7 @@ namespace DCollector
 
                     DomainData *client_data = new DomainData(client_domain,
                             data_elements, datatype_size, dc_datatype);
-
+                    
                     if (lazyLoad)
                     {
                         client_data->setLoadingReference(*dataClass,

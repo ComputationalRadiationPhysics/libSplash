@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #ifndef DOMAINDATA_HPP
@@ -35,6 +35,7 @@
 
 namespace DCollector
 {
+
     /**
      * Internal loading reference data structure.
      */
@@ -114,7 +115,7 @@ namespace DCollector
         {
             return data;
         }
-        
+
         /**
          * Deallocate data of this subdomain, should be used for lazy loading.
          */

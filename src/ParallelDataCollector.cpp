@@ -492,18 +492,54 @@ void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
     H5Gclose(group_id);
 }
 
-void ParallelDataCollector::append(int32_t id, const CollectionType& type,
-        uint32_t count, const char* name, const void* data)
-throw (DCException)
+void ParallelDataCollector::reserve(int32_t id,
+        const Dimensions size,
+        Dimensions *globalSize,
+        Dimensions *globalOffset,
+        uint32_t rank,
+        const CollectionType& type,
+        const char* name) throw (DCException)
 {
-    append(id, type, count, 0, 1, name, data);
-}
+    if (name == NULL)
+        throw DCException(getExceptionString("reserve", "a parameter was NULL"));
 
-void ParallelDataCollector::append(int32_t id, const CollectionType& type,
-        uint32_t count, uint32_t offset, uint32_t stride, const char* name, const void* data)
-throw (DCException)
-{
-    throw DCException("Not yet implemented!");
+    if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
+        throw DCException(getExceptionString("write", "this access is not permitted"));
+    
+    if (rank < 1 || rank > 3)
+        throw DCException(getExceptionString("write", "maximum dimension is invalid"));
+    
+    Dimensions global_size, global_offset;
+    gatherMPIWrites(rank, size, global_size, global_offset);
+
+    // create group for this id/iteration
+    std::stringstream group_id_name;
+    group_id_name << SDC_GROUP_DATA << "/" << id;
+
+    hid_t group_id = -1;
+    H5Handle file_handle = handles.get(id);
+
+    group_id = H5Gopen(file_handle, group_id_name.str().c_str(), H5P_DEFAULT);
+    if (group_id < 0)
+        group_id = H5Gcreate(file_handle, group_id_name.str().c_str(), H5P_LINK_CREATE_DEFAULT,
+            H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
+
+    if (group_id < 0)
+        throw DCException(getExceptionString("write", "failed to open or create group"));
+
+    DCParallelDataSet dataset(name);
+    // create the empty dataset
+    dataset.create(type, group_id, global_size, rank, this->options.enableCompression);
+    dataset.close();
+
+    // cleanup
+    H5Gclose(group_id);
+    
+    if (globalSize)
+        globalSize->set(global_size);
+    
+    if (globalOffset)
+        globalOffset->set(global_offset);
 }
 
 void ParallelDataCollector::remove(int32_t id)

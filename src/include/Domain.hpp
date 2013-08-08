@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #ifndef DOMAIN_HPP
@@ -61,7 +61,7 @@ namespace DCollector
         {
 
         }
-        
+
         /**
          * Destructor.
          */
@@ -80,10 +80,10 @@ namespace DCollector
             return size;
         }
 
-		const Dimensions getSize() const
-		{
-			return size;
-		}
+        const Dimensions getSize() const
+        {
+            return size;
+        }
 
         /**
          * Returns the start/offset of this domain in the parent domain.
@@ -95,10 +95,10 @@ namespace DCollector
             return start;
         }
 
-		const Dimensions getStart() const
-		{
-			return start;
-		}
+        const Dimensions getStart() const
+        {
+            return start;
+        }
 
         /**
          * Returns last element of this domain.
@@ -110,7 +110,7 @@ namespace DCollector
             return start + size - Dimensions(1, 1, 1);
         }
 
-		bool operator==(Domain const& other) const
+        bool operator==(Domain const& other) const
         {
             return start == other.getStart() && size == other.getSize();
         }
