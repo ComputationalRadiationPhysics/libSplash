@@ -522,10 +522,8 @@ namespace DCollector
                             break;
                         }
                     }
-                    
-
                 }
-                
+
                 if (found_last_entry)
                     break;
             }
