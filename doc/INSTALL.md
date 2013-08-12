@@ -24,6 +24,8 @@ as well as all tools.
 
 By default, the RELEASE version is built. To create libSplash with DEBUG symbols,
 pass `-DSPLASH_RELEASE=OFF` to your cmake command.
+To see verbose internal (!) debug output for libSplash, pass `-DSPLASH_RELEASE=OFF -DDEBUG_VERBOSE=ON`
+to your cmake command line.
 
 Linking
 ------
