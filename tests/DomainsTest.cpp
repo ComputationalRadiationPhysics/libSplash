@@ -57,7 +57,7 @@ DomainsTest::~DomainsTest()
 }
 
 void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions gridSize,
-        uint32_t rank)
+        uint32_t rank, uint32_t iteration)
 {
     int max_rank = 1;
     for (int i = 0; i < rank; i++)
@@ -93,8 +93,8 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
         std::cout << "domain_offset = " << domain_offset.toString() << std::endl;
 #endif
 
-        dataCollector->writeDomain(0, ctInt, rank, gridSize, "grid_data",
-                domain_offset, gridSize, IDomainCollector::GridType, data_write);
+        dataCollector->writeDomain(iteration, ctInt, rank, gridSize, "grid_data",
+                domain_offset, gridSize, DomainCollector::GridType, data_write);
 
         dataCollector->close();
         
@@ -103,7 +103,7 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
         
         dataCollector->open(hdf5_file_grid, fattr);
         DomainCollector::DomDataClass data_class = DomainCollector::UndefinedType;
-        DataContainer *container = dataCollector->readDomain(0, "grid_data",
+        DataContainer *container = dataCollector->readDomain(iteration, "grid_data",
                 domain_offset, gridSize, &data_class, false);
         dataCollector->close();
         
@@ -124,7 +124,7 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
     
     MPI_Barrier(MPI_COMM_WORLD);
 
-    /*if (mpi_rank == 0)
+    if (mpi_rank == 0)
     {
         // now read and test domain subdomains
         DataCollector::FileCreationAttr fattr;
@@ -132,7 +132,7 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
         fattr.mpiSize = mpiSize;
         dataCollector->open(hdf5_file_grid, fattr);
 
-        size_t global_domain_elements = dataCollector->getTotalElements(0, "grid_data");
+        size_t global_domain_elements = dataCollector->getTotalElements(iteration, "grid_data");
         Dimensions global_grid_size = mpiSize * gridSize;
 
 #if defined TESTS_DEBUG
@@ -159,12 +159,12 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
             IDomainCollector::DomDataClass data_class = IDomainCollector::UndefinedType;
 
 			Domain total_domain;
-			total_domain = dataCollector->getTotalDomain(0, "grid_data");
+			total_domain = dataCollector->getTotalDomain(iteration, "grid_data");
 			CPPUNIT_ASSERT(total_domain.getStart() == Dimensions(0, 0, 0));
 			CPPUNIT_ASSERT(total_domain.getSize() == global_grid_size);
 
             // read data container
-            DataContainer *container = dataCollector->readDomain(0, "grid_data",
+            DataContainer *container = dataCollector->readDomain(iteration, "grid_data",
                     offset, partition_size, &data_class);
 
 #if defined TESTS_DEBUG
@@ -219,11 +219,12 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
         }
 
         dataCollector->close();
-    }*/
+    }
 }
 
 void DomainsTest::testGridDomains()
 {
+    uint32_t iteration = 0;
     for (uint32_t mpi_z = 1; mpi_z < 3; ++mpi_z)
         for (uint32_t mpi_y = 1; mpi_y < 3; ++mpi_y)
             for (uint32_t mpi_x = 1; mpi_x < 3; ++mpi_x)
@@ -257,20 +258,22 @@ void DomainsTest::testGridDomains()
 
                             MPI_Barrier(MPI_COMM_WORLD);
 
-                            subTestGridDomains(mpi_size, grid_size, 3);
+                            subTestGridDomains(mpi_size, grid_size, 3, iteration);
                             
                             MPI_Barrier(MPI_COMM_WORLD);
+                            iteration++;
                         }
             }
 
     // use this for testing a single specific configuration
     /*Dimensions mpi_size(2, 1, 1);
     Dimensions grid_size(5, 5, 1);
-    subTestGridDomains(mpi_size, grid_size, 3);*/
+    subTestGridDomains(mpi_size, grid_size, 3, 0);*/
 
 }
 
-void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, const uint32_t numElements)
+void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numElements,
+        uint32_t iteration)
 {
     Dimensions grid_size(20, 10, 5);
     Dimensions global_grid_size = grid_size * mpiSize;
@@ -311,8 +314,8 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, const uint32_t nu
         std::cout << "domain_offset = " << domain_offset.toString() << std::endl;
 #endif
 
-        dataCollector->writeDomain(0, ctFloat, 1, Dimensions(mpi_elements, 1, 1),
-                "poly_data", domain_offset, grid_size, IDomainCollector::PolyType, data_write);
+        dataCollector->writeDomain(iteration, ctFloat, 1, Dimensions(mpi_elements, 1, 1),
+                "poly_data", domain_offset, grid_size, DomainCollector::PolyType, data_write);
 
         dataCollector->close();
 
@@ -330,7 +333,7 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, const uint32_t nu
         fattr.mpiSize = mpiSize;
         dataCollector->open(hdf5_file_poly, fattr);
 
-        size_t global_domain_elements = dataCollector->getTotalElements(0, "poly_data");
+        size_t global_domain_elements = dataCollector->getTotalElements(iteration, "poly_data");
         size_t global_num_elements = 0;
         for (int i = 0; i < mpiSize.getDimSize(); ++i)
             global_num_elements += numElements * (i + 1);
@@ -359,7 +362,7 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, const uint32_t nu
             IDomainCollector::DomDataClass data_class = IDomainCollector::UndefinedType;
 
             // read data container
-            DataContainer *container = dataCollector->readDomain(0, "poly_data",
+            DataContainer *container = dataCollector->readDomain(iteration, "poly_data",
                     offset, partition_size, &data_class);
 
 #if defined TESTS_DEBUG
@@ -419,6 +422,7 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, const uint32_t nu
 
 void DomainsTest::testPolyDomains()
 {
+    uint32_t iteration = 0;
     for (uint32_t mpi_z = 1; mpi_z < 3; ++mpi_z)
         for (uint32_t mpi_y = 1; mpi_y < 3; ++mpi_y)
             for (uint32_t mpi_x = 1; mpi_x < 3; ++mpi_x)
@@ -447,13 +451,14 @@ void DomainsTest::testPolyDomains()
 
                     MPI_Barrier(MPI_COMM_WORLD);
 
-                    subTestPolyDomains(mpi_size, elements);
+                    subTestPolyDomains(mpi_size, elements, iteration);
+                    iteration++;
                 }
             }
 
     // use this for testing a single specific configuration
     /*Dimensions mpi_size(2, 1, 1);
-    subTestPolyDomains(mpi_size, 10);*/
+    subTestPolyDomains(mpi_size, 10, 0);*/
 
 }
 

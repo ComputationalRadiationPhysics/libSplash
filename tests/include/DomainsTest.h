@@ -50,10 +50,11 @@ public:
 private:
     void testGridDomains();
     void subTestGridDomains(const Dimensions mpiSize, const Dimensions gridSize,
-            uint32_t rank);
+            uint32_t rank, uint32_t iteration);
     
     void testPolyDomains();
-    void subTestPolyDomains(const Dimensions mpiSize, const uint32_t numElements);
+    void subTestPolyDomains(const Dimensions mpiSize, uint32_t numElements,
+            uint32_t iteration);
     
     void testAppendDomains();
     

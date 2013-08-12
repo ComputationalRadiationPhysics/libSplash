@@ -31,9 +31,6 @@
 #include "DomainCollector.hpp"
 #include "DCDataSet.hpp"
 
-// enable (1)/ disable (0) for printing of debug information
-#define DC_DEBUG 0
-
 namespace DCollector
 {
 
@@ -60,19 +57,43 @@ namespace DCollector
         else
             mpi_size.set(1, 1, 1);
 
-        for (size_t z = 0; z < mpi_size[2]; z++)
+        Dimensions mpi_position(0, 0, 0);
+
+        DomDataClass data_class = UndefinedType;
+        readAttribute(id, name, DOMCOL_ATTR_CLASS, &data_class, &mpi_position);
+
+        if (data_class == DomainCollector::GridType)
+        { 
+            // For Grid data, we can just read from the last MPI position since
+            // all processes need to write as a regular grid.
+            Dimensions subdomain_size;
+            Dimensions subdomain_start;
+            
+            mpi_position.set(mpi_size[0] - 1, mpi_size[1] - 1, mpi_size[2] - 1);
+            
+            readAttribute(id, name, DOMCOL_ATTR_SIZE,
+                subdomain_size.getPointer(), &mpi_position);
+            readAttribute(id, name, DOMCOL_ATTR_START,
+                subdomain_start.getPointer(), &mpi_position);
+
+            total_elements = (subdomain_start + subdomain_size).getDimSize();
+        } else
         {
-            for (size_t y = 0; y < mpi_size[1]; y++)
+            // For Poly data, we currently need to open every file (slow!)
+            Dimensions subdomain_elements;
+            for (size_t z = 0; z < mpi_size[2]; z++)
             {
-                for (size_t x = 0; x < mpi_size[0]; x++)
+                for (size_t y = 0; y < mpi_size[1]; y++)
                 {
-                    Dimensions mpi_position(x, y, z);
+                    for (size_t x = 0; x < mpi_size[0]; x++)
+                    {
+                        mpi_position.set(x, y, z);
 
-                    Dimensions subdomain_elements;
-                    readAttribute(id, name, DOMCOL_ATTR_ELEMENTS,
-                            subdomain_elements.getPointer(), &mpi_position);
+                        readAttribute(id, name, DOMCOL_ATTR_ELEMENTS,
+                                subdomain_elements.getPointer(), &mpi_position);
 
-                    total_elements += subdomain_elements.getDimSize();
+                        total_elements += subdomain_elements.getDimSize();
+                    }
                 }
             }
         }
@@ -95,36 +116,19 @@ namespace DCollector
         else
             mpi_size.set(1, 1, 1);
 
-        for (size_t z = 0; z < mpi_size[2]; z++)
-        {
-            for (size_t y = 0; y < mpi_size[1]; y++)
-            {
-                for (size_t x = 0; x < mpi_size[0]; x++)
-                {
-                    Dimensions mpi_position(x, y, z);
+        // Since all MPI processes must write domain information as a regular grid,
+        // we can just open the last MPI position to get the total size.
+        Dimensions mpi_position(mpi_size[0] - 1, mpi_size[1] - 1, mpi_size[2] - 1);
 
-                    Dimensions subdomain_size;
-                    Dimensions subdomain_start;
+        Dimensions subdomain_size;
+        Dimensions subdomain_start;
 
-                    readAttribute(id, name, DOMCOL_ATTR_SIZE,
-                            subdomain_size.getPointer(), &mpi_position);
-                    readAttribute(id, name, DOMCOL_ATTR_START,
-                            subdomain_start.getPointer(), &mpi_position);
+        readAttribute(id, name, DOMCOL_ATTR_SIZE,
+                subdomain_size.getPointer(), &mpi_position);
+        readAttribute(id, name, DOMCOL_ATTR_START,
+                subdomain_start.getPointer(), &mpi_position);
 
-                    if (x == 0 && y == 0 && z == 0)
-                        offset.set(subdomain_start);
-
-                    for (int i = 0; i < 3; ++i)
-                    {
-                        if (subdomain_start[i] + subdomain_size[i] > total_size[i])
-                            total_size[i] = subdomain_start[i] + subdomain_size[i];
-
-                        if (subdomain_start[i] < offset[i])
-                            offset[i] = subdomain_start[i];
-                    }
-                }
-            }
-        }
+        total_size.set(subdomain_start + subdomain_size);
 
         if (offset.getDimSize() != 0)
             throw DCException("DomainCollector::getTotalDomain: Invalid offset for total domain (must be (0, 0, 0) )");
@@ -163,7 +167,7 @@ namespace DCollector
             bool lazyLoad)
     {
 #if (DC_DEBUG == 1)
-        std::cerr << "\nloading from mpi_position " << mpi_position.toString() << std::endl;
+        std::cerr << "\nloading from mpi_position " << mpiPosition.toString() << std::endl;
 #endif
 
         bool readResult = false;
@@ -410,7 +414,7 @@ namespace DCollector
         } else
         {
 #if (DC_DEBUG == 1)
-            std::cerr << "no loading from this mpi position required" << std::endl;
+            std::cerr << "no loading from this MPI position required" << std::endl;
 #endif
         }
 
@@ -452,13 +456,15 @@ namespace DCollector
 
         // try to find top-left corner of requested domain
         // stop if no new file can be tested for the requested domain
+        // (current_mpi_pos does not change anymore)
         Dimensions last_mpi_pos(current_mpi_pos);
         bool found_start = false;
         do
         {
             Domain file_domain;
             last_mpi_pos = current_mpi_pos;
-
+            
+            // set current_mpi_pos to be the 'center' between min_rank and max_rank
             for (size_t i = 0; i < 3; ++i)
             {
                 current_mpi_pos[i] = min_rank[i] +
@@ -489,15 +495,17 @@ namespace DCollector
         // In every file, domain attributes are read and evaluated.
         // If the file domain and the requested domain intersect,
         // the file domain is added to the DataContainer.
-        for (size_t i = 0; i < 3; ++i)
-            max_rank[i] = mpi_size[i] - 1;
-
+        
+        // set new min_rank to top-left corner 
+        max_rank = (mpi_size - Dimensions(1, 1, 1));
+        min_rank = current_mpi_pos;
+        
         bool found_last_entry = false;
-        for (size_t z = current_mpi_pos[2]; z <= max_rank[2]; z++)
+        for (size_t z = min_rank[2]; z <= max_rank[2]; z++)
         {
-            for (size_t y = current_mpi_pos[1]; y <= max_rank[1]; y++)
+            for (size_t y = min_rank[1]; y <= max_rank[1]; y++)
             {
-                for (size_t x = current_mpi_pos[0]; x <= max_rank[0]; x++)
+                for (size_t x = min_rank[0]; x <= max_rank[0]; x++)
                 {
                     Dimensions mpi_position(x, y, z);
 
@@ -510,12 +518,16 @@ namespace DCollector
                             requestSize,
                             lazyLoad))
                     {
-                        if (z == 0)
+                        // readDomainDataForRank returns false if no intersection
+                        // has been found.
+                        // Cut max_rank in the currently extending dimension if
+                        // nothing can be found there, anymore.
+                        if (z == min_rank[2])
                         {
-                            if (y == 0)
-                                max_rank[0] = x;
+                            if (y == min_rank[1])
+                                max_rank[0] = x - 1;
                             else
-                                max_rank[1] = y;
+                                max_rank[1] = y - 1;
                         } else
                         {
                             found_last_entry = true;
@@ -574,7 +586,6 @@ namespace DCollector
 
 #if (DC_DEBUG == 1)
             std::cerr << elements_read.toString() << std::endl;
-            std::cerr << loadingRef->dataElements.toString() << std::endl;
 #endif
 
             if (!(elements_read == loadingRef->dstBuffer))
