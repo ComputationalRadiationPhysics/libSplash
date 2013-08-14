@@ -28,7 +28,6 @@
 #include <iostream>
 #include <stdlib.h>
 #include <cppunit/TestAssert.h>
-#include <mpi/mpi.h>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(Parallel_AttributesTest);
 

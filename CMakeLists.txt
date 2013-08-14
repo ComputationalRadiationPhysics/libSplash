@@ -32,6 +32,7 @@ IF(NOT SPLASH_RELEASE)
 
     IF(DEBUG_VERBOSE)
         ADD_DEFINITIONS(-DSDC_DEBUG_OUTPUT)
+        ADD_DEFINITIONS(-DDC_DEBUG=1)
     ENDIF(DEBUG_VERBOSE)
 
     MESSAGE("building debug version")
@@ -42,7 +43,7 @@ ENDIF(NOT SPLASH_RELEASE)
 
 #-------------------------------------------------------------------------------
 
-SET(SPLASH_LIBS z hdf5)
+SET(SPLASH_LIBS z ${HDF5_LIBRARIES})
 
 # serial or parallel version of libSplash
 SET(SPLASH_CLASSES DCAttribute DCDataSet HandleMgr SerialDataCollector DomainCollector)
