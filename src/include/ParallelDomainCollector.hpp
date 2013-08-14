@@ -48,11 +48,10 @@ namespace DCollector
          * @param comm the MPI_Comm object
          * @param info the MPI_Info object
          * @param topology number of MPI processes in each dimension
-         * @param mpiRank MPI rank in comm
          * @param maxFileHandles maximum number of concurrently opened file handles
          */
         ParallelDomainCollector(MPI_Comm comm, MPI_Info info, const Dimensions topology,
-                int mpiRank, uint32_t maxFileHandles);
+                uint32_t maxFileHandles);
 
         /**
          * Destructor

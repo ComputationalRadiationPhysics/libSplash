@@ -42,8 +42,8 @@ std::string ParallelDomainCollector::getExceptionString(std::string func,
 }
 
 ParallelDomainCollector::ParallelDomainCollector(MPI_Comm comm, MPI_Info info,
-        const Dimensions topology, int mpiRank, uint32_t maxFileHandles) :
-ParallelDataCollector(comm, info, topology, mpiRank, maxFileHandles)
+        const Dimensions topology, uint32_t maxFileHandles) :
+ParallelDataCollector(comm, info, topology, maxFileHandles)
 {
 }
 

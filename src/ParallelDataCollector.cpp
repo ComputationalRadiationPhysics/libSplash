@@ -87,14 +87,15 @@ void ParallelDataCollector::indexToPos(int index, Dimensions mpiSize, Dimensions
  *******************************************************************************/
 
 ParallelDataCollector::ParallelDataCollector(MPI_Comm comm, MPI_Info info,
-        const Dimensions topology, int mpiRank, uint32_t maxFileHandles) :
+        const Dimensions topology, uint32_t maxFileHandles) :
 handles(maxFileHandles, HandleMgr::FNS_ITERATIONS),
 fileStatus(FST_CLOSED)
 {
+    MPI_Comm_rank(comm, &(options.mpiRank));
+    
     options.enableCompression = false;
     options.mpiComm = comm;
     options.mpiInfo = info;
-    options.mpiRank = mpiRank;
     options.mpiSize = topology.getDimSize();
     options.mpiTopology.set(topology);
     options.maxID = -1;
@@ -114,7 +115,7 @@ fileStatus(FST_CLOSED)
     handles.registerFileCreate(fileCreateCallback, &options);
     handles.registerFileOpen(fileOpenCallback, &options);
 
-    indexToPos(mpiRank, options.mpiTopology, options.mpiPos);
+    indexToPos(options.mpiRank, options.mpiTopology, options.mpiPos);
 }
 
 ParallelDataCollector::~ParallelDataCollector()
