@@ -297,7 +297,7 @@ int executeToolFunction(Options& options,
     } else
     {
         // open master file to detect number of files
-        uint32_t fileMPISizeBuffer[3];
+        uint32_t fileMPISizeBuffer[3] = {0, 0, 0};
         Dimensions fileMPISizeDim(0, 0, 0);
         int fileMPISize = 0;
 

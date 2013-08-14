@@ -38,6 +38,7 @@ IF(NOT SPLASH_RELEASE)
     MESSAGE("building debug version")
 ELSE(NOT SPLASH_RELEASE)
     SET(CMAKE_BUILD_TYPE Release)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
     MESSAGE("building release version")
 ENDIF(NOT SPLASH_RELEASE)
 

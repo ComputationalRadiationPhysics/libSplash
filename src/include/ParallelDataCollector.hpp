@@ -398,6 +398,18 @@ namespace DCollector
                 const Dimensions dstOffset,
                 void* data) throw (DCException);
     private:
+        
+        void readGlobalAttribute(const char *name,
+                void* data,
+                Dimensions *mpiPosition = NULL)
+        {
+        }
+
+        void writeGlobalAttribute(const CollectionType& type,
+                const char *name,
+                const void* data)
+        {
+        }
 
         void createReference(int32_t srcID,
                 const char *srcName,
