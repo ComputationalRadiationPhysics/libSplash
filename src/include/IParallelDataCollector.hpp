@@ -195,21 +195,23 @@ namespace DCollector
                 const CollectionType& type,
                 const char *name,
                 const void* data) = 0;
+        
+        /**
+         * {@link DataCollector#readGlobalAttribute}
+         */
+        virtual void readGlobalAttribute(const char *name,
+                void* data,
+                Dimensions *mpiPosition = NULL) = 0;
+
+        /**
+         * {@link DataCollector#writeGlobalAttribute}
+         */
+        virtual void writeGlobalAttribute(const CollectionType& type,
+                const char *name,
+                const void* data) = 0;
 
     private:
         
-        void readGlobalAttribute(const char *name,
-                void* data,
-                Dimensions *mpiPosition = NULL)
-        {
-        }
-
-        void writeGlobalAttribute(const CollectionType& type,
-                const char *name,
-                const void* data)
-        {
-        }
-
         void append(int32_t id,
                 const CollectionType& type,
                 uint32_t count,
