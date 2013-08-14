@@ -19,8 +19,6 @@
  * If not, see <http://www.gnu.org/licenses/>. 
  */
 
-#include <mpi/mpi.h>
-
 #include "basetypes/ColTypeInt.hpp"
 
 #include "ParallelDomainCollector.hpp"

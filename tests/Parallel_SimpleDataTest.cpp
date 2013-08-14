@@ -23,7 +23,6 @@
 
 #include <time.h>
 #include <stdlib.h>
-#include <mpi/mpi.h>
 
 #include "Parallel_SimpleDataTest.h"
 #include "ParallelDataCollector.hpp"

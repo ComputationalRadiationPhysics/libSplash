@@ -20,7 +20,6 @@
  */
 
 #include <assert.h>
-#include <mpi/mpi.h>
 
 #include "ParallelDataCollector.hpp"
 #include "DCParallelDataSet.hpp"

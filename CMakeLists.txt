@@ -43,7 +43,7 @@ ENDIF(NOT SPLASH_RELEASE)
 
 #-------------------------------------------------------------------------------
 
-SET(SPLASH_LIBS z hdf5)
+SET(SPLASH_LIBS z ${HDF5_LIBRARIES})
 
 # serial or parallel version of libSplash
 SET(SPLASH_CLASSES DCAttribute DCDataSet HandleMgr SerialDataCollector DomainCollector)
