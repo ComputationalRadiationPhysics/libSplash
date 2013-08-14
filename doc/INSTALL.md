@@ -7,7 +7,8 @@ Requirements
 **Building** libSplash from source requires to checkout the trunk via Git
 using the command
 `$ git clone git@github.com:ComputationalRadiationPhysics/libSplash.git`
-Building libSplash **requires HDF5** in version 1.8.6 or higher with shared library support.
+Building libSplash **requires HDF5** in version 1.8.6 or higher with **shared library support**
+(`--enable-shared`).
 However, we recommend that you use HDF5 1.8.11 or newer for best support and results.
 
 To use the CMakeLists.txt file which comes with the source code, you must have
@@ -60,7 +61,7 @@ Parallel libSplash
 
 libSplash has **experimental** support for parallel I/O.
 To build the parallel version, you need to build a parallel HDF5 library first.
-Commonly, it should be sufficient to configure HDF5 `$ configure --enable-parallel ...`.
+Commonly, it should be sufficient to configure HDF5 `$ configure --enable-shared --enable-parallel ...`.
 Compile the parallel libSplash with `$ cmake -DPARALLEL=ON ...`.
 
 This builds the *ParallelDataCollector* class.
