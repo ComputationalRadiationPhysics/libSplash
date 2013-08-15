@@ -302,6 +302,17 @@ namespace DCollector
                 uint32_t rank,
                 const CollectionType& type,
                 const char* name) throw (DCException);
+        
+        /**
+         * {@link IParallelDataCollector#append}
+         */
+        void append(int32_t id,
+                const Dimensions size,
+                const CollectionType& type,
+                uint32_t rank,
+                const Dimensions globalOffset,
+                const char *name,
+                const void *data);
 
         /**
          * {@link DataCollector#remove}
@@ -409,6 +420,26 @@ namespace DCollector
         void writeGlobalAttribute(const CollectionType& type,
                 const char *name,
                 const void* data)
+        {
+            
+        }
+        
+        void append(int32_t id,
+                const CollectionType& type,
+                uint32_t count,
+                const char *name,
+                const void *data)
+        {
+            
+        }
+
+        void append(int32_t id,
+                const CollectionType& type,
+                uint32_t count,
+                uint32_t offset,
+                uint32_t stride,
+                const char *name,
+                const void *data)
         {
             
         }

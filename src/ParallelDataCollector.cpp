@@ -542,6 +542,60 @@ void ParallelDataCollector::reserve(int32_t id,
         globalOffset->set(global_offset);
 }
 
+void ParallelDataCollector::append(int32_t id,
+        const Dimensions size,
+        const CollectionType& type,
+        uint32_t rank,
+        const Dimensions globalOffset,
+        const char *name,
+        const void *data)
+{
+    if (name == NULL || data == NULL)
+        throw DCException(getExceptionString("append", "a parameter was NULL"));
+
+    if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
+        throw DCException(getExceptionString("append", "this access is not permitted"));
+
+    if (rank < 1 || rank > 3)
+        throw DCException(getExceptionString("append", "maximum dimension is invalid"));
+
+    // create group for this id/iteration
+    std::stringstream group_id_name;
+    group_id_name << SDC_GROUP_DATA << "/" << id;
+
+    hid_t group_id = -1;
+    H5Handle file_handle = handles.get(id);
+
+    group_id = H5Gopen(file_handle, group_id_name.str().c_str(), H5P_DEFAULT);
+    if (group_id < 0)
+        group_id = H5Gcreate(file_handle, group_id_name.str().c_str(), H5P_LINK_CREATE_DEFAULT,
+            H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
+
+    if (group_id < 0)
+        throw DCException(getExceptionString("append", "failed to open or create group"));
+
+    // write data to the dataset
+    try
+    {
+        DCParallelDataSet dataset(name);
+
+        if (!dataset.open(group_id))
+        {
+            throw DCException(getExceptionString("append", "Cannot open dataset (missing reserve?)", name));
+        } else
+            dataset.write(size, Dimensions(1, 1, 1), Dimensions(0, 0, 0), size, globalOffset, data);
+
+        dataset.close();
+    } catch (DCException)
+    {
+        H5Gclose(group_id);
+        throw;
+    }
+
+    // cleanup
+    H5Gclose(group_id);
+}
+
 void ParallelDataCollector::remove(int32_t id)
 throw (DCException)
 {

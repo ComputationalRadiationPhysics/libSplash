@@ -209,28 +209,30 @@ namespace DCollector
         virtual void writeGlobalAttribute(const CollectionType& type,
                 const char *name,
                 const void* data) = 0;
-
-    private:
         
-        void append(int32_t id,
+        virtual void append(int32_t id,
+                const Dimensions size,
+                const CollectionType& type,
+                uint32_t rank,
+                const Dimensions globalOffset,
+                const char *name,
+                const void *data) = 0;
+        
+        virtual void append(int32_t id,
                 const CollectionType& type,
                 uint32_t count,
                 const char *name,
-                const void *data)
-        {
+                const void *data) = 0;
 
-        }
-
-        void append(int32_t id,
+        virtual void append(int32_t id,
                 const CollectionType& type,
                 uint32_t count,
                 uint32_t offset,
                 uint32_t stride,
                 const char *name,
-                const void *data)
-        {
+                const void *data) = 0;
 
-        }
+    private:
     };
 }
 
