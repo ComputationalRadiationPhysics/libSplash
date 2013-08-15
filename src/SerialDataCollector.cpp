@@ -128,7 +128,7 @@ namespace DCollector
     throw (DCException)
     {
 #if defined SDC_DEBUG_OUTPUT
-        std::cerr << "opening data collector..." << std::endl;
+        std::cerr << "opening serial data collector..." << std::endl;
 #endif
 
         if (filename == NULL)
@@ -157,7 +157,7 @@ namespace DCollector
     void SerialDataCollector::close()
     {
 #if defined SDC_DEBUG_OUTPUT
-        std::cerr << "closing data collector..." << std::endl;
+        std::cerr << "closing serial data collector..." << std::endl;
 #endif
 
         if (fileStatus == FST_CREATING || fileStatus == FST_WRITING)

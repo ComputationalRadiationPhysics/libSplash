@@ -401,7 +401,7 @@ namespace DCollector
     {
 #if defined SDC_DEBUG_OUTPUT
         std::cerr << "# DCDataSet::read #" << std::endl;
-        std::cerr << std::endl << "reading: " << name << std::endl;
+        std::cerr << " reading: " << name << std::endl;
 #endif
         if (!opened)
             throw DCException(getExceptionString("read: Dataset has not been opened/created"));
@@ -418,13 +418,13 @@ namespace DCollector
         if (dst != NULL && getRank() > 0)
         {
 #if defined SDC_DEBUG_OUTPUT
-            std::cerr << "rank = " << rank << std::endl;
-            std::cerr << "logical_size = " << getLogicalSize().toString() << std::endl;
-            std::cerr << "physical_size = " << getPhysicalSize().toString() << std::endl;
-            std::cerr << "[1] dstBuffer = " << dstBuffer.toString() << std::endl;
-            std::cerr << "[1] dstOffset = " << dstOffset.toString() << std::endl;
-            std::cerr << "[1] srcSize = " << srcSize.toString() << std::endl;
-            std::cerr << "[1] srcOffset = " << srcOffset.toString() << std::endl;
+            std::cerr << " rank = " << rank << std::endl;
+            std::cerr << " logical_size = " << getLogicalSize().toString() << std::endl;
+            std::cerr << " physical_size = " << getPhysicalSize().toString() << std::endl;
+            std::cerr << " [1] dstBuffer = " << dstBuffer.toString() << std::endl;
+            std::cerr << " [1] dstOffset = " << dstOffset.toString() << std::endl;
+            std::cerr << " [1] srcSize = " << srcSize.toString() << std::endl;
+            std::cerr << " [1] srcOffset = " << srcOffset.toString() << std::endl;
 #endif
 
             dstBuffer.swapDims(rank);
@@ -433,10 +433,10 @@ namespace DCollector
             srcOffset.swapDims(rank);
 
 #if defined SDC_DEBUG_OUTPUT
-            std::cerr << "[2] dstBuffer = " << dstBuffer.toString() << std::endl;
-            std::cerr << "[2] dstOffset = " << dstOffset.toString() << std::endl;
-            std::cerr << "[2] srcSize = " << srcSize.toString() << std::endl;
-            std::cerr << "[2] srcOffset = " << srcOffset.toString() << std::endl;
+            std::cerr << " [2] dstBuffer = " << dstBuffer.toString() << std::endl;
+            std::cerr << " [2] dstOffset = " << dstOffset.toString() << std::endl;
+            std::cerr << " [2] srcSize = " << srcSize.toString() << std::endl;
+            std::cerr << " [2] srcOffset = " << srcOffset.toString() << std::endl;
 #endif
 
             hid_t dst_dataspace = H5Screate_simple(rank, dstBuffer.getPointer(), NULL);
@@ -528,8 +528,8 @@ namespace DCollector
         srcRank = this->rank;
 
 #if defined SDC_DEBUG_OUTPUT
-        std::cerr << "returns rank = " << rank << std::endl;
-        std::cerr << "returns sizeRead = " << sizeRead.toString() << std::endl;
+        std::cerr << " returns rank = " << rank << std::endl;
+        std::cerr << " returns sizeRead = " << sizeRead.toString() << std::endl;
 #endif
     }
 
@@ -553,7 +553,7 @@ namespace DCollector
     {
 #if defined SDC_DEBUG_OUTPUT
         std::cerr << "# DCDataSet::write #" << std::endl;
-        std::cerr << std::endl << "writing: " << name << std::endl;
+        std::cerr << " writing: " << name << std::endl;
 #endif
 
         if (!opened)
@@ -563,15 +563,15 @@ namespace DCollector
             throw DCException(getExceptionString("write: Cannot write NULL data"));
 
 #if defined SDC_DEBUG_OUTPUT
-        std::cerr << "rank = " << rank << std::endl;
-        std::cerr << "logical_size = " << getLogicalSize().toString() << std::endl;
-        std::cerr << "physical_size = " << getPhysicalSize().toString() << std::endl;
+        std::cerr << " rank = " << rank << std::endl;
+        std::cerr << " logical_size = " << getLogicalSize().toString() << std::endl;
+        std::cerr << " physical_size = " << getPhysicalSize().toString() << std::endl;
 
-        std::cerr << "[1] src_buffer = " << srcBuffer.toString() << std::endl;
-        std::cerr << "[1] src_stride = " << srcStride.toString() << std::endl;
-        std::cerr << "[1] src_data = " << srcData.toString() << std::endl;
-        std::cerr << "[1] src_offset = " << srcOffset.toString() << std::endl;
-        std::cerr << "[1] dst_offset = " << dstOffset.toString() << std::endl;
+        std::cerr << " [1] src_buffer = " << srcBuffer.toString() << std::endl;
+        std::cerr << " [1] src_stride = " << srcStride.toString() << std::endl;
+        std::cerr << " [1] src_data = " << srcData.toString() << std::endl;
+        std::cerr << " [1] src_offset = " << srcOffset.toString() << std::endl;
+        std::cerr << " [1] dst_offset = " << dstOffset.toString() << std::endl;
 #endif
         // swap dimensions if necessary
         srcBuffer.swapDims(rank);
@@ -581,11 +581,11 @@ namespace DCollector
         dstOffset.swapDims(rank);
 
 #if defined SDC_DEBUG_OUTPUT
-        std::cerr << "[2] src_buffer = " << srcBuffer.toString() << std::endl;
-        std::cerr << "[2] src_stride = " << srcStride.toString() << std::endl;
-        std::cerr << "[2] src_data = " << srcData.toString() << std::endl;
-        std::cerr << "[2] src_offset = " << srcOffset.toString() << std::endl;
-        std::cerr << "[2] dst_offset = " << dstOffset.toString() << std::endl;
+        std::cerr << " [2] src_buffer = " << srcBuffer.toString() << std::endl;
+        std::cerr << " [2] src_stride = " << srcStride.toString() << std::endl;
+        std::cerr << " [2] src_data = " << srcData.toString() << std::endl;
+        std::cerr << " [2] src_offset = " << srcOffset.toString() << std::endl;
+        std::cerr << " [2] dst_offset = " << dstOffset.toString() << std::endl;
 #endif
 
         // dataspace to read from
@@ -601,12 +601,21 @@ namespace DCollector
                     srcStride.getPointer(), srcData.getPointer(), NULL) < 0 ||
                     H5Sselect_valid(dsp_src) <= 0)
                 throw DCException(getExceptionString("write: Invalid source hyperslap selection"));
+            
+            if (srcData.getDimSize() == 0)
+                H5Sselect_none(dsp_src);
 
             // dataspace to write to
             if (H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, dstOffset.getPointer(),
                     NULL, srcData.getPointer(), NULL) < 0 ||
                     H5Sselect_valid(dataspace) <= 0)
                 throw DCException(getExceptionString("write: Invalid target hyperslap selection"));
+            
+            if (srcData.getDimSize() == 0)
+            {
+                H5Sselect_none(dataspace);
+                data = NULL;
+            }
 
             // write data to the dataset
             if (H5Dwrite(dataset, this->datatype, dsp_src, dataspace, dsetWriteProperties, data) < 0)
@@ -638,7 +647,7 @@ namespace DCollector
             throw DCException(getExceptionString("append: Dataset has not been opened/created."));
 
 #if defined SDC_DEBUG_OUTPUT
-        std::cerr << "logical_size = " << getLogicalSize().toString() << std::endl;
+        std::cerr << " logical_size = " << getLogicalSize().toString() << std::endl;
 #endif
 
         Dimensions target_offset(getLogicalSize());
@@ -656,7 +665,7 @@ namespace DCollector
         max_dims = NULL;
 
 #if defined SDC_DEBUG_OUTPUT
-        std::cerr << "logical_size = " << getLogicalSize().toString() << std::endl;
+        std::cerr << " logical_size = " << getLogicalSize().toString() << std::endl;
 #endif
 
         if (H5Dset_extent(dataset, getLogicalSize().getPointer()) < 0)

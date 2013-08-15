@@ -68,8 +68,7 @@ private:
      * sub function for testWriteRead to allow several numbers of elements.
      */
     bool subtestFill(int32_t iteration, int currentMpiRank, const Dimensions mpiSize,
-            const Dimensions mpiPos, uint32_t elements,
-            uint32_t dimensions, MPI_Comm mpiComm);
+            const Dimensions mpiPos, uint32_t elements, MPI_Comm mpiComm);
 
     ColTypeInt ctInt;
     IParallelDataCollector *parallelDataCollector;

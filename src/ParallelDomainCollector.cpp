@@ -414,7 +414,6 @@ throw (DCException)
 
 #if (DC_DEBUG == 1)
         std::cerr << elements_read.toString() << std::endl;
-        std::cerr << loadingRef->dataElements.toString() << std::endl;
 #endif
 
         if (!(elements_read == loadingRef->dstBuffer))

@@ -125,6 +125,10 @@ ParallelDataCollector::~ParallelDataCollector()
 void ParallelDataCollector::open(const char* filename, FileCreationAttr &attr)
 throw (DCException)
 {
+#if defined SDC_DEBUG_OUTPUT
+    std::cerr << "opening parallel data collector..." << std::endl;
+#endif
+        
     if (filename == NULL)
         throw DCException(getExceptionString("open", "filename must not be null"));
 
@@ -147,7 +151,11 @@ throw (DCException)
 }
 
 void ParallelDataCollector::close()
-{
+{ 
+#if defined SDC_DEBUG_OUTPUT
+    std::cerr << "closing parallel data collector..." << std::endl;
+#endif   
+   
     // close opened hdf5 file handles
     handles.close();
 
@@ -252,7 +260,7 @@ throw (DCException)
     if (attrName == NULL || dataName == NULL || data == NULL)
         throw DCException(getExceptionString("readAttribute", "a parameter was null"));
 
-    if (fileStatus == FST_CLOSED || fileStatus == FST_CREATING)
+    if (fileStatus == FST_CLOSED)
         throw DCException(getExceptionString("readAttribute", "this access is not permitted"));
 
     std::stringstream group_id_name;

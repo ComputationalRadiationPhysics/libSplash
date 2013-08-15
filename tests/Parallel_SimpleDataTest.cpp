@@ -315,7 +315,7 @@ void Parallel_SimpleDataTest::testWriteRead()
 bool Parallel_SimpleDataTest::subtestFill(int32_t iteration,
         int currentMpiRank,
         const Dimensions mpiSize, const Dimensions mpiPos,
-        uint32_t elements, uint32_t dimensions, MPI_Comm mpiComm)
+        uint32_t elements, MPI_Comm mpiComm)
 {
     bool results_correct = true;
     DataCollector::FileCreationAttr fileCAttr;
@@ -334,13 +334,22 @@ bool Parallel_SimpleDataTest::subtestFill(int32_t iteration,
     int dataWrite = currentMpiRank + 1;
     uint32_t num_elements = (currentMpiRank + 1) * elements;
     Dimensions grid_size(num_elements, 1, 1);
+    
+#if defined TESTS_DEBUG
+    std::cout << "[" << currentMpiRank << "] " << num_elements << " elements" << std::endl;
+#endif
 
     Dimensions globalOffset, globalSize;
     parallelDataCollector->reserve(iteration, grid_size,
             &globalSize, &globalOffset, 1, ctInt, "reserved_data");
+    
+    int attrVal = currentMpiRank;
+    parallelDataCollector->writeAttribute(iteration, ctInt, "reserved_data",
+            "reserved_attr", &attrVal);
 
     uint32_t elements_written = 0;
-    for (size_t i = 0; i < mpiSize.getDimSize() * num_elements; ++i)
+    uint32_t global_max_elements = mpiSize.getDimSize() * elements;
+    for (size_t i = 0; i < global_max_elements; ++i)
     {
         Dimensions write_size(1, 1, 1);
         if (i >= num_elements)
@@ -348,12 +357,20 @@ bool Parallel_SimpleDataTest::subtestFill(int32_t iteration,
 
         Dimensions write_offset(globalOffset + Dimensions(elements_written, 0, 0));
 
-        parallelDataCollector->write(iteration, globalSize, write_offset, ctInt, 1,
-                write_size, "reserved_data", &dataWrite);
+        parallelDataCollector->append(iteration, write_size, ctInt, 1,
+                write_offset, "reserved_data", &dataWrite);
 
         if (i < num_elements)
             elements_written++;
     }
+    
+    MPI_CHECK(MPI_Barrier(mpiComm));
+    
+    attrVal = -1;
+    parallelDataCollector->readAttribute(iteration, "reserved_data",
+            "reserved_attr", &attrVal, NULL);
+    
+    CPPUNIT_ASSERT(attrVal == currentMpiRank);
 
     parallelDataCollector->close();
 
@@ -378,7 +395,7 @@ bool Parallel_SimpleDataTest::subtestFill(int32_t iteration,
         DataCollector *dataCollector = new SerialDataCollector(1);
         dataCollector->open(filename_stream.str().c_str(), fileCAttr);
 
-        dataCollector->read(iteration, ctInt, "data", size_read, data_read);
+        dataCollector->read(iteration, ctInt, "reserved_data", size_read, data_read);
         dataCollector->close();
         delete dataCollector;
 
@@ -408,7 +425,6 @@ bool Parallel_SimpleDataTest::subtestFill(int32_t iteration,
 
 void Parallel_SimpleDataTest::testFill()
 {
-    uint32_t dimensions = 3;
     int32_t iteration = 0;
 
     for (uint32_t mpi_z = 1; mpi_z < 3; ++mpi_z)
@@ -448,13 +464,13 @@ void Parallel_SimpleDataTest::testFill()
                     parallelDataCollector = new ParallelDataCollector(mpi_current_comm,
                             MPI_INFO_NULL, mpi_size, 10);
 
-                    for (uint32_t elements = 1; elements < 8; elements++)
+                    for (uint32_t elements = 1; elements <= 8; elements++)
                     {
                         if (my_current_mpi_rank == 0)
                         {
 #if defined TESTS_DEBUG
-                            std::cout << std::endl << "** testing grid_size = " <<
-                                    grid_size.toString() << " with mpi size " <<
+                            std::cout << std::endl << "** testing elements = " <<
+                                    elements << " with mpi size " <<
                                     mpi_size.toString() << std::endl;
 #else
                             std::cout << "." << std::flush;
@@ -468,7 +484,6 @@ void Parallel_SimpleDataTest::testFill()
                                 mpi_size,
                                 current_mpi_pos,
                                 elements,
-                                dimensions,
                                 mpi_current_comm));
 
                         MPI_CHECK(MPI_Barrier(mpi_current_comm));
@@ -482,7 +497,7 @@ void Parallel_SimpleDataTest::testFill()
                     MPI_Comm_free(&mpi_current_comm);
 
                 } else
-                    iteration += (8 - 1) * (8 - 5) * (8 - 5);
+                    iteration += 8;
 
                 MPI_CHECK(MPI_Barrier(MPI_COMM_WORLD));
 
