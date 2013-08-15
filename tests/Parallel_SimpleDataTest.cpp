@@ -158,7 +158,7 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
     // test using full read per process
     memset(data_read, 0, sizeof (int) * full_grid_size.getDimSize());
     ParallelDataCollector *readCollector = new ParallelDataCollector(mpiComm,
-            MPI_INFO_NULL, mpiSize, currentMpiRank, 1);
+            MPI_INFO_NULL, mpiSize, 1);
 
     readCollector->open(HDF5_FILE, fileCAttr);
     readCollector->read(iteration, ctInt, "data", size_read, data_read);
@@ -263,7 +263,7 @@ void Parallel_SimpleDataTest::testWriteRead()
 #endif
 
                     parallelDataCollector = new ParallelDataCollector(mpi_current_comm,
-                            MPI_INFO_NULL, mpi_size, my_current_mpi_rank, 10);
+                            MPI_INFO_NULL, mpi_size, 10);
 
                     for (uint32_t k = 1; k < 8; k++)
                         for (uint32_t j = 5; j < 8; j++)
@@ -446,7 +446,7 @@ void Parallel_SimpleDataTest::testFill()
 #endif
 
                     parallelDataCollector = new ParallelDataCollector(mpi_current_comm,
-                            MPI_INFO_NULL, mpi_size, my_current_mpi_rank, 10);
+                            MPI_INFO_NULL, mpi_size, 10);
 
                     for (uint32_t elements = 1; elements < 8; elements++)
                     {

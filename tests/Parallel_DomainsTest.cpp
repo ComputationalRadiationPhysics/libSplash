@@ -248,7 +248,7 @@ void Parallel_DomainsTest::testGridDomains()
 #endif
 
                     parallelDomainCollector = new ParallelDomainCollector(mpi_current_comm,
-                            MPI_INFO_NULL, mpi_size, my_current_mpi_rank, 10);
+                            MPI_INFO_NULL, mpi_size, 10);
 
                     for (uint32_t k = MIN_K; k < MAX_K; k++)
                         for (uint32_t j = MIN_J; j < MAX_J; j++)
@@ -466,7 +466,7 @@ void Parallel_DomainsTest::testPolyDomains()
 #endif
 
                     parallelDomainCollector = new ParallelDomainCollector(mpi_current_comm,
-                            MPI_INFO_NULL, mpi_size, my_current_mpi_rank, 10);
+                            MPI_INFO_NULL, mpi_size, 10);
 
                     for (uint32_t elements = 1; elements <= 10; elements++)
                     {

@@ -61,8 +61,7 @@ void Parallel_AttributesTest::testDataAttributes()
     DataCollector::initFileCreationAttr(attr);
 
     IParallelDataCollector *dataCollector = new ParallelDataCollector(
-            MPI_COMM_WORLD, MPI_INFO_NULL, Dimensions(MPI_SIZE_X, MPI_SIZE_Y, 1),
-            mpiRank, 1);
+            MPI_COMM_WORLD, MPI_INFO_NULL, Dimensions(MPI_SIZE_X, MPI_SIZE_Y, 1), 1);
     dataCollector->open(TEST_FILE, attr);
 
     int *dummy_data = new int[BUF_SIZE * 2];
@@ -121,8 +120,7 @@ void Parallel_AttributesTest::testArrayTypes()
     Dimensions dim_write(104, 0, 2);
 
     IParallelDataCollector *dataCollector = new ParallelDataCollector(
-            MPI_COMM_WORLD, MPI_INFO_NULL, Dimensions(MPI_SIZE_X, MPI_SIZE_Y, 1),
-            mpiRank, 1);
+            MPI_COMM_WORLD, MPI_INFO_NULL, Dimensions(MPI_SIZE_X, MPI_SIZE_Y, 1), 1);
 
     dataCollector->open(TEST_FILE2, attr);
     dataCollector->writeGlobalAttribute(10, ctInt3Array, "testposition", array_data_write);

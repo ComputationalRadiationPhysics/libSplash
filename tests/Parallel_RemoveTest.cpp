@@ -45,7 +45,7 @@ ctInt()
     CPPUNIT_ASSERT(mpiSize == MPI_SIZE_X);
     
     dataCollector = new ParallelDataCollector(MPI_COMM_WORLD,
-            MPI_INFO_NULL, Dimensions(MPI_SIZE_X, 1, 1), mpiRank, 1);
+            MPI_INFO_NULL, Dimensions(MPI_SIZE_X, 1, 1), 1);
 }
 
 Parallel_RemoveTest::~Parallel_RemoveTest()

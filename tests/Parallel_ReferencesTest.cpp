@@ -42,7 +42,7 @@ ctInt()
     MPI_Comm_size(MPI_COMM_WORLD, &mpiSize);
 
     dataCollector = new ParallelDataCollector(MPI_COMM_WORLD, MPI_INFO_NULL,
-            Dimensions(mpiSize, 1, 1), mpiRank, 10);
+            Dimensions(mpiSize, 1, 1), 10);
 }
 
 Parallel_ReferencesTest::~Parallel_ReferencesTest()

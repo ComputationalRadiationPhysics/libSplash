@@ -169,8 +169,8 @@ namespace DCollector
         // note that this won't free the memory occupied by this
         // dataset, however, there currently is no function to delete
         // a dataset
-        if (checkExistence && H5Lexists(group, name.c_str(), H5P_LINK_ACCESS_DEFAULT))
-            H5Gunlink(group, name.c_str());
+        if (!checkExistence || (checkExistence && H5Lexists(group, name.c_str(), H5P_LINK_ACCESS_DEFAULT)))
+            H5Ldelete(group, name.c_str(), H5P_LINK_ACCESS_DEFAULT);
 
         this->rank = rank;
         this->compression = compression;
