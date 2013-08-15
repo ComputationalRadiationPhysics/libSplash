@@ -182,6 +182,32 @@ namespace DCollector
                 const Dimensions globalDomainSize,
                 DomDataClass dataClass,
                 const void* data) = 0;
+        
+        /**
+         * Reserves a dataset with annotated domain information for parallel access. 
+         * 
+         * @param id id for fileentry. e.g. iteration
+         * @param size intended 3D dimension for local dataset
+         * @param globalSize if not NULL, returns the global size of the dataset
+         * @param globalOffset if not NULL, returns the global offset for the calling process
+         * @param rank maximum dimension (must be between 1-3)
+         * @param type type information for data. available types must be
+         * implemented by concrete DataCollector
+         * @param name name for the dataset, e.g. 'ions'
+         * @param domainOffset offset of this subdomain in the domain
+         * @param domainSize size of this subdomain in the domain
+         * @param dataClass subdomain type annotation
+         */
+        virtual void reserveDomain(int32_t id,
+                const Dimensions size,
+                Dimensions *globalSize,
+                Dimensions *globalOffset,
+                uint32_t rank,
+                const CollectionType& type,
+                const char* name,
+                const Dimensions domainOffset,
+                const Dimensions domainSize,
+                DomDataClass dataClass) = 0;
     };
 
 }
