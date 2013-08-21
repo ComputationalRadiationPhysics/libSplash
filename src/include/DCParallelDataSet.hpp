@@ -36,7 +36,11 @@ namespace DCollector
         DCDataSet(name)
         {
             dsetWriteProperties = H5Pcreate(H5P_DATASET_XFER);
+#if defined (SPLASH_INDEPENDENT_IO)
+            H5Pset_dxpl_mpio(dsetWriteProperties, H5FD_MPIO_INDEPENDENT);
+#else
             H5Pset_dxpl_mpio(dsetWriteProperties, H5FD_MPIO_COLLECTIVE);
+#endif
 
             dsetReadProperties = H5Pcreate(H5P_DATASET_XFER);
             H5Pset_dxpl_mpio(dsetReadProperties, H5FD_MPIO_COLLECTIVE);

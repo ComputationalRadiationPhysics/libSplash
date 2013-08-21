@@ -57,6 +57,12 @@ IF(PARALLEL)
     #    MESSAGE(FATAL_ERROR "Your HDF5 library does not support parallel I/O")
     #ENDIF(NOT HDF5_ENABLE_PARALLEL)
 
+    OPTION(COLLECTIVE_IO "use HDF5 collective IO" ON)
+    IF(NOT COLLECTIVE_IO)
+        ADD_DEFINITIONS(-DSPLASH_INDEPENDENT_IO=1)
+        MESSAGE("hdf5 independent IO")
+    ENDIF(NOT COLLECTIVE_IO)
+
     # MPI is required package
     FIND_PACKAGE(MPI REQUIRED)
     INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
