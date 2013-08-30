@@ -609,7 +609,8 @@ void ParallelDomainCollector::appendDomain(int32_t id,
         const void *data)
 throw (DCException)
 {
-    throw DCException("Not yet implemented");
+    throw DCException("This feature is not supported in ParallelDomainCollector. "
+            "Use ParallelDataCollector::append instead.");
 }
 
 void ParallelDomainCollector::gatherMPIDomains(int rank,

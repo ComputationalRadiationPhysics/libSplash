@@ -586,6 +586,7 @@ void ParallelDataCollector::append(int32_t id,
     try
     {
         DCParallelDataSet dataset(name);
+        dataset.setWriteIndependent();
 
         if (!dataset.open(group_id))
         {
