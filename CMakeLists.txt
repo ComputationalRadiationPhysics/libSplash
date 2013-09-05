@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 2.6)
 project (libSplash)
 
 #set helper pathes to find libraries and packages
-set(CMAKE_PREFIX_PATH "$ENV{MPI_ROOT}" "$ENV{BOOST_ROOT}" "$ENV{HDF5_ROOT}")
+set(CMAKE_PREFIX_PATH "$ENV{MPI_ROOT}" "$ENV{HDF5_ROOT}")
 
 #-------------------------------------------------------------------------------
 
@@ -118,11 +118,7 @@ OPTION(WITH_TOOLS "enable splashtools" ON)
 IF(WITH_TOOLS)
     MESSAGE("building splashtools")
 
-    # Boost from system
-    FIND_PACKAGE(Boost REQUIRED COMPONENTS program_options)
-    INCLUDE_DIRECTORIES(AFTER ${Boost_INCLUDE_DIRS})
-    LINK_DIRECTORIES(${Boost_LIBRARY_DIR})
-    SET(TOOLS_LIBS splash_static m ${Boost_LIBRARIES})
+    SET(TOOLS_LIBS ${TOOLS_LIBS} splash_static)
 
     # MPI for tools
     OPTION(TOOLS_MPI "enable splashtools MPI support" OFF)
@@ -136,6 +132,10 @@ IF(WITH_TOOLS)
         ADD_DEFINITIONS(-DENABLE_MPI=1)
         SET(TOOLS_LIBS ${TOOLS_LIBS} ${MPI_LIBRARIES})
         MESSAGE("building tools MPI version")
+    ELSE(TOOLS_MPI)
+        IF(PARALLEL)
+            SET(TOOLS_LIBS ${TOOLS_LIBS} ${MPI_LIBRARIES})
+        ENDIF(PARALLEL)
     ENDIF(TOOLS_MPI)
 
     ADD_EXECUTABLE(splashtools ${TOOLS_SOURCES})
