@@ -7,7 +7,7 @@ script:
   - SRC=`pwd`
   - mkdir -p ~/build ~/lib
   - cd ~/build
-  - cmake -DCMAKE_INSTALL_PREFIX=~/lib/splash $SRC/tests
+  - cmake -DPARALLEL=ON -DCMAKE_INSTALL_PREFIX=~/lib/splash $SRC/tests
   - make
   - cd ..
   - $SRC/tests/run_tests
@@ -16,4 +16,4 @@ script:
 before_script:
   - echo "yes" | sudo add-apt-repository ppa:jsm-8/lofar-deps
   - sudo apt-get update -qq
-  - sudo apt-get install -qq libopenmpi-dev libhdf5-openmpi-dev libcppunit-dev libboost-program-options-dev
+  - sudo apt-get install -qq libopenmpi-dev libhdf5-openmpi-dev libcppunit-dev libboost-program-options-dev openmpi-bin

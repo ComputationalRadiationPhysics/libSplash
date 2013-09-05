@@ -53,6 +53,10 @@ Parallel_AttributesTest::Parallel_AttributesTest()
 
 Parallel_AttributesTest::~Parallel_AttributesTest()
 {
+    int finalized;
+    MPI_Finalized(&finalized);
+    if (!finalized)
+        MPI_Finalize();
 }
 
 void Parallel_AttributesTest::testDataAttributes()
