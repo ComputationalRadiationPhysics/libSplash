@@ -55,6 +55,11 @@ Parallel_RemoveTest::~Parallel_RemoveTest()
         delete dataCollector;
         dataCollector = NULL;
     }
+
+    int finalized;
+    MPI_Finalized(&finalized);
+    if (!finalized)
+        MPI_Finalize();
 }
 
 void Parallel_RemoveTest::testRemove()

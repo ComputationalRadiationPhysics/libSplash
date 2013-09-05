@@ -54,6 +54,11 @@ DomainsTest::~DomainsTest()
         delete dataCollector;
         dataCollector = NULL;
     }
+
+    int finalized;
+    MPI_Finalized(&finalized);
+    if (!finalized)
+       MPI_Finalize();
 }
 
 void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions gridSize,

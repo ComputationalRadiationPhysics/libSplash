@@ -55,7 +55,10 @@ parallelDataCollector(NULL)
 
 Parallel_SimpleDataTest::~Parallel_SimpleDataTest()
 {
-
+    int finalized;
+    MPI_Finalized(&finalized);
+    if (!finalized)
+        MPI_Finalize();
 }
 
 bool Parallel_SimpleDataTest::testData(const Dimensions mpiSize,
