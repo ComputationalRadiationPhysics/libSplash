@@ -15,6 +15,11 @@ LINK_DIRECTORIES(${HDF5_LIBRARY_DIRS})
 FIND_PACKAGE(MPI REQUIRED)
 INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
 
+# CPPUNIT is required package (not available yet)
+#FIND_PACKAGE(CppUnit REQUIRED)
+#INCLUDE_DIRECTORIES(${CPPUNIT_INCLUDE_DIR})
+#LINK_DIRECTORIES(${CPPUNIT_LIBRARIES})
+
 #-------------------------------------------------------------------------------
 
 OPTION(TESTS_DEBUG "enable debug output for tests" OFF)
