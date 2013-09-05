@@ -36,7 +36,7 @@ OK=$(( OK + $? ))
 
 
 echo -e "\nTesting simple data read/write (parallel)...\n"
-mpirun -n 8 ./Parallel_SimpleDataTest.cpp.out
+#mpirun -n 8 ./Parallel_SimpleDataTest.cpp.out
 OK=$(( OK + $? ))
 
 echo -e "\nTesting domains (parallel)...\n"
