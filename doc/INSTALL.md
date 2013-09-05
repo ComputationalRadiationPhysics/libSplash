@@ -7,13 +7,17 @@ Requirements
 **Building** libSplash from source requires to checkout the trunk via Git
 using the command
 `$ git clone git@github.com:ComputationalRadiationPhysics/libSplash.git`
-Building libSplash **requires HDF5** in version 1.8.6 or higher with **shared library support**
+
+Building libSplash **requires HDF5 in version 1.8.6** or higher with **shared library support**
 (`--enable-shared`).
 However, we recommend that you use HDF5 1.8.11 or newer for best support and results.
 
 To use the CMakeLists.txt file which comes with the source code, you must have
 **CMake version 2.6** or higher installed.
 
+The splashtools and some tests also require an **OpenMPI** compatible MPI library.
+
+Tests require the development version of the **CppUnit** library.
 
 
 Compiling
@@ -34,6 +38,7 @@ pass `-DSPLASH_RELEASE=OFF` to your cmake command.
 To see verbose internal (!) debug output for libSplash, pass `-DSPLASH_RELEASE=OFF -DDEBUG_VERBOSE=ON`
 to your cmake command line.
 
+
 Linking
 -------
 
@@ -47,6 +52,11 @@ Tests
 libSplash includes several tests in the `tests` subdirectory.
 Tests differ for the serial and parallel version (see below) of libSplash.
 You can build the tests by running cmake on the `tests/CMakeLists.txt` file.
+Tests can be run using the `run_tests` and `run_parallel_tests` scripts.
+
+`run_parallel_tests` runs tests for the parallel libSplash version and
+requires the tests to be build with `$ cmake -DPARALLEL=ON`.
+See section *Parallel libSplash* for details.
 
 
 Documentation
@@ -64,6 +74,8 @@ To build the parallel version, you need to build a parallel HDF5 library first.
 Commonly, it should be sufficient to configure HDF5 `$ configure --enable-shared --enable-parallel ...`.
 Compile the parallel libSplash with `$ cmake -DPARALLEL=ON ...`.
 
-This builds the *ParallelDataCollector* class.
+This builds the *ParallelDataCollector* and *ParallelDomainCollector* classes.
 *Please note that this feature is experimental and not fully tested!*
-See *IParallelDataCollector* interface for further information on how to use the parallel version.
+See *IParallelDataCollector* and *IParallelDomainCollector* interfaces for further
+information on how to use the parallel version.
+
