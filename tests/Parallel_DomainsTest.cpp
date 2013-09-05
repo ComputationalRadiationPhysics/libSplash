@@ -56,6 +56,10 @@ parallelDomainCollector(NULL)
 
 Parallel_DomainsTest::~Parallel_DomainsTest()
 {
+    int finalized;
+    MPI_Finalized(&finalized);
+    if (!finalized)
+        MPI_Finalize();
 }
 
 static void indexToPos(int index, Dimensions mpiSize, Dimensions &mpiPos)
