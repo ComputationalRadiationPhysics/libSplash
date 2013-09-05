@@ -276,7 +276,7 @@ throw (DCException)
         for (uint32_t i = 0; i < rank; ++i)
         {
             dst_offset[i] = std::max((int64_t) client_domain.getStart()[i] -
-                    (int64_t) requestOffset[i], 0L);
+                    (int64_t) requestOffset[i], (int64_t)0);
 
             if (requestOffset[i] <= client_start[i])
             {
