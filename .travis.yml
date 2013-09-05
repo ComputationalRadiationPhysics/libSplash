@@ -1,5 +1,10 @@
 language: cpp
 
+branches:
+  except:
+    - master
+    - axel
+
 compiler:
   - gcc
 
