@@ -23,6 +23,7 @@
 
 #include <time.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "Parallel_SimpleDataTest.h"
 #include "ParallelDataCollector.hpp"
