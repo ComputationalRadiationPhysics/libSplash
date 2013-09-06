@@ -24,6 +24,7 @@
 #include <vector>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define RESULT_OK 0
 #define RESULT_ERROR 1
