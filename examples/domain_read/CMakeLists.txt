@@ -23,11 +23,8 @@ cmake_minimum_required(VERSION 2.8)
 project (domain_read)
 set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{HDF5_ROOT}")
 
-OPTION(RELEASE "disable all debug asserts" ON)
-IF(NOT RELEASE)
-    SET(CMAKE_CXX_FLAGS_DEBUG "-g -Wall")
-    SET(CMAKE_BUILD_TYPE Debug)
-ENDIF(NOT RELEASE)
+SET(CMAKE_CXX_FLAGS_DEBUG "-g")
+SET(CMAKE_BUILD_TYPE Debug)
 
 FIND_PACKAGE(HDF5 REQUIRED)
 INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
@@ -54,5 +51,10 @@ ADD_EXECUTABLE(domain_read
      "domain_read.cpp"
 )
 
+ADD_EXECUTABLE(domain_read_mpi
+     "domain_read_mpi.cpp"
+)
+
 TARGET_LINK_LIBRARIES(domain_read m ${LIBS})
+TARGET_LINK_LIBRARIES(domain_read_mpi m ${LIBS})
 

@@ -76,8 +76,7 @@ namespace DCollector
             fileAccType(FAT_CREATE),
             mpiSize(1, 1, 1),
             mpiPosition(0, 0, 0),
-            enableCompression(false),
-            maxFileHandles(100)
+            enableCompression(false)
             {
 
             }
@@ -86,7 +85,6 @@ namespace DCollector
             Dimensions mpiSize;
             Dimensions mpiPosition;
             bool enableCompression;
-            uint32_t maxFileHandles;
         } FileCreationAttr;
 
         typedef struct _DCEntry

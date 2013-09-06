@@ -63,18 +63,18 @@ namespace DCollector
         readAttribute(id, name, DOMCOL_ATTR_CLASS, &data_class, &mpi_position);
 
         if (data_class == DomainCollector::GridType)
-        { 
+        {
             // For Grid data, we can just read from the last MPI position since
             // all processes need to write as a regular grid.
             Dimensions subdomain_size;
             Dimensions subdomain_start;
-            
+
             mpi_position.set(mpi_size[0] - 1, mpi_size[1] - 1, mpi_size[2] - 1);
-            
+
             readAttribute(id, name, DOMCOL_ATTR_SIZE,
-                subdomain_size.getPointer(), &mpi_position);
+                    subdomain_size.getPointer(), &mpi_position);
             readAttribute(id, name, DOMCOL_ATTR_START,
-                subdomain_start.getPointer(), &mpi_position);
+                    subdomain_start.getPointer(), &mpi_position);
 
             total_elements = (subdomain_start + subdomain_size).getDimSize();
         } else
@@ -130,7 +130,10 @@ namespace DCollector
 
         total_size.set(subdomain_start + subdomain_size);
 
-        if (offset.getDimSize() != 0)
+        if (fileStatus == FST_READING)
+            offset.set(subdomain_start);
+
+        if ((fileStatus == FST_MERGING) && (offset.getDimSize() != 0))
             throw DCException("DomainCollector::getTotalDomain: Invalid offset for total domain (must be (0, 0, 0) )");
 
         Domain domain(offset, total_size - offset);
@@ -248,7 +251,7 @@ namespace DCollector
 
                     DomainData *client_data = new DomainData(client_domain,
                             data_elements, datatype_size, dc_datatype);
-                    
+
                     if (lazyLoad)
                     {
                         client_data->setLoadingReference(*dataClass,
@@ -347,10 +350,10 @@ namespace DCollector
 
                 for (uint32_t i = 0; i < rank; ++i)
                 {
-                    dst_offset[i] = std::max((int64_t) client_domain.getStart()[i] - (int64_t) requestOffset[i], (int64_t)0);
+                    dst_offset[i] = std::max((int64_t) client_domain.getStart()[i] - (int64_t) requestOffset[i], (int64_t) 0);
 
                     dst_offset[i] = std::max((int64_t) client_domain.getStart()[i] -
-                            (int64_t) requestOffset[i], (int64_t)0);
+                            (int64_t) requestOffset[i], (int64_t) 0);
 
                     if (requestOffset[i] <= client_start[i])
                     {
@@ -463,7 +466,7 @@ namespace DCollector
         {
             Domain file_domain;
             last_mpi_pos = current_mpi_pos;
-            
+
             // set current_mpi_pos to be the 'center' between min_rank and max_rank
             for (size_t i = 0; i < 3; ++i)
             {
@@ -487,7 +490,7 @@ namespace DCollector
                     max_rank[i] = current_mpi_pos[i] - 1;
             }
         } while (last_mpi_pos != current_mpi_pos);
-        
+
         if (!found_start)
             return data_container;
 
@@ -495,11 +498,11 @@ namespace DCollector
         // In every file, domain attributes are read and evaluated.
         // If the file domain and the requested domain intersect,
         // the file domain is added to the DataContainer.
-        
+
         // set new min_rank to top-left corner 
         max_rank = (mpi_size - Dimensions(1, 1, 1));
         min_rank = current_mpi_pos;
-        
+
         bool found_last_entry = false;
         for (size_t z = min_rank[2]; z <= max_rank[2]; z++)
         {

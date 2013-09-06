@@ -50,6 +50,7 @@ int main(int argc, char **argv)
     }
 
     // get entries for 1. id (timestep)
+    std::cout << "reading from timestep " << ids[0] << std::endl;
     DataCollector::DCEntry *entries = NULL;
     size_t num_entries = 0;
     dc.getEntriesForID(ids[0], NULL, &num_entries);
@@ -65,7 +66,7 @@ int main(int argc, char **argv)
         dc.getEntriesForID(ids[0], entries, &num_entries);
     }
 
-    // read 1. entry
+    // read 1. entry from this timestep
     DataCollector::DCEntry first_entry = entries[0];
     std::cout << "reading entry " << first_entry.name << std::endl;
 
