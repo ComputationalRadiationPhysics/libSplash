@@ -1,9 +1,11 @@
 #!/bin/bash
 
-rm -rf build/h5
-mkdir build/h5
+dir=${1:-build}
 
-cd build
+rm -rf $dir/h5
+mkdir $dir/h5
+
+cd $dir
 OK=0
 
 echo -e "\nTesting simple data read/write...\n"
