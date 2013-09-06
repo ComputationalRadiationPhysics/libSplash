@@ -1,6 +1,13 @@
 libSplash - Simple Parallel file output Library for Accumulating Simulation data using Hdf5
 ===========================================================================================
 
+### Build Status by branch
+
+[![Build Status Master](https://travis-ci.org/ComputationalRadiationPhysics/libSplash.png?branch=master)]
+(https://travis-ci.org/ComputationalRadiationPhysics/libSplash)
+[![Build Status Parallel](https://travis-ci.org/ComputationalRadiationPhysics/libSplash.png?branch=parallel)]
+(https://travis-ci.org/ComputationalRadiationPhysics/libSplash)
+
 Introduction
 ------------
 
