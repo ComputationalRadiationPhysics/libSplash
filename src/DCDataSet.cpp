@@ -101,12 +101,14 @@ namespace DCollector
             throw DCException(getExceptionString("open: Failed to open dataspace"));
         }
 
-        rank = H5Sget_simple_extent_ndims(dataspace);
-        if (rank < 0)
+        int rank_result = H5Sget_simple_extent_ndims(dataspace);
+        if (rank_result < 0)
         {
             close();
             throw DCException(getExceptionString("open: Failed to get dimensions"));
         }
+        
+        rank = rank_result;
 
         getLogicalSize().set(1, 1, 1);
         if (H5Sget_simple_extent_dims(dataspace, getLogicalSize().getPointer(), NULL) < 0)
