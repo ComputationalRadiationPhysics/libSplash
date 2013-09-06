@@ -10,8 +10,7 @@ using namespace DCollector;
 
 /**
  * This libSplash example demonstrates on how to use the DomainCollector class
- * to read multiple, domain-annotated libSplash files transparently as a single
- * file.
+ * to read multiple, domain-annotated libSplash files using N MPI processes.
  * 
  * The program expects the base part to a distributed libSplash file, i.e.
  * 'my_data', given that you have files like 'my_data_0_0_0.h5', ...
