@@ -1,0 +1,35 @@
+language: cpp
+
+branches:
+  except:
+    - master
+    - axel
+
+compiler:
+  - gcc
+  - clang
+
+script:
+  - cd $BUILD
+# compile libSplash and install
+  - cmake -DPARALLEL=ON -DCMAKE_INSTALL_PREFIX=~/lib/splash $SRC
+  - make install
+# compile examples/
+  - for e in `ls -d $SRC/examples/*`; do echo $e && ls $e && rm -rf $BUILD/* && cmake $e && make; done
+  - rm -rf $BUILD/*
+# compile and run tests/
+  - cmake -DPARALLEL=ON $SRC/tests
+  - make
+
+after_script:
+  - $SRC/tests/run_tests $BUILD
+  - $SRC/tests/run_parallel_tests $BUILD
+
+before_script:
+  - echo "yes" | sudo add-apt-repository ppa:jsm-8/lofar-deps
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq libopenmpi-dev libhdf5-openmpi-dev libcppunit-dev libboost-program-options-dev openmpi-bin
+  - export SRC=`pwd`
+  - export BUILD=~/buildTmp
+  - mkdir -p $BUILD ~/lib
+  - export SPLASH_ROOT=~/lib/splash
