@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #include <limits>
@@ -29,12 +29,19 @@
 
 using namespace DCollector;
 
-HandleMgr::HandleMgr(uint32_t maxHandles) :
+HandleMgr::HandleMgr(uint32_t maxHandles, FileNameScheme fileNameScheme) :
 maxHandles(maxHandles),
 numHandles(0),
 mpiSize(1, 1, 1),
+fileNameScheme(fileNameScheme),
 fileFlags(0),
-singleFile(true)
+singleFile(true),
+fileCreateCallback(NULL),
+fileCreateUserData(NULL),
+fileOpenCallback(NULL),
+fileOpenUserData(NULL),
+fileCloseCallback(NULL),
+fileCloseUserData(NULL)
 {
     if (maxHandles == 0)
         this->maxHandles = std::numeric_limits<uint32_t>::max() - 1;
@@ -93,10 +100,15 @@ Dimensions HandleMgr::posFromIndex(uint32_t index)
     Dimensions pos(0, 0, 0);
 
     if (index > 0)
-        pos.set(
-            index % mpiSize[0],
-            (index / mpiSize[0]) % mpiSize[1],
-            index / (mpiSize[1] * mpiSize[0]));
+    {
+        if (fileNameScheme == FNS_MPI)
+            pos.set(
+                index % mpiSize[0],
+                (index / mpiSize[0]) % mpiSize[1],
+                index / (mpiSize[1] * mpiSize[0]));
+        else
+            pos.set(index, 0, 0);
+    }
 
     return pos;
 }
@@ -113,13 +125,19 @@ throw (DCException)
     uint32_t index = 0;
     if (!singleFile)
         index = indexFromPos(mpiPos);
-
+    
     HandleMap::iterator iter = handles.find(index);
     if (iter == handles.end())
     {
         if (handles.size() + 1 > maxHandles)
         {
             HandleMap::iterator rmHandle = handles.find(leastAccIndex.index);
+            if (fileCloseCallback)
+            {
+                fileCloseCallback(rmHandle->second.handle,
+                    leastAccIndex.index, fileCloseUserData);
+            }
+
             if (H5Fclose(rmHandle->second.handle) < 0)
             {
                 std::cerr <<
@@ -134,8 +152,12 @@ throw (DCException)
         filenameStream << filename;
         if (!singleFile)
         {
-            filenameStream << "_" << mpiPos[0] << "_" << mpiPos[1] <<
-                    "_" << mpiPos[2] << ".h5";
+            if (fileNameScheme == FNS_MPI)
+            {
+                filenameStream << "_" << mpiPos[0] << "_" << mpiPos[1] <<
+                        "_" << mpiPos[2] << ".h5";
+            } else
+                filenameStream << "_" << mpiPos[0] << ".h5";
         }
 
         H5Handle newHandle = 0;
@@ -150,6 +172,9 @@ throw (DCException)
                     filenameStream.str().c_str()));
 
             createdFiles.insert(index);
+
+            if (fileCreateCallback)
+                fileCreateCallback(newHandle, index, fileCreateUserData);
         } else
         {
             // file open or already created
@@ -161,6 +186,9 @@ throw (DCException)
             if (newHandle < 0)
                 throw DCException(getExceptionString("get", "Failed to open file",
                     filenameStream.str().c_str()));
+
+            if (fileOpenCallback)
+                fileOpenCallback(newHandle, index, fileOpenUserData);
         }
 
 
@@ -199,6 +227,9 @@ void HandleMgr::close()
     HandleMap::const_iterator iter = handles.begin();
     for (; iter != handles.end(); ++iter)
     {
+        if (fileCloseCallback)
+            fileCloseCallback(iter->second.handle, iter->first, fileCloseUserData);
+
         if (H5Fclose(iter->second.handle) < 0)
         {
             std::cerr <<
@@ -210,7 +241,20 @@ void HandleMgr::close()
     handles.clear();
 }
 
-uint32_t HandleMgr::getNumHandles()
+void HandleMgr::registerFileCreate(FileCreateCallback callback, void *userData)
 {
-    return numHandles;
+    fileCreateCallback = callback;
+    fileCreateUserData = userData;
+}
+
+void HandleMgr::registerFileOpen(FileOpenCallback callback, void *userData)
+{
+    fileOpenCallback = callback;
+    fileOpenUserData = userData;
+}
+
+void HandleMgr::registerFileClose(FileCloseCallback callback, void *userData)
+{
+    fileCloseCallback = callback;
+    fileCloseUserData = userData;
 }

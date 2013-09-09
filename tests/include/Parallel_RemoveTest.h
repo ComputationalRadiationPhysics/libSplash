@@ -17,31 +17,40 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */
+ */ 
+ 
 
 
+#ifndef PARALLEL_REMOVETEST_H
+#define	PARALLEL_REMOVETEST_H
 
-#ifndef SDC_DEFINES_H
-#define	SDC_DEFINES_H
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace DCollector
+#include "IParallelDataCollector.hpp"
+#include "basetypes/ColTypeInt.hpp"
+
+using namespace DCollector;
+
+class Parallel_RemoveTest : public CPPUNIT_NS::TestFixture
 {
-#define SDC_GROUP_HEADER "header"
-#define SDC_GROUP_DATA "data"
-#define SDC_GROUP_ITERATION "iteration"
-#define SDC_GROUP_CUSTOM "custom"
-#define SDC_ATTR_DIM_LOCAL "dim_local"
-#define SDC_ATTR_DIM_GLOBAL "dim_global"
-#define SDC_ATTR_MAX_ID "max_id"
-#define SDC_ATTR_ID_STEP "id_step"
-#define SDC_ATTR_MPI_POSITION "mpi_position"
-#define SDC_ATTR_MPI_SIZE "mpi_size"
-#define SDC_ATTR_GRID_SIZE "grid_size"
-#define SDC_ATTR_SIZE "client_size"
-#define SDC_ATTR_COMPRESSION "compression"
+    CPPUNIT_TEST_SUITE(Parallel_RemoveTest);
 
-#define DSP_DIM_MAX 3
-}
+    CPPUNIT_TEST(testRemove);
 
-#endif	/* SDC_DEFINES_H */
+    CPPUNIT_TEST_SUITE_END();
+
+public:
+
+    Parallel_RemoveTest();
+    virtual ~Parallel_RemoveTest();
+
+private:
+    void testRemove();
+
+    ColTypeInt ctInt;
+    int mpiRank;
+    IParallelDataCollector *dataCollector;
+};
+
+#endif	/* PARALLEL_REMOVETEST_H */
 
