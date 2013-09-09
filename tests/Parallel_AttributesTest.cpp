@@ -1,29 +1,28 @@
 /**
  * Copyright 2013 Felix Schmitt
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 
 #include "Parallel_AttributesTest.h"
 #include "ParallelDataCollector.hpp"
 #include "DCException.hpp"
+#include <mpi.h>
 #include <time.h>
 #include <iostream>
 #include <stdlib.h>
@@ -43,6 +42,13 @@ using namespace DCollector;
 Parallel_AttributesTest::Parallel_AttributesTest()
 {
     srand(time(NULL));
+
+    int argc;
+    char** argv;
+    int initialized;
+    MPI_Initialized(&initialized);
+    if( !initialized )
+        MPI_Init(&argc, &argv);
 
     int mpiSize;
     MPI_Comm_rank(MPI_COMM_WORLD, &mpiRank);

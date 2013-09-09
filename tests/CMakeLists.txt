@@ -67,5 +67,3 @@ FOREACH(TEST_FILE ${TEST_FILES})
         TARGET_LINK_LIBRARIES(${FILE}.out splash m cppunit ${MPI_LIBRARIES} hdf5)
     ENDIF()
 ENDFOREACH()
-
-

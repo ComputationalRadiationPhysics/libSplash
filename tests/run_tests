@@ -8,40 +8,32 @@ mkdir $dir/h5
 cd $dir
 OK=0
 
-echo -e "\nTesting simple data read/write...\n"
-./SimpleDataTest.cpp.out
-OK=$(( OK + $? ))
+function testIt()
+{
+    if [ -e "$1" ]; then
+        echo -e "\n$2\n"
+        eval $1
+        OK=$(( OK + $? ))
+    fi
+}
 
-echo -e "\nTesting reading/writing attributes...\n"
-./AttributesTest.cpp.out
-OK=$(( OK + $? ))
+testIt ./SimpleDataTest.cpp.out "Testing simple data read/write..."
 
-echo -e "\nTesting append data...\n"
-./AppendTest.cpp.out
-OK=$(( OK + $? ))
+testIt ./AttributesTest.cpp.out "Testing reading/writing attributes..."
 
-echo -e "\nTesting file accesses...\n"
-./FileAccessTest.cpp.out
-OK=$(( OK + $? ))
+testIt ./AppendTest.cpp.out "Testing append data..."
 
-echo -e "\nTesting striding access...\n"
-./StridingTest.cpp.out
-OK=$(( OK + $? ))
+testIt ./FileAccessTest.cpp.out "Testing file accesses..."
 
-echo -e "\nTesting removing datasets...\n"
-./RemoveTest.cpp.out
-OK=$(( OK + $? ))
+testIt ./StridingTest.cpp.out "Testing striding access..."
 
-echo -e "\nTesting references...\n"
-./ReferencesTest.cpp.out
-OK=$(( OK + $? ))
+testIt ./RemoveTest.cpp.out "Testing removing datasets..."
 
-echo -e "\nTesting domains...\n"
-mpirun -n 8 ./DomainsTest.cpp.out
-OK=$(( OK + $? ))
+testIt ./ReferencesTest.cpp.out "Testing references..."
 
-#echo -e "\nTesting merged read...\n"
-#mpirun -n 1 ./MergedReadTest.cpp.out
+testIt "mpirun -n 8 ./DomainsTest.cpp.out" "Testing domains..."
+
+#testIt "mpirun -n 1 ./MergedReadTest.cpp.out" "Testing merged read..."
 
 cd ..
 

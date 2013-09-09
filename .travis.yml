@@ -8,26 +8,34 @@ compiler:
   - gcc
   - clang
 
+env:
+  - SPLASHPARALLEL=ON  SPLASHMPI=ON
+  - SPLASHPARALLEL=OFF SPLASHMPI=ON
+  - SPLASHPARALLEL=OFF SPLASHMPI=OFF
+
 script:
   - cd $BUILD
 # compile libSplash and install
-  - cmake -DPARALLEL=ON -DCMAKE_INSTALL_PREFIX=~/lib/splash $SRC
+  - cmake -DPARALLEL=$SPLASHPARALLEL -DTOOLS_MPI=$SPLASHMPI -DCMAKE_INSTALL_PREFIX=~/lib/splash $SRC
   - make install
 # compile examples/
-  - for e in `ls -d $SRC/examples/*`; do echo $e && ls $e && rm -rf $BUILD/* && cmake $e && make; done
+  - for e in `ls -d $SRC/examples/*`; do echo $e && ls $e && rm -rf $BUILD/* && cmake -DWITH_MPI=$SPLASHMPI $e && make; done
   - rm -rf $BUILD/*
 # compile and run tests/
-  - cmake -DPARALLEL=ON $SRC/tests
-  - make
+#   tests require MPI by default,
+#   even for the non-parallel version of libSplash
+  - if [ "$SPLASHMPI" == "ON" ]; then cmake -DPARALLEL=$SPLASHPARALLEL $SRC/tests && make; fi
 
 after_script:
   - $SRC/tests/run_tests $BUILD
-  - $SRC/tests/run_parallel_tests $BUILD
+  - if [ "$SPLASHPARALLEL" == "ON" ]; then $SRC/tests/run_parallel_tests $BUILD; fi
 
 before_script:
   - echo "yes" | sudo add-apt-repository ppa:jsm-8/lofar-deps
   - sudo apt-get update -qq
-  - sudo apt-get install -qq libopenmpi-dev libhdf5-openmpi-dev libcppunit-dev libboost-program-options-dev openmpi-bin
+  - if [ "$SPLASHMPI" == "ON" ]; then export APTMPI="libopenmpi-dev openmpi-bin"; fi
+  - if [ "$SPLASHPARALLEL" == "ON" ]; then export APTHDF5="libhdf5-openmpi-dev"; else export APTHDF5="libhdf5-serial-dev"; fi
+  - sudo apt-get install -qq libcppunit-dev libboost-program-options-dev $APTMPI $APTHDF5
   - export SRC=`pwd`
   - export BUILD=~/buildTmp
   - mkdir -p $BUILD ~/lib
