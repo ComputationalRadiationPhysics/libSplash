@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #ifndef DCDATASET_HPP
@@ -40,6 +40,7 @@ namespace DCollector
     class DCDataSet
     {
     public:
+
         enum DCDataType
         {
             DCDT_UNKNOWN,
@@ -47,14 +48,14 @@ namespace DCollector
             DCDT_INT32, DCDT_INT64,
             DCDT_UINT32, DCDT_UINT64
         };
-        
+
         /**
          * Constructor.
          *
          * @param name name for dataset
          */
         DCDataSet(const std::string name);
-        
+
         /**
          * Destructor.
          */
@@ -85,7 +86,25 @@ namespace DCollector
         void create(const CollectionType& colType, hid_t &group, const Dimensions size,
                 uint32_t rank, bool compression) throw (DCException);
 
-        void createReference(hid_t& refGroup, hid_t& srcGroup, DCDataSet &srcDataSet,
+        /**
+         * Create an object reference
+         * @param refGroup handle to group for reference
+         * @param srcGroup handle to group with source dataset
+         * @param srcDataSet source dataset
+         */
+        void createReference(hid_t refGroup, hid_t srcGroup, DCDataSet &srcDataSet)
+        throw (DCException);
+
+        /**
+         * Creates a dataset region reference
+         * @param refGroup handle to group for reference
+         * @param srcGroup handle to group with source dataset
+         * @param srcDataSet source dataset
+         * @param count reference region count
+         * @param offset reference region offset
+         * @param stride reference region stride
+         */
+        void createReference(hid_t refGroup, hid_t srcGroup, DCDataSet &srcDataSet,
                 Dimensions count,
                 Dimensions offset,
                 Dimensions stride) throw (DCException);
@@ -137,7 +156,7 @@ namespace DCollector
                 Dimensions &sizeRead,
                 uint32_t& srcRank,
                 void* dst) throw (DCException);
-        
+
         /**
          * Reads data from an open dataset.
          *
@@ -187,7 +206,7 @@ namespace DCollector
          * @return the DataSpace
          */
         hid_t getDataSpace() throw (DCException);
-        
+
         /**
          * Returns the DCDataType associated with this DataSet.
          * A DCException is thrown if the DataSet has not been
@@ -197,8 +216,12 @@ namespace DCollector
          * @return the DataType
          */
         DCDataType getDCDataType() throw (DCException);
-        
-        
+
+
+        /**
+         * Returns the size of the underlying HDF5 datatype
+         * @return size of HDF5 datatype
+         */
         size_t getDataTypeSize() throw (DCException);
 
         /**
@@ -207,7 +230,7 @@ namespace DCollector
          * @return dataset name
          */
         std::string getName();
-        
+
     protected:
         void setChunking(size_t typeSize) throw (DCException);
         void setCompression() throw (DCException);
@@ -224,9 +247,12 @@ namespace DCollector
         std::string name;
         bool opened;
         bool isReference;
+        bool checkExistence;
 
-        // property list for dataset creation
+        // property lists
         hid_t dsetProperties;
+        hid_t dsetWriteProperties;
+        hid_t dsetReadProperties;
 
         bool compression;
     private:

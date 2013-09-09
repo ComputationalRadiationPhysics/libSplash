@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #ifndef HANDLEMGR_HPP
@@ -34,6 +34,9 @@
 namespace DCollector
 {
 
+    /**
+     * opaque type for an HDF5 handle
+     */
     typedef hid_t H5Handle;
 
     /**
@@ -45,27 +48,38 @@ namespace DCollector
     class HandleMgr
     {
     private:
+
         typedef struct
         {
             H5Handle handle;
             uint32_t ctr;
         } HandleCtrStr;
-        
+
         typedef struct
         {
             uint32_t index;
             uint32_t ctr;
         } IndexCtrStr;
-        
+
         typedef std::map<uint32_t, HandleCtrStr> HandleMap;
         
     public:
+        enum FileNameScheme
+        {
+            FNS_MPI = 0, FNS_ITERATIONS
+        };
+        
+        typedef void (*FileCreateCallback)(H5Handle handle, uint32_t index, void *userData);
+        typedef void (*FileOpenCallback)(H5Handle handle, uint32_t index, void *userData);
+        typedef void (*FileCloseCallback)(H5Handle handle, uint32_t index, void *userData);
+        
         /**
          * Constructor
          * @param maxHandles maximum number of allowed open file handles
+         * @param fileNameScheme file naming scheme, either MPI oder ITERATIONS
          */
-        HandleMgr(uint32_t maxHandles);
-        
+        HandleMgr(uint32_t maxHandles, FileNameScheme fileNameScheme);
+
         /**
          * Destructor
          */
@@ -80,7 +94,7 @@ namespace DCollector
          */
         void open(Dimensions mpiSize, const std::string baseFilename,
                 hid_t fileAccProperties, unsigned flags);
-        
+
         /**
          * Opens the handle manager for a single file/handle
          * @param fullFilename full filename (w/ MPI/ext)
@@ -89,33 +103,55 @@ namespace DCollector
          */
         void open(const std::string fullFilename,
                 hid_t fileAccProperties, unsigned flags);
-        
+
         /**
          * Closes the handle manager, closes all open file handles.
          */
         void close();
 
-        uint32_t getNumHandles();
-
         /**
          * Get a file handle, opens/creates the file if necessary.
-         * @param index MPI rank
+         * @param index MPI rank/iteration
          * @return file handle
          */
         H5Handle get(uint32_t index) throw (DCException);
-        
+
         /**
          * Get a file handle, opens/creates the file if necessary.
          * @param mpiPos MPI position
          * @return file handle
          */
         H5Handle get(Dimensions mpiPos) throw (DCException);
+        
+        /**
+         * Register callback for after file has been created
+         * @param callback callback function
+         * @param userData any user data to be passed to the callback
+         */
+        void registerFileCreate(FileCreateCallback callback, void *userData);
+
+        /**
+         * Register callback for after file has been opened
+         * @param callback callback function
+         * @param userData any user data to be passed to the callback
+         */
+        void registerFileOpen(FileOpenCallback callback, void *userData);
+
+        /**
+         * Register callback fo before file is closed
+         * @param callback callback function
+         * @param userData any user data to be passed to the callback
+         */
+        void registerFileClose(FileCloseCallback callback, void *userData);
+
     private:
         uint32_t maxHandles;
         uint32_t numHandles;
 
         Dimensions mpiSize;
         std::string filename;
+        FileNameScheme fileNameScheme;
+        
         hid_t fileAccProperties;
         unsigned fileFlags;
         bool singleFile;
@@ -123,6 +159,14 @@ namespace DCollector
         HandleMap handles;
         IndexCtrStr leastAccIndex;
         std::set<uint32_t> createdFiles;
+        
+        // callback handles
+        FileCreateCallback fileCreateCallback;
+        void *fileCreateUserData;
+        FileOpenCallback fileOpenCallback;
+        void *fileOpenUserData;
+        FileCloseCallback fileCloseCallback;
+        void *fileCloseUserData;
 
         static std::string getExceptionString(std::string func,
                 std::string msg, const char *info);

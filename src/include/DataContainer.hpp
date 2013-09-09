@@ -62,17 +62,6 @@ namespace DCollector
             subdomains.clear();
         }
 
-        /**
-         * Returns a reference to the internal data.
-         * 
-         * @return vector for internal data (subdomains)
-         */
-
-        /*std::vector<DomainData* >& getData()
-        {
-            return data;
-        }*/
-
         void add(DomainData* entry)
         {
             if (entry == NULL)

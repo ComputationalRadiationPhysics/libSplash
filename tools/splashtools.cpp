@@ -23,22 +23,17 @@
 #include <sstream>
 #include <vector>
 #include <math.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define RESULT_OK 0
 #define RESULT_ERROR 1
 
-#ifdef ENABLE_MPI
+#if (ENABLE_MPI==1)
 #include <mpi.h>
 #endif
 
 #include "SerialDataCollector.hpp"
-
-#include <boost/program_options.hpp>
-#include <boost/program_options/cmdline.hpp>
-#include <boost/program_options/options_description.hpp>
-#include <boost/program_options/variables_map.hpp>
-
-namespace po = boost::program_options;
 
 using namespace DCollector;
 
@@ -97,72 +92,103 @@ void deleteFromStepInFile(DataCollector *dc, int32_t step)
 
 int parseCmdLine(int argc, char **argv, Options& options)
 {
-    try
+    std::stringstream usage_stream;
+    usage_stream << "Usage " << argv[0] << " [options] -f <splash-file>";
+
+    std::stringstream full_desc_stream;
+    full_desc_stream << usage_stream.str() << std::endl <<
+            " --help,-h\t\t\t print this help message" << std::endl <<
+            " --file,-f\t<file>\t\t HDF5 libSplash file to edit" << std::endl <<
+            " --delete,-d\t<step>\t\t Delete [d,*) simulation steps" << std::endl <<
+            " --check,-c\t\t\t Check file integrity" << std::endl <<
+            " --verbose,-v\t\t\t Verbose output";
+
+    if (argc < 2)
     {
-        std::stringstream desc_stream;
-        desc_stream << "Usage " << argv[0] << " [options] -f <splash-file>" << std::endl;
-
-        po::options_description desc(desc_stream.str());
-
-        // add possible options
-        desc.add_options()
-                ("help,h", "print help message")
-                ("file,f", po::value<std::string > (&options.filename), "HDF5 libSplash file to edit")
-                ("delete,d", po::value<int32_t > (&options.step), "Delete [d,*) simulation steps")
-                ("check,c", po::value<bool > (&options.checkIntegrity)->zero_tokens(), "Check file integrity")
-                ("verbose,v", po::value<bool > (&options.verbose)->zero_tokens(), "Verbose output")
-                ;
-
-        // parse command line options and config file and store values in vm
-        po::variables_map vm;
-        po::store(po::parse_command_line(argc, argv, desc), vm);
-        po::notify(vm);
-
-        // print help message and quit
-        if (vm.count("help"))
-        {
-            std::cout << "[" << options.mpiRank << "]" << desc << "\n";
-            return RESULT_OK;
-        }
-
-        if (vm.count("file") == 0)
-        {
-            std::cout << "[" << options.mpiRank << "]" <<
-                    "Missing libSplash file" << std::endl;
-            std::cout << desc << "\n";
-            return RESULT_ERROR;
-        } else
-        {
-            if (options.filename.find(".h5") != std::string::npos)
-            {
-                options.singleFile = true;
-                if ((options.mpiRank == 0) && (options.verbose))
-                    std::cout << "[" << options.mpiRank << "]" <<
-                        "single file mode" << std::endl;
-            }
-        }
-
-        /* run requested tool command */
-
-        if (vm.count("delete"))
-        {
-            options.deleteStep = true;
-            return RESULT_OK;
-        }
-
-        if (vm.count("check"))
-        {
-            options.checkIntegrity = true;
-            return RESULT_OK;
-        }
-
-    } catch (boost::program_options::error e)
-    {
-        std::cout << e.what() << std::endl;
+        std::cerr << "Too few arguments" << std::endl;
+        std::cerr << usage_stream.str() << std::endl;
         return RESULT_ERROR;
     }
 
-    return RESULT_ERROR;
+    for (int i = 1; i < argc; ++i)
+    {
+        const char *option = argv[i];
+        char *next_option = NULL;
+        int has_next_option = (i < argc - 1);
+        if (has_next_option)
+            next_option = argv[i + 1];
+
+        // help
+        if ((strcmp(option, "-h") == 0) || (strcmp(option, "--help") == 0))
+        {
+            std::cout << "[" << options.mpiRank << "] " <<
+                    full_desc_stream.str() << std::endl;
+            return RESULT_OK;
+        }
+
+        // verbose
+        if ((strcmp(option, "-v") == 0) || (strcmp(option, "--verbose") == 0))
+        {
+            options.verbose = true;
+            continue;
+        }
+
+        // delete
+        if ((strcmp(option, "-d") == 0) || (strcmp(option, "--delete") == 0))
+        {
+            if (!has_next_option)
+            {
+                std::cerr << "Option delete requires argument" << std::endl;
+                return RESULT_ERROR;
+            }
+
+            options.step = atoi(next_option);
+            i++;
+            continue;
+        }
+
+        // filename
+        if ((strcmp(option, "-f") == 0) || (strcmp(option, "--file") == 0))
+        {
+            if (!has_next_option)
+            {
+                std::cerr << "Option file requires argument" << std::endl;
+                return RESULT_ERROR;
+            }
+
+            options.filename.assign(next_option);
+            i++;
+            continue;
+        }
+
+        // check
+        if ((strcmp(option, "-c") == 0) || (strcmp(option, "--check") == 0))
+        {
+            options.checkIntegrity = true;
+            continue;
+        }
+
+        std::cerr << "Unknown option '" << option << "'" << std::endl;
+        std::cerr << full_desc_stream.str() << std::endl;
+        return RESULT_ERROR;
+    }
+
+    if (options.filename.size() == 0)
+    {
+        std::cerr << "Missing libSplash filename" << std::endl;
+        std::cerr << usage_stream.str() << std::endl;
+        return RESULT_ERROR;
+    }
+
+    if (options.filename.find(".h5") != std::string::npos)
+    {
+        options.singleFile = true;
+        if ((options.mpiRank == 0) && (options.verbose))
+            std::cout << "[" << options.mpiRank << "] " <<
+                "single file mode" << std::endl;
+    }
+
+    return RESULT_OK;
 }
 
 int testIntegrity(Options &options, std::string filename)
@@ -181,8 +207,8 @@ int testIntegrity(Options &options, std::string filename)
     FILE *file = popen(command, "r");
     if (!file)
     {
-        std::cout << "[" << options.mpiRank << "]" <<
-                " failed to execute '" << command << "'" << std::endl;
+        std::cout << "[" << options.mpiRank << "] " <<
+                "failed to execute '" << command << "'" << std::endl;
         delete[] command;
         return RESULT_ERROR;
     }
@@ -194,23 +220,23 @@ int testIntegrity(Options &options, std::string filename)
     status = pclose(file);
     if (status == -1)
     {
-        std::cout << "[" << options.mpiRank << "]" <<
-                " popen failed with status " << status << std::endl;
+        std::cout << "[" << options.mpiRank << "] " <<
+                "popen failed with status " << status << std::endl;
         return RESULT_ERROR;
     } else
     {
         if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
         {
-            std::cout << "[" << options.mpiRank << "]" <<
-                    " h5check returned error (status " << status << ") for file '" <<
+            std::cout << "[" << options.mpiRank << "] " <<
+                    "h5check returned error (status " << status << ") for file '" <<
                     filename << "'" << std::endl;
             return RESULT_ERROR;
         } else
         {
             if (options.verbose)
             {
-                std::cout << "[" << options.mpiRank << "]" <<
-                        " file '" << filename << "' ok" << std::endl;
+                std::cout << "[" << options.mpiRank << "] " <<
+                        "file '" << filename << "' ok" << std::endl;
             }
             return RESULT_OK;
         }
@@ -297,7 +323,7 @@ int executeToolFunction(Options& options,
     } else
     {
         // open master file to detect number of files
-        uint32_t fileMPISizeBuffer[3];
+        uint32_t fileMPISizeBuffer[3] = {0, 0, 0};
         Dimensions fileMPISizeDim(0, 0, 0);
         int fileMPISize = 0;
 
@@ -309,7 +335,7 @@ int executeToolFunction(Options& options,
                 fileMPISizeBuffer[i] = fileMPISizeDim[i];
         }
 
-#ifdef ENABLE_MPI
+#if (ENABLE_MPI==1)
         MPI_Bcast(fileMPISizeBuffer, 3, MPI_INTEGER4, 0, MPI_COMM_WORLD);
 #endif
 
@@ -372,7 +398,8 @@ int deleteFromStep(Options& options, DataCollector *dc, const char *filename)
         dc->close();
     } catch (DCException e)
     {
-        std::cerr << "Deleting in file " << filename << " failed!" << std::endl <<
+        std::cerr << "[" << options.mpiRank << "] " <<
+                "Deleting in file " << filename << " failed!" << std::endl <<
                 e.what() << std::endl;
         result = RESULT_ERROR;
     }
@@ -393,7 +420,7 @@ int main(int argc, char **argv)
     Options options;
     initOptions(options);
 
-#ifdef ENABLE_MPI
+#if (ENABLE_MPI==1)
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &(options.mpiRank));
     MPI_Comm_size(MPI_COMM_WORLD, &(options.mpiSize));
@@ -409,7 +436,7 @@ int main(int argc, char **argv)
             result = executeToolFunction(options, deleteFromStep);
     }
 
-#ifdef ENABLE_MPI
+#if (ENABLE_MPI==1)
     MPI_Barrier(MPI_COMM_WORLD);
     MPI_Finalize();
 #endif

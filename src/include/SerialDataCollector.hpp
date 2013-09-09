@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #ifndef SERIALDATACOLLECTOR_H
@@ -139,6 +139,13 @@ namespace DCollector
                 Dimensions& srcBuffer,
                 void* data) throw (DCException);
 
+        /**
+         * Returns the rank (number of dimensions) for a dataset
+         * @param h5File file handle
+         * @param id id of the group to read from
+         * @param name name of the dataset
+         * @return rank
+         */
         size_t getRank(H5Handle h5File,
                 int32_t id,
                 const char* name);
@@ -248,8 +255,8 @@ namespace DCollector
          * {@link DataCollector#getEntryIDs}
          */
         void getEntryIDs(int32_t *ids, size_t *count) throw (DCException);
-        
-		void getEntriesForID(int32_t id, DCEntry *entries, size_t *count) throw (DCException);
+
+        void getEntriesForID(int32_t id, DCEntry *entries, size_t *count) throw (DCException);
 
         /**
          * {@link DataCollector#write}
@@ -322,7 +329,14 @@ namespace DCollector
          */
         void createReference(int32_t srcID,
                 const char *srcName,
-                const CollectionType& colType,
+                int32_t dstID,
+                const char *dstName) throw (DCException);
+
+        /**
+         * {@link DataCollector#createReference}
+         */
+        void createReference(int32_t srcID,
+                const char *srcName,
                 int32_t dstID,
                 const char *dstName,
                 Dimensions count,
@@ -376,9 +390,9 @@ namespace DCollector
         void read(int32_t id,
                 const CollectionType& type,
                 const char* name,
-                Dimensions dstBuffer,
+                const Dimensions dstBuffer,
                 Dimensions &srcData,
-                Dimensions dstOffset,
+                const Dimensions dstOffset,
                 void* data) throw (DCException);
     };
 

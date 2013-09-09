@@ -36,12 +36,26 @@ echo -e "\nTesting references...\n"
 ./ReferencesTest.cpp.out
 OK=$(( OK + $? ))
 
-echo -e "\nTesting domains...\n"
-mpirun -n 8 ./DomainsTest.cpp.out
+
+echo -e "\nTesting simple data read/write (parallel)...\n"
+#mpirun -n 8 ./Parallel_SimpleDataTest.cpp.out
 OK=$(( OK + $? ))
 
-#echo -e "\nTesting merged read...\n"
-#mpirun -n 1 ./MergedReadTest.cpp.out
+echo -e "\nTesting domains (parallel)...\n"
+mpirun -n 8 ./Parallel_DomainsTest.cpp.out
+OK=$(( OK + $? ))
+
+echo -e "\nTesting reading/writing attributes (parallel)...\n"
+mpirun -n 4 ./Parallel_AttributesTest.cpp.out
+OK=$(( OK + $? ))
+
+echo -e "\nTesting removing datasets (parallel)...\n"
+mpirun -n 2 ./Parallel_RemoveTest.cpp.out
+OK=$(( OK + $? ))
+
+echo -e "\nTesting references (parallel)...\n"
+mpirun -n 2 ./Parallel_ReferencesTest.cpp.out
+OK=$(( OK + $? ))
 
 cd ..
 

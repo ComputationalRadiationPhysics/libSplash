@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #include <algorithm>
@@ -43,21 +43,6 @@ namespace DCollector
     {
     }
 
-    bool DomainCollector::testIntersection(Domain& d1, Domain& d2)
-    {
-        Dimensions d1_start = d1.getStart();
-        Dimensions d2_start = d2.getStart();
-        Dimensions d1_end = d1.getEnd();
-        Dimensions d2_end = d2.getEnd();
-
-        return (d1_start[0] <= d2_end[0] && d1_end[0] >= d2_start[0] &&
-                d1_start[1] <= d2_end[1] && d1_end[1] >= d2_start[1] &&
-                d1_start[2] <= d2_end[2] && d1_end[2] >= d2_start[2]) ||
-                (d2_start[0] <= d1_end[0] && d2_end[0] >= d1_start[0] &&
-                d2_start[1] <= d1_end[1] && d2_end[1] >= d1_start[1] &&
-                d2_start[2] <= d1_end[2] && d2_end[2] >= d1_start[2]);
-    }
-
     size_t DomainCollector::getTotalElements(int32_t id,
             const char* name)
     throw (DCException)
@@ -78,18 +63,18 @@ namespace DCollector
         readAttribute(id, name, DOMCOL_ATTR_CLASS, &data_class, &mpi_position);
 
         if (data_class == DomainCollector::GridType)
-        { 
+        {
             // For Grid data, we can just read from the last MPI position since
             // all processes need to write as a regular grid.
             Dimensions subdomain_size;
             Dimensions subdomain_start;
-            
+
             mpi_position.set(mpi_size[0] - 1, mpi_size[1] - 1, mpi_size[2] - 1);
-            
+
             readAttribute(id, name, DOMCOL_ATTR_SIZE,
-                subdomain_size.getPointer(), &mpi_position);
+                    subdomain_size.getPointer(), &mpi_position);
             readAttribute(id, name, DOMCOL_ATTR_START,
-                subdomain_start.getPointer(), &mpi_position);
+                    subdomain_start.getPointer(), &mpi_position);
 
             total_elements = (subdomain_start + subdomain_size).getDimSize();
         } else
@@ -145,10 +130,16 @@ namespace DCollector
 
         total_size.set(subdomain_start + subdomain_size);
 
+        if (fileStatus == FST_READING)
+            offset.set(subdomain_start);
+
+        if ((fileStatus == FST_MERGING) && (offset.getDimSize() != 0))
+            throw DCException("DomainCollector::getTotalDomain: Invalid offset for total domain (must be (0, 0, 0) )");
+
         Domain domain(offset, total_size - offset);
         return domain;
     }
-    
+
     bool DomainCollector::readDomainInfoForRank(
             Dimensions mpiPosition,
             int32_t id,
@@ -164,7 +155,7 @@ namespace DCollector
 
         readAttribute(id, name, DOMCOL_ATTR_SIZE,
                 fileDomain.getSize().getPointer(), &mpiPosition);
-        
+
         return testIntersection(request_domain, fileDomain);
     }
 
@@ -359,23 +350,32 @@ namespace DCollector
 
                 for (uint32_t i = 0; i < rank; ++i)
                 {
-                    dst_offset[i] = std::max((int64_t) client_domain.getStart()[i] - (int64_t) requestOffset[i], 0L);
+                    dst_offset[i] = std::max((int64_t) client_domain.getStart()[i] - (int64_t) requestOffset[i], (int64_t) 0);
+
+                    dst_offset[i] = std::max((int64_t) client_domain.getStart()[i] -
+                            (int64_t) requestOffset[i], (int64_t) 0);
 
                     if (requestOffset[i] <= client_start[i])
                     {
+                        // request starts before/equal client offset
                         src_offset[i] = 0;
 
                         if (requestOffset[i] + requestSize[i] >= client_start[i] + client_size[i])
+                            // end of request stretches beyond client limits
                             src_size[i] = client_size[i];
                         else
+                            // end of request within client limits
                             src_size[i] = requestOffset[i] + requestSize[i] - client_start[i];
                     } else
                     {
+                        // request starts after client offset
                         src_offset[i] = requestOffset[i] - client_start[i];
 
                         if (requestOffset[i] + requestSize[i] >= client_start[i] + client_size[i])
+                            // end of request stretches beyond client limits
                             src_size[i] = client_size[i] - src_offset[i];
                         else
+                            // end of request within client limits
                             src_size[i] = requestOffset[i] + requestSize[i] -
                                 (client_start[i] + src_offset[i]);
                     }
@@ -434,7 +434,7 @@ namespace DCollector
     {
         if ((fileStatus != FST_MERGING) && (fileStatus != FST_READING))
             throw DCException("DomainCollector::readDomain: this access is not permitted");
-        
+
         DataContainer *data_container = new DataContainer();
 
 #if (DC_DEBUG == 1)
@@ -466,43 +466,43 @@ namespace DCollector
         {
             Domain file_domain;
             last_mpi_pos = current_mpi_pos;
-            
+
             // set current_mpi_pos to be the 'center' between min_rank and max_rank
             for (size_t i = 0; i < 3; ++i)
             {
-                current_mpi_pos[i] = min_rank[i] + 
-                        ceil(((double)max_rank[i] - (double)min_rank[i]) / 2.0);
+                current_mpi_pos[i] = min_rank[i] +
+                        ceil(((double) max_rank[i] - (double) min_rank[i]) / 2.0);
             }
-            
-            if(readDomainInfoForRank(current_mpi_pos, id, name,
+
+            if (readDomainInfoForRank(current_mpi_pos, id, name,
                     requestOffset, point_dim, file_domain))
             {
                 found_start = true;
                 break;
             }
-            
+
             for (size_t i = 0; i < 3; ++i)
             {
                 if (requestOffset[i] >= file_domain.getStart()[i])
                     min_rank[i] = current_mpi_pos[i];
-                
+
                 if (requestOffset[i] < file_domain.getStart()[i])
                     max_rank[i] = current_mpi_pos[i] - 1;
             }
         } while (last_mpi_pos != current_mpi_pos);
-        
+
         if (!found_start)
             return data_container;
-        
+
         // found top-left corner of requested domain
         // In every file, domain attributes are read and evaluated.
         // If the file domain and the requested domain intersect,
         // the file domain is added to the DataContainer.
-        
+
         // set new min_rank to top-left corner 
         max_rank = (mpi_size - Dimensions(1, 1, 1));
         min_rank = current_mpi_pos;
-        
+
         bool found_last_entry = false;
         for (size_t z = min_rank[2]; z <= max_rank[2]; z++)
         {
@@ -538,11 +538,11 @@ namespace DCollector
                         }
                     }
                 }
-                
+
                 if (found_last_entry)
                     break;
             }
-            
+
             if (found_last_entry)
                 break;
         }
@@ -558,18 +558,18 @@ namespace DCollector
     {
         if (domainData == NULL)
         {
-            throw DCException("DomainCollector::readDomain: Invalid parameter, DomainData must not be NULL");
+            throw DCException("DomainCollector::readDomainLazy: Invalid parameter, DomainData must not be NULL");
         }
 
         DomainH5Ref *loadingRef = domainData->getLoadingReference();
         if (loadingRef == NULL)
         {
-            throw DCException("DomainCollector::readDomain: This DomainData does not allow lazy loading");
+            throw DCException("DomainCollector::readDomainLazy: This DomainData does not allow lazy loading");
         }
 
         if (loadingRef->dataClass == UndefinedType)
         {
-            throw DCException("DomainCollector::readDomain: DomainData has invalid data class");
+            throw DCException("DomainCollector::readDomainLazy: DomainData has invalid data class");
         }
 
         if (loadingRef->dataClass == PolyType)
@@ -592,11 +592,11 @@ namespace DCollector
 #endif
 
             if (!(elements_read == loadingRef->dstBuffer))
-                throw DCException("DomainCollector::readDomain: Sizes are not equal but should be (1).");
+                throw DCException("DomainCollector::readDomainLazy: Sizes are not equal but should be (1).");
 
         } else
         {
-            throw DCException("DomainCollector::readDomain: data class not supported");
+            throw DCException("DomainCollector::readDomainLazy: data class not supported");
         }
     }
 
