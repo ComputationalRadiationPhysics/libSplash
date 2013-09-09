@@ -28,7 +28,7 @@ script:
 
 after_script:
   - $SRC/tests/run_tests $BUILD
-  - if [ "$SPLASHPARALLEL" == "ON" ]; then $SRC/tests/run_parallel_tests $BUILD; fi
+  - $SRC/tests/run_parallel_tests $BUILD
 
 before_script:
   - echo "yes" | sudo add-apt-repository ppa:jsm-8/lofar-deps
