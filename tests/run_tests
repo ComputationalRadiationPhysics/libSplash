@@ -8,32 +8,40 @@ mkdir $dir/h5
 cd $dir
 OK=0
 
-function testIt()
+function testSerial()
 {
     if [ -e "$1" ]; then
         echo -e "\n$2\n"
-        eval $1
+        $1
+        OK=$(( OK + $? ))
+    fi
+}
+function testMPI()
+{
+    if [ -e "$1" ]; then
+        echo -e "\n$3\n"
+        mpirun -n $2 $1
         OK=$(( OK + $? ))
     fi
 }
 
-testIt ./SimpleDataTest.cpp.out "Testing simple data read/write..."
+testSerial ./SimpleDataTest.cpp.out "Testing simple data read/write..."
 
-testIt ./AttributesTest.cpp.out "Testing reading/writing attributes..."
+testSerial ./AttributesTest.cpp.out "Testing reading/writing attributes..."
 
-testIt ./AppendTest.cpp.out "Testing append data..."
+testSerial ./AppendTest.cpp.out "Testing append data..."
 
-testIt ./FileAccessTest.cpp.out "Testing file accesses..."
+testSerial ./FileAccessTest.cpp.out "Testing file accesses..."
 
-testIt ./StridingTest.cpp.out "Testing striding access..."
+testSerial ./StridingTest.cpp.out "Testing striding access..."
 
-testIt ./RemoveTest.cpp.out "Testing removing datasets..."
+testSerial ./RemoveTest.cpp.out "Testing removing datasets..."
 
-testIt ./ReferencesTest.cpp.out "Testing references..."
+testSerial ./ReferencesTest.cpp.out "Testing references..."
 
-testIt "mpirun -n 8 ./DomainsTest.cpp.out" "Testing domains..."
+testMPI ./DomainsTest.cpp.out 8 "Testing domains..."
 
-#testIt "mpirun -n 1 ./MergedReadTest.cpp.out" "Testing merged read..."
+#testMPI ./MergedReadTest.cpp.out 1 "Testing merged read..."
 
 cd ..
 
