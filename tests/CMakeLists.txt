@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.6)
 
 SET(CMAKE_BUILD_TYPE Debug)
 SET(CMAKE_CXX_FLAGS_DEBUG "-g")
+OPTION(WITH_MPI "use MPI-based tests" OFF)
 
 #-------------------------------------------------------------------------------
 
@@ -11,9 +12,11 @@ FIND_PACKAGE(HDF5 REQUIRED)
 INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
 LINK_DIRECTORIES(${HDF5_LIBRARY_DIRS})
 
-# MPI is required package
-FIND_PACKAGE(MPI REQUIRED)
-INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
+IF(WITH_MPI)
+    # MPI is required package
+    FIND_PACKAGE(MPI REQUIRED)
+    INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
+ENDIF(WITH_MPI)
 
 # CPPUNIT is required package (not available yet)
 #FIND_PACKAGE(CppUnit REQUIRED)
@@ -32,7 +35,11 @@ INCLUDE_DIRECTORIES(include ../src/include $ENV{MPI_INC} )
 #-------------------------------------------------------------------------------
 
 FILE(GLOB SRCFILESOTHER "dependencies/*.cpp")
-SET(TESTS Append Attributes Benchmark Domains FileAccess MergedRead References Remove SimpleData Striding)
+SET(TESTS Append Attributes FileAccess References Remove SimpleData Striding)
+
+IF(WITH_MPI)
+    SET(TESTS Benchmark Domains MergedRead)
+ENDIF(WITH_MPI)
 
 OPTION(PARALLEL "enable tests for parallel libSplash" OFF)
 IF(PARALLEL)

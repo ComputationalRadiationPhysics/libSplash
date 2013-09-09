@@ -22,9 +22,8 @@ script:
   - for e in `ls -d $SRC/examples/*`; do echo $e && ls $e && rm -rf $BUILD/* && cmake -DWITH_MPI=$SPLASHMPI $e && make; done
   - rm -rf $BUILD/*
 # compile and run tests/
-#   tests require MPI by default,
-#   even for the non-parallel version of libSplash
-  - if [ "$SPLASHMPI" == "ON" ]; then cmake -DPARALLEL=$SPLASHPARALLEL $SRC/tests && make; fi
+  - cmake -DPARALLEL=$SPLASHPARALLEL -DWITH_MPI=$SPLASHMPI $SRC/tests
+  - make
 
 after_script:
   - $SRC/tests/run_tests $BUILD
