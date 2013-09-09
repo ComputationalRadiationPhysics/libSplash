@@ -145,7 +145,7 @@ int main(int argc, char **argv)
         DataContainer* container = dc.readDomain(ids[0], first_entry.name.c_str(),
                 domain.getStart(), domain.getSize(), &dataClass, false);
 
-        // access all elements
+        // access all elements, no matter how many subdomains
         for (size_t i = 0; i < container->getNumElements(); ++i)
         {
             void *element = container->getElement(i);
@@ -161,6 +161,9 @@ int main(int argc, char **argv)
 
             std::cout << "  " << mpi_rank << ": subdomain " << d << " has size " <<
                     size.toString() << std::endl;
+            
+            // access the underlying buffer of a subdomain
+            void *elements = subdomain->getData();
         }
 
         // don't forget to delete the container allocated by DomainCollector
