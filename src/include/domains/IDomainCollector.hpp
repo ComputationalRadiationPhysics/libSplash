@@ -221,7 +221,7 @@ namespace DCollector
          */
         virtual void appendDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t count,
+                size_t count,
                 const char *name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
@@ -244,9 +244,9 @@ namespace DCollector
          */
         virtual void appendDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t count,
-                uint32_t offset,
-                uint32_t striding,
+                size_t count,
+                size_t offset,
+                size_t striding,
                 const char *name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,

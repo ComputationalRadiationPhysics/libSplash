@@ -217,9 +217,9 @@ namespace DCollector
         void appendDataSet(
                 hid_t group,
                 const CollectionType& datatype,
-                uint32_t count,
-                uint32_t offset,
-                uint32_t stride,
+                size_t count,
+                size_t offset,
+                size_t stride,
                 const char *name,
                 const void *data) throw (DCException);
     public:
@@ -300,7 +300,7 @@ namespace DCollector
          */
         void append(int32_t id,
                 const CollectionType& type,
-                uint32_t count,
+                size_t count,
                 const char *name,
                 const void *data) throw (DCException);
 
@@ -309,9 +309,9 @@ namespace DCollector
          */
         void append(int32_t id,
                 const CollectionType& type,
-                uint32_t count,
-                uint32_t offset,
-                uint32_t striding,
+                size_t count,
+                size_t offset,
+                size_t striding,
                 const char *name,
                 const void *data) throw (DCException);
 

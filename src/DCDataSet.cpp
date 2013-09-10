@@ -507,9 +507,9 @@ namespace DCollector
                             getExceptionString("read: reading composite datasets with source offset is not supported !"));
 
                     // read data in parts (each part is for one mpi position)
-                    for (uint32_t x = 0; x < local_mpi_size[0]; x++)
-                        for (uint32_t y = 0; y < local_mpi_size[1]; y++)
-                            for (uint32_t z = 0; z < local_mpi_size[2]; z++)
+                    for (size_t x = 0; x < local_mpi_size[0]; x++)
+                        for (size_t y = 0; y < local_mpi_size[1]; y++)
+                            for (size_t z = 0; z < local_mpi_size[2]; z++)
                             {
                                 Dimensions offset(x * client_size[0], y * client_size[1], z * client_size[2]);
                                 Dimensions dst_offset(offset);
@@ -666,7 +666,7 @@ namespace DCollector
         }
     }
 
-    void DCDataSet::append(uint32_t count, uint32_t offset, uint32_t stride, const void* data)
+    void DCDataSet::append(size_t count, size_t offset, size_t stride, const void* data)
     throw (DCException)
     {
 #if defined SDC_DEBUG_OUTPUT

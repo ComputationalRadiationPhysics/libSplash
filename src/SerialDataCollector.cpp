@@ -423,14 +423,14 @@ namespace DCollector
     }
 
     void SerialDataCollector::append(int32_t id, const CollectionType& type,
-            uint32_t count, const char* name, const void* data)
+            size_t count, const char* name, const void* data)
     throw (DCException)
     {
         append(id, type, count, 0, 1, name, data);
     }
 
     void SerialDataCollector::append(int32_t id, const CollectionType& type,
-            uint32_t count, uint32_t offset, uint32_t stride, const char* name, const void* data)
+            size_t count, size_t offset, size_t stride, const char* name, const void* data)
     throw (DCException)
     {
         if (name == NULL || data == NULL)
@@ -484,7 +484,7 @@ namespace DCollector
         int32_t *groups = new int32_t[num_groups];
         getEntryIDs(groups, NULL);
 
-        for (uint32_t i = 0; i < num_groups; ++i)
+        for (size_t i = 0; i < num_groups; ++i)
             if (groups[i] > maxID)
                 maxID = groups[i];
 
@@ -757,7 +757,7 @@ namespace DCollector
     }
 
     void SerialDataCollector::appendDataSet(hid_t group, const CollectionType& datatype,
-            uint32_t count, uint32_t offset, uint32_t stride, const char* name, const void* data)
+            size_t count, size_t offset, size_t stride, const char* name, const void* data)
     throw (DCException)
     {
 #if defined SDC_DEBUG_OUTPUT
@@ -898,7 +898,7 @@ namespace DCollector
         // for 2D/3D, all clients must have written same sizes
         if (client_rank > 1)
         {
-            for (uint32_t i = 1; i < mpiSize.getDimSize(); i++)
+            for (size_t i = 1; i < mpiSize.getDimSize(); i++)
                 client_size[i].set(client_size[0]);
 
             for (uint32_t i = 0; i < client_rank; i++)
@@ -913,7 +913,7 @@ namespace DCollector
             // so each one has to be read seperately
             srcData.set(client_size[0]);
 
-            for (uint32_t i = 1; i < mpiSize.getDimSize(); i++)
+            for (size_t i = 1; i < mpiSize.getDimSize(); i++)
             {
                 readInternal(handles.get(i), id, name,
                         Dimensions(), Dimensions(),
@@ -951,7 +951,7 @@ namespace DCollector
                 {
                     Dimensions mpi_position(x, y, z);
 
-                    uint32_t mpi_rank = z * mpiSize[0] * mpiSize[1] + y * mpiSize[0] + x;
+                    size_t mpi_rank = z * mpiSize[0] * mpiSize[1] + y * mpiSize[0] + x;
 
 #if defined SDC_DEBUG_OUTPUT
                     std::cerr << std::endl;
@@ -1039,7 +1039,7 @@ namespace DCollector
 
         if (ids != NULL)
         {
-            for (uint32_t i = 0; i < data_entries; i++)
+            for (size_t i = 0; i < data_entries; i++)
             {
                 char *group_id_name = NULL;
                 ssize_t group_id_name_len = H5Gget_objname_by_idx(group.getHandle(), i, NULL, 0);

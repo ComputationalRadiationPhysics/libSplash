@@ -82,7 +82,7 @@ namespace DCollector
          * 
          * @return number of subdomain partitions
          */
-        uint32_t getNumSubdomains()
+        size_t getNumSubdomains()
         {
             return subdomains.size();
         }
@@ -92,9 +92,9 @@ namespace DCollector
          * 
          * @return total number of elements in all subdomains
          */
-        uint32_t getNumElements()
+        size_t getNumElements()
         {
-            uint32_t num_elements = 0;
+            size_t num_elements = 0;
 
             for (std::vector<DomainData* >::const_iterator iter = subdomains.begin();
                     iter != subdomains.end(); ++iter)
@@ -119,7 +119,7 @@ namespace DCollector
          * @param index index of subdomain partition
          * @return subdomain partition
          */
-        DomainData* getIndex(uint32_t index)
+        DomainData* getIndex(size_t index)
         {
             if (subdomains.size() > index)
                 return subdomains[index];
@@ -133,7 +133,7 @@ namespace DCollector
          * @param x index of subdomain partition
          * @return subdomain partition
          */
-        DomainData* get(uint32_t x)
+        DomainData* get(size_t x)
         {
             if (x < size[0])
                 return subdomains[x];
@@ -148,7 +148,7 @@ namespace DCollector
          * @param y second dimension index of subdomain partition
          * @return subdomain partition
          */
-        DomainData* get(uint32_t x, uint32_t y)
+        DomainData* get(size_t x, size_t y)
         {
             if (x < size[0] && y < size[1])
                 return subdomains[y * size[0] + x];
@@ -164,7 +164,7 @@ namespace DCollector
          * @param z third dimension index of subdomain partition
          * @return subdomain partition
          */
-        DomainData* get(uint32_t x, uint32_t y, uint32_t z)
+        DomainData* get(size_t x, size_t y, size_t z)
         {
             if (x < size[0] && y < size[1] && z < size[2])
                 return subdomains[z * size[0] * size[1] + y * size[0] + x];

@@ -185,9 +185,9 @@ namespace DCollector
          * 1 means 'no stride'
          * @param data data for appending
          */
-        void append(uint32_t count,
-                uint32_t offset,
-                uint32_t stride,
+        void append(size_t count,
+                size_t offset,
+                size_t stride,
                 const void* data) throw (DCException);
 
         /**
