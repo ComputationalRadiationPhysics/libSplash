@@ -21,27 +21,31 @@
 
 
 
-#ifndef SDC_DEFINES_H
-#define	SDC_DEFINES_H
+#ifndef DCPARALLELGROUP_HPP
+#define	DCPARALLELGROUP_HPP
+
+#include "DCGroup.hpp"
 
 namespace DCollector
 {
-#define SDC_GROUP_HEADER "/header"
-#define SDC_GROUP_DATA "/data"
-#define SDC_GROUP_ITERATION "iteration"
-#define SDC_GROUP_CUSTOM "/custom"
-#define SDC_ATTR_DIM_LOCAL "dim_local"
-#define SDC_ATTR_DIM_GLOBAL "dim_global"
-#define SDC_ATTR_MAX_ID "max_id"
-#define SDC_ATTR_ID_STEP "id_step"
-#define SDC_ATTR_MPI_POSITION "mpi_position"
-#define SDC_ATTR_MPI_SIZE "mpi_size"
-#define SDC_ATTR_GRID_SIZE "grid_size"
-#define SDC_ATTR_SIZE "client_size"
-#define SDC_ATTR_COMPRESSION "compression"
 
-#define DSP_DIM_MAX 3
+    class DCParallelGroup : public DCGroup
+    {    
+
+    public:
+        DCParallelGroup() :
+        DCGroup()
+        {
+            this->checkExistence = false;
+        }
+        
+        virtual ~DCParallelGroup()
+        {
+            
+        }
+    };
+
 }
 
-#endif	/* SDC_DEFINES_H */
+#endif	/* DCPARALLELGROUP_HPP */
 

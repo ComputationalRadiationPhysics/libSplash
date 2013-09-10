@@ -67,7 +67,7 @@ namespace DCollector
          * @param group group for this dataset
          * @return true on success, false otherwise (dataset did not exist)
          */
-        bool open(hid_t &group) throw (DCException);
+        bool open(hid_t group) throw (DCException);
 
         /**
          * Closes the dataset.
@@ -83,7 +83,7 @@ namespace DCollector
          * @param rank number of dimensions
          * @param compression enables transparent compression on the data
          */
-        void create(const CollectionType& colType, hid_t &group, const Dimensions size,
+        void create(const CollectionType& colType, hid_t group, const Dimensions size,
                 uint32_t rank, bool compression) throw (DCException);
 
         /**
@@ -230,6 +230,11 @@ namespace DCollector
          * @return dataset name
          */
         std::string getName();
+        
+        static void splitPath(const std::string fullName, std::string &path, std::string &name);
+        
+        static void getFullDataPath(const std::string fullUserName, const std::string pathBase,
+            uint32_t id, std::string &path, std::string &name);
 
     protected:
         void setChunking(size_t typeSize) throw (DCException);

@@ -31,6 +31,7 @@
 
 #if (ENABLE_MPI==1)
 #include <mpi.h>
+#include "ParallelDataCollector.hpp"
 #endif
 
 #include "SerialDataCollector.hpp"
@@ -42,6 +43,8 @@ typedef struct
     bool singleFile;
     bool checkIntegrity;
     bool deleteStep;
+    bool listEntries;
+    bool parallelFile;
     bool verbose;
     std::string filename;
     int32_t step;
@@ -60,6 +63,8 @@ void initOptions(Options& options)
 {
     options.checkIntegrity = false;
     options.deleteStep = false;
+    options.listEntries = false;
+    options.parallelFile = false;
     options.fileIndexEnd = -1;
     options.fileIndexStart = -1;
     options.filename = "";
@@ -101,6 +106,10 @@ int parseCmdLine(int argc, char **argv, Options& options)
             " --file,-f\t<file>\t\t HDF5 libSplash file to edit" << std::endl <<
             " --delete,-d\t<step>\t\t Delete [d,*) simulation steps" << std::endl <<
             " --check,-c\t\t\t Check file integrity" << std::endl <<
+            " --list,-l\t\t\t List all file entries" << std::endl <<
+#if (ENABLE_MPI==1)
+            " --parallel,-p\t\t\t Input is parallel libSplash file" << std::endl <<
+#endif
             " --verbose,-v\t\t\t Verbose output";
 
     if (argc < 2)
@@ -167,6 +176,22 @@ int parseCmdLine(int argc, char **argv, Options& options)
             options.checkIntegrity = true;
             continue;
         }
+
+        // list
+        if ((strcmp(option, "-l") == 0) || (strcmp(option, "--list") == 0))
+        {
+            options.listEntries = true;
+            continue;
+        }
+
+#if (ENABLE_MPI==1)
+        // parallel file
+        if ((strcmp(option, "-p") == 0) || (strcmp(option, "--parallel") == 0))
+        {
+            options.parallelFile = true;
+            continue;
+        }
+#endif
 
         std::cerr << "Unknown option '" << option << "'" << std::endl;
         std::cerr << full_desc_stream.str() << std::endl;
@@ -273,18 +298,26 @@ void indexToPos(int index, Dimensions mpiSize, Dimensions &mpiPos)
     mpiPos[0] = index / (mpiSize[1] * mpiSize[2]);
 }
 
-int detectFileMPISize(const char *filename, Dimensions &fileMPISizeDim)
+int detectFileMPISize(Options& options, Dimensions &fileMPISizeDim)
 {
     int result = RESULT_OK;
 
-    DataCollector *dc = new SerialDataCollector(1);
+    DataCollector *dc = NULL;
+#if (ENABLE_MPI==1)
+    if (options.parallelFile)
+        dc = new ParallelDataCollector(MPI_COMM_WORLD, MPI_INFO_NULL,
+            Dimensions(options.mpiSize, 1, 1), 1);
+    else
+#endif
+        dc = new SerialDataCollector(1);
+
     DataCollector::FileCreationAttr fileCAttr;
     DataCollector::initFileCreationAttr(fileCAttr);
     fileCAttr.fileAccType = DataCollector::FAT_READ;
 
     try
     {
-        dc->open(filename, fileCAttr);
+        dc->open(options.filename.c_str(), fileCAttr);
         dc->getMPISize(fileMPISizeDim);
         dc->close();
     } catch (DCException e)
@@ -313,7 +346,13 @@ int executeToolFunction(Options& options,
     {
         if (options.mpiRank == 0)
         {
-            dc = new SerialDataCollector(1);
+#if (ENABLE_MPI==1)
+            if (options.parallelFile)
+                dc = new ParallelDataCollector(MPI_COMM_WORLD, MPI_INFO_NULL,
+                    Dimensions(options.mpiSize, 1, 1), 1);
+            else
+#endif
+                dc = new SerialDataCollector(1);
 
             result = toolFunc(options, dc, options.filename.c_str());
 
@@ -329,7 +368,7 @@ int executeToolFunction(Options& options,
 
         if (options.mpiRank == 0)
         {
-            result = detectFileMPISize(options.filename.c_str(), fileMPISizeDim);
+            result = detectFileMPISize(options, fileMPISizeDim);
 
             for (int i = 0; i < 3; ++i)
                 fileMPISizeBuffer[i] = fileMPISizeDim[i];
@@ -353,7 +392,13 @@ int executeToolFunction(Options& options,
         if (options.fileIndexStart == -1)
             return RESULT_OK;
 
-        dc = new SerialDataCollector(1);
+#if (ENABLE_MPI==1)
+        if (options.parallelFile)
+            dc = new ParallelDataCollector(MPI_COMM_WORLD, MPI_INFO_NULL,
+                Dimensions(options.mpiSize, 1, 1), 1);
+        else
+#endif
+            dc = new SerialDataCollector(1);
 
         for (int i = options.fileIndexStart; i <= options.fileIndexEnd; ++i)
         {
@@ -363,7 +408,12 @@ int executeToolFunction(Options& options,
 
             // delete steps in this file
             std::stringstream mpiFilename;
-            mpiFilename << options.filename << "_" << mpi_pos[0] << "_" <<
+#if (ENABLE_MPI==1)
+            if (options.parallelFile)
+                mpiFilename << options.filename << "_" << i << ".h5";
+            else
+#endif
+                mpiFilename << options.filename << "_" << mpi_pos[0] << "_" <<
                     mpi_pos[1] << "_" << mpi_pos[2] << ".h5";
 
             result |= toolFunc(options, dc, mpiFilename.str().c_str());
@@ -412,6 +462,50 @@ int testFileIntegrity(Options& options, DataCollector *dc, const char *filename)
     return testIntegrity(options, filename);
 }
 
+int listAvailableDatasets(Options& options, DataCollector *dc, const char *filename)
+{
+    DataCollector::FileCreationAttr fileCAttr;
+    DataCollector::initFileCreationAttr(fileCAttr);
+    fileCAttr.fileAccType = DataCollector::FAT_READ;
+
+    dc->open(options.filename.c_str(), fileCAttr);
+
+    int32_t id = 0;
+
+    if (!options.parallelFile)
+    {
+        size_t num_ids = 0;
+        dc->getEntryIDs(NULL, &num_ids);
+        if (num_ids > 0)
+        {
+            int32_t ids[num_ids];
+            dc->getEntryIDs(ids, NULL);
+            id = ids[0];
+        } else
+        {
+            std::cout << "no IDs" << std::endl;
+            dc->close();
+            return RESULT_OK;
+        }
+    }
+
+    // number of timesteps in this file
+    size_t num_entries = 0;
+    dc->getEntriesForID(id, NULL, &num_entries);
+
+    if (num_entries > 0)
+    {
+        DataCollector::DCEntry entries[num_entries];
+        dc->getEntriesForID(id, entries, NULL);
+
+        for (size_t i = 0; i < num_entries; ++i)
+            std::cout << entries[i].name << std::endl;
+    }
+
+    dc->close();
+    return RESULT_OK;
+}
+
 /* main */
 
 int main(int argc, char **argv)
@@ -434,6 +528,9 @@ int main(int argc, char **argv)
 
         if (options.deleteStep)
             result = executeToolFunction(options, deleteFromStep);
+
+        if (options.listEntries)
+            result = executeToolFunction(options, listAvailableDatasets);
     }
 
 #if (ENABLE_MPI==1)

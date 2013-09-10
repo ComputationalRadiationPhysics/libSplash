@@ -34,6 +34,7 @@
 
 #include "DCAttribute.hpp"
 #include "DCDataSet.hpp"
+#include "DCGroup.hpp"
 #include "DCHelper.hpp"
 #include "SDCHelper.hpp"
 
@@ -162,24 +163,18 @@ namespace DCollector
 
         if (fileStatus == FST_CREATING || fileStatus == FST_WRITING)
         {
-            hid_t group = H5Gopen(handles.get(0), SDC_GROUP_HEADER, H5P_DEFAULT);
-            if (group < 0)
-            {
-                std::cerr << getExceptionString("close", "unable to open group for writing", SDC_GROUP_HEADER) << std::endl;
-                std::cerr << "continuing..." << std::endl;
-            } else
-            {
-                // write number of iterations
-                try
-                {
-                    DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, H5T_NATIVE_INT32, group, &maxID);
-                } catch (DCException e)
-                {
-                    std::cerr << e.what() << std::endl;
-                    std::cerr << "continuing..." << std::endl;
-                }
+            DCGroup group;
+            group.open(handles.get(0), SDC_GROUP_HEADER);
 
-                H5Gclose(group);
+            // write number of iterations
+            try
+            {
+                DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, H5T_NATIVE_INT32,
+                        group.getHandle(), &maxID);
+            } catch (DCException e)
+            {
+                std::cerr << e.what() << std::endl;
+                std::cerr << "continuing..." << std::endl;
             }
         }
 
@@ -227,19 +222,16 @@ namespace DCollector
             mpi_rank = mpi_pos[2] * mpiSize[0] * mpiSize[1] + mpi_pos[1] * mpiSize[0] + mpi_pos[0];
         }
 
-        hid_t group_custom = H5Gopen(handles.get(mpi_rank), custom_string.c_str(), H5P_DEFAULT);
-        if (group_custom < 0)
-            throw DCException(getExceptionString("readGlobalAttribute", "failed to open custom group", custom_string.c_str()));
+        DCGroup group_custom;
+        group_custom.open(handles.get(mpi_rank), custom_string.c_str());
 
         try
         {
-            DCAttribute::readAttribute(name, group_custom, data);
+            DCAttribute::readAttribute(name, group_custom.getHandle(), data);
         } catch (DCException e)
         {
             throw DCException(getExceptionString("readGlobalAttribute", "failed to open attribute", name));
         }
-
-        H5Gclose(group_custom);
     }
 
     void SerialDataCollector::writeGlobalAttribute(const CollectionType& type,
@@ -253,20 +245,17 @@ namespace DCollector
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
             throw DCException(getExceptionString("writeGlobalAttribute", "this access is not permitted"));
 
-        hid_t group_custom = H5Gopen(handles.get(0), SDC_GROUP_CUSTOM, H5P_DEFAULT);
-        if (group_custom < 0)
-            throw DCException(getExceptionString("writeGlobalAttribute", "custom group not found", SDC_GROUP_CUSTOM));
+        DCGroup group_custom;
+        group_custom.open(handles.get(0), SDC_GROUP_CUSTOM);
 
         try
         {
-            DCAttribute::writeAttribute(name, type.getDataType(), group_custom, data);
+            DCAttribute::writeAttribute(name, type.getDataType(), group_custom.getHandle(), data);
         } catch (DCException e)
         {
             std::cerr << e.what() << std::endl;
             throw DCException(getExceptionString("writeGlobalAttribute", "failed to write attribute", name));
         }
-
-        H5Gclose(group_custom);
     }
 
     void SerialDataCollector::readAttribute(int32_t id,
@@ -283,9 +272,8 @@ namespace DCollector
         if (fileStatus == FST_CLOSED || fileStatus == FST_CREATING)
             throw DCException(getExceptionString("readAttribute", "this access is not permitted"));
 
-        std::stringstream group_id_name;
-        group_id_name << SDC_GROUP_DATA << "/" << id;
-        std::string group_id_string = group_id_name.str();
+        std::string group_path, dset_name;
+        DCDataSet::getFullDataPath(dataName, SDC_GROUP_DATA, id, group_path, dset_name);
 
         Dimensions mpi_pos(0, 0, 0);
         if ((fileStatus == FST_MERGING) && (mpiPosition != NULL))
@@ -293,34 +281,27 @@ namespace DCollector
             mpi_pos.set(*mpiPosition);
         }
 
-        hid_t group_id = -1;
-        if (!H5Lexists(handles.get(mpi_pos), group_id_string.c_str(), H5P_LINK_ACCESS_DEFAULT))
-            throw DCException(getExceptionString("readAttribute", "group not found", group_id_string.c_str()));
-        else
-            group_id = H5Gopen(handles.get(mpi_pos), group_id_string.c_str(), H5P_DEFAULT);
+        DCGroup group;
+        group.open(handles.get(mpi_pos), group_path);
 
         hid_t dataset_id = -1;
-        if (H5Lexists(group_id, dataName, H5P_LINK_ACCESS_DEFAULT))
+        if (H5Lexists(group.getHandle(), dset_name.c_str(), H5P_LINK_ACCESS_DEFAULT))
         {
-            dataset_id = H5Dopen(group_id, dataName, H5P_DEFAULT);
+            dataset_id = H5Dopen(group.getHandle(), dset_name.c_str(), H5P_DEFAULT);
             try
             {
                 DCAttribute::readAttribute(attrName, dataset_id, data);
             } catch (DCException)
             {
                 H5Dclose(dataset_id);
-                H5Gclose(group_id);
                 throw;
             }
             H5Dclose(dataset_id);
         } else
         {
-            H5Gclose(group_id);
-            throw DCException(getExceptionString("readAttribute", "dataset not found", dataName));
+            throw DCException(getExceptionString("readAttribute",
+                    "dataset not found", dset_name.c_str()));
         }
-
-        // cleanup
-        H5Gclose(group_id);
     }
 
     void SerialDataCollector::writeAttribute(int32_t id,
@@ -336,38 +317,30 @@ namespace DCollector
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
             throw DCException(getExceptionString("writeAttribute", "this access is not permitted"));
 
-        std::stringstream group_id_name;
-        group_id_name << SDC_GROUP_DATA << "/" << id;
-        std::string group_id_string = group_id_name.str();
+        std::string group_path, dset_name;
+        DCDataSet::getFullDataPath(dataName, SDC_GROUP_DATA, id, group_path, dset_name);
 
-        hid_t group_id = -1;
-        if (!H5Lexists(handles.get(0), group_id_string.c_str(), H5P_LINK_ACCESS_DEFAULT))
-            throw DCException(getExceptionString("writeAttribute", "group not found", group_id_string.c_str()));
-        else
-            group_id = H5Gopen(handles.get(0), group_id_string.c_str(), H5P_DEFAULT);
+        DCGroup group;
+        group.open(handles.get(0), group_path);
 
         hid_t dataset_id = -1;
-        if (H5Lexists(group_id, dataName, H5P_LINK_ACCESS_DEFAULT))
+        if (H5Lexists(group.getHandle(), dset_name.c_str(), H5P_LINK_ACCESS_DEFAULT))
         {
-            dataset_id = H5Dopen(group_id, dataName, H5P_DEFAULT);
+            dataset_id = H5Dopen(group.getHandle(), dset_name.c_str(), H5P_DEFAULT);
             try
             {
                 DCAttribute::writeAttribute(attrName, type.getDataType(), dataset_id, data);
             } catch (DCException)
             {
                 H5Dclose(dataset_id);
-                H5Gclose(group_id);
                 throw;
             }
             H5Dclose(dataset_id);
         } else
         {
-            H5Gclose(group_id);
-            throw DCException(getExceptionString("writeAttribute", "dataset not found", dataName));
+            throw DCException(getExceptionString("writeAttribute",
+                    "dataset not found", dset_name.c_str()));
         }
-
-        // cleanup
-        H5Gclose(group_id);
     }
 
     void SerialDataCollector::read(int32_t id,
@@ -435,34 +408,21 @@ namespace DCollector
         if (id > this->maxID)
             this->maxID = id;
 
-        // create group for this id/iteration
-        std::stringstream group_id_name;
-        group_id_name << SDC_GROUP_DATA << "/" << id;
+        std::string group_path, dset_name;
+        DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
 
-        hid_t group_id = -1;
-        H5Handle file_handle = handles.get(0);
-        if (H5Lexists(file_handle, group_id_name.str().c_str(), H5P_LINK_ACCESS_DEFAULT))
-            group_id = H5Gopen(file_handle, group_id_name.str().c_str(), H5P_DEFAULT);
-        else
-            group_id = H5Gcreate(file_handle, group_id_name.str().c_str(), H5P_LINK_CREATE_DEFAULT,
-                H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
-
-        if (group_id < 0)
-            throw DCException(getExceptionString("write", "failed to open or create group"));
+        DCGroup group;
+        group.openCreate(handles.get(0), group_path);
 
         // write data to the group
         try
         {
-            writeDataSet(group_id, type, rank,
-                    srcBuffer, srcStride, srcData, srcOffset, name, data);
+            writeDataSet(group.getHandle(), type, rank,
+                    srcBuffer, srcStride, srcData, srcOffset, dset_name.c_str(), data);
         } catch (DCException)
         {
-            H5Gclose(group_id);
             throw;
         }
-
-        // cleanup
-        H5Gclose(group_id);
     }
 
     void SerialDataCollector::append(int32_t id, const CollectionType& type,
@@ -485,35 +445,21 @@ namespace DCollector
         if (id > this->maxID)
             this->maxID = id;
 
-        assert(offset >= 0);
-        assert(stride >= 1);
+        std::string group_path, dset_name;
+        DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
 
-        // create group for this id/iteration
-        std::stringstream group_id_name;
-        group_id_name << SDC_GROUP_DATA << "/" << id;
-
-        hid_t group_id = -1;
-        if (H5Lexists(handles.get(0), group_id_name.str().c_str(), H5P_LINK_ACCESS_DEFAULT))
-            group_id = H5Gopen(handles.get(0), group_id_name.str().c_str(), H5P_DEFAULT);
-        else
-            group_id = H5Gcreate(handles.get(0), group_id_name.str().c_str(), H5P_LINK_CREATE_DEFAULT,
-                H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
-
-        if (group_id < 0)
-            throw DCException(getExceptionString("append", "failed to open or create group"));
+        DCGroup group;
+        group.openCreate(handles.get(0), group_path);
 
         // write data to the group
         try
         {
-            appendDataSet(group_id, type, count, offset, stride, name, data);
+            appendDataSet(group.getHandle(), type, count, offset,
+                    stride, dset_name.c_str(), data);
         } catch (DCException)
         {
-            H5Gclose(group_id);
             throw;
         }
-
-        // cleanup
-        H5Gclose(group_id);
     }
 
     void SerialDataCollector::remove(int32_t id)
@@ -530,9 +476,8 @@ namespace DCollector
         group_id_name << SDC_GROUP_DATA << "/" << id;
 
         H5Handle file_handle = handles.get(0);
-        if (H5Lexists(file_handle, group_id_name.str().c_str(), H5P_LINK_ACCESS_DEFAULT))
-            if (H5Gunlink(file_handle, group_id_name.str().c_str()) < 0)
-                throw DCException(getExceptionString("remove", "failed to remove group"));
+        if (DCGroup::exists(file_handle, group_id_name.str()))
+            DCGroup::remove(file_handle, group_id_name.str());
 
         // update maxID to new highest group
         maxID = 0;
@@ -566,19 +511,15 @@ namespace DCollector
         std::stringstream group_id_name;
         group_id_name << SDC_GROUP_DATA << "/" << id;
 
-        if (H5Lexists(handles.get(0), group_id_name.str().c_str(), H5P_LINK_ACCESS_DEFAULT))
+        if (DCGroup::exists(handles.get(0), group_id_name.str()))
         {
-            hid_t group_id = H5Gopen(handles.get(0), group_id_name.str().c_str(), H5P_DEFAULT);
-            if (group_id < 0)
-                throw DCException(getExceptionString("remove", "failed to open group", group_id_name.str().c_str()));
+            DCGroup group;
+            group.open(handles.get(0), group_id_name.str());
 
-            if (H5Gunlink(group_id, name) < 0)
+            if (H5Gunlink(group.getHandle(), name) < 0)
             {
-                H5Gclose(group_id);
                 throw DCException(getExceptionString("remove", "failed to remove dataset", name));
             }
-
-            H5Gclose(group_id);
         } else
             throw DCException(getExceptionString("remove", "group does not exist", group_id_name.str().c_str()));
     }
@@ -600,57 +541,37 @@ namespace DCollector
                 "a reference must not be identical to the referenced data", srcName));
 
         // open source group
-        std::stringstream group_id_name;
-        group_id_name << SDC_GROUP_DATA << "/" << srcID;
+        std::string src_group_path, src_dset_name;
+        DCDataSet::getFullDataPath(srcName, SDC_GROUP_DATA, srcID, src_group_path, src_dset_name);
 
-        hid_t src_group_id = H5Gopen(handles.get(0), group_id_name.str().c_str(), H5P_DEFAULT);
-        if (src_group_id < 0)
-            throw DCException(getExceptionString("createReference", "source group not found",
-                group_id_name.str().c_str()));
+        DCGroup src_group, dst_group;
+        src_group.open(handles.get(0), src_group_path);
 
         // open destination group
-        group_id_name.str("");
-        group_id_name << SDC_GROUP_DATA << "/" << dstID;
+        std::string dst_group_path, dst_dset_name;
+        DCDataSet::getFullDataPath(dstName, SDC_GROUP_DATA, dstID, dst_group_path, dst_dset_name);
 
         // if destination group does not exist, it is created
-        hid_t dst_group_id = -1;
-        if (H5Lexists(handles.get(0), group_id_name.str().c_str(), H5P_LINK_ACCESS_DEFAULT))
-            dst_group_id = H5Gopen(handles.get(0), group_id_name.str().c_str(), H5P_DEFAULT);
-        else
-            dst_group_id = H5Gcreate(handles.get(0), group_id_name.str().c_str(), H5P_LINK_CREATE_DEFAULT,
-                H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
-
-        if (dst_group_id < 0)
-        {
-            H5Gclose(src_group_id);
-            throw DCException(getExceptionString("createReference",
-                    "destination group could be be created/not found",
-                    group_id_name.str().c_str()));
-        }
+        dst_group.openCreate(handles.get(0), dst_group_path);
 
         // open source dataset
         try
         {
-            DCDataSet src_dataset(srcName);
-            src_dataset.open(src_group_id);
+            DCDataSet src_dataset(src_dset_name.c_str());
+            src_dataset.open(src_group.getHandle());
 
-            DCDataSet dst_dataset(dstName);
+            DCDataSet dst_dataset(dst_dset_name.c_str());
             // create the actual reference as a new dataset
-            dst_dataset.createReference(dst_group_id, src_group_id, src_dataset);
+            dst_dataset.createReference(dst_group.getHandle(),
+                    src_group.getHandle(), src_dataset);
 
             dst_dataset.close();
             src_dataset.close();
 
         } catch (DCException e)
         {
-            H5Gclose(src_group_id);
-            H5Gclose(dst_group_id);
             throw e;
         }
-
-        // close groups
-        H5Gclose(src_group_id);
-        H5Gclose(dst_group_id);
     }
 
     void SerialDataCollector::createReference(int32_t srcID,
@@ -673,43 +594,28 @@ namespace DCollector
                 "a reference must not be identical to the referenced data", srcName));
 
         // open source group
-        std::stringstream group_id_name;
-        group_id_name << SDC_GROUP_DATA << "/" << srcID;
+        std::string src_group_path, src_dset_name;
+        DCDataSet::getFullDataPath(srcName, SDC_GROUP_DATA, srcID, src_group_path, src_dset_name);
 
-        hid_t src_group_id = H5Gopen(handles.get(0), group_id_name.str().c_str(), H5P_DEFAULT);
-        if (src_group_id < 0)
-            throw DCException(getExceptionString("createReference", "source group not found",
-                group_id_name.str().c_str()));
+        DCGroup src_group, dst_group;
+        src_group.open(handles.get(0), src_group_path);
 
         // open destination group
-        group_id_name.str("");
-        group_id_name << SDC_GROUP_DATA << "/" << dstID;
+        std::string dst_group_path, dst_dset_name;
+        DCDataSet::getFullDataPath(dstName, SDC_GROUP_DATA, dstID, dst_group_path, dst_dset_name);
 
         // if destination group does not exist, it is created
-        hid_t dst_group_id = -1;
-        if (H5Lexists(handles.get(0), group_id_name.str().c_str(), H5P_LINK_ACCESS_DEFAULT))
-            dst_group_id = H5Gopen(handles.get(0), group_id_name.str().c_str(), H5P_DEFAULT);
-        else
-            dst_group_id = H5Gcreate(handles.get(0), group_id_name.str().c_str(), H5P_LINK_CREATE_DEFAULT,
-                H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
-
-        if (dst_group_id < 0)
-        {
-            H5Gclose(src_group_id);
-            throw DCException(getExceptionString("createReference",
-                    "destination group could be be created/not found",
-                    group_id_name.str().c_str()));
-        }
+        dst_group.openCreate(handles.get(0), dst_group_path);
 
         // open source dataset
         try
         {
-            DCDataSet src_dataset(srcName);
-            src_dataset.open(src_group_id);
+            DCDataSet src_dataset(src_dset_name.c_str());
+            src_dataset.open(src_group.getHandle());
 
-            DCDataSet dst_dataset(dstName);
+            DCDataSet dst_dataset(dst_dset_name.c_str());
             // create the actual reference as a new dataset
-            dst_dataset.createReference(dst_group_id, src_group_id,
+            dst_dataset.createReference(dst_group.getHandle(), src_group.getHandle(),
                     src_dataset, count, offset, stride);
 
             dst_dataset.close();
@@ -717,14 +623,8 @@ namespace DCollector
 
         } catch (DCException e)
         {
-            H5Gclose(src_group_id);
-            H5Gclose(dst_group_id);
             throw e;
         }
-
-        // close groups
-        H5Gclose(src_group_id);
-        H5Gclose(dst_group_id);
     }
 
     /*******************************************************************************
@@ -761,20 +661,13 @@ namespace DCollector
                 &(this->enableCompression), &(this->mpiSize), false);
 
         // the custom group hold user-specified attributes
-        hid_t group_custom = H5Gcreate(handles.get(0), SDC_GROUP_CUSTOM, H5P_LINK_CREATE_DEFAULT,
-                H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
-        if (group_custom < 0)
-            throw DCException(getExceptionString("openCreate", "failed to create custom group", SDC_GROUP_CUSTOM));
-
-        H5Gclose(group_custom);
+        DCGroup group;
+        group.create(handles.get(0), SDC_GROUP_CUSTOM);
+        group.close();
 
         // the data group holds the actual simulation data
-        hid_t group_data = H5Gcreate(handles.get(0), SDC_GROUP_DATA, H5P_LINK_CREATE_DEFAULT,
-                H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
-        if (group_data < 0)
-            throw DCException(getExceptionString("openCreate", "failed to create custom group", SDC_GROUP_DATA));
-
-        H5Gclose(group_data);
+        group.create(handles.get(0), SDC_GROUP_DATA);
+        group.close();
     }
 
     void SerialDataCollector::openWrite(const char* filename, FileCreationAttr& attr)
@@ -850,7 +743,7 @@ namespace DCollector
         handles.open(full_filename, fileAccProperties, H5F_ACC_RDONLY);
     }
 
-    void SerialDataCollector::writeDataSet(hid_t &group, const CollectionType& datatype, uint32_t rank,
+    void SerialDataCollector::writeDataSet(hid_t group, const CollectionType& datatype, uint32_t rank,
             const Dimensions srcBuffer, const Dimensions srcStride,
             const Dimensions srcData, const Dimensions srcOffset,
             const char* name, const void* data) throw (DCException)
@@ -866,7 +759,7 @@ namespace DCollector
         dataset.close();
     }
 
-    void SerialDataCollector::appendDataSet(hid_t& group, const CollectionType& datatype,
+    void SerialDataCollector::appendDataSet(hid_t group, const CollectionType& datatype,
             uint32_t count, uint32_t offset, uint32_t stride, const char* name, const void* data)
     throw (DCException)
     {
@@ -904,35 +797,26 @@ namespace DCollector
         if (h5File < 0 || name == NULL)
             throw DCException(getExceptionString("getRank", "invalid parameters"));
 
-        std::stringstream group_id_name;
-        group_id_name << SDC_GROUP_DATA << "/" << id;
-        std::string group_id_string = group_id_name.str();
+        std::string group_path, dset_name;
+        DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
 
-        hid_t group_id = H5Gopen(h5File, group_id_string.c_str(), H5P_DEFAULT);
-        if (group_id < 0)
-        {
-            throw DCException(getExceptionString("getRank", "group not found",
-                    group_id_string.c_str()));
-        }
+        DCGroup group;
+        group.open(h5File, group_path);
 
         size_t rank = 0;
 
         try
         {
-            DCDataSet dataset(name);
-            dataset.open(group_id);
+            DCDataSet dataset(dset_name.c_str());
+            dataset.open(group.getHandle());
 
             rank = dataset.getRank();
 
             dataset.close();
         } catch (DCException e)
         {
-            H5Gclose(group_id);
             throw e;
         }
-
-        // cleanup
-        H5Gclose(group_id);
 
         return rank;
     }
@@ -956,28 +840,22 @@ namespace DCollector
         if (h5File < 0 || name == NULL)
             throw DCException(getExceptionString("readInternal", "invalid parameters"));
 
-        std::stringstream group_id_name;
-        group_id_name << SDC_GROUP_DATA << "/" << id;
-        std::string group_id_string = group_id_name.str();
+        std::string group_path, dset_name;
+        DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
 
-        hid_t group_id = H5Gopen(h5File, group_id_string.c_str(), H5P_DEFAULT);
-        if (group_id < 0)
-            throw DCException(getExceptionString("readInternal", "group not found", group_id_string.c_str()));
+        DCGroup group;
+        group.open(h5File, group_path);
 
         try
         {
-            DCDataSet dataset(name);
-            dataset.open(group_id);
+            DCDataSet dataset(dset_name.c_str());
+            dataset.open(group.getHandle());
             dataset.read(dstBuffer, dstOffset, srcSize, srcOffset, sizeRead, srcRank, dst);
             dataset.close();
         } catch (DCException e)
         {
-            H5Gclose(group_id);
             throw e;
         }
-
-        // cleanup
-        H5Gclose(group_id);
     }
 
     void SerialDataCollector::readMerged(int32_t id,
@@ -1003,10 +881,8 @@ namespace DCollector
         if (master_file < 0)
             throw DCException(getExceptionString("readMerged", "failed to create master file", name));
 
-        hid_t master_group = H5Gcreate(master_file, "master_group", H5P_LINK_CREATE_DEFAULT,
-                H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
-        if (master_group < 0)
-            throw DCException(getExceptionString("readMerged", "failed to create master group", name));
+        DCGroup master_group;
+        master_group.create(master_file, "master_group");
 
         Dimensions dim_master(1, 1, 1);
 
@@ -1069,7 +945,7 @@ namespace DCollector
 #endif
 
         DCDataSet dataset_master("master");
-        dataset_master.create(type, master_group, dim_master, client_rank, this->enableCompression);
+        dataset_master.create(type, master_group.getHandle(), dim_master, client_rank, this->enableCompression);
 
         // open files and read data
         for (size_t z = 0; z < mpiSize[2]; z++)
@@ -1134,7 +1010,6 @@ namespace DCollector
 
         dataset_master.close();
 
-        H5Gclose(master_group);
         H5Fclose(master_file);
         H5Pclose(fileAccPList);
     }
@@ -1152,13 +1027,15 @@ namespace DCollector
     void SerialDataCollector::getEntryIDs(int32_t* ids, size_t* count)
     throw (DCException)
     {
-        hid_t group_data = H5Gopen(handles.get(0), SDC_GROUP_DATA, H5P_DEFAULT);
-        if (group_data < 0)
-            throw DCException(getExceptionString("getEntryIDs", "Failed to open data group", SDC_GROUP_DATA));
+        DCGroup group;
+        group.open(handles.get(0), SDC_GROUP_DATA);
 
         hsize_t data_entries = 0;
-        if (H5Gget_num_objs(group_data, &data_entries) < 0)
-            throw DCException(getExceptionString("getEntryIDs", "Failed to get entries in data group", SDC_GROUP_DATA));
+        if (H5Gget_num_objs(group.getHandle(), &data_entries) < 0)
+        {
+            throw DCException(getExceptionString("getEntryIDs",
+                    "Failed to get entries in data group", SDC_GROUP_DATA));
+        }
 
         if (count != NULL)
             *count = data_entries;
@@ -1168,54 +1045,39 @@ namespace DCollector
             for (uint32_t i = 0; i < data_entries; i++)
             {
                 char *group_id_name = NULL;
-                ssize_t group_id_name_len = H5Gget_objname_by_idx(group_data, i, NULL, 0);
+                ssize_t group_id_name_len = H5Gget_objname_by_idx(group.getHandle(), i, NULL, 0);
                 if (group_id_name_len < 0)
-                    throw DCException(getExceptionString("getEntryIDs", "Failed to get object name in group", group_id_name));
+                {
+                    throw DCException(getExceptionString("getEntryIDs",
+                            "Failed to get object name in group", group_id_name));
+                }
 
                 group_id_name = new char[group_id_name_len + 1];
-                H5Gget_objname_by_idx(group_data, i, group_id_name, group_id_name_len + 1);
+                H5Gget_objname_by_idx(group.getHandle(), i, group_id_name, group_id_name_len + 1);
                 ids[i] = atoi(group_id_name);
                 delete[] group_id_name;
             }
         }
-
-        H5Gclose(group_data);
     }
 
     void SerialDataCollector::getEntriesForID(int32_t id, DCEntry *entries, size_t *count)
     throw (DCException)
     {
-        char id_group_str[256];
-        sprintf(id_group_str, "%s/%d", SDC_GROUP_DATA, id);
+        std::stringstream group_id_name;
+        group_id_name << SDC_GROUP_DATA << "/" << id;
 
-        hid_t group_id = H5Gopen(handles.get(0), id_group_str, H5P_DEFAULT);
-        if (group_id < 0)
-            throw DCException(getExceptionString("getEntriesForID", "Failed to open id group", id_group_str));
+        // open data group for id
+        DCGroup group;
+        group.open(handles.get(0), group_id_name.str());
 
-        hsize_t data_entries = 0;
-        if (H5Gget_num_objs(group_id, &data_entries) < 0)
-            throw DCException(getExceptionString("getEntriesForID", "Failed to get entries in id group", id_group_str));
+        DCGroup::VisitObjCBType param;
+        param.count = 0;
+        param.entries = entries;
 
-        if (count != NULL)
-            *count = data_entries;
-
-        if (entries != NULL)
-        {
-            for (uint32_t i = 0; i < data_entries; i++)
-            {
-                char *group_entry_name = NULL;
-                ssize_t group_entry_name_len = H5Gget_objname_by_idx(group_id, i, NULL, 0);
-                if (group_entry_name_len < 0)
-                    throw DCException(getExceptionString("getEntriesForID", "Failed to get object name in group", group_entry_name));
-
-                group_entry_name = new char[group_entry_name_len + 1];
-                H5Gget_objname_by_idx(group_id, i, group_entry_name, group_entry_name_len + 1);
-                entries[i].name = group_entry_name;
-                delete[] group_entry_name;
-            }
-        }
-
-        H5Gclose(group_id);
+        DCGroup::getEntriesInternal(group.getHandle(), group_id_name.str(), &param);
+        
+        if (count)
+            *count = param.count;
     }
 
 } // namespace DataCollector

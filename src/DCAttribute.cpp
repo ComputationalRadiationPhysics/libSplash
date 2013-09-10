@@ -39,7 +39,7 @@ namespace DCollector
                 std::string("] ") + msg);
     }
 
-    void DCAttribute::readAttribute(const char* name, hid_t& parent, void* dst)
+    void DCAttribute::readAttribute(const char* name, hid_t parent, void* dst)
     throw (DCException)
     {
         hid_t attr = H5Aopen(parent, name, H5P_DEFAULT);
@@ -62,7 +62,7 @@ namespace DCollector
         H5Aclose(attr);
     }
 
-    void DCAttribute::writeAttribute(const char* name, const hid_t& type, hid_t& parent, const void* src)
+    void DCAttribute::writeAttribute(const char* name, const hid_t type, hid_t parent, const void* src)
     throw (DCException)
     {
         hid_t attr = -1;

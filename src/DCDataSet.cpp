@@ -41,6 +41,34 @@ namespace DCollector
         return (std::string("Exception for DCDataSet [") + name + std::string("] ") +
                 msg);
     }
+    
+    void DCDataSet::splitPath(const std::string fullName, std::string &path, std::string &name)
+    {
+        std::string::size_type pos = fullName.find_last_of('/');
+
+        if (pos == std::string::npos)
+        {
+            path = "";
+            name = fullName;
+        } else
+        {
+            path.assign(fullName.c_str(), fullName.c_str() + pos);
+            name.assign(fullName.c_str() + pos + 1);
+        }
+    }
+
+    void DCDataSet::getFullDataPath(const std::string fullUserName,
+            const std::string pathBase, uint32_t id, std::string &path, std::string &name)
+    {
+        splitPath(fullUserName, path, name);
+
+        std::stringstream group_id_name;
+        group_id_name << pathBase << "/" << id;
+        if (path.size() > 0)
+            group_id_name << "/" << path;
+
+        path.assign(group_id_name.str());
+    }
 
     DCDataSet::DCDataSet(const std::string name) :
     dataset(-1),
@@ -76,7 +104,7 @@ namespace DCollector
         return result;
     }
 
-    bool DCDataSet::open(hid_t &group)
+    bool DCDataSet::open(hid_t group)
     throw (DCException)
     {
         if (checkExistence && !H5Lexists(group, name.c_str(), H5P_LINK_ACCESS_DEFAULT))
@@ -157,7 +185,7 @@ namespace DCollector
     }
 
     void DCDataSet::create(const CollectionType& colType,
-            hid_t &group, const Dimensions size, uint32_t rank, bool compression)
+            hid_t group, const Dimensions size, uint32_t rank, bool compression)
     throw (DCException)
     {
 #if defined SDC_DEBUG_OUTPUT

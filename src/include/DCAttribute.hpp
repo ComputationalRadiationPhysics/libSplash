@@ -45,7 +45,7 @@ namespace DCollector
          * @param dst buffer to hold read value
          */
         static void readAttribute(const char *name,
-                hid_t &parent,
+                hid_t parent,
                 void *dst) throw (DCException);
 
         /**
@@ -57,8 +57,8 @@ namespace DCollector
          * @param src buffer with value
          */
         static void writeAttribute(const char *name,
-                const hid_t &type,
-                hid_t &parent,
+                const hid_t type,
+                hid_t parent,
                 const void *src) throw (DCException);
     private:
         DCAttribute();

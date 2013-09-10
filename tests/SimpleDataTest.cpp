@@ -73,10 +73,10 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
     for (uint32_t i = 0; i < bufferSize; i++)
         dataWrite[i] = i;
 
-    dataCollector->write(10, ctInt, dimensions, gridSize, "data", dataWrite);
+    dataCollector->write(10, ctInt, dimensions, gridSize, "deep/folders/data", dataWrite);
 
     dataCollector->write(20, ctInt, dimensions, gridSize, smallGridSize,
-            borderSize, "data_without_borders", dataWrite);
+            borderSize, "deep/folders/data_without_borders", dataWrite);
 
     dataCollector->close();
 
@@ -122,7 +122,7 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
         dataRead[i] = -1;
 
     Dimensions resultSize;
-    dataCollector->read(10, ctInt, "data", resultSize, dataRead);
+    dataCollector->read(10, ctInt, "deep/folders/data", resultSize, dataRead);
 
     for (uint32_t i = 0; i < 3; i++)
         CPPUNIT_ASSERT(resultSize[i] == gridSize[i]);
@@ -149,13 +149,13 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
     for (uint32_t i = 0; i < bufferSize; i++)
         dataRead[i] = -1;
 
-    dataCollector->read(20, ctInt, "data_without_borders", gridSize, resultSize,
+    dataCollector->read(20, ctInt, "deep/folders/data_without_borders", gridSize, resultSize,
             borderSize, NULL);
 
     for (uint32_t i = 0; i < 3; i++)
         CPPUNIT_ASSERT(resultSize[i] == smallGridSize[i]);
 
-    dataCollector->read(20, ctInt, "data_without_borders", gridSize, resultSize,
+    dataCollector->read(20, ctInt, "deep/folders/data_without_borders", gridSize, resultSize,
             borderSize, dataRead);
 
     // print out read and written data for debugging purposes

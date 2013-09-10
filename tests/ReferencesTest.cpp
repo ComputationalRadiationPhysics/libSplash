@@ -64,15 +64,15 @@ void ReferencesTest::testCreateReference()
     for (uint32_t i = 0; i < bufferSize; i++)
         dataWrite[i] = i;
 
-    dataCollector->write(0, ctInt, 3, gridSize, "data", dataWrite);
+    dataCollector->write(0, ctInt, 3, gridSize, "src/data", dataWrite);
     
-    dataCollector->createReference(0, "data", 0, "ref", 
+    dataCollector->createReference(0, "src/data", 0, "dst/ref", 
             Dimensions(5, 10, 2), Dimensions(1, 1, 0), Dimensions(1, 1, 1));
     
-    dataCollector->createReference(0, "data", 1, "ref2", 
+    dataCollector->createReference(0, "src/data", 1, "dstref2", 
             Dimensions(2, 2, 1), Dimensions(1, 5, 1), Dimensions(2, 1, 1));
     
-    dataCollector->createReference(0, "data", 2, "obj_ref");
+    dataCollector->createReference(0, "src/data", 2, "dst/obj_ref");
     
     delete[] dataWrite;
     dataWrite = NULL;

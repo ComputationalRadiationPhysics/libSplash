@@ -143,7 +143,7 @@ namespace DCollector
                 void* dst) throw (DCException);
 
         void writeDataSet(
-                hid_t &group,
+                H5Handle group,
                 const Dimensions globalSize,
                 const Dimensions globalOffset,
                 const CollectionType& datatype,

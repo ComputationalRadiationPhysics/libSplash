@@ -82,11 +82,11 @@ void Parallel_AttributesTest::testDataAttributes()
     }
 
     dataCollector->write(0, ctInt2, 1, Dimensions(BUF_SIZE, 1, 1),
-            Dimensions(BUF_SIZE, 1, 1), Dimensions(0, 0, 0), "data", dummy_data);
+            Dimensions(BUF_SIZE, 1, 1), Dimensions(0, 0, 0), "attr/attr2/attr3/data", dummy_data);
 
-    dataCollector->writeAttribute(0, ctInt, "data", "sum", &sum);
+    dataCollector->writeAttribute(0, ctInt, "attr/attr2/attr3/data", "sum", &sum);
     int neg_sum = -sum;
-    dataCollector->writeAttribute(0, ctInt, "data", "neg_sum", &neg_sum);
+    dataCollector->writeAttribute(0, ctInt, "attr/attr2/attr3/data", "neg_sum", &neg_sum);
 
     delete[] dummy_data;
     dummy_data = NULL;
@@ -105,8 +105,10 @@ void Parallel_AttributesTest::testDataAttributes()
 
     sum = 0;
     neg_sum = 0;
-    dataCollector->readAttribute(0, "data", "sum", &sum);
-    dataCollector->readAttribute(0, "data", "neg_sum", &neg_sum);
+    dataCollector->readAttribute(0, "attr/attr2/attr3/data", "sum", &sum);
+    dataCollector->readAttribute(0, "attr/attr2/attr3/data", "neg_sum", &neg_sum);
+    
+    CPPUNIT_ASSERT_THROW(dataCollector->readAttribute(0, "data", "sum", &sum), DCException);
 
     CPPUNIT_ASSERT(sum == old_sum);
     CPPUNIT_ASSERT(neg_sum == -old_sum);

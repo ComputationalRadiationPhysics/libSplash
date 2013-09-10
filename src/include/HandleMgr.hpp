@@ -38,6 +38,8 @@ namespace DCollector
      * opaque type for an HDF5 handle
      */
     typedef hid_t H5Handle;
+    
+    static const H5Handle INVALID_HANDLE = -1;
 
     /**
      * Helper class for SerialDataCollector which manages a limited number of

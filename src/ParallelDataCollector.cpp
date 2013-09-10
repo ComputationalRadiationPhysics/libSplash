@@ -24,6 +24,7 @@
 #include "ParallelDataCollector.hpp"
 #include "DCParallelDataSet.hpp"
 #include "DCAttribute.hpp"
+#include "DCParallelGroup.hpp"
 
 using namespace DCollector;
 
@@ -91,7 +92,7 @@ handles(maxFileHandles, HandleMgr::FNS_ITERATIONS),
 fileStatus(FST_CLOSED)
 {
     MPI_Comm_rank(comm, &(options.mpiRank));
-    
+
     options.enableCompression = false;
     options.mpiComm = comm;
     options.mpiInfo = info;
@@ -128,7 +129,7 @@ throw (DCException)
 #if defined SDC_DEBUG_OUTPUT
     std::cerr << "opening parallel data collector..." << std::endl;
 #endif
-        
+
     if (filename == NULL)
         throw DCException(getExceptionString("open", "filename must not be null"));
 
@@ -151,13 +152,15 @@ throw (DCException)
 }
 
 void ParallelDataCollector::close()
-{ 
+{
 #if defined SDC_DEBUG_OUTPUT
     std::cerr << "closing parallel data collector..." << std::endl;
 #endif   
-   
+
     // close opened hdf5 file handles
     handles.close();
+    
+    options.maxID = -1;
 
     fileStatus = FST_CLOSED;
 }
@@ -177,6 +180,8 @@ throw (DCException)
 {
     size_t num_ids = options.maxID > -1 ? 1 : 0;
 
+    std::cout << "num_ids " << num_ids << std::endl;
+    
     if (count != NULL)
         *count = num_ids;
 
@@ -188,7 +193,21 @@ void ParallelDataCollector::getEntriesForID(int32_t id, DCEntry *entries,
         size_t *count)
 throw (DCException)
 {
-    throw DCException("Not yet implemented!");
+    std::stringstream group_id_name;
+    group_id_name << SDC_GROUP_DATA << "/" << id;
+
+    // open data group for id
+    DCParallelGroup group;
+    group.open(handles.get(id), group_id_name.str());
+
+    DCParallelGroup::VisitObjCBType param;
+    param.count = 0;
+    param.entries = entries;
+
+    DCParallelGroup::getEntriesInternal(group.getHandle(), group_id_name.str(), &param);
+
+    if (count)
+        *count = param.count;
 }
 
 void ParallelDataCollector::readGlobalAttribute(int32_t id,
@@ -202,22 +221,16 @@ throw (DCException)
     if (fileStatus == FST_CLOSED || fileStatus == FST_CREATING)
         throw DCException(getExceptionString("readGlobalAttribute", "this access is not permitted"));
 
-    hid_t group_custom = H5Gopen(handles.get(id), SDC_GROUP_CUSTOM, H5P_DEFAULT);
-    if (group_custom < 0)
-    {
-        throw DCException(getExceptionString("readGlobalAttribute",
-                "failed to open custom group", SDC_GROUP_CUSTOM));
-    }
+    DCParallelGroup group_custom;
+    group_custom.open(handles.get(id), SDC_GROUP_CUSTOM);
 
     try
     {
-        DCAttribute::readAttribute(name, group_custom, data);
+        DCAttribute::readAttribute(name, group_custom.getHandle(), data);
     } catch (DCException e)
     {
         throw DCException(getExceptionString("readGlobalAttribute", "failed to open attribute", name));
     }
-
-    H5Gclose(group_custom);
 }
 
 void ParallelDataCollector::writeGlobalAttribute(int32_t id,
@@ -232,21 +245,17 @@ throw (DCException)
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
         throw DCException(getExceptionString("writeGlobalAttribute", "this access is not permitted"));
 
-    hid_t group_custom = H5Gopen(handles.get(id), SDC_GROUP_CUSTOM, H5P_DEFAULT);
-    if (group_custom < 0)
-        throw DCException(getExceptionString("writeGlobalAttribute",
-            "custom group not found", SDC_GROUP_CUSTOM));
+    DCParallelGroup group_custom;
+    group_custom.open(handles.get(id), SDC_GROUP_CUSTOM);
 
     try
     {
-        DCAttribute::writeAttribute(name, type.getDataType(), group_custom, data);
+        DCAttribute::writeAttribute(name, type.getDataType(), group_custom.getHandle(), data);
     } catch (DCException e)
     {
         std::cerr << e.what() << std::endl;
         throw DCException(getExceptionString("writeGlobalAttribute", "failed to write attribute", name));
     }
-
-    H5Gclose(group_custom);
 }
 
 void ParallelDataCollector::readAttribute(int32_t id,
@@ -263,21 +272,18 @@ throw (DCException)
     if (fileStatus == FST_CLOSED)
         throw DCException(getExceptionString("readAttribute", "this access is not permitted"));
 
-    std::stringstream group_id_name;
-    group_id_name << SDC_GROUP_DATA << "/" << id;
-    std::string group_id_string = group_id_name.str();
+    std::string group_path, dset_name;
+    DCDataSet::getFullDataPath(dataName, SDC_GROUP_DATA, id, group_path, dset_name);
 
-    hid_t group_id = H5Gopen(handles.get(id), group_id_string.c_str(), H5P_DEFAULT);
-    if (group_id < 0)
-        throw DCException(getExceptionString("readAttribute", "group not found",
-            group_id_string.c_str()));
+    DCParallelGroup group;
+    group.open(handles.get(id), group_path);
 
     hid_t dataset_id = -1;
-    dataset_id = H5Dopen(group_id, dataName, H5P_DEFAULT);
+    dataset_id = H5Dopen(group.getHandle(), dset_name.c_str(), H5P_DEFAULT);
     if (dataset_id < 0)
     {
-        H5Gclose(group_id);
-        throw DCException(getExceptionString("readAttribute", "dataset not found", dataName));
+        throw DCException(getExceptionString("readAttribute",
+                "dataset not found", dset_name.c_str()));
     }
 
     try
@@ -286,13 +292,9 @@ throw (DCException)
     } catch (DCException)
     {
         H5Dclose(dataset_id);
-        H5Gclose(group_id);
         throw;
     }
     H5Dclose(dataset_id);
-
-    // cleanup
-    H5Gclose(group_id);
 }
 
 void ParallelDataCollector::writeAttribute(int32_t id,
@@ -308,22 +310,17 @@ throw (DCException)
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
         throw DCException(getExceptionString("writeAttribute", "this access is not permitted"));
 
-    std::stringstream group_id_name;
-    group_id_name << SDC_GROUP_DATA << "/" << id;
-    std::string group_id_string = group_id_name.str();
+    std::string group_path, dset_name;
+    DCDataSet::getFullDataPath(dataName, SDC_GROUP_DATA, id, group_path, dset_name);
 
-    hid_t group_id = H5Gopen(handles.get(id), group_id_string.c_str(), H5P_DEFAULT);
-    if (group_id < 0)
-    {
-        throw DCException(getExceptionString("writeAttribute", "group not found",
-                group_id_string.c_str()));
-    }
+    DCParallelGroup group;
+    group.open(handles.get(id), group_path);
 
-    hid_t dataset_id = H5Dopen(group_id, dataName, H5P_DEFAULT);
+    hid_t dataset_id = H5Dopen(group.getHandle(), dset_name.c_str(), H5P_DEFAULT);
     if (dataset_id < 0)
     {
-        H5Gclose(group_id);
-        throw DCException(getExceptionString("writeAttribute", "dataset not found", dataName));
+        throw DCException(getExceptionString("writeAttribute",
+                "dataset not found", dset_name.c_str()));
     }
 
     try
@@ -332,13 +329,9 @@ throw (DCException)
     } catch (DCException)
     {
         H5Dclose(dataset_id);
-        H5Gclose(group_id);
         throw;
     }
     H5Dclose(dataset_id);
-
-    // cleanup
-    H5Gclose(group_id);
 }
 
 void ParallelDataCollector::read(int32_t id,
@@ -471,33 +464,21 @@ void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
         throw DCException(getExceptionString("write", "maximum dimension is invalid"));
 
     // create group for this id/iteration
-    std::stringstream group_id_name;
-    group_id_name << SDC_GROUP_DATA << "/" << id;
+    std::string group_path, dset_name;
+    DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
 
-    hid_t group_id = -1;
-    H5Handle file_handle = handles.get(id);
-
-    group_id = H5Gopen(file_handle, group_id_name.str().c_str(), H5P_DEFAULT);
-    if (group_id < 0)
-        group_id = H5Gcreate(file_handle, group_id_name.str().c_str(), H5P_LINK_CREATE_DEFAULT,
-            H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
-
-    if (group_id < 0)
-        throw DCException(getExceptionString("write", "failed to open or create group"));
+    DCParallelGroup group;
+    group.openCreate(handles.get(id), group_path);
 
     // write data to the group
     try
     {
-        writeDataSet(group_id, globalSize, globalOffset, type, rank,
-                srcBuffer, srcStride, srcData, srcOffset, name, data);
+        writeDataSet(group.getHandle(), globalSize, globalOffset, type, rank,
+                srcBuffer, srcStride, srcData, srcOffset, dset_name.c_str(), data);
     } catch (DCException)
     {
-        H5Gclose(group_id);
         throw;
     }
-
-    // cleanup
-    H5Gclose(group_id);
 }
 
 void ParallelDataCollector::reserve(int32_t id,
@@ -513,39 +494,28 @@ void ParallelDataCollector::reserve(int32_t id,
 
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
         throw DCException(getExceptionString("write", "this access is not permitted"));
-    
+
     if (rank < 1 || rank > 3)
         throw DCException(getExceptionString("write", "maximum dimension is invalid"));
-    
+
     Dimensions global_size, global_offset;
     gatherMPIWrites(rank, size, global_size, global_offset);
 
     // create group for this id/iteration
-    std::stringstream group_id_name;
-    group_id_name << SDC_GROUP_DATA << "/" << id;
+    std::string group_path, dset_name;
+    DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
 
-    hid_t group_id = -1;
-    H5Handle file_handle = handles.get(id);
+    DCParallelGroup group;
+    group.openCreate(handles.get(id), group_path);
 
-    group_id = H5Gopen(file_handle, group_id_name.str().c_str(), H5P_DEFAULT);
-    if (group_id < 0)
-        group_id = H5Gcreate(file_handle, group_id_name.str().c_str(), H5P_LINK_CREATE_DEFAULT,
-            H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
-
-    if (group_id < 0)
-        throw DCException(getExceptionString("write", "failed to open or create group"));
-
-    DCParallelDataSet dataset(name);
+    DCParallelDataSet dataset(dset_name.c_str());
     // create the empty dataset
-    dataset.create(type, group_id, global_size, rank, this->options.enableCompression);
+    dataset.create(type, group.getHandle(), global_size, rank, this->options.enableCompression);
     dataset.close();
 
-    // cleanup
-    H5Gclose(group_id);
-    
     if (globalSize)
         globalSize->set(global_size);
-    
+
     if (globalOffset)
         globalOffset->set(global_offset);
 }
@@ -568,41 +538,30 @@ void ParallelDataCollector::append(int32_t id,
         throw DCException(getExceptionString("append", "maximum dimension is invalid"));
 
     // create group for this id/iteration
-    std::stringstream group_id_name;
-    group_id_name << SDC_GROUP_DATA << "/" << id;
+    std::string group_path, dset_name;
+    DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
 
-    hid_t group_id = -1;
-    H5Handle file_handle = handles.get(id);
-
-    group_id = H5Gopen(file_handle, group_id_name.str().c_str(), H5P_DEFAULT);
-    if (group_id < 0)
-        group_id = H5Gcreate(file_handle, group_id_name.str().c_str(), H5P_LINK_CREATE_DEFAULT,
-            H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
-
-    if (group_id < 0)
-        throw DCException(getExceptionString("append", "failed to open or create group"));
+    DCParallelGroup group;
+    group.openCreate(handles.get(id), group_path);
 
     // write data to the dataset
     try
     {
-        DCParallelDataSet dataset(name);
+        DCParallelDataSet dataset(dset_name.c_str());
         dataset.setWriteIndependent();
 
-        if (!dataset.open(group_id))
+        if (!dataset.open(group.getHandle()))
         {
-            throw DCException(getExceptionString("append", "Cannot open dataset (missing reserve?)", name));
+            throw DCException(getExceptionString("append",
+                    "Cannot open dataset (missing reserve?)", dset_name.c_str()));
         } else
             dataset.write(size, Dimensions(1, 1, 1), Dimensions(0, 0, 0), size, globalOffset, data);
 
         dataset.close();
     } catch (DCException)
     {
-        H5Gclose(group_id);
         throw;
     }
-
-    // cleanup
-    H5Gclose(group_id);
 }
 
 void ParallelDataCollector::remove(int32_t id)
@@ -618,8 +577,7 @@ throw (DCException)
     std::stringstream group_id_name;
     group_id_name << SDC_GROUP_DATA << "/" << id;
 
-    if (H5Gunlink(handles.get(id), group_id_name.str().c_str()) < 0)
-        throw DCException(getExceptionString("remove", "failed to remove group"));
+    DCParallelGroup::remove(handles.get(id), group_id_name.str());
 
     // update maxID
     options.maxID = -1;
@@ -638,23 +596,16 @@ throw (DCException)
     if (name == NULL)
         throw DCException(getExceptionString("remove", "a parameter was NULL"));
 
-    std::stringstream group_id_name;
-    group_id_name << SDC_GROUP_DATA << "/" << id;
+    std::string group_path, dset_name;
+    DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
 
-    hid_t group_id = H5Gopen(handles.get(id), group_id_name.str().c_str(), H5P_DEFAULT);
-    if (group_id < 0)
-    {
-        throw DCException(getExceptionString("remove", "failed to open group",
-                group_id_name.str().c_str()));
-    }
+    DCParallelGroup group;
+    group.open(handles.get(id), group_path);
 
-    if (H5Gunlink(group_id, name) < 0)
+    if (H5Ldelete(group.getHandle(), dset_name.c_str(), H5P_LINK_ACCESS_DEFAULT) < 0)
     {
-        H5Gclose(group_id);
         throw DCException(getExceptionString("remove", "failed to remove dataset", name));
     }
-
-    H5Gclose(group_id);
 }
 
 void ParallelDataCollector::createReference(int32_t srcID,
@@ -678,39 +629,31 @@ throw (DCException)
             "a reference must not be identical to the referenced data", srcName));
 
     // open source group
-    std::stringstream group_id_name;
-    group_id_name << SDC_GROUP_DATA << "/" << srcID;
+    std::string src_group_path, src_dset_name, dst_dset_name;
+    DCDataSet::getFullDataPath(srcName, SDC_GROUP_DATA, srcID, src_group_path, src_dset_name);
+    DCDataSet::getFullDataPath(dstName, SDC_GROUP_DATA, dstID, src_group_path, dst_dset_name);
 
-    hid_t src_group_id = H5Gopen(handles.get(srcID), group_id_name.str().c_str(), H5P_DEFAULT);
-    if (src_group_id < 0)
-    {
-        throw DCException(getExceptionString("createReference",
-                "source/destination group not found",
-                group_id_name.str().c_str()));
-    }
+    DCParallelGroup src_group;
+    src_group.open(handles.get(srcID), src_group_path);
 
     // open source dataset
     try
     {
-        DCParallelDataSet src_dataset(srcName);
-        src_dataset.open(src_group_id);
+        DCParallelDataSet src_dataset(src_dset_name.c_str());
+        src_dataset.open(src_group.getHandle());
 
-        DCParallelDataSet dst_dataset(dstName);
+        DCParallelDataSet dst_dataset(dst_dset_name.c_str());
         // create the actual reference as a new dataset
         // identical src and dst groups
-        dst_dataset.createReference(src_group_id, src_group_id, src_dataset);
+        dst_dataset.createReference(src_group.getHandle(), src_group.getHandle(), src_dataset);
 
         dst_dataset.close();
         src_dataset.close();
 
     } catch (DCException e)
     {
-        H5Gclose(src_group_id);
         throw e;
     }
-
-    // close group
-    H5Gclose(src_group_id);
 }
 
 void ParallelDataCollector::createReference(int32_t srcID,
@@ -750,22 +693,13 @@ throw (DCException)
     Options *options = (Options*) userData;
 
     // the custom group holds user-specified attributes
-    hid_t group_custom = H5Gcreate(handle, SDC_GROUP_CUSTOM, H5P_LINK_CREATE_DEFAULT,
-            H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
-    if (group_custom < 0)
-        throw DCException(getExceptionString("openCreate",
-            "failed to create custom group", SDC_GROUP_CUSTOM));
-
-    H5Gclose(group_custom);
+    DCParallelGroup group;
+    group.create(handle, SDC_GROUP_CUSTOM);
+    group.close();
 
     // the data group holds the actual simulation data
-    hid_t group_data = H5Gcreate(handle, SDC_GROUP_DATA, H5P_LINK_CREATE_DEFAULT,
-            H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
-    if (group_data < 0)
-        throw DCException(getExceptionString("openCreate",
-            "failed to create custom group", SDC_GROUP_DATA));
-
-    H5Gclose(group_data);
+    group.create(handle, SDC_GROUP_DATA);
+    group.close();
 
     writeHeader(handle, index, options->enableCompression, options->mpiTopology);
 }
@@ -783,11 +717,8 @@ void ParallelDataCollector::writeHeader(hid_t fHandle, uint32_t id,
 throw (DCException)
 {
     // create group for header information (position, grid size, ...)
-    hid_t group_header = H5Gcreate(fHandle, SDC_GROUP_HEADER, H5P_LINK_CREATE_DEFAULT,
-            H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
-    if (group_header < 0)
-        throw DCException(getExceptionString("writeHeader",
-            "Failed to create header group", NULL));
+    DCParallelGroup group;
+    group.create(fHandle, SDC_GROUP_HEADER);
 
     try
     {
@@ -798,13 +729,13 @@ throw (DCException)
 
         // create master specific header attributes
         DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, H5T_NATIVE_INT32,
-                group_header, &index);
+                group.getHandle(), &index);
 
         DCAttribute::writeAttribute(SDC_ATTR_COMPRESSION, H5T_NATIVE_HBOOL,
-                group_header, &compression);
+                group.getHandle(), &compression);
 
         DCAttribute::writeAttribute(SDC_ATTR_MPI_SIZE, dim_t.getDataType(),
-                group_header, mpiTopology.getPointer());
+                group.getHandle(), mpiTopology.getPointer());
 
     } catch (DCException attr_error)
     {
@@ -812,8 +743,6 @@ throw (DCException)
                 "Failed to write header attribute.",
                 attr_error.what()));
     }
-
-    H5Gclose(group_header);
 }
 
 void ParallelDataCollector::openCreate(const char *filename,
@@ -875,21 +804,19 @@ throw (DCException)
     if (h5File < 0 || name == NULL)
         throw DCException(getExceptionString("readInternal", "invalid parameters"));
 
-    std::stringstream group_id_name;
-    group_id_name << SDC_GROUP_DATA << "/" << id;
-    std::string group_id_string = group_id_name.str();
+    std::string group_path, dset_name;
+    DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
 
-    hid_t group_id = H5Gopen(h5File, group_id_string.c_str(), H5P_DEFAULT);
-    if (group_id < 0)
-        throw DCException(getExceptionString("readInternal", "group not found", group_id_string.c_str()));
+    DCParallelGroup group;
+    group.open(h5File, group_path);
 
     Dimensions src_size(srcSize);
     Dimensions src_offset(srcOffset);
 
     try
     {
-        DCParallelDataSet dataset(name);
-        dataset.open(group_id);
+        DCParallelDataSet dataset(dset_name.c_str());
+        dataset.open(group.getHandle());
         if (!parallelRead && (src_size.getDimSize() == 0))
         {
             dataset.read(dstBuffer, dstOffset, src_size, src_offset, sizeRead, srcRank, NULL);
@@ -901,15 +828,11 @@ throw (DCException)
         dataset.close();
     } catch (DCException e)
     {
-        H5Gclose(group_id);
         throw e;
     }
-
-    // cleanup
-    H5Gclose(group_id);
 }
 
-void ParallelDataCollector::writeDataSet(hid_t &group, const Dimensions globalSize,
+void ParallelDataCollector::writeDataSet(H5Handle group, const Dimensions globalSize,
         const Dimensions globalOffset,
         const CollectionType& datatype, uint32_t rank,
         const Dimensions srcBuffer, const Dimensions srcStride,
@@ -991,35 +914,26 @@ size_t ParallelDataCollector::getRank(H5Handle h5File,
     if (h5File < 0 || name == NULL)
         throw DCException(getExceptionString("getRank", "invalid parameters"));
 
-    std::stringstream group_id_name;
-    group_id_name << SDC_GROUP_DATA << "/" << id;
-    std::string group_id_string = group_id_name.str();
+    std::string group_path, dset_name;
+    DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
 
-    hid_t group_id = H5Gopen(h5File, group_id_string.c_str(), H5P_DEFAULT);
-    if (group_id < 0)
-    {
-        throw DCException(getExceptionString("getRank", "group not found",
-                group_id_string.c_str()));
-    }
+    DCParallelGroup group;
+    group.open(h5File, group_path);
 
     size_t rank = 0;
 
     try
     {
-        DCParallelDataSet dataset(name);
-        dataset.open(group_id);
+        DCParallelDataSet dataset(dset_name.c_str());
+        dataset.open(group.getHandle());
 
         rank = dataset.getRank();
 
         dataset.close();
     } catch (DCException e)
     {
-        H5Gclose(group_id);
         throw e;
     }
-
-    // cleanup
-    H5Gclose(group_id);
 
     return rank;
 }

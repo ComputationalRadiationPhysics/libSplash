@@ -75,11 +75,11 @@ void AttributesTest::testDataAttributes()
     }
     
     dataCollector->write(0, ctInt2, 1, Dimensions(BUF_SIZE, 1, 1), 
-            Dimensions(BUF_SIZE, 1, 1), Dimensions(0, 0, 0), "data", dummy_data);
+            Dimensions(BUF_SIZE, 1, 1), Dimensions(0, 0, 0), "datasets/my_dataset", dummy_data);
     
-    dataCollector->writeAttribute(0, ctInt, "data", "sum", &sum);
+    dataCollector->writeAttribute(0, ctInt, "datasets/my_dataset", "sum", &sum);
     int neg_sum = -sum;
-    dataCollector->writeAttribute(0, ctInt, "data", "neg_sum", &neg_sum);
+    dataCollector->writeAttribute(0, ctInt, "datasets/my_dataset", "neg_sum", &neg_sum);
     
     delete[] dummy_data;
     dummy_data = NULL;
@@ -97,7 +97,7 @@ void AttributesTest::testDataAttributes()
     dataCollector->open(TEST_FILE, attr);
     
     Dimensions src_data;
-    dataCollector->read(0, ctInt2, "data", src_data, dummy_data);
+    dataCollector->read(0, ctInt2, "datasets/my_dataset", src_data, dummy_data);
     
     for (int i = 0; i < BUF_SIZE; i++)
     {
@@ -111,8 +111,8 @@ void AttributesTest::testDataAttributes()
     
     sum = 0;
     neg_sum = 0;
-    dataCollector->readAttribute(0, "data", "sum", &sum);
-    dataCollector->readAttribute(0, "data", "neg_sum", &neg_sum);
+    dataCollector->readAttribute(0, "datasets/my_dataset", "sum", &sum);
+    dataCollector->readAttribute(0, "datasets/my_dataset", "neg_sum", &neg_sum);
     
     CPPUNIT_ASSERT(sum == old_sum);
     CPPUNIT_ASSERT(neg_sum == -old_sum);

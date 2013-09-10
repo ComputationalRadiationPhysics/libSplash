@@ -124,7 +124,7 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
         dataWrite[i] = currentMpiRank + 1;
 
     parallelDataCollector->write(iteration, ctInt, dimensions, gridSize,
-            "data", dataWrite);
+            "deep/folder/data", dataWrite);
     parallelDataCollector->close();
 
     delete[] dataWrite;
@@ -149,7 +149,7 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
         DataCollector *dataCollector = new SerialDataCollector(1);
         dataCollector->open(filename_stream.str().c_str(), fileCAttr);
 
-        dataCollector->read(iteration, ctInt, "data", size_read, data_read);
+        dataCollector->read(iteration, ctInt, "deep/folder/data", size_read, data_read);
         dataCollector->close();
         delete dataCollector;
 
@@ -165,7 +165,7 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
             MPI_INFO_NULL, mpiSize, 1);
 
     readCollector->open(HDF5_FILE, fileCAttr);
-    readCollector->read(iteration, ctInt, "data", size_read, data_read);
+    readCollector->read(iteration, ctInt, "deep/folder/data", size_read, data_read);
     readCollector->close();
 
     CPPUNIT_ASSERT(size_read == full_grid_size);
@@ -180,7 +180,7 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
 
     const Dimensions globalOffset = gridSize * mpiPos;
     readCollector->open(HDF5_FILE, fileCAttr);
-    readCollector->read(iteration, gridSize, globalOffset, ctInt, "data",
+    readCollector->read(iteration, gridSize, globalOffset, ctInt, "deep/folder/data",
             size_read, data_read);
     readCollector->close();
     delete readCollector;
@@ -338,17 +338,17 @@ bool Parallel_SimpleDataTest::subtestFill(int32_t iteration,
     int dataWrite = currentMpiRank + 1;
     uint32_t num_elements = (currentMpiRank + 1) * elements;
     Dimensions grid_size(num_elements, 1, 1);
-    
+
 #if defined TESTS_DEBUG
     std::cout << "[" << currentMpiRank << "] " << num_elements << " elements" << std::endl;
 #endif
 
     Dimensions globalOffset, globalSize;
     parallelDataCollector->reserve(iteration, grid_size,
-            &globalSize, &globalOffset, 1, ctInt, "reserved_data");
-    
+            &globalSize, &globalOffset, 1, ctInt, "reserved/reserved_data");
+
     int attrVal = currentMpiRank;
-    parallelDataCollector->writeAttribute(iteration, ctInt, "reserved_data",
+    parallelDataCollector->writeAttribute(iteration, ctInt, "reserved/reserved_data",
             "reserved_attr", &attrVal);
 
     uint32_t elements_written = 0;
@@ -362,18 +362,18 @@ bool Parallel_SimpleDataTest::subtestFill(int32_t iteration,
         Dimensions write_offset(globalOffset + Dimensions(elements_written, 0, 0));
 
         parallelDataCollector->append(iteration, write_size, ctInt, 1,
-                write_offset, "reserved_data", &dataWrite);
+                write_offset, "reserved/reserved_data", &dataWrite);
 
         if (i < num_elements)
             elements_written++;
     }
-    
+
     MPI_CHECK(MPI_Barrier(mpiComm));
-    
+
     attrVal = -1;
-    parallelDataCollector->readAttribute(iteration, "reserved_data",
+    parallelDataCollector->readAttribute(iteration, "reserved/reserved_data",
             "reserved_attr", &attrVal, NULL);
-    
+
     CPPUNIT_ASSERT(attrVal == currentMpiRank);
 
     parallelDataCollector->close();
@@ -399,7 +399,8 @@ bool Parallel_SimpleDataTest::subtestFill(int32_t iteration,
         DataCollector *dataCollector = new SerialDataCollector(1);
         dataCollector->open(filename_stream.str().c_str(), fileCAttr);
 
-        dataCollector->read(iteration, ctInt, "reserved_data", size_read, data_read);
+        dataCollector->read(iteration, ctInt, "reserved/reserved_data",
+                size_read, data_read);
         dataCollector->close();
         delete dataCollector;
 

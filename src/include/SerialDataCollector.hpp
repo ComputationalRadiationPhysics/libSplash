@@ -81,6 +81,9 @@ namespace DCollector
          */
         std::string getExceptionString(std::string func, std::string msg, const char *info = NULL);
 
+        static herr_t visitObjCallback(hid_t o_id, const char *name,
+                const H5O_info_t *object_info, void *op_data);
+
     protected:
 
         /**
@@ -189,7 +192,7 @@ namespace DCollector
          * @param data buffer with data
          */
         void writeDataSet(
-                hid_t &group,
+                hid_t group,
                 const CollectionType& datatype,
                 uint32_t rank,
                 const Dimensions srcBuffer,
@@ -213,7 +216,7 @@ namespace DCollector
          * @param data buffer with data
          */
         void appendDataSet(
-                hid_t &group,
+                hid_t group,
                 const CollectionType& datatype,
                 uint32_t count,
                 uint32_t offset,
