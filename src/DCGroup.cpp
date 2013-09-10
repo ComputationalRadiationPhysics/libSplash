@@ -26,7 +26,7 @@
 #include <cassert>
 #include <string.h>
 
-#include "DCGroup.hpp"
+#include "core/DCGroup.hpp"
 
 #define H5_TRUE 1
 #define H5_FALSE 0

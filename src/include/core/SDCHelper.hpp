@@ -24,11 +24,9 @@
 #ifndef SDCHELPER_H
 #define	SDCHELPER_H
 
-#include <hdf5.h>
-
 #include "basetypes/ColTypeDim.hpp"
 #include "sdc_defines.hpp"
-#include "DCAttribute.hpp"
+#include "core/DCAttribute.hpp"
 #include "DCException.hpp"
 
 namespace DCollector

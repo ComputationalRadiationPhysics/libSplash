@@ -26,6 +26,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <hdf5.h>
 
 namespace DCollector
 {

@@ -27,13 +27,12 @@
 #include <hdf5.h>
 #include <sstream>
 #include <iostream>
-#include <stdexcept>
 
 #include "DataCollector.hpp"
 
 #include "DCException.hpp"
+#include "core/HandleMgr.hpp"
 #include "sdc_defines.hpp"
-#include "HandleMgr.hpp"
 
 namespace DCollector
 {

@@ -21,10 +21,9 @@
 
 
 
-#include <H5public.h>
 #include <sstream>
 
-#include "DCAttribute.hpp"
+#include "core/DCAttribute.hpp"
 
 namespace DCollector
 {

@@ -27,9 +27,8 @@
 
 #include "basetypes/ColTypeDim.hpp"
 #include "basetypes/ColTypeInt.hpp"
-
 #include "DomainCollector.hpp"
-#include "DCDataSet.hpp"
+#include "core/DCDataSet.hpp"
 
 namespace DCollector
 {

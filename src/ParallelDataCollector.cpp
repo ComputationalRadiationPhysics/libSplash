@@ -19,12 +19,12 @@
  * If not, see <http://www.gnu.org/licenses/>. 
  */
 
-#include <assert.h>
+#include <cassert>
 
 #include "ParallelDataCollector.hpp"
-#include "DCParallelDataSet.hpp"
-#include "DCAttribute.hpp"
-#include "DCParallelGroup.hpp"
+#include "core/DCParallelDataSet.hpp"
+#include "core/DCAttribute.hpp"
+#include "core/DCParallelGroup.hpp"
 
 using namespace DCollector;
 

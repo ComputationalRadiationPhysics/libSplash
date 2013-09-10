@@ -22,18 +22,17 @@
 #ifndef PARALLELDATACOLLECTOR_HPP
 #define	PARALLELDATACOLLECTOR_HPP
 
-#include <hdf5.h>
 #include <mpi.h>
 #include <sstream>
 #include <string>
 #include <iostream>
-#include <stdexcept>
+#include <hdf5.h>
 
 #include "IParallelDataCollector.hpp"
 
 #include "DCException.hpp"
 #include "sdc_defines.hpp"
-#include "HandleMgr.hpp"
+#include "core/HandleMgr.hpp"
 
 namespace DCollector
 {

@@ -27,9 +27,9 @@
 
 #include "sdc_defines.hpp"
 
-#include "DCDataSet.hpp"
-#include "DCAttribute.hpp"
-#include "DCHelper.hpp"
+#include "core/DCDataSet.hpp"
+#include "core/DCAttribute.hpp"
+#include "core/DCHelper.hpp"
 #include "DCException.hpp"
 #include "basetypes/ColTypeDim.hpp"
 

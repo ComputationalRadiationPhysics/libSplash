@@ -28,7 +28,7 @@
 
 #include "DCException.hpp"
 #include "Dimensions.hpp"
-#include "DomainData.hpp"
+#include "domains/DomainData.hpp"
 
 namespace DCollector
 {

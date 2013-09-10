@@ -23,9 +23,9 @@
 #define	IDOMAINCOLLECTOR_HPP
 
 #include "Dimensions.hpp"
-#include "DataContainer.hpp"
-#include "DomainData.hpp"
-#include "Domain.hpp"
+#include "domains/DataContainer.hpp"
+#include "domains/DomainData.hpp"
+#include "domains/Domain.hpp"
 
 #define DOMCOL_ATTR_CLASS "_class"
 #define DOMCOL_ATTR_SIZE "_size"

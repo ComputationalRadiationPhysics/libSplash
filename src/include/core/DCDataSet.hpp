@@ -26,7 +26,6 @@
 
 #include <stdint.h>
 #include <string>
-#include <stdexcept>
 #include <hdf5.h>
 
 #include "DCException.hpp"

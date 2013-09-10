@@ -17,28 +17,35 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
 
 
-#ifndef DATAMERGER_H
-#define	DATAMERGER_H
+
+#ifndef DCPARALLELGROUP_HPP
+#define	DCPARALLELGROUP_HPP
+
+#include "core/DCGroup.hpp"
 
 namespace DCollector
 {
-    class DataMerger
-    {
+
+    class DCParallelGroup : public DCGroup
+    {    
+
     public:
-        /**
-         * Merges single hdf5 files to one file.
-         *
-         * @param filename hdf5 filename without extensions must be the same for all mpi processes
-         * @param enableCompression enables writing compressed data
-         */
-        virtual void merge(const char* filename,
-                bool enableCompression) = 0;
+        DCParallelGroup() :
+        DCGroup()
+        {
+            this->checkExistence = false;
+        }
+        
+        virtual ~DCParallelGroup()
+        {
+            
+        }
     };
+
 }
 
-#endif	/* DATAMERGER_H */
+#endif	/* DCPARALLELGROUP_HPP */
 

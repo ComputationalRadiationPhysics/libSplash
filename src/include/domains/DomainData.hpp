@@ -30,8 +30,8 @@
 #include <hdf5.h>
 
 #include "Dimensions.hpp"
-#include "Domain.hpp"
-#include "DCDataSet.hpp"
+#include "domains/Domain.hpp"
+#include "core/DCDataSet.hpp"
 
 namespace DCollector
 {

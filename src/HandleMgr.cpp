@@ -25,7 +25,7 @@
 #include <iostream>
 #include <hdf5.h>
 
-#include "HandleMgr.hpp"
+#include "core/HandleMgr.hpp"
 
 using namespace DCollector;
 

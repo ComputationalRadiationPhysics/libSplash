@@ -24,7 +24,7 @@
 #ifndef DOMAINCOLLECTOR_HPP
 #define	DOMAINCOLLECTOR_HPP
 
-#include "IDomainCollector.hpp"
+#include "domains/IDomainCollector.hpp"
 #include "SerialDataCollector.hpp"
 #include "Dimensions.hpp"
 #include "DCException.hpp"

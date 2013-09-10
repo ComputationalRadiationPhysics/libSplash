@@ -22,21 +22,18 @@
 
 
 #include <cstring>
-#include <iostream>
 #include <time.h>
 #include <stdlib.h>
-#include <stdexcept>
 #include <cassert>
 #include <sys/stat.h> 
-#include <H5Ppublic.h>
 
 #include "SerialDataCollector.hpp"
 
-#include "DCAttribute.hpp"
-#include "DCDataSet.hpp"
-#include "DCGroup.hpp"
-#include "DCHelper.hpp"
-#include "SDCHelper.hpp"
+#include "core/DCAttribute.hpp"
+#include "core/DCDataSet.hpp"
+#include "core/DCGroup.hpp"
+#include "core/DCHelper.hpp"
+#include "core/SDCHelper.hpp"
 
 namespace DCollector
 {

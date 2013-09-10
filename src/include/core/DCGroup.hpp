@@ -26,14 +26,12 @@
 
 #include <stdint.h>
 #include <string>
-#include <stdexcept>
 #include <vector>
-
 #include <hdf5.h>
 
 #include "DataCollector.hpp"
 #include "DCException.hpp"
-#include "HandleMgr.hpp"
+#include "core/HandleMgr.hpp"
 
 namespace DCollector
 {

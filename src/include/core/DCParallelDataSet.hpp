@@ -22,7 +22,7 @@
 #ifndef DCPARALLELDATASET_HPP
 #define	DCPARALLELDATASET_HPP
 
-#include "DCDataSet.hpp"
+#include "core/DCDataSet.hpp"
 
 
 namespace DCollector

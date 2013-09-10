@@ -22,7 +22,7 @@
 #ifndef PARALLELDOMAINCOLLECTOR_HPP
 #define	PARALLELDOMAINCOLLECTOR_HPP
 
-#include "IParallelDomainCollector.hpp"
+#include "domains/IParallelDomainCollector.hpp"
 #include "ParallelDataCollector.hpp"
 
 namespace DCollector

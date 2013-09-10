@@ -22,7 +22,7 @@
 #include "basetypes/ColTypeInt.hpp"
 
 #include "ParallelDomainCollector.hpp"
-#include "DCParallelDataSet.hpp"
+#include "core/DCParallelDataSet.hpp"
 
 using namespace DCollector;
 

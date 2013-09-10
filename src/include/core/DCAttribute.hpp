@@ -25,7 +25,6 @@
 #define	DCATTRIBUTE_H
 
 #include <hdf5.h>
-#include <stdexcept>
 
 #include "DCException.hpp"
 

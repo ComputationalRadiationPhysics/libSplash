@@ -46,7 +46,6 @@
 #define	_DATACOLLECTOR_H
 
 #include <stdint.h>
-#include <stdexcept>
 
 #include "CollectionType.hpp"
 #include "Dimensions.hpp"
