@@ -145,6 +145,8 @@ IF(WITH_TOOLS)
             # MPI is required package but not yet included
             FIND_PACKAGE(MPI REQUIRED)
             INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
+        ELSE(NOT PARALLEL)
+            ADD_DEFINITIONS(-DENABLE_PARALLEL=1)
         ENDIF(NOT PARALLEL)
 
         ADD_DEFINITIONS(-DENABLE_MPI=1)
