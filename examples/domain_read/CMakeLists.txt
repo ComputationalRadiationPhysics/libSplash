@@ -25,15 +25,20 @@ set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{HDF5_ROOT}")
 
 SET(CMAKE_CXX_FLAGS_DEBUG "-g")
 SET(CMAKE_BUILD_TYPE Debug)
+OPTION(WITH_MPI "use MPI-read tests" OFF)
+
+#-------------------------------------------------------------------------------
 
 FIND_PACKAGE(HDF5 REQUIRED)
 INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
 LINK_DIRECTORIES(${HDF5_LIBRARY_DIRS})
 SET(LIBS ${LIBS} hdf5)
 
-FIND_PACKAGE(MPI REQUIRED)
-INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
-SET(LIBS ${LIBS} ${MPI_LIBRARIES})
+IF(WITH_MPI)
+    FIND_PACKAGE(MPI REQUIRED)
+    INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
+    SET(LIBS ${LIBS} ${MPI_LIBRARIES})
+ENDIF(WITH_MPI)
 
 #LIBSPLASH
 find_path(SPLASH_ROOT_DIR
@@ -50,11 +55,11 @@ SET(LIBS ${LIBS} splash)
 ADD_EXECUTABLE(domain_read
      "domain_read.cpp"
 )
-
-ADD_EXECUTABLE(domain_read_mpi
-     "domain_read_mpi.cpp"
-)
-
 TARGET_LINK_LIBRARIES(domain_read m ${LIBS})
-TARGET_LINK_LIBRARIES(domain_read_mpi m ${LIBS})
 
+IF(WITH_MPI)
+    ADD_EXECUTABLE(domain_read_mpi
+         "domain_read_mpi.cpp"
+    )
+    TARGET_LINK_LIBRARIES(domain_read_mpi m ${LIBS})
+ENDIF(WITH_MPI)

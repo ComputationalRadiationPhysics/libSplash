@@ -37,7 +37,14 @@ MergedReadTest::MergedReadTest() :
 ctInt()
 {
     throw DCException("This test is currently not supported !");
-    
+
+    int argc;
+    char** argv;
+    int initialized;
+    MPI_Initialized(&initialized);
+    if( !initialized )
+        MPI_Init(&argc, &argv);
+
     dataCollector = new SerialDataCollector(10);
 
     comm = MPI_COMM_WORLD;
