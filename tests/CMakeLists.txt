@@ -38,7 +38,7 @@ FILE(GLOB SRCFILESOTHER "dependencies/*.cpp")
 SET(TESTS Append Attributes FileAccess References Remove SimpleData Striding)
 
 IF(WITH_MPI)
-    SET(TESTS Benchmark Domains MergedRead)
+    SET(TESTS ${TESTS} Benchmark Domains MergedRead)
 ENDIF(WITH_MPI)
 
 OPTION(PARALLEL "enable tests for parallel libSplash" OFF)
