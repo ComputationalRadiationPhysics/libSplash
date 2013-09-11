@@ -41,11 +41,12 @@ LINK_DIRECTORIES(${HDF5_LIBRARY_DIRS})
 
 #-------------------------------------------------------------------------------
 
+SET(CMAKE_CXX_FLAGS "-Wall -Werror -Woverloaded-virtual")
 # options
 OPTION(DEBUG_VERBOSE "enable verbose debug output" OFF)
-OPTION(SPLASH_RELEASE "disable all debug asserts" ON)
+OPTION(SPLASH_RELEASE "optimize, disable all debug asserts" ON)
 IF(NOT SPLASH_RELEASE)
-    SET(CMAKE_CXX_FLAGS_DEBUG "-g -Wall")
+    SET(CMAKE_CXX_FLAGS_DEBUG "-g")
     SET(CMAKE_BUILD_TYPE Debug)
 
     IF(DEBUG_VERBOSE)
@@ -56,7 +57,6 @@ IF(NOT SPLASH_RELEASE)
     MESSAGE("building debug version")
 ELSE(NOT SPLASH_RELEASE)
     SET(CMAKE_BUILD_TYPE Release)
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Woverloaded-virtual")
     MESSAGE("building release version")
 ENDIF(NOT SPLASH_RELEASE)
 

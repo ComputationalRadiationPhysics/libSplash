@@ -56,7 +56,8 @@ namespace DCollector
         rawCacheSize = 64 * 1024 * 1024;
         H5Pset_cache(fileAccProperties, metaCacheElements, rawCacheElements, rawCacheSize, policy);
 
-        //H5Pset_chunk_cache(0, H5D_CHUNK_CACHE_NSLOTS_DEFAULT, H5D_CHUNK_CACHE_NBYTES_DEFAULT, H5D_CHUNK_CACHE_W0_DEFAULT);
+        //H5Pset_chunk_cache(0, H5D_CHUNK_CACHE_NSLOTS_DEFAULT,
+        //  H5D_CHUNK_CACHE_NBYTES_DEFAULT, H5D_CHUNK_CACHE_W0_DEFAULT);
 
 #if defined SDC_DEBUG_OUTPUT
         std::cerr << "Raw Data Cache = " << rawCacheSize / 1024 << " KiB" << std::endl;
@@ -472,9 +473,7 @@ namespace DCollector
         std::stringstream group_id_name;
         group_id_name << SDC_GROUP_DATA << "/" << id;
 
-        H5Handle file_handle = handles.get(0);
-        if (DCGroup::exists(file_handle, group_id_name.str()))
-            DCGroup::remove(file_handle, group_id_name.str());
+        DCGroup::remove(handles.get(0), group_id_name.str());
 
         // update maxID to new highest group
         maxID = 0;
@@ -505,20 +504,17 @@ namespace DCollector
         if (name == NULL)
             throw DCException(getExceptionString("remove", "a parameter was NULL"));
 
-        std::stringstream group_id_name;
-        group_id_name << SDC_GROUP_DATA << "/" << id;
+        std::string group_path, dset_name;
+        DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
 
-        if (DCGroup::exists(handles.get(0), group_id_name.str()))
+        DCGroup group;
+        group.open(handles.get(0), group_path);
+
+        if (H5Ldelete(group.getHandle(), dset_name.c_str(), H5P_LINK_ACCESS_DEFAULT) < 0)
         {
-            DCGroup group;
-            group.open(handles.get(0), group_id_name.str());
-
-            if (H5Gunlink(group.getHandle(), name) < 0)
-            {
-                throw DCException(getExceptionString("remove", "failed to remove dataset", name));
-            }
-        } else
-            throw DCException(getExceptionString("remove", "group does not exist", group_id_name.str().c_str()));
+            throw DCException(getExceptionString("remove",
+                    "failed to remove dataset", dset_name.c_str()));
+        }
     }
 
     void SerialDataCollector::createReference(int32_t srcID,
@@ -874,7 +870,8 @@ namespace DCollector
         /**
          * \todo: allow changing master filename
          */
-        H5Handle master_file = H5Fcreate("/tmp/master.h5", H5F_ACC_TRUNC, H5P_FILE_CREATE_DEFAULT, fileAccPList);
+        H5Handle master_file = H5Fcreate("/tmp/master.h5",
+                H5F_ACC_TRUNC, H5P_FILE_CREATE_DEFAULT, fileAccPList);
         if (master_file < 0)
             throw DCException(getExceptionString("readMerged", "failed to create master file", name));
 
@@ -942,7 +939,8 @@ namespace DCollector
 #endif
 
         DCDataSet dataset_master("master");
-        dataset_master.create(type, master_group.getHandle(), dim_master, client_rank, this->enableCompression);
+        dataset_master.create(type, master_group.getHandle(), dim_master,
+                client_rank, this->enableCompression);
 
         // open files and read data
         for (size_t z = 0; z < mpiSize[2]; z++)
@@ -1072,7 +1070,7 @@ namespace DCollector
         param.entries = entries;
 
         DCGroup::getEntriesInternal(group.getHandle(), group_id_name.str(), &param);
-        
+
         if (count)
             *count = param.count;
     }

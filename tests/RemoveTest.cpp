@@ -64,7 +64,7 @@ void RemoveTest::testRemove()
         dataWrite[i] = i;
 
     dataCollector->write(0, ctInt, 1, gridSize, "data", dataWrite);
-    dataCollector->write(0, ctInt, 1, gridSize, "data2", dataWrite);
+    dataCollector->write(0, ctInt, 1, gridSize, "folder/data2", dataWrite);
     
     dataCollector->write(1, ctInt, 1, gridSize, "data3", dataWrite);
     
@@ -93,9 +93,12 @@ void RemoveTest::testRemove()
     CPPUNIT_ASSERT_THROW(dataCollector->read(0, ctInt, "data", gridSize, dataRead),
             DCException);
     
-    dataCollector->read(0, ctInt, "data2", gridSize, dataRead);
-    dataCollector->remove(0, "data2");
+    dataCollector->read(0, ctInt, "folder/data2", gridSize, dataRead);
+    CPPUNIT_ASSERT_THROW(dataCollector->remove(0, "data2"), DCException);
+    dataCollector->remove(0, "folder/data2");
     CPPUNIT_ASSERT_THROW(dataCollector->read(0, ctInt, "data2", gridSize, dataRead),
+            DCException);
+    CPPUNIT_ASSERT_THROW(dataCollector->read(0, ctInt, "folder/data2", gridSize, dataRead),
             DCException);
     
     dataCollector->read(1, ctInt, "data3", gridSize, dataRead);
