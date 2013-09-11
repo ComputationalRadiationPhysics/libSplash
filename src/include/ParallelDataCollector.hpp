@@ -26,6 +26,7 @@
 #include <sstream>
 #include <string>
 #include <iostream>
+#include <set>
 #include <hdf5.h>
 
 #include "IParallelDataCollector.hpp"
@@ -75,6 +76,8 @@ namespace DCollector
                 const char *info = NULL);
 
         static void indexToPos(int index, Dimensions mpiSize, Dimensions &mpiPos);
+        
+        static void listFilesInDir(const std::string baseFilename, std::set<int32_t> &ids);
     protected:
 
         typedef struct
@@ -110,6 +113,9 @@ namespace DCollector
 
         // current file access type
         FileStatusType fileStatus;
+        
+        // filename passed to PDC
+        std::string baseFilename;
 
         static void writeHeader(hid_t fHandle, uint32_t id,
                 bool enableCompression, Dimensions mpiTopology) throw (DCException);

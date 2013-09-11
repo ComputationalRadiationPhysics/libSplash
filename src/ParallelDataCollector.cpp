@@ -20,6 +20,9 @@
  */
 
 #include <cassert>
+#include <set>
+#include <dirent.h>
+#include <stdlib.h>
 
 #include "ParallelDataCollector.hpp"
 #include "core/DCParallelDataSet.hpp"
@@ -82,6 +85,44 @@ void ParallelDataCollector::indexToPos(int index, Dimensions mpiSize, Dimensions
     mpiPos[0] = index % mpiSize[0];
 }
 
+void ParallelDataCollector::listFilesInDir(const std::string baseFilename, std::set<int32_t> &ids)
+{
+    std::string dir_path, name;
+    std::string::size_type pos = baseFilename.find_last_of('/');
+    if (pos == std::string::npos)
+    {
+        dir_path.assign(".");
+        name.assign(baseFilename);
+    } else
+    {
+        dir_path.assign(baseFilename.c_str(), baseFilename.c_str() + pos);
+        name.assign(baseFilename.c_str() + pos + 1);
+        name.append("_");
+    }
+
+    dirent *dp;
+
+    DIR *dirp = opendir(dir_path.c_str());
+    while ((dp = readdir(dirp)) != NULL)
+    {
+        // size matches and starts with name.c_str()
+        if (strstr(dp->d_name, name.c_str()) == dp->d_name)
+        {
+            std::string fname;
+            fname.assign(dp->d_name);
+            // end with correct file extension
+            if (fname.find(".h5") != fname.size() - 3)
+                continue;
+
+            // extract id from filename
+            int32_t id = atoi(
+                    fname.substr(name.size(), fname.size() - 3 - name.size()).c_str());
+            ids.insert(id);
+        }
+    }
+    (void) closedir(dirp);
+}
+
 /*******************************************************************************
  * PUBLIC FUNCTIONS
  *******************************************************************************/
@@ -136,6 +177,8 @@ throw (DCException)
     if (fileStatus != FST_CLOSED)
         throw DCException(getExceptionString("open", "this access is not permitted"));
 
+    this->baseFilename.assign(filename);
+    
     switch (attr.fileAccType)
     {
         case FAT_READ:
@@ -159,7 +202,7 @@ void ParallelDataCollector::close()
 
     // close opened hdf5 file handles
     handles.close();
-    
+
     options.maxID = -1;
 
     fileStatus = FST_CLOSED;
@@ -167,6 +210,12 @@ void ParallelDataCollector::close()
 
 int32_t ParallelDataCollector::getMaxID()
 {
+    std::set<int32_t> ids;
+    listFilesInDir(this->baseFilename, ids);
+
+    if (ids.size() > 0)
+        options.maxID = *(ids.rbegin());
+    
     return options.maxID;
 }
 
@@ -178,15 +227,22 @@ void ParallelDataCollector::getMPISize(Dimensions& mpiSize)
 void ParallelDataCollector::getEntryIDs(int32_t *ids, size_t *count)
 throw (DCException)
 {
-    size_t num_ids = options.maxID > -1 ? 1 : 0;
+    std::set<int32_t> file_ids;
+    listFilesInDir(this->baseFilename, file_ids);
 
-    std::cout << "num_ids " << num_ids << std::endl;
-    
     if (count != NULL)
-        *count = num_ids;
+        *count = file_ids.size();
 
-    if (ids != NULL && (num_ids > 0))
-        ids[0] = options.maxID;
+    if (ids != NULL)
+    {
+        size_t ctr = 0;
+        for (std::set<int32_t>::const_iterator iter = file_ids.begin();
+                iter != file_ids.end(); ++iter)
+        {
+            ids[ctr] = *iter;
+            ++ctr;
+        }
+    }
 }
 
 void ParallelDataCollector::getEntriesForID(int32_t id, DCEntry *entries,
@@ -580,7 +636,7 @@ throw (DCException)
     DCParallelGroup::remove(handles.get(id), group_id_name.str());
 
     // update maxID
-    options.maxID = -1;
+    getMaxID();
 }
 
 void ParallelDataCollector::remove(int32_t id, const char* name)
@@ -760,6 +816,8 @@ throw (DCException)
     else
         std::cerr << "compression is OFF" << std::endl;
 #endif
+    
+    options.maxID = -1;
 
     // open file
     handles.open(Dimensions(1, 1, 1), filename, fileAccProperties, H5F_ACC_TRUNC);
@@ -769,7 +827,9 @@ void ParallelDataCollector::openRead(const char* filename, FileCreationAttr& att
 throw (DCException)
 {
     this->fileStatus = FST_READING;
-
+    
+    getMaxID();
+    
     handles.open(Dimensions(1, 1, 1), filename, fileAccProperties, H5F_ACC_RDONLY);
 }
 
@@ -777,6 +837,8 @@ void ParallelDataCollector::openWrite(const char* filename, FileCreationAttr& at
 throw (DCException)
 {
     this->fileStatus = FST_WRITING;
+    
+    getMaxID();
 
     // filters are currently not supported by parallel HDF5
     //this->options.enableCompression = attr.enableCompression;

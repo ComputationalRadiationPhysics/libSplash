@@ -40,6 +40,7 @@
  *
  * @authors Felix Schmitt
  * @authors René Widera
+ * @authors Axel Huebl
  */
 
 #ifndef _DATACOLLECTOR_H
@@ -93,7 +94,7 @@ namespace DCollector
 
         /**
          * Initializes FileCreationAttr with default values.
-         * (compression = false, access type = create, position = (0, 0, 0), size = (1, 1, 1))
+         * (compression = false, access type = FAT_CREATE, position = (0, 0, 0), size = (1, 1, 1))
          * 
          * @param attr file attributes to initialize
          */
@@ -115,7 +116,7 @@ namespace DCollector
         /**
          * Opens one or multiple files for reading/writing data.
          *
-         * @param filename name of the file(s) to open (the common part without position identifiers)
+         * @param filename name of the file(s) to open (the common part without index identifier)
          * @param attr struct passing several parameters on accessing files
          */
         virtual void open(
@@ -126,7 +127,6 @@ namespace DCollector
          * Closes open files and releases buffers.
          *
          * Must be called by user when finished writing/reading data.
-         * Should not be called after merge().
          */
         virtual void close() = 0;
 

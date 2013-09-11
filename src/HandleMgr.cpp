@@ -75,7 +75,7 @@ void HandleMgr::open(Dimensions mpiSize, const std::string baseFilename,
     this->filename = baseFilename;
     this->fileAccProperties = fileAccProperties;
     this->fileFlags = flags;
-    singleFile = false;
+    this->singleFile = false;
 }
 
 void HandleMgr::open(const std::string fullFilename,
@@ -86,7 +86,7 @@ void HandleMgr::open(const std::string fullFilename,
     this->filename = fullFilename;
     this->fileAccProperties = fileAccProperties;
     this->fileFlags = flags;
-    singleFile = true;
+    this->singleFile = true;
 }
 
 uint32_t HandleMgr::indexFromPos(Dimensions& mpiPos)
@@ -125,7 +125,7 @@ throw (DCException)
     uint32_t index = 0;
     if (!singleFile)
         index = indexFromPos(mpiPos);
-    
+
     HandleMap::iterator iter = handles.find(index);
     if (iter == handles.end())
     {
@@ -135,15 +135,15 @@ throw (DCException)
             if (fileCloseCallback)
             {
                 fileCloseCallback(rmHandle->second.handle,
-                    leastAccIndex.index, fileCloseUserData);
+                        leastAccIndex.index, fileCloseUserData);
             }
 
             if (H5Fclose(rmHandle->second.handle) < 0)
             {
-                std::cerr <<
-                        "Exception for HandleMgr::get: Failed to close file handle ("
-                        << index << ")" << std::endl;
+                throw DCException(getExceptionString("get", "Failed to close file handle",
+                        mpiPos.toString().c_str()));
             }
+
             handles.erase(rmHandle);
             leastAccIndex.ctr = 0;
         }
@@ -214,6 +214,7 @@ throw (DCException)
 
 void HandleMgr::close()
 {
+    // clean internal state
     createdFiles.clear();
     filename = "";
     fileAccProperties = 0;
@@ -224,6 +225,7 @@ void HandleMgr::close()
     numHandles = 0;
     singleFile = true;
 
+    // close all remaining handles
     HandleMap::const_iterator iter = handles.begin();
     for (; iter != handles.end(); ++iter)
     {
@@ -232,9 +234,8 @@ void HandleMgr::close()
 
         if (H5Fclose(iter->second.handle) < 0)
         {
-            std::cerr <<
-                    "Exception for HandleMgr::close: Failed to close file handle ("
-                    << iter->first << ")" << std::endl;
+            throw DCException(getExceptionString("close", "Failed to close file handle",
+                    posFromIndex(iter->first).toString().c_str()));
         }
     }
 

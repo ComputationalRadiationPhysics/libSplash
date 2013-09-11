@@ -42,7 +42,7 @@ namespace DCollector
     static const H5Handle INVALID_HANDLE = -1;
 
     /**
-     * Helper class for SerialDataCollector which manages a limited number of
+     * Helper class which manages a limited number of
      * concurrently opened file handles.
      * If the maximum number of opened file handles is reached, the handle
      * with the lowest number of accesses is closed.
@@ -66,11 +66,17 @@ namespace DCollector
         typedef std::map<uint32_t, HandleCtrStr> HandleMap;
         
     public:
+        /**
+         * File naming schemes
+         * FNS_MPI: use MPI position, e.g. file_0_2_1.h5
+         * FNS_ITERATIONS: use current iteration, e.g. file_132.h5
+         */
         enum FileNameScheme
         {
             FNS_MPI = 0, FNS_ITERATIONS
         };
         
+        // callback function types
         typedef void (*FileCreateCallback)(H5Handle handle, uint32_t index, void *userData);
         typedef void (*FileOpenCallback)(H5Handle handle, uint32_t index, void *userData);
         typedef void (*FileCloseCallback)(H5Handle handle, uint32_t index, void *userData);
