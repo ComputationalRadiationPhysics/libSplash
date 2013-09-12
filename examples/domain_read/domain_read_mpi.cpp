@@ -25,7 +25,7 @@
 #include <mpi.h>
 #include <math.h>
 #include <stdint.h>
-#include "DomainCollector.hpp"
+#include "splash.h"
 
 using namespace DCollector;
 
