@@ -54,10 +54,10 @@ IF(NOT SPLASH_RELEASE)
         ADD_DEFINITIONS(-DDC_DEBUG=1)
     ENDIF(DEBUG_VERBOSE)
 
-    MESSAGE("building debug version")
+    MESSAGE("building DEBUG version")
 ELSE(NOT SPLASH_RELEASE)
     SET(CMAKE_BUILD_TYPE Release)
-    MESSAGE("building release version")
+    MESSAGE("building RELEASE version")
 ENDIF(NOT SPLASH_RELEASE)
 
 #-------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ IF(PARALLEL)
     OPTION(COLLECTIVE_IO "use HDF5 collective IO" ON)
     IF(NOT COLLECTIVE_IO)
         ADD_DEFINITIONS(-DSPLASH_INDEPENDENT_IO=1)
-        MESSAGE("hdf5 independent IO")
+        MESSAGE("enable HDF5 independent IO")
     ENDIF(NOT COLLECTIVE_IO)
 
     # MPI is required package
@@ -87,11 +87,11 @@ IF(PARALLEL)
     SET(SPLASH_LIBS ${SPLASH_LIBS} ${MPI_LIBRARIES})
 
     SET(SPLASH_CLASSES ${SPLASH_CLASSES} ParallelDataCollector ParallelDomainCollector)
-    MESSAGE("building parallel version")
+    MESSAGE("building libSplash parallel version")
 ELSE(PARALLEL)
     #serial version
 
-    MESSAGE("building serial version")
+    MESSAGE("building libSplash serial version")
 ENDIF(PARALLEL)
 
 #-------------------------------------------------------------------------------
@@ -118,16 +118,24 @@ TARGET_LINK_LIBRARIES (splash_static ${SPLASH_LIBS})
 INSTALL(TARGETS splash LIBRARY DESTINATION lib)
 INSTALL(TARGETS splash_static ARCHIVE DESTINATION lib)
 
-# copy all important subfolders to install folder
-SET(SPLASH_COPY_ON_INSTALL "include" CACHE LIST "folders copied during install")
-FOREACH(dir ${SPLASH_COPY_ON_INSTALL})
-  IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/${dir}/")
-    INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/${dir}/."
-      DESTINATION "${CMAKE_INSTALL_PREFIX}/${dir}"
-      PATTERN .svn EXCLUDE
-    )
-  ENDIF()
-ENDFOREACH()
+# copy include folder to install folder
+INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/include/."
+  DESTINATION "${CMAKE_INSTALL_PREFIX}/include"
+  PATTERN ".svn" EXCLUDE
+  PATTERN ".git" EXCLUDE
+  PATTERN "splash_*.h" EXCLUDE
+)
+
+# install correct splash header file
+INSTALL(SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/PostInstall.cmake")
+IF(PARALLEL)
+    SET(splash_inc_file "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_parallel.h")
+ELSE(PARALLEL)
+    SET(splash_inc_file "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_serial.h")
+ENDIF(PARALLEL)
+
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/PostInstall.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/PostInstall.cmake @ONLY)
 
 #-------------------------------------------------------------------------------
 
@@ -137,6 +145,7 @@ IF(WITH_TOOLS)
     MESSAGE("building splashtools")
 
     SET(TOOLS_LIBS ${TOOLS_LIBS} splash_static)
+    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
     # MPI for tools
     OPTION(TOOLS_MPI "enable splashtools MPI support" OFF)
@@ -145,20 +154,38 @@ IF(WITH_TOOLS)
             # MPI is required package but not yet included
             FIND_PACKAGE(MPI REQUIRED)
             INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
-        ELSE(NOT PARALLEL)
-            ADD_DEFINITIONS(-DENABLE_PARALLEL=1)
         ENDIF(NOT PARALLEL)
 
         ADD_DEFINITIONS(-DENABLE_MPI=1)
         SET(TOOLS_LIBS ${TOOLS_LIBS} ${MPI_LIBRARIES})
-        MESSAGE("building tools MPI version")
+        MESSAGE("building splashtools MPI version")
     ELSE(TOOLS_MPI)
         IF(PARALLEL)
             SET(TOOLS_LIBS ${TOOLS_LIBS} ${MPI_LIBRARIES})
         ENDIF(PARALLEL)
     ENDIF(TOOLS_MPI)
 
+    # general settings for splashtools w/ and w/o parallel support
+    IF(PARALLEL)
+        ADD_DEFINITIONS(-DENABLE_PARALLEL=1)
+
+        ADD_CUSTOM_COMMAND(TARGET splash POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E create_symlink
+                "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_parallel.h"
+                "${CMAKE_CURRENT_BINARY_DIR}/splash.h"
+        )
+
+        MESSAGE("building splashtools parallel version")
+    ELSE(PARALLEL)
+        ADD_CUSTOM_COMMAND(TARGET splash POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E create_symlink
+                "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_serial.h"
+                "${CMAKE_CURRENT_BINARY_DIR}/splash.h"
+        )
+    ENDIF(PARALLEL)
+
     ADD_EXECUTABLE(splashtools ${TOOLS_SOURCES})
+    ADD_DEPENDENCIES(splashtools splash splash_static)
     TARGET_LINK_LIBRARIES(splashtools ${TOOLS_LIBS})
 
     #install tools

@@ -33,11 +33,7 @@
 #include <mpi.h>
 #endif
 
-#if (ENABLE_PARALLEL == 1)
-#include "ParallelDataCollector.hpp"
-#endif
-
-#include "SerialDataCollector.hpp"
+#include "splash.h"
 
 using namespace DCollector;
 
@@ -110,7 +106,7 @@ int parseCmdLine(int argc, char **argv, Options& options)
             " --delete,-d\t<step>\t\t Delete [d,*) simulation steps" << std::endl <<
             " --check,-c\t\t\t Check file integrity" << std::endl <<
             " --list,-l\t\t\t List all file entries" << std::endl <<
-#if (ENABLE_PARALLEL == 1)
+#if defined (SPLASH_SUPPORTED_PARALLEL)
             " --parallel,-p\t\t\t Input is parallel libSplash file" << std::endl <<
 #endif
             " --verbose,-v\t\t\t Verbose output";
@@ -187,7 +183,7 @@ int parseCmdLine(int argc, char **argv, Options& options)
             continue;
         }
 
-#if (ENABLE_PARALLEL == 1)
+#if defined (SPLASH_SUPPORTED_PARALLEL)
         // parallel file
         if ((strcmp(option, "-p") == 0) || (strcmp(option, "--parallel") == 0))
         {
@@ -306,7 +302,7 @@ int detectFileMPISize(Options& options, Dimensions &fileMPISizeDim)
     int result = RESULT_OK;
 
     DataCollector *dc = NULL;
-#if (ENABLE_PARALLEL == 1)
+#if defined (SPLASH_SUPPORTED_PARALLEL)
     if (options.parallelFile)
         dc = new ParallelDataCollector(MPI_COMM_WORLD, MPI_INFO_NULL,
             Dimensions(options.mpiSize, 1, 1), 1);
@@ -349,7 +345,7 @@ int executeToolFunction(Options& options,
     {
         if (options.mpiRank == 0)
         {
-#if (ENABLE_PARALLEL == 1)
+#if defined (SPLASH_SUPPORTED_PARALLEL)
             if (options.parallelFile)
                 dc = new ParallelDataCollector(MPI_COMM_WORLD, MPI_INFO_NULL,
                     Dimensions(options.mpiSize, 1, 1), 1);
@@ -395,7 +391,7 @@ int executeToolFunction(Options& options,
         if (options.fileIndexStart == -1)
             return RESULT_OK;
 
-#if (ENABLE_PARALLEL == 1)
+#if defined (SPLASH_SUPPORTED_PARALLEL)
         if (options.parallelFile)
             dc = new ParallelDataCollector(MPI_COMM_WORLD, MPI_INFO_NULL,
                 Dimensions(options.mpiSize, 1, 1), 1);
@@ -411,7 +407,7 @@ int executeToolFunction(Options& options,
 
             // delete steps in this file
             std::stringstream mpiFilename;
-#if (ENABLE_PARALLEL == 1)
+#if defined (SPLASH_SUPPORTED_PARALLEL)
             if (options.parallelFile)
                 mpiFilename << options.filename << "_" << i << ".h5";
             else
