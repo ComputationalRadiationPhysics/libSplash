@@ -18,6 +18,6 @@
  # and the GNU Lesser General Public License along with libSplash. 
  # If not, see <http://www.gnu.org/licenses/>.
 
-EXECUTE_PROCESS(COMMAND cp 
+EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E copy
     "@splash_inc_file@"
     "${CMAKE_INSTALL_PREFIX}/include/splash.h")

@@ -21,7 +21,7 @@
 
 #include <iostream>
 #include <string>
-#include "DomainCollector.hpp"
+#include "splash.h"
 
 using namespace DCollector;
 
