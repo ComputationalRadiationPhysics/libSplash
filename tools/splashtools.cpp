@@ -456,12 +456,12 @@ int deleteFromStep(Options& options, DataCollector *dc, const char *filename)
     return result;
 }
 
-int testFileIntegrity(Options& options, DataCollector *dc, const char *filename)
+int testFileIntegrity(Options& options, DataCollector* /*dc*/, const char* filename)
 {
     return testIntegrity(options, filename);
 }
 
-int listAvailableDatasets(Options& options, DataCollector *dc, const char *filename)
+int listAvailableDatasets(Options& options, DataCollector *dc, const char* /*filename*/)
 {
     DataCollector::FileCreationAttr fileCAttr;
     DataCollector::initFileCreationAttr(fileCAttr);
