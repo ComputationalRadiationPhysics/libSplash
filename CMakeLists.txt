@@ -134,7 +134,7 @@ ELSE(PARALLEL)
     SET(splash_inc_file "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_serial.h")
 ENDIF(PARALLEL)
 
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/PostInstall.cmake.in
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/PostInstall.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/PostInstall.cmake @ONLY)
 
 #-------------------------------------------------------------------------------
