@@ -22,7 +22,7 @@
 #ifndef SPLASH_H
 #define	SPLASH_H
 
-#define SPLASH_SUPPORTED_SERIAL
+#define SPLASH_SUPPORTED_SERIAL 1
 
 #include "SerialDataCollector.hpp"
 #include "DomainCollector.hpp"
