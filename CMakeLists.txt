@@ -18,7 +18,7 @@
  # and the GNU Lesser General Public License along with libSplash. 
  # If not, see <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8.5)
 
 project (libSplash)
 
@@ -36,12 +36,12 @@ ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 # HDF5 is required package
 FIND_PACKAGE(HDF5 REQUIRED)
-INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(SYSTEM ${HDF5_INCLUDE_DIR})
 LINK_DIRECTORIES(${HDF5_LIBRARY_DIRS})
 
 #-------------------------------------------------------------------------------
 
-SET(CMAKE_CXX_FLAGS "-Wall -Werror -Woverloaded-virtual")
+SET(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -Woverloaded-virtual")
 # options
 OPTION(DEBUG_VERBOSE "enable verbose debug output" OFF)
 OPTION(SPLASH_RELEASE "optimize, disable all debug asserts" ON)
@@ -83,7 +83,7 @@ IF(PARALLEL)
 
     # MPI is required package
     FIND_PACKAGE(MPI REQUIRED)
-    INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
+    INCLUDE_DIRECTORIES(SYSTEM ${MPI_INCLUDE_PATH})
     SET(SPLASH_LIBS ${SPLASH_LIBS} ${MPI_LIBRARIES})
 
     SET(SPLASH_CLASSES ${SPLASH_CLASSES} ParallelDataCollector ParallelDomainCollector)
@@ -153,7 +153,7 @@ IF(WITH_TOOLS)
         IF(NOT PARALLEL)
             # MPI is required package but not yet included
             FIND_PACKAGE(MPI REQUIRED)
-            INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
+            INCLUDE_DIRECTORIES(SYSTEM ${MPI_INCLUDE_PATH})
         ENDIF(NOT PARALLEL)
 
         ADD_DEFINITIONS(-DENABLE_MPI=1)
