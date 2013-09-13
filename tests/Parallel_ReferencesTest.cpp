@@ -25,7 +25,6 @@
 #include <stdlib.h>
 
 #include "Parallel_ReferencesTest.h"
-#include "ParallelDataCollector.hpp"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(Parallel_ReferencesTest);
 

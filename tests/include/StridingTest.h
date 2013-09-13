@@ -25,10 +25,10 @@
 #define	STRIDINGTEST_H
 
 #include <cppunit/extensions/HelperMacros.h>
-
-#include "DataCollector.hpp"
-#include "basetypes/ColTypeInt.hpp"
 #include <stdint.h>
+
+#include "splash.h"
+
 
 using namespace DCollector;
 

@@ -22,8 +22,6 @@
 
 
 #include "AppendTest.h"
-#include "SerialDataCollector.hpp"
-#include "DCException.hpp"
 #include <time.h>
 #include <iostream>
 #include <stdlib.h>

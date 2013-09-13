@@ -25,7 +25,6 @@
 #include <stdlib.h>
 
 #include "Parallel_RemoveTest.h"
-#include "ParallelDataCollector.hpp"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(Parallel_RemoveTest);
 

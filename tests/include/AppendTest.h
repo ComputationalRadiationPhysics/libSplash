@@ -26,8 +26,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "DataCollector.hpp"
-#include "basetypes/ColTypeFloat.hpp"
+#include "splash.h"
 
 using namespace DCollector;
 

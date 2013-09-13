@@ -25,7 +25,6 @@
 #include <stdlib.h>
 
 #include "SimpleDataTest.h"
-#include "SerialDataCollector.hpp"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SimpleDataTest);
 

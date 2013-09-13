@@ -26,7 +26,6 @@
 #include <sstream>
 
 #include "BenchmarkTest.h"
-#include "SerialDataCollector.hpp"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BenchmarkTest);
 

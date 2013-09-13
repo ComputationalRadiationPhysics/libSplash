@@ -26,8 +26,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "IParallelDataCollector.hpp"
-#include "basetypes/ColTypeInt.hpp"
+#include "splash.h"
 
 using namespace DCollector;
 

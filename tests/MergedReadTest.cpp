@@ -22,7 +22,6 @@
 
 
 #include "MergedReadTest.h"
-#include "SerialDataCollector.hpp"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MergedReadTest);
 

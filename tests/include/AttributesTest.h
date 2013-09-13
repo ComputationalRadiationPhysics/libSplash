@@ -26,11 +26,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "DataCollector.hpp"
-#include "basetypes/ColTypeInt.hpp"
-#include "basetypes/ColTypeInt2.hpp"
-#include "basetypes/ColTypeInt3Array.hpp"
-#include "basetypes/ColTypeDimArray.hpp"
+#include "splash.h"
 
 using namespace DCollector;
 

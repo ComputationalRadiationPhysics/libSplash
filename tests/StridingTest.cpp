@@ -22,7 +22,7 @@
 
 
 #include "StridingTest.h"
-#include "SerialDataCollector.hpp"
+
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>

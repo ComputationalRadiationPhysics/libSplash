@@ -23,8 +23,6 @@
 
 #include "FileAccessTest.h"
 
-#include "SerialDataCollector.hpp"
-
 CPPUNIT_TEST_SUITE_REGISTRATION(FileAccessTest);
 
 #define HDF5_FILE "h5/testWriteAfterCreate"

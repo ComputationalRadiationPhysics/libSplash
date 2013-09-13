@@ -25,7 +25,6 @@
 #include <stdlib.h>
 
 #include "ReferencesTest.h"
-#include "SerialDataCollector.hpp"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ReferencesTest);
 

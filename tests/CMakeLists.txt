@@ -57,6 +57,7 @@ ENDFOREACH()
 SET(SPLASH_RELEASE CACHE BOOL OFF)
 SET(WITH_TOOLS CACHE BOOL OFF)
 ADD_SUBDIRECTORY(.. "${CMAKE_CURRENT_BINARY_DIR}/build_libsplash")
+INCLUDE_DIRECTORIES("${CMAKE_CURRENT_BINARY_DIR}/build_libsplash")
 
 #-------------------------------------------------------------------------------
 

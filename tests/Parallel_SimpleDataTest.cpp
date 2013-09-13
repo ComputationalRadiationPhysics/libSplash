@@ -26,8 +26,6 @@
 #include <string.h>
 
 #include "Parallel_SimpleDataTest.h"
-#include "ParallelDataCollector.hpp"
-#include "SerialDataCollector.hpp"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(Parallel_SimpleDataTest);
 

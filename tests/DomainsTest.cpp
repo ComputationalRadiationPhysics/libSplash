@@ -27,7 +27,6 @@
 #include <mpi.h>
 
 #include "DomainsTest.h"
-#include "DomainCollector.hpp"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DomainsTest);
 

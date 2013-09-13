@@ -28,8 +28,7 @@
 
 #include <mpi.h>
 
-#include "DataCollector.hpp"
-#include "basetypes/ColTypeInt.hpp"
+#include "splash.h"
 
 using namespace DCollector;
 

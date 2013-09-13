@@ -130,8 +130,20 @@ INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/include/."
 INSTALL(SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/PostInstall.cmake")
 IF(PARALLEL)
     SET(splash_inc_file "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_parallel.h")
+
+    ADD_CUSTOM_COMMAND(TARGET splash POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E create_symlink
+                "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_parallel.h"
+                "${CMAKE_CURRENT_BINARY_DIR}/splash.h"
+        )
 ELSE(PARALLEL)
     SET(splash_inc_file "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_serial.h")
+
+    ADD_CUSTOM_COMMAND(TARGET splash POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E create_symlink
+                "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_serial.h"
+                "${CMAKE_CURRENT_BINARY_DIR}/splash.h"
+        )
 ENDIF(PARALLEL)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/PostInstall.cmake.in
@@ -169,19 +181,7 @@ IF(WITH_TOOLS)
     IF(PARALLEL)
         ADD_DEFINITIONS(-DENABLE_PARALLEL=1)
 
-        ADD_CUSTOM_COMMAND(TARGET splash POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E create_symlink
-                "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_parallel.h"
-                "${CMAKE_CURRENT_BINARY_DIR}/splash.h"
-        )
-
         MESSAGE("building splashtools parallel version")
-    ELSE(PARALLEL)
-        ADD_CUSTOM_COMMAND(TARGET splash POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E create_symlink
-                "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_serial.h"
-                "${CMAKE_CURRENT_BINARY_DIR}/splash.h"
-        )
     ENDIF(PARALLEL)
 
     ADD_EXECUTABLE(splashtools ${TOOLS_SOURCES})

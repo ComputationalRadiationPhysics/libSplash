@@ -20,8 +20,7 @@
  */
 
 #include "Parallel_AttributesTest.h"
-#include "ParallelDataCollector.hpp"
-#include "DCException.hpp"
+
 #include <mpi.h>
 #include <time.h>
 #include <iostream>
