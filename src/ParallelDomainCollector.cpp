@@ -598,23 +598,23 @@ throw (DCException)
     appendDomain(id, type, count, 0, 1, name, domainOffset, domainSize, data);
 }
 
-void ParallelDomainCollector::appendDomain(int32_t id,
-        const CollectionType& type,
-        size_t count,
-        size_t offset,
-        size_t striding,
-        const char *name,
-        const Dimensions domainOffset,
-        const Dimensions domainSize,
-        const void *data)
+void ParallelDomainCollector::appendDomain(int32_t /*id*/,
+        const CollectionType& /*type*/,
+        size_t /*count*/,
+        size_t /*offset*/,
+        size_t /*striding*/,
+        const char* /*name*/,
+        const Dimensions /*domainOffset*/,
+        const Dimensions /*domainSize*/,
+        const void* /*data*/)
 throw (DCException)
 {
     throw DCException("This feature is not supported in ParallelDomainCollector. "
             "Use ParallelDataCollector::append instead.");
 }
 
-void ParallelDomainCollector::gatherMPIDomains(int rank,
-        const Dimensions localDomainSize, const Dimensions localDomainOffset,
+void ParallelDomainCollector::gatherMPIDomains(int /*rank*/,
+        const Dimensions localDomainSize, const Dimensions /*localDomainOffset*/,
         Dimensions &globalDomainSize, Dimensions &globalDomainOffset)
 throw (DCException)
 {

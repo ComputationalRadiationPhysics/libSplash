@@ -318,7 +318,7 @@ void ParallelDataCollector::readAttribute(int32_t id,
         const char *dataName,
         const char *attrName,
         void* data,
-        Dimensions *mpiPosition)
+        Dimensions* /*mpiPosition*/)
 throw (DCException)
 {
     // mpiPosition is ignored
@@ -401,7 +401,7 @@ throw (DCException)
 }
 
 void ParallelDataCollector::read(int32_t id,
-        const CollectionType& type,
+        const CollectionType& /*type*/,
         const char* name,
         Dimensions dstBuffer,
         Dimensions &sizeRead,
@@ -432,7 +432,7 @@ void ParallelDataCollector::read(int32_t id,
 void ParallelDataCollector::read(int32_t id,
         const Dimensions localSize,
         const Dimensions globalOffset,
-        const CollectionType& type,
+        const CollectionType& /*type*/,
         const char* name,
         const Dimensions dstBuffer,
         Dimensions &sizeRead,
@@ -578,7 +578,7 @@ void ParallelDataCollector::reserve(int32_t id,
 
 void ParallelDataCollector::append(int32_t id,
         const Dimensions size,
-        const CollectionType& type,
+        const CollectionType& /*type*/,
         uint32_t rank,
         const Dimensions globalOffset,
         const char *name,
@@ -716,9 +716,9 @@ void ParallelDataCollector::createReference(int32_t srcID,
         const char *srcName,
         int32_t dstID,
         const char *dstName,
-        Dimensions count,
-        Dimensions offset,
-        Dimensions stride)
+        Dimensions /*count*/,
+        Dimensions /*offset*/,
+        Dimensions /*stride*/)
 throw (DCException)
 {
     if (srcName == NULL || dstName == NULL)
@@ -760,7 +760,7 @@ throw (DCException)
     writeHeader(handle, index, options->enableCompression, options->mpiTopology);
 }
 
-void ParallelDataCollector::fileOpenCallback(H5Handle handle, uint32_t index, void *userData)
+void ParallelDataCollector::fileOpenCallback(H5Handle /*handle*/, uint32_t index, void *userData)
 throw (DCException)
 {
     Options *options = (Options*) userData;
@@ -802,7 +802,7 @@ throw (DCException)
 }
 
 void ParallelDataCollector::openCreate(const char *filename,
-        FileCreationAttr& attr)
+        FileCreationAttr& /*attr*/)
 throw (DCException)
 {
     this->fileStatus = FST_CREATING;
@@ -823,7 +823,7 @@ throw (DCException)
     handles.open(Dimensions(1, 1, 1), filename, fileAccProperties, H5F_ACC_TRUNC);
 }
 
-void ParallelDataCollector::openRead(const char* filename, FileCreationAttr& attr)
+void ParallelDataCollector::openRead(const char* filename, FileCreationAttr& /*attr*/)
 throw (DCException)
 {
     this->fileStatus = FST_READING;
@@ -833,7 +833,7 @@ throw (DCException)
     handles.open(Dimensions(1, 1, 1), filename, fileAccProperties, H5F_ACC_RDONLY);
 }
 
-void ParallelDataCollector::openWrite(const char* filename, FileCreationAttr& attr)
+void ParallelDataCollector::openWrite(const char* filename, FileCreationAttr& /*attr*/)
 throw (DCException)
 {
     this->fileStatus = FST_WRITING;

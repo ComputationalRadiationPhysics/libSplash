@@ -414,48 +414,48 @@ namespace DCollector
                 const Dimensions dstOffset,
                 void* data) throw (DCException);
     private:
-        
-        void readGlobalAttribute(const char *name,
-                void* data,
-                Dimensions *mpiPosition = NULL)
+
+        void readGlobalAttribute(const char*,
+                void*,
+                Dimensions*)
         {
-            
+
         }
 
-        void writeGlobalAttribute(const CollectionType& type,
-                const char *name,
-                const void* data)
+        void writeGlobalAttribute(const CollectionType& /*type*/,
+                const char* /*name*/,
+                const void* /*data*/)
         {
-            
-        }
-        
-        void append(int32_t id,
-                const CollectionType& type,
-                size_t count,
-                const char *name,
-                const void *data)
-        {
-            
+
         }
 
-        void append(int32_t id,
-                const CollectionType& type,
-                size_t count,
-                size_t offset,
-                size_t stride,
-                const char *name,
-                const void *data)
+        void append(int32_t /*id*/,
+                const CollectionType& /*type*/,
+                size_t /*count*/,
+                const char* /*name*/,
+                const void* /*data*/)
         {
-            
+
         }
 
-        void createReference(int32_t srcID,
-                const char *srcName,
-                int32_t dstID,
-                const char *dstName,
-                Dimensions count,
-                Dimensions offset,
-                Dimensions stride) throw (DCException);
+        void append(int32_t /*id*/,
+                const CollectionType& /*type*/,
+                size_t /*count*/,
+                size_t /*offset*/,
+                size_t /*stride*/,
+                const char* /*name*/,
+                const void* /*data*/)
+        {
+
+        }
+
+        void createReference(int32_t /*srcID*/,
+                const char* /*srcName*/,
+                int32_t /*dstID*/,
+                const char* /*dstName*/,
+                Dimensions /*count*/,
+                Dimensions /*offset*/,
+                Dimensions /*stride*/) throw (DCException);
     };
 
 }
