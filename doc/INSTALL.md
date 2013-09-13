@@ -13,7 +13,7 @@ Building libSplash **requires HDF5 in version 1.8.6** or higher with **shared li
 However, we recommend that you use HDF5 1.8.11 or newer for best support and results.
 
 To use the CMakeLists.txt file which comes with the source code, you must have
-**CMake version 2.6** or higher installed.
+**CMake version 2.8.5** or higher installed.
 
 The splashtools and some tests also require an **OpenMPI** compatible MPI library.
 

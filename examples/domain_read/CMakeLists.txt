@@ -18,7 +18,7 @@
  # and the GNU Lesser General Public License along with libSplash. 
  # If not, see <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.5)
 
 project (domain_read)
 set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{HDF5_ROOT}")
