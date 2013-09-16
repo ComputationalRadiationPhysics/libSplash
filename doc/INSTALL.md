@@ -55,8 +55,7 @@ Tests differ for the serial and parallel version (see below) of libSplash.
 You can build the tests by running cmake on the `tests/CMakeLists.txt` file.
 Tests can be run using the `run_tests` and `run_parallel_tests` scripts.
 
-`run_parallel_tests` runs tests for the parallel libSplash version and
-requires the tests to be build with `$ cmake -DPARALLEL=ON`.
+`run_parallel_tests` runs tests for the parallel libSplash version.
 See section *Parallel libSplash* for details.
 
 
@@ -73,7 +72,9 @@ Parallel libSplash
 libSplash has **beta** support for parallel I/O.
 To build the parallel version, you need to build a parallel HDF5 library first.
 Commonly, it should be sufficient to configure HDF5 `$ configure --enable-shared --enable-parallel ...`.
-Compile the parallel libSplash with `$ cmake -DPARALLEL=ON ...`.
+Running [cmake](#Compiling), libSplash will automatically detect the parallel HDF5
+capabilities and informs you with a status message
+`Parallel HDF5 found. Building parallel version`.
 
 This builds the *ParallelDataCollector* and *ParallelDomainCollector* classes.
 *Please note that this feature is beta stage and not fully tested!*
