@@ -1,6 +1,8 @@
 # Projekt name
 cmake_minimum_required(VERSION 2.8.5)
 
+set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}")
+
 SET(CMAKE_BUILD_TYPE Debug)
 SET(CMAKE_CXX_FLAGS_DEBUG "-g")
 OPTION(WITH_MPI "use MPI-based tests" OFF)
