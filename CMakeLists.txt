@@ -23,7 +23,9 @@ cmake_minimum_required(VERSION 2.8.5)
 project (libSplash)
 
 #set helper pathes to find libraries and packages
-set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}" "$ENV{HDF5_ROOT}")
+#- you need the multiarch dir x86_64-linux-gnu on 64bit Ubuntu's with
+#  self-compiled compilers
+SET(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}")
 
 #-------------------------------------------------------------------------------
 
@@ -54,10 +56,10 @@ IF(NOT SPLASH_RELEASE)
         ADD_DEFINITIONS(-DDC_DEBUG=1)
     ENDIF(DEBUG_VERBOSE)
 
-    MESSAGE("building DEBUG version")
+    MESSAGE(STATUS "Building DEBUG version")
 ELSE(NOT SPLASH_RELEASE)
     SET(CMAKE_BUILD_TYPE Release)
-    MESSAGE("building RELEASE version")
+    MESSAGE(STATUS "Building RELEASE version")
 ENDIF(NOT SPLASH_RELEASE)
 
 #-------------------------------------------------------------------------------
@@ -66,19 +68,14 @@ SET(SPLASH_LIBS z ${HDF5_LIBRARIES})
 
 # serial or parallel version of libSplash
 SET(SPLASH_CLASSES DCAttribute DCDataSet DCGroup HandleMgr SerialDataCollector DomainCollector)
-OPTION(PARALLEL "enable parallel MPI I/O" OFF)
-IF(PARALLEL)
+IF(HDF5_IS_PARALLEL)
     #parallel version 
-
-    # This test does not currently work, disabled
-    #IF(NOT HDF5_ENABLE_PARALLEL)
-    #    MESSAGE(FATAL_ERROR "Your HDF5 library does not support parallel I/O")
-    #ENDIF(NOT HDF5_ENABLE_PARALLEL)
+    MESSAGE(STATUS "Parallel HDF5 found. Building parallel version")
 
     OPTION(COLLECTIVE_IO "use HDF5 collective IO" ON)
     IF(NOT COLLECTIVE_IO)
         ADD_DEFINITIONS(-DSPLASH_INDEPENDENT_IO=1)
-        MESSAGE("enable HDF5 independent IO")
+        MESSAGE(STATUS "Enable HDF5 independent IO")
     ENDIF(NOT COLLECTIVE_IO)
 
     # MPI is required package
@@ -87,12 +84,11 @@ IF(PARALLEL)
     SET(SPLASH_LIBS ${SPLASH_LIBS} ${MPI_LIBRARIES})
 
     SET(SPLASH_CLASSES ${SPLASH_CLASSES} ParallelDataCollector ParallelDomainCollector)
-    MESSAGE("building libSplash parallel version")
-ELSE(PARALLEL)
+ELSE(HDF5_IS_PARALLEL)
     #serial version
 
-    MESSAGE("building libSplash serial version")
-ENDIF(PARALLEL)
+    MESSAGE(STATUS "Parallel HDF5 NOT found. Building serial version")
+ENDIF(HDF5_IS_PARALLEL)
 
 #-------------------------------------------------------------------------------
 
@@ -128,7 +124,7 @@ INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/include/."
 
 # install correct splash header file
 INSTALL(SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/PostInstall.cmake")
-IF(PARALLEL)
+IF(HDF5_IS_PARALLEL)
     SET(splash_inc_file "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_parallel.h")
 
     ADD_CUSTOM_COMMAND(TARGET splash POST_BUILD
@@ -136,7 +132,7 @@ IF(PARALLEL)
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_parallel.h"
                 "${CMAKE_CURRENT_BINARY_DIR}/splash.h"
         )
-ELSE(PARALLEL)
+ELSE(HDF5_IS_PARALLEL)
     SET(splash_inc_file "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_serial.h")
 
     ADD_CUSTOM_COMMAND(TARGET splash POST_BUILD
@@ -144,7 +140,7 @@ ELSE(PARALLEL)
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_serial.h"
                 "${CMAKE_CURRENT_BINARY_DIR}/splash.h"
         )
-ENDIF(PARALLEL)
+ENDIF(HDF5_IS_PARALLEL)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/PostInstall.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/PostInstall.cmake @ONLY)
@@ -154,7 +150,7 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/PostInstall.cmake.in
 # build tools
 OPTION(WITH_TOOLS "enable splashtools" ON)
 IF(WITH_TOOLS)
-    MESSAGE("building splashtools")
+    MESSAGE(STATUS "Building splashtools")
 
     SET(TOOLS_LIBS ${TOOLS_LIBS} splash_static)
     INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
@@ -162,27 +158,27 @@ IF(WITH_TOOLS)
     # MPI for tools
     OPTION(TOOLS_MPI "enable splashtools MPI support" OFF)
     IF(TOOLS_MPI)
-        IF(NOT PARALLEL)
+        IF(NOT HDF5_IS_PARALLEL)
             # MPI is required package but not yet included
             FIND_PACKAGE(MPI REQUIRED)
             INCLUDE_DIRECTORIES(SYSTEM ${MPI_INCLUDE_PATH})
-        ENDIF(NOT PARALLEL)
+        ENDIF(NOT HDF5_IS_PARALLEL)
 
         ADD_DEFINITIONS(-DENABLE_MPI=1)
         SET(TOOLS_LIBS ${TOOLS_LIBS} ${MPI_LIBRARIES})
-        MESSAGE("building splashtools MPI version")
+        MESSAGE(STATUS "Building splashtools MPI version")
     ELSE(TOOLS_MPI)
-        IF(PARALLEL)
+        IF(HDF5_IS_PARALLEL)
             SET(TOOLS_LIBS ${TOOLS_LIBS} ${MPI_LIBRARIES})
-        ENDIF(PARALLEL)
+        ENDIF(HDF5_IS_PARALLEL)
     ENDIF(TOOLS_MPI)
 
     # general settings for splashtools w/ and w/o parallel support
-    IF(PARALLEL)
+    IF(HDF5_IS_PARALLEL)
         ADD_DEFINITIONS(-DENABLE_PARALLEL=1)
 
-        MESSAGE("building splashtools parallel version")
-    ENDIF(PARALLEL)
+        MESSAGE(STATUS "Building splashtools parallel version")
+    ENDIF(HDF5_IS_PARALLEL)
 
     ADD_EXECUTABLE(splashtools ${TOOLS_SOURCES})
     ADD_DEPENDENCIES(splashtools splash splash_static)

@@ -1,6 +1,8 @@
 # Projekt name
 cmake_minimum_required(VERSION 2.8.5)
 
+set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}")
+
 SET(CMAKE_BUILD_TYPE Debug)
 SET(CMAKE_CXX_FLAGS_DEBUG "-g")
 OPTION(WITH_MPI "use MPI-based tests" OFF)
@@ -41,7 +43,7 @@ IF(WITH_MPI)
     SET(TESTS ${TESTS} Benchmark Domains MergedRead)
 ENDIF(WITH_MPI)
 
-OPTION(PARALLEL "enable tests for parallel libSplash" OFF)
+OPTION(PARALLEL "enable tests for parallel libSplash" @HDF5_IS_PARALLEL@)
 IF(PARALLEL)
     SET(TESTS ${TESTS} Parallel_Attributes Parallel_Domains Parallel_References Parallel_Remove Parallel_SimpleData)
 ELSE(PARALLEL)
@@ -63,7 +65,7 @@ INCLUDE_DIRECTORIES("${CMAKE_CURRENT_BINARY_DIR}/build_libsplash")
 
 FOREACH(TEST_FILE ${TEST_FILES})
     GET_FILENAME_COMPONENT(FILE ${TEST_FILE} NAME)
-    MESSAGE(${FILE})
+    MESSAGE(STATUS ${FILE})
     ADD_EXECUTABLE(${FILE}.out
         ${TEST_FILE}
         ${SRCFILESOTHER}

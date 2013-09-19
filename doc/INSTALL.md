@@ -15,7 +15,8 @@ However, we recommend that you use HDF5 1.8.11 or newer for best support and res
 To use the CMakeLists.txt file which comes with the source code, you must have
 **CMake version 2.8.5** or higher installed.
 
-The splashtools and some tests also require an **OpenMPI** compatible MPI library.
+The splashtools and some tests also require an **MPI 2.2** compatible MPI library,
+e.g. OpenMPI 1.4.3 or higher.
 
 Tests require the development version of the **CppUnit** library.
 
@@ -54,8 +55,7 @@ Tests differ for the serial and parallel version (see below) of libSplash.
 You can build the tests by running cmake on the `tests/CMakeLists.txt` file.
 Tests can be run using the `run_tests` and `run_parallel_tests` scripts.
 
-`run_parallel_tests` runs tests for the parallel libSplash version and
-requires the tests to be build with `$ cmake -DPARALLEL=ON`.
+`run_parallel_tests` runs tests for the parallel libSplash version.
 See section *Parallel libSplash* for details.
 
 
@@ -69,13 +69,15 @@ You can create your own version of the HTML documentation by running
 Parallel libSplash
 ------------------
 
-libSplash has **experimental** support for parallel I/O.
+libSplash has **beta** support for parallel I/O.
 To build the parallel version, you need to build a parallel HDF5 library first.
 Commonly, it should be sufficient to configure HDF5 `$ configure --enable-shared --enable-parallel ...`.
-Compile the parallel libSplash with `$ cmake -DPARALLEL=ON ...`.
+Running [cmake](#Compiling), libSplash will automatically detect the parallel HDF5
+capabilities and informs you with a status message
+`Parallel HDF5 found. Building parallel version`.
 
 This builds the *ParallelDataCollector* and *ParallelDomainCollector* classes.
-*Please note that this feature is experimental and not fully tested!*
+*Please note that this feature is beta stage and not fully tested!*
 See *IParallelDataCollector* and *IParallelDomainCollector* interfaces for further
 information on how to use the parallel version.
 
