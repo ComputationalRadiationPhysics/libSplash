@@ -23,7 +23,7 @@ cmake_minimum_required(VERSION 2.8.5)
 project (libSplash)
 
 #set helper pathes to find libraries and packages
-set(CMAKE_PREFIX_PATH "$ENV{MPI_ROOT}" "$ENV{HDF5_ROOT}")
+set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}" "$ENV{HDF5_ROOT}")
 
 #-------------------------------------------------------------------------------
 
