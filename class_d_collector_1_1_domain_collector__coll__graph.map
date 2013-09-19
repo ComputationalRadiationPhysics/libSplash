@@ -1,0 +1,8 @@
+<map id="G" name="G">
+<area shape="rect" id="node2" href="$class_d_collector_1_1_i_domain_collector.html" title="DCollector::IDomainCollector" alt="" coords="5,203,203,234"/>
+<area shape="rect" id="node4" href="$class_d_collector_1_1_serial_data_collector.html" title="DCollector::SerialDataCollector" alt="" coords="227,203,437,234"/>
+<area shape="rect" id="node6" href="$class_d_collector_1_1_data_collector.html" title="DCollector::DataCollector" alt="" coords="52,105,228,135"/>
+<area shape="rect" id="node8" href="$class_d_collector_1_1_handle_mgr.html" title="DCollector::HandleMgr" alt="" coords="252,105,412,135"/>
+<area shape="rect" id="node10" href="$struct_d_collector_1_1_handle_mgr_1_1_index_ctr_str.html" title="DCollector::HandleMgr::IndexCtrStr" alt="" coords="119,6,353,37"/>
+<area shape="rect" id="node12" href="$class_d_collector_1_1_dimensions.html" title="DCollector::Dimensions" alt="" coords="377,6,543,37"/>
+</map>

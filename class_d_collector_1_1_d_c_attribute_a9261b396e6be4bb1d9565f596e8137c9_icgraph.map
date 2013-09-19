@@ -1,0 +1,9 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$class_d_collector_1_1_d_c_data_set.html#a7dc55e555500a24dd8fde0fb5aef3ce7" title="DCollector::DCDataSet::write" alt="" coords="371,5,568,35"/>
+<area shape="rect" id="node5" href="$class_d_collector_1_1_s_d_c_helper.html#a96f6cef40728a007eabc7141ace2bcea" title="DCollector::SDCHelper::writeHeader" alt="" coords="348,58,591,89"/>
+<area shape="rect" id="node7" href="$class_d_collector_1_1_parallel_data_collector.html#ab8e6985564d3ea1b3633f12bb8f1faca" title="DCollector::ParallelDataCollector::writeGlobalAttribute" alt="" coords="297,111,641,142"/>
+<area shape="rect" id="node9" href="$class_d_collector_1_1_parallel_data_collector.html#ad953decb5c6e166d3953497d3a249edb" title="DCollector::ParallelDataCollector::writeAttribute" alt="" coords="317,165,621,195"/>
+<area shape="rect" id="node11" href="$class_d_collector_1_1_serial_data_collector.html#a3793cd9da9d08d6dc39323bed7d00c2f" title="DCollector::SerialDataCollector::writeGlobalAttribute" alt="" coords="303,218,636,249"/>
+<area shape="rect" id="node13" href="$class_d_collector_1_1_serial_data_collector.html#aa1621c29ccc5c40d6cf0e64b4053c093" title="DCollector::SerialDataCollector::writeAttribute" alt="" coords="323,271,616,302"/>
+<area shape="rect" id="node15" href="$class_d_collector_1_1_serial_data_collector.html#a071281afcac4f68b6edd12c175347ec6" title="DCollector::SerialDataCollector::close" alt="" coords="691,271,944,302"/>
+</map>

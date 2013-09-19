@@ -1,0 +1,11 @@
+<map id="G" name="G">
+<area shape="rect" id="node2" href="$class_d_collector_1_1_i_parallel_domain_collector.html" title="DCollector::IParallelDomainCollector" alt="" coords="755,18,997,49"/>
+<area shape="rect" id="node4" href="$class_d_collector_1_1_i_domain_collector.html" title="DCollector::IDomainCollector" alt="" coords="417,5,615,35"/>
+<area shape="rect" id="node6" href="$class_d_collector_1_1_parallel_data_collector.html" title="DCollector::ParallelDataCollector" alt="" coords="765,95,987,126"/>
+<area shape="rect" id="node8" href="$class_d_collector_1_1_i_parallel_data_collector.html" title="DCollector::IParallelDataCollector" alt="" coords="404,58,628,89"/>
+<area shape="rect" id="node10" href="$class_d_collector_1_1_data_collector.html" title="DCollector::DataCollector" alt="" coords="35,33,211,63"/>
+<area shape="rect" id="node12" href="$class_d_collector_1_1_handle_mgr.html" title="DCollector::HandleMgr" alt="" coords="436,111,596,142"/>
+<area shape="rect" id="node14" href="$struct_d_collector_1_1_handle_mgr_1_1_index_ctr_str.html" title="DCollector::HandleMgr::IndexCtrStr" alt="" coords="5,86,240,117"/>
+<area shape="rect" id="node16" href="$class_d_collector_1_1_dimensions.html" title="DCollector::Dimensions" alt="" coords="40,171,205,202"/>
+<area shape="rect" id="node18" href="$struct_d_collector_1_1_parallel_data_collector_1_1_options.html" title="DCollector::ParallelDataCollector::Options" alt="" coords="379,185,653,215"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="G" name="G">
+<area shape="rect" id="node2" href="$class_d_collector_1_1_i_parallel_domain_collector.html" title="DCollector::IParallelDomainCollector" alt="" coords="5,166,248,197"/>
+<area shape="rect" id="node4" href="$class_d_collector_1_1_i_domain_collector.html" title="DCollector::IDomainCollector" alt="" coords="28,86,225,117"/>
+<area shape="rect" id="node6" href="$class_d_collector_1_1_parallel_data_collector.html" title="DCollector::ParallelDataCollector" alt="" coords="272,166,493,197"/>
+<area shape="rect" id="node8" href="$class_d_collector_1_1_i_parallel_data_collector.html" title="DCollector::IParallelDataCollector" alt="" coords="271,86,495,117"/>
+<area shape="rect" id="node10" href="$class_d_collector_1_1_data_collector.html" title="DCollector::DataCollector" alt="" coords="295,6,471,37"/>
+</map>

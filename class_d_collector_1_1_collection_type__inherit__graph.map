@@ -1,0 +1,17 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$class_d_collector_1_1_col_type_bool.html" title="DCollector::ColTypeBool" alt="" coords="261,5,435,35"/>
+<area shape="rect" id="node5" href="$class_d_collector_1_1_col_type_dim.html" title="DCollector::ColTypeDim" alt="" coords="263,58,433,89"/>
+<area shape="rect" id="node7" href="$class_d_collector_1_1_col_type_dim_array.html" title="DCollector::ColTypeDimArray" alt="" coords="247,111,449,142"/>
+<area shape="rect" id="node9" href="$class_d_collector_1_1_col_type_double.html" title="DCollector::ColTypeDouble" alt="" coords="253,165,443,195"/>
+<area shape="rect" id="node11" href="$class_d_collector_1_1_col_type_float.html" title="DCollector::ColTypeFloat" alt="" coords="260,218,436,249"/>
+<area shape="rect" id="node13" href="$class_d_collector_1_1_col_type_float2.html" title="DCollector::ColTypeFloat2" alt="" coords="256,271,440,302"/>
+<area shape="rect" id="node15" href="$class_d_collector_1_1_col_type_float2_array.html" title="DCollector::ColTypeFloat2Array" alt="" coords="240,325,456,355"/>
+<area shape="rect" id="node17" href="$class_d_collector_1_1_col_type_float3.html" title="DCollector::ColTypeFloat3" alt="" coords="256,378,440,409"/>
+<area shape="rect" id="node19" href="$class_d_collector_1_1_col_type_float3_array.html" title="DCollector::ColTypeFloat3Array" alt="" coords="240,431,456,462"/>
+<area shape="rect" id="node21" href="$class_d_collector_1_1_col_type_float4.html" title="DCollector::ColTypeFloat4" alt="" coords="256,485,440,515"/>
+<area shape="rect" id="node23" href="$class_d_collector_1_1_col_type_int.html" title="DCollector::ColTypeInt" alt="" coords="268,538,428,569"/>
+<area shape="rect" id="node25" href="$class_d_collector_1_1_col_type_int2.html" title="DCollector::ColTypeInt2" alt="" coords="265,591,431,622"/>
+<area shape="rect" id="node27" href="$class_d_collector_1_1_col_type_int2_array.html" title="DCollector::ColTypeInt2Array" alt="" coords="249,645,447,675"/>
+<area shape="rect" id="node29" href="$class_d_collector_1_1_col_type_int3.html" title="DCollector::ColTypeInt3" alt="" coords="265,698,431,729"/>
+<area shape="rect" id="node31" href="$class_d_collector_1_1_col_type_int3_array.html" title="DCollector::ColTypeInt3Array" alt="" coords="249,751,447,782"/>
+</map>

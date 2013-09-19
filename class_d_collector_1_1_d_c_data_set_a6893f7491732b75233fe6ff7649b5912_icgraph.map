@@ -1,0 +1,8 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$class_d_collector_1_1_parallel_data_collector.html#abc855d53c7aa04bdd6da38fd51977a6b" title="DCollector::ParallelDataCollector::createReference" alt="" coords="256,5,587,35"/>
+<area shape="rect" id="node5" href="$class_d_collector_1_1_parallel_data_collector.html#ac79efb9356d977d82e2f3a21da881fe3" title="DCollector::ParallelDataCollector::getRank" alt="" coords="281,58,561,89"/>
+<area shape="rect" id="node7" href="$class_d_collector_1_1_serial_data_collector.html#a90925a088a11fada2cc5251babebf53d" title="DCollector::SerialDataCollector::createReference" alt="" coords="261,111,581,142"/>
+<area shape="rect" id="node9" href="$class_d_collector_1_1_serial_data_collector.html#ae71be4e8e21ce707902fd3bea6a2106f" title="DCollector::SerialDataCollector::appendDataSet" alt="" coords="264,165,579,195"/>
+<area shape="rect" id="node11" href="$class_d_collector_1_1_serial_data_collector.html#a06ef5b23d989ce9e3e1d5c669f6be276" title="DCollector::SerialDataCollector::getRank" alt="" coords="287,218,556,249"/>
+<area shape="rect" id="node13" href="$class_d_collector_1_1_serial_data_collector.html#a00d098c86359cb0e9bd98bdf4f8d4c05" title="DCollector::SerialDataCollector::readInternal" alt="" coords="276,271,567,302"/>
+</map>

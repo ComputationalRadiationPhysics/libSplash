@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$class_d_collector_1_1_parallel_data_collector.html#a017cf083b5af5a0b4ed38547757b3608" title="DCollector::ParallelDataCollector::reserve" alt="" coords="284,5,559,35"/>
+<area shape="rect" id="node5" href="$class_d_collector_1_1_serial_data_collector.html#a5134fcf2e3fd0069b9ad2352866c2a40" title="DCollector::SerialDataCollector::writeDataSet" alt="" coords="273,58,569,89"/>
+<area shape="rect" id="node7" href="$class_d_collector_1_1_serial_data_collector.html#ae71be4e8e21ce707902fd3bea6a2106f" title="DCollector::SerialDataCollector::appendDataSet" alt="" coords="264,111,579,142"/>
+<area shape="rect" id="node9" href="$class_d_collector_1_1_serial_data_collector.html#afc590bfdd10e5d0362901e176bc71111" title="DCollector::SerialDataCollector::readMerged" alt="" coords="275,165,568,195"/>
+</map>

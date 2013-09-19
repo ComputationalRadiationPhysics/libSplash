@@ -1,0 +1,10 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$class_d_collector_1_1_d_c_data_set.html#adcb5ef5a6c7a9c727f228819f82ea90a" title="DCollector::DCDataSet::read" alt="" coords="377,5,575,35"/>
+<area shape="rect" id="node5" href="$class_d_collector_1_1_domain_collector.html#a11326f01b03d7ae27a9d64ef23853a8c" title="DCollector::DomainCollector::getTotalElements" alt="" coords="323,58,629,89"/>
+<area shape="rect" id="node7" href="$class_d_collector_1_1_domain_collector.html#a9943876f01c45a4f321b8d3c2f2d0122" title="DCollector::DomainCollector::getTotalDomain" alt="" coords="327,111,625,142"/>
+<area shape="rect" id="node9" href="$class_d_collector_1_1_handle_mgr.html#a7c6085ab400bb8080307e77e8a6a2041" title="DCollector::HandleMgr::open" alt="" coords="377,165,575,195"/>
+<area shape="rect" id="node11" href="$class_d_collector_1_1_domain_data.html#aa3b06faeccbaeadc372ff2327bc05968" title="DCollector::DomainData::DomainData" alt="" coords="349,218,603,249"/>
+<area shape="rect" id="node13" href="$class_d_collector_1_1_parallel_data_collector.html#a08b0f16791aba6601177816c7ba2e3fa" title="DCollector::ParallelDataCollector::ParallelDataCollector" alt="" coords="297,271,655,302"/>
+<area shape="rect" id="node15" href="$class_d_collector_1_1_parallel_domain_collector.html#a6fef7ec3b67159ea14952b671a386d78" title="DCollector::ParallelDomainCollector::getTotalElements" alt="" coords="300,325,652,355"/>
+<area shape="rect" id="node17" href="$class_d_collector_1_1_parallel_domain_collector.html#a24a6e4fb42341fc5fbb90f2efcc54138" title="DCollector::ParallelDomainCollector::getTotalDomain" alt="" coords="304,378,648,409"/>
+</map>
