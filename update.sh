@@ -12,7 +12,9 @@ trap "{ cd - ; rm -rf $TMPDIR; exit 255; }" SIGINT
 # create new dokumentation
 cd $TMPDIR
 git clone https://github.com/ComputationalRadiationPhysics/libSplash.git
-cd libSplash/doc
+cd libSplash
+git checkout $branch
+cd doc
 doxygen
 
 # update old documentation
