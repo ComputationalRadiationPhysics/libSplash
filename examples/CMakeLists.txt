@@ -27,20 +27,26 @@ SET(CMAKE_CXX_FLAGS_DEBUG "-g")
 SET(CMAKE_BUILD_TYPE Debug)
 OPTION(WITH_MPI "use MPI-read tests" OFF)
 
+SET(EXAMPLES domain_read/domain_read)
+SET(MPI_EXAMPLES domain_read/domain_read_mpi)
+
+FOREACH(EXAMPLE_NAME ${EXAMPLES})
+    SET(EXAMPLE_FILES "${EXAMPLE_FILES};${EXAMPLE_NAME}.cpp")
+ENDFOREACH()
+
+FOREACH(EXAMPLE_NAME ${MPI_EXAMPLES})
+    SET(MPI_EXAMPLE_FILES "${MPI_EXAMPLE_FILES};${EXAMPLE_NAME}.cpp")
+ENDFOREACH()
+
 #-------------------------------------------------------------------------------
 
+# HDF5 is required
 FIND_PACKAGE(HDF5 REQUIRED)
 INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
 LINK_DIRECTORIES(${HDF5_LIBRARY_DIRS})
-SET(LIBS ${LIBS} hdf5)
+SET(LIBS ${LIBS} ${HDF5_LIBRARIES})
 
-IF(WITH_MPI)
-    FIND_PACKAGE(MPI REQUIRED)
-    INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
-    SET(LIBS ${LIBS} ${MPI_LIBRARIES})
-ENDIF(WITH_MPI)
-
-#LIBSPLASH
+# libSplash installation is required
 find_path(SPLASH_ROOT_DIR
   NAMES include/sdc_defines.hpp lib/libsplash.a
   PATHS ENV SPLASH_ROOT
@@ -51,15 +57,42 @@ INCLUDE_DIRECTORIES("${SPLASH_ROOT_DIR}/include")
 LINK_DIRECTORIES("${SPLASH_ROOT_DIR}/lib")
 SET(LIBS ${LIBS} splash)
 
+# MPI
+IF(WITH_MPI OR HDF5_IS_PARALLEL)
+    FIND_PACKAGE(MPI REQUIRED)
+    INCLUDE_DIRECTORIES(${MPI_C_INCLUDE_PATH} ${MPI_CXX_INCLUDE_PATH})
+    SET(MPI_LIBS ${LIBS} ${MPI_C_LIBRARIES} ${MPI_CXX_LIBRARIES})
 
-ADD_EXECUTABLE(domain_read
-     "domain_read.cpp"
-)
-TARGET_LINK_LIBRARIES(domain_read m ${LIBS})
+    IF(HDF5_IS_PARALLEL)
+        MESSAGE(STATUS "Found parallel HDF5, linking MPI libraries")
+        SET(LIBS ${MPI_LIBS})
+    ENDIF(HDF5_IS_PARALLEL)
+ENDIF(WITH_MPI OR HDF5_IS_PARALLEL)
 
-IF(WITH_MPI)
-    ADD_EXECUTABLE(domain_read_mpi
-         "domain_read_mpi.cpp"
+#-------------------------------------------------------------------------------
+
+# build all examples
+MESSAGE(STATUS "Building serial examples")
+FOREACH(EXAMPLE_FILE ${EXAMPLE_FILES})
+    GET_FILENAME_COMPONENT(FILE ${EXAMPLE_FILE} NAME)
+    MESSAGE(STATUS ${FILE})
+    ADD_EXECUTABLE(${FILE}.out
+        ${EXAMPLE_FILE}
     )
-    TARGET_LINK_LIBRARIES(domain_read_mpi m ${LIBS})
+
+    TARGET_LINK_LIBRARIES(${FILE}.out m ${LIBS})
+ENDFOREACH()
+
+# build all MPI examples
+IF(WITH_MPI)
+    MESSAGE(STATUS "Building MPI examples")
+    FOREACH(EXAMPLE_FILE ${MPI_EXAMPLE_FILES})
+        GET_FILENAME_COMPONENT(FILE ${EXAMPLE_FILE} NAME)
+        MESSAGE(STATUS ${FILE})
+        ADD_EXECUTABLE(${FILE}.out
+            ${EXAMPLE_FILE}
+        )
+
+        TARGET_LINK_LIBRARIES(${FILE}.out ${MPI_LIBS} )
+    ENDFOREACH()
 ENDIF(WITH_MPI)
