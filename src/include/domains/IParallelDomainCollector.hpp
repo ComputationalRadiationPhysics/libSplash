@@ -183,17 +183,41 @@ namespace DCollector
         /**
          * Reserves a dataset with annotated domain information for parallel access. 
          * 
-         * @param id id for fileentry. e.g. iteration
-         * @param size intended 3D dimension for local dataset
-         * @param globalSize if not NULL, returns the global size of the dataset
-         * @param globalOffset if not NULL, returns the global offset for the calling process
-         * @param rank maximum dimension (must be between 1-3)
-         * @param type type information for data. available types must be
-         * implemented by concrete DataCollector
-         * @param name name for the dataset, e.g. 'ions'
-         * @param domainOffset offset of this subdomain in the domain
-         * @param domainSize size of this subdomain in the domain
-         * @param dataClass subdomain type annotation
+         * @param id ID for iteration.
+         * @param globalSize Global size for reserved dataset.
+         * @param rank Number of dimensions (1-3).
+         * @param type Type information for data.
+         * @param name Name for the dataset.
+         * @param domainOffset Global domain offset.
+         * @param domainSize Global domain size.
+         * @param dataClass Subdomain type annotation.
+         */
+        virtual void reserveDomain(int32_t id,
+                const Dimensions globalSize,
+                uint32_t rank,
+                const CollectionType& type,
+                const char* name,
+                const Dimensions domainOffset,
+                const Dimensions domainSize,
+                DomDataClass dataClass) = 0;
+        
+        /**
+         * Reserves a dataset with annotated domain information for parallel access. 
+         * 
+         * The global size and the global offset for the calling process are
+         * determined automatically via MPI among all participating processes.
+         * Note: This is not possible when writing 2D data with a 3D MPI topology.
+         * 
+         * @param id ID for iteration.
+         * @param size Global size for reserved dataset.
+         * @param globalSize Returns the global size of the dataset, can be NULL.
+         * @param globalOffset Returns the global offset for the calling process, can be NULL.
+         * @param rank Number of dimensions (1-3).
+         * @param type Type information for data.
+         * @param name Name for the dataset.
+         * @param domainOffset Offset of this local subdomain in the global domain.
+         * @param domainSize Size of this local subdomain in the global domain.
+         * @param dataClass Subdomain type annotation.
          */
         virtual void reserveDomain(int32_t id,
                 const Dimensions size,

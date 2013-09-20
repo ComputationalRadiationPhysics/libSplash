@@ -74,7 +74,7 @@ namespace DCollector
                 const char *info = NULL);
 
         static void indexToPos(int index, Dimensions mpiSize, Dimensions &mpiPos);
-        
+
         static void listFilesInDir(const std::string baseFilename, std::set<int32_t> &ids);
     protected:
 
@@ -111,7 +111,7 @@ namespace DCollector
 
         // current file access type
         FileStatusType fileStatus;
-        
+
         // filename passed to PDC
         std::string baseFilename;
 
@@ -171,6 +171,12 @@ namespace DCollector
         size_t getRank(H5Handle h5File,
                 int32_t id,
                 const char* name);
+
+        void reserveInternal(int32_t id,
+                const Dimensions globalSize,
+                uint32_t rank,
+                const CollectionType& type,
+                const char* name) throw (DCException);
 
     public:
         /**
@@ -260,6 +266,12 @@ namespace DCollector
                 const Dimensions srcOffset,
                 const char* name,
                 const void* buf);
+        
+        void reserve(int32_t id,
+                const Dimensions globalSize,
+                uint32_t rank,
+                const CollectionType& type,
+                const char* name) throw (DCException);
 
         void reserve(int32_t id,
                 const Dimensions size,
@@ -268,7 +280,7 @@ namespace DCollector
                 uint32_t rank,
                 const CollectionType& type,
                 const char* name) throw (DCException);
-        
+
         void append(int32_t id,
                 const Dimensions size,
                 uint32_t rank,
@@ -312,7 +324,7 @@ namespace DCollector
                 const char* name,
                 Dimensions &sizeRead,
                 void* buf) throw (DCException);
-        
+
         void read(int32_t id,
                 const CollectionType& type,
                 const char* name,

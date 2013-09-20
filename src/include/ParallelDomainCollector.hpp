@@ -152,6 +152,15 @@ namespace DCollector
                 const void* data) throw (DCException);
         
         void reserveDomain(int32_t id,
+                const Dimensions globalSize,
+                uint32_t rank,
+                const CollectionType& type,
+                const char* name,
+                const Dimensions domainOffset,
+                const Dimensions domainSize,
+                DomDataClass dataClass) throw (DCException);
+        
+        void reserveDomain(int32_t id,
                 const Dimensions size,
                 Dimensions *globalSize,
                 Dimensions *globalOffset,

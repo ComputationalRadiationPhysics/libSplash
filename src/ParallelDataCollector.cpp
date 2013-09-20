@@ -178,7 +178,7 @@ throw (DCException)
         throw DCException(getExceptionString("open", "this access is not permitted"));
 
     this->baseFilename.assign(filename);
-    
+
     switch (attr.fileAccType)
     {
         case FAT_READ:
@@ -215,7 +215,7 @@ int32_t ParallelDataCollector::getMaxID()
 
     if (ids.size() > 0)
         options.maxID = *(ids.rbegin());
-    
+
     return options.maxID;
 }
 
@@ -538,6 +538,24 @@ void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
 }
 
 void ParallelDataCollector::reserve(int32_t id,
+        const Dimensions globalSize,
+        uint32_t rank,
+        const CollectionType& type,
+        const char* name) throw (DCException)
+{
+    if (name == NULL)
+        throw DCException(getExceptionString("reserve", "a parameter was NULL"));
+
+    if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
+        throw DCException(getExceptionString("write", "this access is not permitted"));
+
+    if (rank < 1 || rank > 3)
+        throw DCException(getExceptionString("write", "maximum dimension is invalid"));
+
+    reserveInternal(id, globalSize, rank, type, name);
+}
+
+void ParallelDataCollector::reserve(int32_t id,
         const Dimensions size,
         Dimensions *globalSize,
         Dimensions *globalOffset,
@@ -557,17 +575,7 @@ void ParallelDataCollector::reserve(int32_t id,
     Dimensions global_size, global_offset;
     gatherMPIWrites(rank, size, global_size, global_offset);
 
-    // create group for this id/iteration
-    std::string group_path, dset_name;
-    DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
-
-    DCParallelGroup group;
-    group.openCreate(handles.get(id), group_path);
-
-    DCParallelDataSet dataset(dset_name.c_str());
-    // create the empty dataset
-    dataset.create(type, group.getHandle(), global_size, rank, this->options.enableCompression);
-    dataset.close();
+    reserveInternal(id, global_size, rank, type, name);
 
     if (globalSize)
         globalSize->set(global_size);
@@ -815,7 +823,7 @@ throw (DCException)
     else
         std::cerr << "compression is OFF" << std::endl;
 #endif
-    
+
     options.maxID = -1;
 
     // open file
@@ -826,9 +834,9 @@ void ParallelDataCollector::openRead(const char* filename, FileCreationAttr& /*a
 throw (DCException)
 {
     this->fileStatus = FST_READING;
-    
+
     getMaxID();
-    
+
     handles.open(Dimensions(1, 1, 1), filename, fileAccProperties, H5F_ACC_RDONLY);
 }
 
@@ -836,7 +844,7 @@ void ParallelDataCollector::openWrite(const char* filename, FileCreationAttr& /*
 throw (DCException)
 {
     this->fileStatus = FST_WRITING;
-    
+
     getMaxID();
 
     // filters are currently not supported by parallel HDF5
@@ -997,4 +1005,24 @@ size_t ParallelDataCollector::getRank(H5Handle h5File,
     }
 
     return rank;
+}
+
+void ParallelDataCollector::reserveInternal(int32_t id,
+        const Dimensions globalSize,
+        uint32_t rank,
+        const CollectionType& type,
+        const char* name)
+throw (DCException)
+{
+    // create group for this id/iteration
+    std::string group_path, dset_name;
+    DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
+
+    DCParallelGroup group;
+    group.openCreate(handles.get(id), group_path);
+
+    DCParallelDataSet dataset(dset_name.c_str());
+    // create the empty dataset
+    dataset.create(type, group.getHandle(), globalSize, rank, this->options.enableCompression);
+    dataset.close();
 }
