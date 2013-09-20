@@ -53,8 +53,8 @@ Usage
 -----
 
 See [UserManual.pdf](doc/manual/UserManual.pdf?raw=true) for more information.
-See [INSTALL.md](doc/INSTALL.md) on how to build the HTML documentation using
-[doxygen](http://www.doxygen.org).
+You can find detailed information on all interfaces in our
+[Online Documentation](http://ComputationalRadiationPhysics.github.io/libSplash/).
 
 
 Active Team
