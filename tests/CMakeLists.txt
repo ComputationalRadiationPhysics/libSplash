@@ -17,7 +17,7 @@ LINK_DIRECTORIES(${HDF5_LIBRARY_DIRS})
 IF(WITH_MPI)
     # MPI is required package
     FIND_PACKAGE(MPI REQUIRED)
-    INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
+    INCLUDE_DIRECTORIES(${MPI_C_INCLUDE_PATH} ${MPI_CXX_INCLUDE_PATH})
 ENDIF(WITH_MPI)
 
 # CPPUNIT is required package (not available yet)
@@ -63,6 +63,11 @@ INCLUDE_DIRECTORIES("${CMAKE_CURRENT_BINARY_DIR}/build_libsplash")
 
 #-------------------------------------------------------------------------------
 
+SET(LIBS splash m cppunit ${MPI_C_LIBRARIES} ${MPI_CXX_LIBRARIES} ${HDF5_LIBRARIES})
+IF(${vampir})
+    SET(LIBS vt-hyb ${LIBS})
+ENDIF(${vampir})
+
 FOREACH(TEST_FILE ${TEST_FILES})
     GET_FILENAME_COMPONENT(FILE ${TEST_FILE} NAME)
     MESSAGE(STATUS ${FILE})
@@ -71,9 +76,5 @@ FOREACH(TEST_FILE ${TEST_FILES})
         ${SRCFILESOTHER}
     )
 
-    IF(${vampir})
-        TARGET_LINK_LIBRARIES(${FILE}.out vt-hyb splash m cppunit ${MPI_LIBRARIES} hdf5)
-    ELSE()
-        TARGET_LINK_LIBRARIES(${FILE}.out splash m cppunit ${MPI_LIBRARIES} hdf5)
-    ENDIF()
+    TARGET_LINK_LIBRARIES(${FILE}.out ${LIBS})
 ENDFOREACH()

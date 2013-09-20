@@ -18,8 +18,10 @@ script:
 # compile libSplash and install
   - cmake -DTOOLS_MPI=$SPLASHMPI -DCMAKE_INSTALL_PREFIX=~/lib/splash $SRC
   - make install
+  - rm -rf $BUILD/*
 # compile examples/
-  - for e in `ls -d $SRC/examples/*`; do echo $e && ls $e && rm -rf $BUILD/* && cmake -DWITH_MPI=$SPLASHMPI $e && make; done
+  - cmake -DWITH_MPI=$SPLASHMPI $SRC/examples
+  - make install
   - rm -rf $BUILD/*
 # compile and run tests/
   - cmake -DWITH_MPI=$SPLASHMPI $SRC/tests
