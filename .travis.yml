@@ -21,7 +21,7 @@ script:
   - rm -rf $BUILD/*
 # compile examples/
   - cmake -DWITH_MPI=$SPLASHMPI $SRC/examples
-  - make install
+  - make
   - rm -rf $BUILD/*
 # compile and run tests/
   - cmake -DWITH_MPI=$SPLASHMPI $SRC/tests
