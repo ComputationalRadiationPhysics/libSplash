@@ -151,6 +151,21 @@ namespace DCollector
                 const Dimensions srcOffset,
                 const char* name,
                 const void* buf) = 0;
+        
+        /**
+         * Reserves a dataset for parallel access. 
+         * 
+         * @param id ID for iteration.
+         * @param size Size to reserve for global data.
+         * @param rank Number of dimensions (1-3).
+         * @param type Type information for data.
+         * @param name Name for the dataset.
+         */
+        virtual void reserve(int32_t id,
+                const Dimensions globalSize,
+                uint32_t rank,
+                const CollectionType& type,
+                const char* name) = 0;
 
         /**
          * Reserves a dataset for parallel access. 
