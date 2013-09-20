@@ -34,15 +34,24 @@ namespace DCollector
 
     /**
      * DomainCollector extends SerialDataCollector with domain management features.
-     * It allows to efficiently read subdomains (sub-partitions) from
-     * multi-process hdf5 files with entries annotated with domain information.
+     * A domain is a logical view to data in memory in or files, in contrast to the
+     * physical/memory view.
+     * DomainCollector allows to efficiently read subdomains (sub-partitions) from
+     * multi-process HDF5 files with entries annotated with domain information.
+     * 
+     * The following concept is used:
+     * Each process (of the MPI topology) annotates its local data with
+     * local subdomain information when writing.
+     * When reading from these files, data from all files can be accessed transparently
+     * as if in one single file. This global view uses the global domain information,
+     * created from all local subdomains.
      */
     class DomainCollector : public IDomainCollector, public SerialDataCollector
     {
     public:
         /**
          * Constructor
-         * @param maxFileHandles maximum number of concurrently opened file handles (0=unlimited)
+         * @param maxFileHandles Maximum number of concurrently opened file handles (0=unlimited).
          */
         DomainCollector(uint32_t maxFileHandles);
 
@@ -51,12 +60,8 @@ namespace DCollector
          */
         virtual ~DomainCollector();
 
-        /**
-         * {@link IDomainCollector#getTotalElements}
-         */
         size_t getTotalElements(int32_t id,
                 const char* name) throw (DCException);
-
 
         Domain getTotalDomain(int32_t id,
                 const char* name) throw (DCException);

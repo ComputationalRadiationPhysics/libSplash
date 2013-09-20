@@ -36,6 +36,9 @@
 namespace DCollector
 {
 
+    /**
+     * \cond HIDDEN_SYMBOLS
+     */
     class DCGroup
     {
     private:
@@ -73,6 +76,9 @@ namespace DCollector
 
         static std::string getExceptionString(std::string msg, std::string name);
     };
+    /**
+     * \endcond
+     */
 
 }
 

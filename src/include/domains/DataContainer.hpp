@@ -34,7 +34,7 @@ namespace DCollector
 {
 
     /**
-     * Container for storing subdomain data representing a domain partition.
+     * Container for storing domain-annotated data representing a specific subdomain.
      * This should regularly not be constructed by a user but internally, only.
      */
     class DataContainer
@@ -88,9 +88,9 @@ namespace DCollector
         }
 
         /**
-         * Returns the total number of elements in all subdomains of the container.
+         * Returns the total number of elements in all subdomains of this container.
          * 
-         * @return total number of elements in all subdomains
+         * @return Total number of elements in this container.
          */
         size_t getNumElements()
         {
@@ -106,7 +106,7 @@ namespace DCollector
         /**
          * Returns the size of the partition represented by this container.
          * 
-         * @return size of domain partition
+         * @return Size of total domain partition in this container.
          */
         Dimensions getSize()
         {
@@ -116,8 +116,8 @@ namespace DCollector
         /**
          * Returns the pointer to the DomainData with the specified index.
          * 
-         * @param index index of subdomain partition
-         * @return subdomain partition
+         * @param index Index of subdomain partition.
+         * @return Subdomain partition.
          */
         DomainData* getIndex(size_t index)
         {
@@ -130,8 +130,8 @@ namespace DCollector
         /**
          * Returns a pointer to the DomainData with index (x) for 1-dimensional domains.
          * 
-         * @param x index of subdomain partition
-         * @return subdomain partition
+         * @param x Index of subdomain partition.
+         * @return Subdomain partition.
          */
         DomainData* get(size_t x)
         {
@@ -144,9 +144,9 @@ namespace DCollector
         /**
          * Returns a pointer to the DomainData with index (x, y) for 2-dimensional domains.
          * 
-         * @param x first dimension index of subdomain partition
-         * @param y second dimension index of subdomain partition
-         * @return subdomain partition
+         * @param x First dimension index of subdomain partition.
+         * @param y Second dimension index of subdomain partition.
+         * @return Subdomain partition.
          */
         DomainData* get(size_t x, size_t y)
         {
@@ -159,10 +159,10 @@ namespace DCollector
         /**
          * Returns a pointer to the DomainData with index (x, y, z) for 3-dimensional domains.
          * 
-         * @param x first dimension index of subdomain partition
-         * @param y second dimension index of subdomain partition
-         * @param z third dimension index of subdomain partition
-         * @return subdomain partition
+         * @param x First dimension index of subdomain partition.
+         * @param y Second dimension index of subdomain partition.
+         * @param z Third dimension index of subdomain partition.
+         * @return Subdomain partition.
          */
         DomainData* get(size_t x, size_t y, size_t z)
         {
@@ -172,6 +172,13 @@ namespace DCollector
             throw DCException("Invalid entry in DataContainer (3)");
         }
 
+        /**
+         * Returns a pointer to the data element with global index.
+         * 
+         * @param index Index among all elements in this container,
+         * see \ref DataContainer::getNumElements.
+         * @return Pointer to element.
+         */
         void* getElement(size_t index)
         {
             if (subdomains.size() == 0)

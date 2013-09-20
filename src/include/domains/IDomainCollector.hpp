@@ -35,6 +35,10 @@
 namespace DCollector
 {
 
+    /**
+     * Interface for managing domains.
+     * See \ref DomainCollector for more information.
+     */
     class IDomainCollector
     {
     public:
@@ -48,14 +52,14 @@ namespace DCollector
         };
 
         /**
-         * Tests if two 1-3 dimensional domains intersect.
+         * Tests if two domains intersect.
          * Both domains must be of the same dimensionality.
          * 
-         * @param d1 first domain
-         * @param d2 second domain
-         * @return if domains overlap
+         * @param d1 First domain.
+         * @param d2 Decond domain.
+         * @return True if domains overlap, false otherwise.
          */
-        static bool testIntersection(Domain& d1, Domain& d2)
+        static bool testIntersection(const Domain& d1, const Domain& d2)
         {
             Dimensions d1_start = d1.getStart();
             Dimensions d2_start = d2.getStart();
@@ -71,11 +75,11 @@ namespace DCollector
         }
 
         /**
-         * Returns the total number of  domain elements for a dataset 
+         * Returns the total number of domain elements for a dataset,
          * which is the sum of all subdomain elements.
          * This function does not check that domain classes match.
          * 
-         * @param id id of the group to read from
+         * @param id ID of iteration.
          * @param name name of the dataset
          * @return total domain elements
          */
@@ -84,11 +88,11 @@ namespace DCollector
 
         /**
          * Returns the total domain that is spanned by all
-         * datasets.
+         * datasets (subdomains).
          * The user is responsible to guarantee that the actual subdomains
          * form a line/rectangle/cuboid that starts at (0, 0, 0)
          * 
-         * @param id id of the group to read from
+         * @param id ID of iteration.
          * @param name name of the dataset
          * @return total domain size and offset spanned of all subdomains
          */
@@ -99,14 +103,14 @@ namespace DCollector
          * Efficiently reads domain-annotated data.
          * In comparison to the standard read method, only data required 
          * for the requested partition is read.
-         * It passes back a DataContainer holding all subdomains or subdomain
+         * It passes back a \ref DataContainer holding all subdomains or subdomain
          * portions, respectively, which make up the requested partition.
          * Data from the files is immediately copied to the DomainData objects in
          * the container and DomainData buffers are dealloated when the DomainData
          * object is deleted, which must be done by the user.
          * 
          * @tparam DomDataType data type of the data to be read (e.g. int, float, ...)
-         * @param id id of the group to read from
+         * @param id ID of the iteration for reading.
          * @param name name of the dataset
          * @param domainOffset domain offset for reading (logical start of the requested partition)
          * @param domainSize domain size for reading (logical size of the requested partition)
@@ -124,15 +128,16 @@ namespace DCollector
         /**
          * Reads a subdomain which has been loaded using readDomain with lazyLoad activated.
          * The DomainCollector instance must not have been closed in between.
+         * Currently only supported for domain annotated data of type DomDataClass::PolyType.
          * 
          * @param domainData pointer to subdomain loaded using lazyLoad == true
          */
         virtual void readDomainLazy(DomainData *domainData) = 0;
 
         /**
-         * Writes data with annotated subdomain information.
+         * Writes data with annotated domain information.
          * 
-         * @param id id of the group to read from
+         * @param id ID of the iteration for writing.
          * @param type type information for data
          * @param rank number of dimensions (1-3) of the data
          * @param srcData dimensions of the data in the buffer
@@ -153,9 +158,9 @@ namespace DCollector
                 const void* data) = 0;
 
         /**
-         * Writes data with annotated subdomain information.
+         * Writes data with annotated domain information.
          * 
-         * @param id id of the group to read from
+         * @param id ID of the iteration for writing.
          * @param type type information for data
          * @param rank number of dimensions (1-3) of the data
          * @param srcBuffer dimensions of the buffer to read from
@@ -180,9 +185,9 @@ namespace DCollector
                 const void* data) = 0;
 
         /**
-         * Writes data with annotated subdomain information.
+         * Writes data with annotated domain information.
          * 
-         * @param id id of the group to read from
+         * @param id ID of the iteration for writing.
          * @param type type information for data
          * @param rank number of dimensions (1-3) of the data
          * @param srcBuffer dimensions of the buffer to read from
@@ -209,9 +214,9 @@ namespace DCollector
                 const void* data) = 0;
 
         /**
-         * Appends 1D data with annotated subdomain information.
+         * Appends 1D data with annotated domain information.
          * 
-         * @param id id of the group to read from
+         * @param id ID of the iteration for appending.
          * @param type type information for data
          * @param count number of elements to append
          * @param name name for the dataset to create/append to, e.g. 'ions'
@@ -228,9 +233,9 @@ namespace DCollector
                 const void *data) = 0;
 
         /**
-         * Appends 1D data with annotated subdomain information.
+         * Appends 1D data with annotated domain information.
          * 
-         * @param id id of the group to read from
+         * @param id ID of the iteration for appending.
          * @param type type information for data
          * @param count number of elements to append
          * @param offset offset in elements to start reading from

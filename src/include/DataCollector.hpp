@@ -81,14 +81,35 @@ namespace DCollector
 
             }
 
+            /**
+             * File access mode.
+             */
             FileAccType fileAccType;
+            
+            /**
+             * MPI topology.
+             */
             Dimensions mpiSize;
+            
+            /**
+             * MPi position.
+             */
             Dimensions mpiPosition;
+            
+            /**
+             * Enable compression, if supported.
+             */
             bool enableCompression;
         } FileCreationAttr;
 
+        /**
+         * Information on a specific dataset in a HDF5 file.
+         */
         typedef struct _DCEntry
         {
+            /**
+             * Fully-qualified name of this dataset.
+             */
             std::string name;
         } DCEntry;
 
@@ -114,79 +135,82 @@ namespace DCollector
         };
 
         /**
-         * Opens one or multiple files for reading/writing data.
+         * Opens one or multiple files.
          *
-         * @param filename name of the file(s) to open (the common part without index identifier)
-         * @param attr struct passing several parameters on accessing files
+         * @param filename Name of the file(s) to open (the common part without index identifiers).
+         * @param attr Struct passing several parameters on how to access files.
          */
         virtual void open(
                 const char *filename,
                 FileCreationAttr& attr) = 0;
 
         /**
-         * Closes open files and releases buffers.
+         * Closes open files and releases internal buffers.
          *
          * Must be called by user when finished writing/reading data.
          */
         virtual void close() = 0;
 
         /**
-         * @return get highest iteration id
+         * @return Returns highest iteration ID.
          */
         virtual int32_t getMaxID() = 0;
 
         /**
-         * @param mpiSize returns size of mpi grid
+         * Returns the MPI topology used for creating files.
+         * @param mpiSize Contains MPI topology.
          */
         virtual void getMPISize(Dimensions& mpiSize) = 0;
 
         /**
          * Returns all IDs in an opened file.
+         * The caller must ensure that there is enough space in \p ids
+         * to hold \p count elements.
          *
-         * @param ids pointer to an array with at least count entries. can be NULL
-         * @param count returns the number of entries in the ids array. can be NULL
+         * @param ids Pointer to an array with at least \p count entries, can be NULL.
+         * @param count Returns the number of entries in \p ids, can be NULL.
          */
         virtual void getEntryIDs(int32_t *ids, size_t *count) = 0;
 
         /**
-         * Returns all entries for an ID.
+         * Returns all datasets for an ID.
+         * The caller must ensure that there is enough space in \p entries
+         * to hold \p count elements.
          * 
-         * @param id id for fileentry, e.g. iteration
-         * @param entries pointer to an array with at least count elements. can be NULL
-         * @param count returns the (potential) number of elements in entries. can be NULL
+         * @param id ID for iteration.
+         * @param entries Pointer to an array with at least \p count elements, can be NULL.
+         * @param count Returns the number of elements in \p entries, can be NULL.
          */
         virtual void getEntriesForID(int32_t id, DCEntry *entries, size_t *count) = 0;
 
         /**
          * Writes data to HDF5 file.
          *
-         * @param id id for fileentry. e.g. iteration
-         * @param type type information for data. available types must be
-         * implemented by concrete DataCollector
-         * @param rank maximum dimension (must be between 1-3)
-         * @param srcData intended 3D dimension for dataset
-         * @param name name for the dataset, e.g. 'ions'
-         * @param data data buffer to write to file
+         * @param id ID for iteration.
+         * @param type Type information for data.
+         * @param rank Number of dimensions (1-3).
+         * @param srcData Size of local buffer for to read from. 
+         * @param name Name for the dataset.
+         * @param buf Buffer for writing.
          */
         virtual void write(int32_t id,
                 const CollectionType& type,
                 uint32_t rank,
                 const Dimensions srcData,
                 const char* name,
-                const void* data) = 0;
+                const void* buf) = 0;
 
         /**
          * Writes data to HDF5 file.
          *
-         * @param id id for fileentry. e.g. iteration
-         * @param type type information for data. available types must be
-         * implemented by concrete DataCollector
-         * @param rank maximum dimension (must be between 1-3)
+         * @param id ID for iteration.
+         * @param type Type information for data.
+         * @param rank Number of dimensions (1-3).
          * @param srcBuffer dimensions of memory buffer
          * @param srcData intended 3D dimension for dataset
          * @param srcOffset offset of dataset in memory buffer
-         * @param name name for the dataset, e.g. 'ions'
-         * @param data data buffer to write to file
+         * @param name Name for the dataset.
+         * @param buf Buffer for writing.
          */
         virtual void write(int32_t id,
                 const CollectionType& type,
@@ -195,21 +219,21 @@ namespace DCollector
                 const Dimensions srcData,
                 const Dimensions srcOffset,
                 const char* name,
-                const void* data) = 0;
+                const void* buf) = 0;
 
         /**
          * Writes data to HDF5 file.
          *
-         * @param id id for fileentry. e.g. iteration
-         * @param type type information for data. available types must be
-         * implemented by concrete DataCollector
-         * @param rank maximum dimension (must be between 1-3)
-         * @param srcBuffer dimensions of memory buffer
-         * @param srcStride sizeof striding in each dimension. 1 means 'no stride'
-         * @param srcData intended 3D dimension for dataset
-         * @param srcOffset offset of dataset in memory buffer
-         * @param name name for the dataset, e.g. 'ions'
-         * @param data data buffer to write to file
+         * @param id ID for iteration.
+         * @param type Type information for data.
+         * @param rank Number of dimensions (1-3).
+         * @param srcBuffer Size of buffer for to read from.
+         * @param srcStride Striding to be used for reading from
+         * \p srcBuffer in each dimension. 1 means 'no stride'.
+         * @param srcData Size of data in \p srcBuffer.
+         * @param srcOffset Offset of data in \p srcBuffer.
+         * @param name Name for the dataset.
+         * @param buf Buffer for writing.
          */
         virtual void write(int32_t id,
                 const CollectionType& type,
@@ -219,7 +243,7 @@ namespace DCollector
                 const Dimensions srcData,
                 const Dimensions srcOffset,
                 const char* name,
-                const void* data) = 0;
+                const void* buf) = 0;
 
         /**
          * Appends 1-dimensional data in a HDF5 file.
@@ -227,34 +251,33 @@ namespace DCollector
          * The target dataset is created if necessary.
          * If it already exists, data is appended to the end.
          *
-         * @param id id for fileentry. e.g. iteration
-         * @param type type information for data.
-         * @param count number of elements to append
-         * @param name name for the dataset to create/append to, e.g. 'ions'
-         * @param data data buffer to append
+         * @param id ID for iteration.
+         * @param type Type information for data.
+         * @param count Number of elements to append.
+         * @param name Name for the dataset to create/append.
+         * @param buf Buffer to append.
          */
         virtual void append(int32_t id,
                 const CollectionType& type,
                 size_t count,
                 const char *name,
-                const void *data) = 0;
+                const void *buf) = 0;
 
         /**
          * Appends 1-dimensional data in a HDF5 file using striding.
          *
          * The target dataset is created if necessary.
          * If it already exists, data is appended to the end.
-         * The data is read using striding from the src buffer.
+         * The data is read using striding from source buffer \p buf.
          *
          * @param id id for fileentry. e.g. iteration
-         * @param type type information for data.
-         * @param count number of elements to append
-         * @param offset offset in elements to start reading from
-         * @param stride striding to be used for reading. 
-         * data must contain at least (striding * count) elements. 
-         * 1 means 'no striding'
-         * @param name name for the dataset to create/append to, e.g. 'ions'
-         * @param data data buffer to append
+         * @param type Type information for data.
+         * @param count Number of elements to append.
+         * @param offset Offset in elements to start reading from in \p buf.
+         * @param stride Striding to be used for reading from \p buf, 1 means 'no striding'.
+         * \p buf must contain at least (striding * count) elements. 
+         * @param name Name for the dataset to create/append.
+         * @param buf Buffer to append.
          */
         virtual void append(int32_t id,
                 const CollectionType& type,
@@ -262,20 +285,20 @@ namespace DCollector
                 size_t offset,
                 size_t stride,
                 const char *name,
-                const void *data) = 0;
+                const void *buf) = 0;
 
         /**
          * Removes a simulation step from the HDF5 file.
          * 
-         * @param id id of the step to be removed
+         * @param id ID to remove.
          */
         virtual void remove(int32_t id) = 0;
 
         /**
          * Removes a dataset from a HDF5 file.
          * 
-         * @param id id of the simulation step holding the dataset
-         * @param name name of the dataset to be removed
+         * @param id ID holding the dataset to be removed.
+         * @param name Name of the dataset to be removed.
          */
         virtual void remove(int32_t id,
                 const char *name) = 0;
@@ -283,11 +306,11 @@ namespace DCollector
         /**
          * Creates an object reference to an existing dataset in the same HDF5 file.
          * 
-         * @param srcID id of the simulation step holding the source dataset
-         * @param srcName name of the existing source dataset
-         * @param dstID if of the simulation step holding the created reference dataset.
+         * @param srcID ID of the iteration holding the source dataset.
+         * @param srcName Name of the existing source dataset.
+         * @param dstID ID of the simulation step holding the created reference dataset.
          * If this group does not exist, it is created.
-         * @param dstName name of the created reference dataset
+         * @param dstName Name of the created reference.
          */
         virtual void createReference(int32_t srcID,
                 const char *srcName,
@@ -297,14 +320,14 @@ namespace DCollector
         /**
          * Creates a dataset region reference to an existing dataset in the same HDF5 file.
          * 
-         * @param srcID id of the simulation step holding the source dataset
-         * @param srcName name of the existing source dataset
-         * @param dstID if of the simulation step holding the created reference dataset.
+         * @param srcID ID of the iteration holding the source dataset.
+         * @param srcName Name of the existing source dataset.
+         * @param dstID ID of the simulation step holding the created reference dataset.
          * If this group does not exist, it is created.
-         * @param dstName name of the created reference dataset
-         * @param count number of elements referenced from the source dataset
-         * @param offset offset in elements in the source dataset
-         * @param stride striding in elements in the source dataset
+         * @param dstName Name of the created reference.
+         * @param count Number of elements referenced from the source dataset.
+         * @param offset Offset in elements in the source dataset.
+         * @param stride Striding in elements in the source dataset.
          */
         virtual void createReference(int32_t srcID,
                 const char *srcName,
@@ -317,101 +340,97 @@ namespace DCollector
         /**
          * Reads global attribute from HDF5 file.
          *
-         * @param name name for the attribute
-         * @param data data buffer to read attribute to
-         * @param mpiPosition pointer to Dimensions class.
-         * Identifies mpi-position-specific custom group.
-         * use NULL to read from default group.
+         * @param name Name for the attribute.
+         * @param buf Buffer to read attribute to.
+         * @param mpiPosition Pointer to Dimensions class.
+         * Identifies MPI-position-specific custom group.
+         * Use NULL to read from default group.
          */
         virtual void readGlobalAttribute(
                 const char *name,
-                void* data,
+                void* buf,
                 Dimensions *mpiPosition = NULL) = 0;
 
         /**
          * Writes global attribute to HDF5 file (default group).
          *
-         * @param type type information for data. available types must be
-         * implemented by concrete DataCollector
-         * @param name name of the attribute
-         * @param data data buffer to write to attribute
+         * @param type Type information for data.
+         * @param name Name of the attribute.
+         * @param buf Buffer to be written as attribute.
          */
         virtual void writeGlobalAttribute(const CollectionType& type,
                 const char *name,
-                const void* data) = 0;
+                const void* buf) = 0;
 
         /**
-         * Reads an attribute from a single DataSet.
+         * Reads an attribute from a single dataset.
          * 
-         * @param id id for fileentry. e.g. iteration
-         * @param dataName name of the DataSet in group id to read attribute from
-         * @param attrName name of the attribute
-         * @param data data data buffer to read attribute to
-         * @param mpiPosition pointer to Dimensions class.
-         * Identifies mpi-position-specific file while in FAT_READ_MERGED.
-         * use NULL to read from default file (0, 0, 0).
+         * @param id ID for iteration.
+         * @param dataName Name of the dataset in group \p id to read attribute from.
+         * @param attrName Name of the attribute.
+         * @param buf Buffer to read attribute to.
+         * @param mpiPosition Pointer to Dimensions class.
+         * Identifies MPI-position-specific file while in FAT_READ_MERGED mode.
+         * Use NULL to read from default file index.
          */
         virtual void readAttribute(int32_t id,
                 const char *dataName,
                 const char *attrName,
-                void *data,
+                void *buf,
                 Dimensions *mpiPosition = NULL) = 0;
 
         /**
-         * Writes an attribute to a single DataSet.
+         * Writes an attribute to a single dataset.
          * 
-         * @param id id for fileentry. e.g. iteration
-         * @param type type information for data. available types must be
-         * implemented by concrete DataCollector
-         * @param dataName name of the DataSet in group id to write attribute to
-         * @param attrName name of the attribute
-         * @param data data buffer to write to attribute
+         * @param id ID for iteration.
+         * @param type Type information for data.
+         * @param dataName Name of the dataset in group \p id to write attribute to.
+         * @param attrName Name of the attribute.
+         * @param buf Buffer to be written as attribute.
          */
         virtual void writeAttribute(int32_t id,
                 const CollectionType& type,
                 const char *dataName,
                 const char *attrName,
-                const void *data) = 0;
+                const void *buf) = 0;
+        
+        /**
+         * Reads data from HDF5 file.
+         * If data is to be read (instead of only its size in the file),
+         * the destination buffer (\p buf) must be allocated already.
+         *
+         * @param id ID for iteration.
+         * @param type Type information for data.
+         * @param name Name for the dataset.
+         * @param sizeRead Returns the size of the data in the file.
+         * @param buf Buffer to read from file, can be NULL.
+         */
+        virtual void read(int32_t id,
+                const CollectionType& type,
+                const char* name,
+                Dimensions &sizeRead,
+                void* buf) = 0;
 
         /**
          * Reads data from HDF5 file.
-         * If data is to be read (instead of only a buffer size),
-         * the destination buffer (data) has to be allocated already.
+         * If data is to be read (instead of only its size in the file),
+         * the destination buffer (\p buf) must be allocated already.
          *
-         * @param id id for fileentry. e.g. iteration
-         * @param type type information for data. available types must be
-         * implemented by concrete DataCollector
-         * @param name name for the dataset, e.g. 'ions'
-         * @param dstBuffer dimensions of the buffer to read into
-         * @param sizeRead returns the dimensions of the read data buffer
-         * @param dstOffset offset in destination buffer to read to
-         * @param data data buffer to read from file. Can be NULL.
+         * @param id ID for iteration.
+         * @param type Type information for data.
+         * @param name Name for the dataset.
+         * @param dstBuffer Size of the buffer \p buf to read to.
+         * @param dstOffset Offset in destination buffer to read to.
+         * @param sizeRead Returns the size of the data in the file.
+         * @param buf Buffer to read from file, can be NULL.
          */
         virtual void read(int32_t id,
                 const CollectionType& type,
                 const char* name,
                 const Dimensions dstBuffer,
-                Dimensions &sizeRead,
                 const Dimensions dstOffset,
-                void* data) = 0;
-
-        /**
-         * Reads data from HDF5 file.
-         * If data is to be read (instead of only a buffer size),
-         * the destination buffer (data) has to be allocated already.
-         *
-         * @param id id for fileentry. e.g. iteration
-         * @param type type information for data. available types must be
-         * implemented by concrete DataCollector
-         * @param name name for the dataset, e.g. 'ions'
-         * @param sizeRead returns the dimensions of the read data buffer
-         * @param data data buffer to read from file. Can be NULL.
-         */
-        virtual void read(int32_t id,
-                const CollectionType& type,
-                const char* name,
                 Dimensions &sizeRead,
-                void* data) = 0;
+                void* buf) = 0;
     };
 
 } // namespace DCollector

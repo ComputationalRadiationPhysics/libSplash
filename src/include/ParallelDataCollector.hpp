@@ -39,10 +39,8 @@ namespace DCollector
 {
 
     /**
-     * Realizes an IParallelDataCollector which creates a single HDF5 file for
-     * all MPI processes and accesses the file using collective MPI I/O.
-     *
-     * see IParallelDataCollector interface for function documentation.
+     * Realizes an IParallelDataCollector which creates a single HDF5 file per iteration
+     * for all MPI processes and accesses the file using collective MPI I/O.
      */
     class ParallelDataCollector : public IParallelDataCollector
     {
@@ -50,7 +48,7 @@ namespace DCollector
         /**
          * Set properties for file access property list.
          *
-         * @param fileAccProperties reference to fileAccProperties to set parameters for
+         * @param fileAccProperties Reference to fileAccProperties to set parameters for.
          */
         void setFileAccessParams(hid_t& fileAccProperties);
 
@@ -58,9 +56,9 @@ namespace DCollector
          * Constructs a filename from a base filename and the current id
          * such as baseFilename+id+.h5
          * 
-         * @param id current iteration
-         * @param baseFilename base filename for the new file
-         * @return newly constructed filename including file extension
+         * @param id Iteration ID.
+         * @param baseFilename Base filename for the new file.
+         * @return newly Constructed filename including file extension.
          */
         static std::string getFullFilename(uint32_t id, std::string baseFilename);
 
@@ -177,10 +175,12 @@ namespace DCollector
     public:
         /**
          * Constructor
-         * @param comm the MPI_Comm object
-         * @param info the MPI_Info object
-         * @param topology number of MPI processes in each dimension
-         * @param maxFileHandles maximum number of concurrently opened file handles
+         * 
+         * @param comm The communicator.
+         * All processes in this communicator must participate in accessing data.
+         * @param info The MPI_Info object.
+         * @param topology Number of MPI processes in each dimension.
+         * @param maxFileHandles Maximum number of concurrently opened file handles (0=infinite).
          */
         ParallelDataCollector(MPI_Comm comm, MPI_Info info, const Dimensions topology,
                 uint32_t maxFileHandles);
@@ -190,50 +190,26 @@ namespace DCollector
          */
         virtual ~ParallelDataCollector();
 
-        /**
-         * {@link DataCollector#open}
-         */
         void open(const char *filename,
                 FileCreationAttr& attr) throw (DCException);
 
-        /**
-         * {@link DataCollector#close}
-         */
         void close();
 
-        /**
-         * {@link DataCollector#getMaxID}
-         */
         int32_t getMaxID();
 
-        /**
-         * {@link DataCollector#getMPISize}
-         */
         void getMPISize(Dimensions& mpiSize);
 
-        /**
-         * {@link DataCollector#getEntryIDs}
-         */
         void getEntryIDs(int32_t *ids, size_t *count) throw (DCException);
 
-        /**
-         * {@link DataCollector#getEntriesForID}
-         */
         void getEntriesForID(int32_t id, DCEntry *entries, size_t *count) throw (DCException);
 
-        /**
-         * {@link IParallelDataCollector#write}
-         */
         void write(int32_t id,
                 const CollectionType& type,
                 uint32_t rank,
                 const Dimensions srcData,
                 const char* name,
-                const void* data) throw (DCException);
+                const void* buf) throw (DCException);
 
-        /**
-         * {@link IParallelDataCollector#write}
-         */
         void write(int32_t id,
                 const CollectionType& type,
                 uint32_t rank,
@@ -241,11 +217,8 @@ namespace DCollector
                 const Dimensions srcData,
                 const Dimensions srcOffset,
                 const char* name,
-                const void* data) throw (DCException);
+                const void* buf) throw (DCException);
 
-        /**
-         * {@link IParallelDataCollector#write}
-         */
         void write(int32_t id,
                 const CollectionType& type,
                 uint32_t rank,
@@ -254,11 +227,8 @@ namespace DCollector
                 const Dimensions srcData,
                 const Dimensions srcOffset,
                 const char* name,
-                const void* data) throw (DCException);
+                const void* buf) throw (DCException);
 
-        /**
-         * {@link IParallelDataCollector#write}
-         */
         void write(int32_t id,
                 const Dimensions globalSize,
                 const Dimensions globalOffset,
@@ -266,11 +236,8 @@ namespace DCollector
                 uint32_t rank,
                 const Dimensions srcData,
                 const char* name,
-                const void* data);
+                const void* buf);
 
-        /**
-         * {@link IParallelDataCollector#write}
-         */
         void write(int32_t id,
                 const Dimensions globalSize,
                 const Dimensions globalOffset,
@@ -280,11 +247,8 @@ namespace DCollector
                 const Dimensions srcData,
                 const Dimensions srcOffset,
                 const char* name,
-                const void* data);
+                const void* buf);
 
-        /**
-         * {@link IParallelDataCollector#write}
-         */
         void write(int32_t id,
                 const Dimensions globalSize,
                 const Dimensions globalOffset,
@@ -295,11 +259,8 @@ namespace DCollector
                 const Dimensions srcData,
                 const Dimensions srcOffset,
                 const char* name,
-                const void* data);
+                const void* buf);
 
-        /**
-         * {@link IParallelDataCollector#reserve}
-         */
         void reserve(int32_t id,
                 const Dimensions size,
                 Dimensions *globalSize,
@@ -308,90 +269,70 @@ namespace DCollector
                 const CollectionType& type,
                 const char* name) throw (DCException);
         
-        /**
-         * {@link IParallelDataCollector#append}
-         */
         void append(int32_t id,
                 const Dimensions size,
-                const CollectionType& type,
                 uint32_t rank,
                 const Dimensions globalOffset,
                 const char *name,
-                const void *data);
+                const void *buf);
 
-        /**
-         * {@link DataCollector#remove}
-         */
         void remove(int32_t id) throw (DCException);
 
-        /**
-         * {@link DataCollector#remove}
-         */
         void remove(int32_t id,
                 const char *name) throw (DCException);
 
-        /**
-         * {@link DataCollector#createReference}
-         */
         void createReference(int32_t srcID,
                 const char *srcName,
                 int32_t dstID,
                 const char *dstName) throw (DCException);
 
-        /**
-         * {@link DataCollector#readGlobalAttribute}
-         */
         void readGlobalAttribute(int32_t id,
                 const char* name,
-                void* data) throw (DCException);
+                void* buf) throw (DCException);
 
-        /**
-         * {@link DataCollector#writeGlobalAttribute}
-         */
         void writeGlobalAttribute(int32_t id,
                 const CollectionType& type,
                 const char *name,
-                const void* data) throw (DCException);
+                const void* buf) throw (DCException);
 
-        /**
-         * {@link DataCollector#readAttribute}
-         */
         void readAttribute(int32_t id,
                 const char *dataName,
                 const char *attrName,
-                void *data,
+                void *buf,
                 Dimensions *mpiPosition = NULL) throw (DCException);
 
-        /**
-         * {@link DataCollector#writeAttribute}
-         */
         void writeAttribute(int32_t id,
                 const CollectionType& type,
                 const char *dataName,
                 const char *attrName,
-                const void *data) throw (DCException);
+                const void *buf) throw (DCException);
 
-        /**
-         * {@link DataCollector#read}
-         */
         void read(int32_t id,
                 const CollectionType& type,
                 const char* name,
                 Dimensions &sizeRead,
-                void* data) throw (DCException);
-        /**
-         * {@link DataCollector#read}
-         */
+                void* buf) throw (DCException);
+        
         void read(int32_t id,
                 const CollectionType& type,
                 const char* name,
                 const Dimensions dstBuffer,
-                Dimensions &sizeRead,
                 const Dimensions dstOffset,
-                void* data) throw (DCException);
+                Dimensions &sizeRead,
+                void* buf) throw (DCException);
 
         /**
-         * {@link IParallelDataCollector#read}
+         * Reads data from HDF5 file.
+         * If data is to be read (instead of only its size in the file),
+         * the destination buffer (\p buf) must be allocated already.
+         *
+         * @param id ID for iteration.
+         * @param localSize Size of data to be read, starting at \p globalOffset.
+         * @param globalOffset Global offset in source data to start reading from.
+         * @param type Type information for data.
+         * @param name Name for the dataset.
+         * @param sizeRead Returns the size of the data in the file.
+         * @param buf Buffer to read from file, can be NULL.
          */
         void read(int32_t id,
                 const Dimensions localSize,
@@ -399,10 +340,22 @@ namespace DCollector
                 const CollectionType& type,
                 const char* name,
                 Dimensions &sizeRead,
-                void* data) throw (DCException);
+                void* buf) throw (DCException);
 
         /**
-         * {@link IParallelDataCollector#read}
+         * Reads data from HDF5 file.
+         * If data is to be read (instead of only its size in the file),
+         * the destination buffer (\p buf) must be allocated already.
+         *
+         * @param id ID for iteration.
+         * @param localSize Size of data to be read, starting at \p globalOffset.
+         * @param globalOffset Global offset in source data to start reading from.
+         * @param type Type information for data.
+         * @param name Name for the dataset.
+         * @param dstBuffer Size of destination buffer.
+         * @param dstOffset Offset in destination buffer to read to.
+         * @param sizeRead Returns the size of the data in the file.
+         * @param buf Buffer to read from file, can be NULL.
          */
         void read(int32_t id,
                 const Dimensions localSize,
@@ -410,9 +363,9 @@ namespace DCollector
                 const CollectionType& type,
                 const char* name,
                 const Dimensions dstBuffer,
-                Dimensions &sizeRead,
                 const Dimensions dstOffset,
-                void* data) throw (DCException);
+                Dimensions &sizeRead,
+                void* buf) throw (DCException);
     private:
 
         void readGlobalAttribute(const char*,
@@ -430,7 +383,6 @@ namespace DCollector
         }
 
         void append(int32_t /*id*/,
-                const CollectionType& /*type*/,
                 size_t /*count*/,
                 const char* /*name*/,
                 const void* /*data*/)
@@ -439,7 +391,6 @@ namespace DCollector
         }
 
         void append(int32_t /*id*/,
-                const CollectionType& /*type*/,
                 size_t /*count*/,
                 size_t /*offset*/,
                 size_t /*stride*/,

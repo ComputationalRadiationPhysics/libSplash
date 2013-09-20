@@ -28,6 +28,9 @@
 namespace DCollector
 {
 
+    /**
+     * \cond HIDDEN_SYMBOLS
+     */
     class DCParallelDataSet : public DCDataSet
     {
     public:
@@ -60,6 +63,9 @@ namespace DCollector
             H5Pset_dxpl_mpio(dsetWriteProperties, H5FD_MPIO_INDEPENDENT);
         }
     };
+    /**
+     * \endcond
+     */
 }
 
 #endif	/* DCPARALLELDATASET_HPP */

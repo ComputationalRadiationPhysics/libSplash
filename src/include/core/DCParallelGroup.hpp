@@ -29,6 +29,9 @@
 namespace DCollector
 {
 
+    /**
+     * \cond HIDDEN_SYMBOLS
+     */
     class DCParallelGroup : public DCGroup
     {    
 
@@ -44,6 +47,9 @@ namespace DCollector
             
         }
     };
+    /**
+     * \endcond
+     */
 
 }
 

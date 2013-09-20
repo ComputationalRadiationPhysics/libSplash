@@ -32,7 +32,8 @@ namespace DCollector
 {
 
     /**
-     * provides static help functions for DataCollectors (e.g. SerialDataCollector)
+     * Provides static help functions for DataCollectors (e.g. SerialDataCollector).
+     * \cond HIDDEN_SYMBOLS
      */
     class DCHelper
     {
@@ -150,6 +151,9 @@ namespace DCollector
         }
 
     };
+    /**
+     * \endcond
+     */
 
 } // namespace DataCollector
 

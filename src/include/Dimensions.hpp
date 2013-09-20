@@ -31,8 +31,8 @@ namespace DCollector
 {
 
     /**
-     * Holds 3D-hsize_t-information. Can be used for mpi-positions/-dimensions or data-dimensions
-     * @author fschmitt
+     * Manages 1-3D size information.
+     * Can be used for MPI-positions/-dimensions or data-dimensions.
      */
     class Dimensions
     {
@@ -41,7 +41,8 @@ namespace DCollector
     public:
 
         /**
-         * default constructor. initializes all dimensions to 1
+         * Default constructor.
+         * Initializes all dimensions to 1.
          */
         Dimensions(void)
         {
@@ -49,7 +50,7 @@ namespace DCollector
         }
 
         /**
-         * constructor
+         * Constructor
          * @param x first dimension
          * @param y second dimension
          * @param z third dimension
@@ -115,21 +116,25 @@ namespace DCollector
         }
 
         /**
-         * get pointer to data array
-         * @return pointer to the data array
+         * Get pointer to internal data array.
+         * @return Pointer to the internal data array.
          */
         inline hsize_t *getPointer()
         {
             return s;
         }
         
+        /**
+         * Get pointer to internal data array.
+         * @return Pointer to the internal data array.
+         */
         inline const hsize_t *getPointer() const
         {
             return s;
         }
 
         /**
-         * get the size in bytes of the data array
+         * Get the size in bytes of the data array
          * @return size in bytes of data array
          */
         inline static size_t getSize()
@@ -138,8 +143,8 @@ namespace DCollector
         }
 
         /**
-         * get the size in elements of all dimensions
-         * @return total elements in all dimensions
+         * Get the scalar size.
+         * @return total elements from all dimensions
          */
         inline size_t getDimSize() const
         {
@@ -147,7 +152,7 @@ namespace DCollector
         }
 
         /**
-         * set dimensions data
+         * Set dimensions.
          * @param x first dimension
          * @param y second dimension
          * @param z third dimension
@@ -160,7 +165,18 @@ namespace DCollector
         }
 
         /**
-         * set dimensions data
+         * Set dimensions.
+         * @param d Dimensions object to copy data from
+         */
+        inline void set(const Dimensions d)
+        {
+            s[0] = d[0];
+            s[1] = d[1];
+            s[2] = d[2];
+        }
+        
+        /**
+         * Set dimensions.
          * @param d Dimensions object to copy data from
          */
         inline void set(Dimensions d)
@@ -171,7 +187,8 @@ namespace DCollector
         }
 
         /**
-         * swaps the dimensions depending on rank
+         * Swaps the dimensions depending on \p rank.
+         * @param rank number of dimensions for swapping.
          */
         void swapDims(uint32_t rank)
         {

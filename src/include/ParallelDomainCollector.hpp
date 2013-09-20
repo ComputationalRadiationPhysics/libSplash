@@ -45,10 +45,12 @@ namespace DCollector
     public:
         /**
          * Constructor
-         * @param comm the MPI_Comm object
-         * @param info the MPI_Info object
-         * @param topology number of MPI processes in each dimension
-         * @param maxFileHandles maximum number of concurrently opened file handles
+         * 
+         * @param comm The communicator.
+         * All processes in this communicator must participate in accessing data.
+         * @param info The MPI_Info object.
+         * @param topology Number of MPI processes in each dimension.
+         * @param maxFileHandles Maximum number of concurrently opened file handles (0=infinite).
          */
         ParallelDomainCollector(MPI_Comm comm, MPI_Info info, const Dimensions topology,
                 uint32_t maxFileHandles);
@@ -58,21 +60,12 @@ namespace DCollector
          */
         virtual ~ParallelDomainCollector();
 
-        /**
-         * {@link IDomainCollector#getTotalElements}
-         */
         size_t getTotalElements(int32_t id,
                 const char* name) throw (DCException);
 
-        /**
-         * {@link IDomainCollector#getTotalDomain}
-         */
         Domain getTotalDomain(int32_t id,
                 const char* name) throw (DCException);
 
-        /**
-         * {@link IDomainCollector#readDomain}
-         */
         DataContainer *readDomain(int32_t id,
                 const char* name,
                 Dimensions requestOffset,
@@ -80,9 +73,6 @@ namespace DCollector
                 DomDataClass* dataClass,
                 bool lazyLoad = false) throw (DCException);
 
-        /**
-         * {@link IDomainCollector#readDomainLazy}
-         */
         void readDomainLazy(DomainData *domainData) throw (DCException);
 
         void writeDomain(int32_t id,

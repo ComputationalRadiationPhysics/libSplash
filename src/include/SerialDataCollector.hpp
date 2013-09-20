@@ -226,43 +226,28 @@ namespace DCollector
 
         /**
          * Constructor
-         * @param maxFileHandles maximum number of concurrently opened file handles (0=unlimited)
+         * @param maxFileHandles Maximum number of concurrently opened file handles (0=unlimited).
          */
         SerialDataCollector(uint32_t maxFileHandles);
 
+        /**
+         * Destructor
+         */
         virtual ~SerialDataCollector();
 
-        /**
-         * {@link DataCollector#open}
-         */
         void open(const char *filename,
                 FileCreationAttr& attr) throw (DCException);
 
-        /**
-         * {@link DataCollector#close}
-         */
         void close();
 
-        /**
-         * {@link DataCollector#getMaxID}
-         */
         int32_t getMaxID();
 
-        /**
-         * {@link DataCollector#getMPISize}
-         */
         void getMPISize(Dimensions& mpiSize);
 
-        /**
-         * {@link DataCollector#getEntryIDs}
-         */
         void getEntryIDs(int32_t *ids, size_t *count) throw (DCException);
 
         void getEntriesForID(int32_t id, DCEntry *entries, size_t *count) throw (DCException);
 
-        /**
-         * {@link DataCollector#write}
-         */
         void write(int32_t id,
                 const CollectionType& type,
                 uint32_t rank,
@@ -270,9 +255,6 @@ namespace DCollector
                 const char* name,
                 const void* data) throw (DCException);
 
-        /**
-         * {@link DataCollector#write}
-         */
         void write(int32_t id,
                 const CollectionType& type,
                 uint32_t rank,
@@ -282,9 +264,6 @@ namespace DCollector
                 const char* name,
                 const void* data) throw (DCException);
 
-        /**
-         * {@link DataCollector#write}
-         */
         void write(int32_t id,
                 const CollectionType& type,
                 uint32_t rank,
@@ -295,18 +274,12 @@ namespace DCollector
                 const char* name,
                 const void* data) throw (DCException);
 
-        /**
-         * {@link DataCollector#append}
-         */
         void append(int32_t id,
                 const CollectionType& type,
                 size_t count,
                 const char *name,
                 const void *data) throw (DCException);
 
-        /**
-         * {@link DataCollector#append}
-         */
         void append(int32_t id,
                 const CollectionType& type,
                 size_t count,
@@ -315,28 +288,16 @@ namespace DCollector
                 const char *name,
                 const void *data) throw (DCException);
 
-        /**
-         * {@link DataCollector#remove}
-         */
         void remove(int32_t id) throw (DCException);
 
-        /**
-         * {@link DataCollector#remove}
-         */
         void remove(int32_t id,
                 const char *name) throw (DCException);
 
-        /**
-         * {@link DataCollector#createReference}
-         */
         void createReference(int32_t srcID,
                 const char *srcName,
                 int32_t dstID,
                 const char *dstName) throw (DCException);
 
-        /**
-         * {@link DataCollector#createReference}
-         */
         void createReference(int32_t srcID,
                 const char *srcName,
                 int32_t dstID,
@@ -345,56 +306,39 @@ namespace DCollector
                 Dimensions offset,
                 Dimensions stride) throw (DCException);
 
-        /**
-         * {@link DataCollector#readGlobalAttribute}
-         */
         void readGlobalAttribute(
                 const char *name,
                 void* data,
                 Dimensions *mpiPosition = NULL) throw (DCException);
 
-        /**
-         * {@link DataCollector#writeGlobalAttribute}
-         */
         void writeGlobalAttribute(const CollectionType& type,
                 const char *name,
                 const void* data) throw (DCException);
 
-        /**
-         * {@link DataCollector#readAttribute}
-         */
         void readAttribute(int32_t id,
                 const char *dataName,
                 const char *attrName,
                 void *data,
                 Dimensions *mpiPosition = NULL) throw (DCException);
 
-        /**
-         * {@link DataCollector#writeAttribute}
-         */
         void writeAttribute(int32_t id,
                 const CollectionType& type,
                 const char *dataName,
                 const char *attrName,
                 const void *data) throw (DCException);
 
-        /**
-         * {@link DataCollector#read}
-         */
         void read(int32_t id,
                 const CollectionType& type,
                 const char* name,
-                Dimensions &srcData,
+                Dimensions &sizeRead,
                 void* data) throw (DCException);
-        /**
-         * {@link DataCollector#read}
-         */
+
         void read(int32_t id,
                 const CollectionType& type,
                 const char* name,
                 const Dimensions dstBuffer,
-                Dimensions &srcData,
                 const Dimensions dstOffset,
+                Dimensions &sizeRead,
                 void* data) throw (DCException);
     };
 

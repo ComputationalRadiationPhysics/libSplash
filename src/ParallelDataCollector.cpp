@@ -394,19 +394,19 @@ void ParallelDataCollector::read(int32_t id,
         const CollectionType& type,
         const char* name,
         Dimensions &sizeRead,
-        void* data)
+        void* buf)
 throw (DCException)
 {
-    this->read(id, type, name, Dimensions(0, 0, 0), sizeRead, Dimensions(0, 0, 0), data);
+    this->read(id, type, name, Dimensions(0, 0, 0), Dimensions(0, 0, 0), sizeRead, buf);
 }
 
 void ParallelDataCollector::read(int32_t id,
         const CollectionType& /*type*/,
         const char* name,
         Dimensions dstBuffer,
-        Dimensions &sizeRead,
         Dimensions dstOffset,
-        void* data)
+        Dimensions &sizeRead,
+        void* buf)
 throw (DCException)
 {
     if (fileStatus != FST_READING && fileStatus != FST_WRITING)
@@ -414,7 +414,7 @@ throw (DCException)
 
     uint32_t rank = 0;
     readDataSet(handles.get(id), id, name, false, dstBuffer, dstOffset,
-            Dimensions(0, 0, 0), Dimensions(0, 0, 0), sizeRead, rank, data);
+            Dimensions(0, 0, 0), Dimensions(0, 0, 0), sizeRead, rank, buf);
 }
 
 void ParallelDataCollector::read(int32_t id,
@@ -423,10 +423,10 @@ void ParallelDataCollector::read(int32_t id,
         const CollectionType& type,
         const char* name,
         Dimensions &sizeRead,
-        void* data) throw (DCException)
+        void* buf) throw (DCException)
 {
     this->read(id, localSize, globalOffset, type, name, localSize,
-            sizeRead, Dimensions(0, 0, 0), data);
+            Dimensions(0, 0, 0), sizeRead, buf);
 }
 
 void ParallelDataCollector::read(int32_t id,
@@ -435,16 +435,16 @@ void ParallelDataCollector::read(int32_t id,
         const CollectionType& /*type*/,
         const char* name,
         const Dimensions dstBuffer,
-        Dimensions &sizeRead,
         const Dimensions dstOffset,
-        void* data) throw (DCException)
+        Dimensions &sizeRead,
+        void* buf) throw (DCException)
 {
     if (fileStatus != FST_READING && fileStatus != FST_WRITING)
         throw DCException(getExceptionString("read", "this access is not permitted"));
 
     uint32_t rank = 0;
     readDataSet(handles.get(id), id, name, true, dstBuffer, dstOffset,
-            localSize, globalOffset, sizeRead, rank, data);
+            localSize, globalOffset, sizeRead, rank, buf);
 }
 
 void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32_t rank,
@@ -474,7 +474,7 @@ throw (DCException)
 
 void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32_t rank,
         const Dimensions srcBuffer, const Dimensions srcStride, const Dimensions srcData,
-        const Dimensions srcOffset, const char* name, const void* data)
+        const Dimensions srcOffset, const char* name, const void* buf)
 throw (DCException)
 {
     Dimensions globalSize, globalOffset;
@@ -482,35 +482,35 @@ throw (DCException)
 
     write(id, globalSize, globalOffset,
             type, rank, srcBuffer, srcStride, srcData,
-            srcOffset, name, data);
+            srcOffset, name, buf);
 }
 
 void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
         const Dimensions globalOffset,
         const CollectionType& type, uint32_t rank, const Dimensions srcData,
-        const char* name, const void* data)
+        const char* name, const void* buf)
 {
     write(id, globalSize, globalOffset, type, rank, srcData, Dimensions(1, 1, 1), srcData,
-            Dimensions(0, 0, 0), name, data);
+            Dimensions(0, 0, 0), name, buf);
 }
 
 void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
         const Dimensions globalOffset,
         const CollectionType& type, uint32_t rank, const Dimensions srcBuffer,
         const Dimensions srcData, const Dimensions srcOffset, const char* name,
-        const void* data)
+        const void* buf)
 {
     write(id, globalSize, globalOffset, type, rank, srcBuffer, Dimensions(1, 1, 1),
-            srcData, srcOffset, name, data);
+            srcData, srcOffset, name, buf);
 }
 
 void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
         const Dimensions globalOffset,
         const CollectionType& type, uint32_t rank, const Dimensions srcBuffer,
         const Dimensions srcStride, const Dimensions srcData,
-        const Dimensions srcOffset, const char* name, const void* data)
+        const Dimensions srcOffset, const char* name, const void* buf)
 {
-    if (name == NULL || data == NULL)
+    if (name == NULL || buf == NULL)
         throw DCException(getExceptionString("write", "a parameter was NULL"));
 
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
@@ -530,7 +530,7 @@ void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
     try
     {
         writeDataSet(group.getHandle(), globalSize, globalOffset, type, rank,
-                srcBuffer, srcStride, srcData, srcOffset, dset_name.c_str(), data);
+                srcBuffer, srcStride, srcData, srcOffset, dset_name.c_str(), buf);
     } catch (DCException)
     {
         throw;
@@ -578,13 +578,12 @@ void ParallelDataCollector::reserve(int32_t id,
 
 void ParallelDataCollector::append(int32_t id,
         const Dimensions size,
-        const CollectionType& /*type*/,
         uint32_t rank,
         const Dimensions globalOffset,
         const char *name,
-        const void *data)
+        const void *buf)
 {
-    if (name == NULL || data == NULL)
+    if (name == NULL || buf == NULL)
         throw DCException(getExceptionString("append", "a parameter was NULL"));
 
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
@@ -611,7 +610,7 @@ void ParallelDataCollector::append(int32_t id,
             throw DCException(getExceptionString("append",
                     "Cannot open dataset (missing reserve?)", dset_name.c_str()));
         } else
-            dataset.write(size, Dimensions(1, 1, 1), Dimensions(0, 0, 0), size, globalOffset, data);
+            dataset.write(size, Dimensions(1, 1, 1), Dimensions(0, 0, 0), size, globalOffset, buf);
 
         dataset.close();
     } catch (DCException)

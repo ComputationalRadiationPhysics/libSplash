@@ -32,6 +32,9 @@
 namespace DCollector
 {
 
+    /**
+     * \cond HIDDEN_SYMBOLS
+     */
     class SDCHelper
     {
     private:

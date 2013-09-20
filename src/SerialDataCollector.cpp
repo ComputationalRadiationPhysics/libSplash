@@ -348,15 +348,15 @@ namespace DCollector
             void* data)
     throw (DCException)
     {
-        this->read(id, type, name, Dimensions(0, 0, 0), sizeRead, Dimensions(0, 0, 0), data);
+        this->read(id, type, name, Dimensions(0, 0, 0), Dimensions(0, 0, 0), sizeRead, data);
     }
 
     void SerialDataCollector::read(int32_t id,
             const CollectionType& type,
             const char* name,
             const Dimensions dstBuffer,
-            Dimensions &sizeRead,
             const Dimensions dstOffset,
+            Dimensions &sizeRead,
             void* data)
     throw (DCException)
     {

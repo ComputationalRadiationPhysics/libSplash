@@ -36,6 +36,9 @@
 namespace DCollector
 {
 
+    /**
+     * \cond HIDDEN_SYMBOLS
+     */
     class DCDataSet
     {
     public:
@@ -264,6 +267,9 @@ namespace DCollector
 
         ColTypeDim dimType;
     };
+    /**
+     * \endcond
+     */
 
 }
 

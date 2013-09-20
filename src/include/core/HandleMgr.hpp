@@ -36,6 +36,7 @@ namespace DCollector
 
     /**
      * opaque type for an HDF5 handle
+     * \cond HIDDEN_SYMBOLS
      */
     typedef hid_t H5Handle;
     
@@ -182,6 +183,9 @@ namespace DCollector
         uint32_t indexFromPos(Dimensions& mpiPos);
         Dimensions posFromIndex(uint32_t index);
     };
+    /**
+     * \endcond
+     */
 
 }
 

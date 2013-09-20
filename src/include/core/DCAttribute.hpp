@@ -32,6 +32,7 @@ namespace DCollector
 {
     /**
      * Class for static convenience attribute operations.
+     * \cond HIDDEN_SYMBOLS
      */
     class DCAttribute
     {
@@ -64,6 +65,9 @@ namespace DCollector
         
         static std::string getExceptionString(const char *name, std::string msg);
     };
+    /**
+     * \endcond
+     */
 
 }
 

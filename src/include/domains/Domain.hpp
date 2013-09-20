@@ -33,7 +33,8 @@ namespace DCollector
 {
 
     /**
-     * Represents a 3-dimensional domain or subdomain.
+     * Represents a (1-3)-dimensional logical domain or subdomain,
+     * e.g. a logical grid in a simulation code.
      */
     class Domain
     {
