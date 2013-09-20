@@ -25,7 +25,7 @@ Compiling
 ---------
 
 To **compile libSplash**, it is recommended to create a new build folder and execute
-`$ cmake CMAKE INSTALL PREFIX=<INSTALL PATH> <CMakeLists.txt-PATH>`
+`$ cmake -DCMAKE_INSTALL_PREFIX=<INSTALL PATH> <CMakeLists.txt-PATH>`
 
 Than run `$ make install` to build and install libSplash library and binaries to the chosen
 installation directory. This will build libSplash as an shared object library (libsplash.so)
