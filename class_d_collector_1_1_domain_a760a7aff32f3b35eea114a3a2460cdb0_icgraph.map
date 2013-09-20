@@ -1,4 +1,4 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_d_collector_1_1_domain_collector.html#a2932e7074320dace7b786f93d0a6a8b3" title="DCollector::DomainCollector::readDomain" alt="" coords="257,5,535,35"/>
-<area shape="rect" id="node5" href="$class_d_collector_1_1_i_domain_collector.html#ad1e9c6a09e32ca981a587905d5aa35ac" title="DCollector::IDomainCollector::testIntersection" alt="" coords="249,58,543,89"/>
+<map id="DCollector::Domain::getStart" name="DCollector::Domain::getStart">
+<area shape="rect" id="node3" href="$class_d_collector_1_1_domain_collector.html#a2932e7074320dace7b786f93d0a6a8b3" title="DCollector::DomainCollector\l::readDomain" alt="" coords="189,5,371,49"/>
+<area shape="rect" id="node5" href="$class_d_collector_1_1_i_domain_collector.html#ae05cc3289e3f9485ed4c690f0e55d362" title="DCollector::IDomainCollector\l::testIntersection" alt="" coords="187,71,373,115"/>
 </map>

@@ -1,6 +1,3 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_d_collector_1_1_handle_mgr.html#a77b71e83b80ddadd0f96a5485ad80ae8" title="DCollector::HandleMgr::get" alt="" coords="361,5,548,35"/>
-<area shape="rect" id="node5" href="$class_d_collector_1_1_serial_data_collector.html#aa1621c29ccc5c40d6cf0e64b4053c093" title="DCollector::SerialDataCollector::writeAttribute" alt="" coords="308,58,601,89"/>
-<area shape="rect" id="node9" href="$class_d_collector_1_1_handle_mgr.html#afa6dafeda1b897541ed88df476fff0c3" title="DCollector::HandleMgr::close" alt="" coords="355,111,555,142"/>
-<area shape="rect" id="node7" href="$class_d_collector_1_1_d_c_attribute.html#a9261b396e6be4bb1d9565f596e8137c9" title="DCollector::DCAttribute::writeAttribute" alt="" coords="651,58,893,89"/>
+<map id="DCollector::SerialDataCollector::close" name="DCollector::SerialDataCollector::close">
+<area shape="rect" id="node3" href="$class_d_collector_1_1_serial_data_collector.html#aa1621c29ccc5c40d6cf0e64b4053c093" title="DCollector::SerialDataCollector\l::writeAttribute" alt="" coords="255,5,452,49"/>
 </map>

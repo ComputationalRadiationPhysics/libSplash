@@ -1,15 +1,12 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_d_collector_1_1_domain_collector.html#a11326f01b03d7ae27a9d64ef23853a8c" title="DCollector::DomainCollector::getTotalElements" alt="" coords="272,5,579,35"/>
-<area shape="rect" id="node5" href="$class_d_collector_1_1_domain_collector.html#a9943876f01c45a4f321b8d3c2f2d0122" title="DCollector::DomainCollector::getTotalDomain" alt="" coords="276,58,575,89"/>
-<area shape="rect" id="node7" href="$class_d_collector_1_1_domain_collector.html#a2932e7074320dace7b786f93d0a6a8b3" title="DCollector::DomainCollector::readDomain" alt="" coords="287,111,564,142"/>
-<area shape="rect" id="node9" href="$class_d_collector_1_1_domain_collector.html#a957fe5d9af058f1eac898953b8fbbf8c" title="DCollector::DomainCollector::appendDomain" alt="" coords="279,165,572,195"/>
-<area shape="rect" id="node11" href="$class_d_collector_1_1_handle_mgr.html#a7c6085ab400bb8080307e77e8a6a2041" title="DCollector::HandleMgr::open" alt="" coords="327,218,524,249"/>
-<area shape="rect" id="node13" href="$class_d_collector_1_1_data_collector.html#af8f05ed125dce36b15d00dbcb0591585" title="DCollector::DataCollector::initFileCreationAttr" alt="" coords="279,271,572,302"/>
-<area shape="rect" id="node15" href="$class_d_collector_1_1_data_container.html#ac403162dfea2100d2205d022a1a6b781" title="DCollector::DataContainer::DataContainer" alt="" coords="288,325,563,355"/>
-<area shape="rect" id="node17" href="$class_d_collector_1_1_domain_data.html#a1ff2627bc1e5dad684979d2e0e6e5ae5" title="DCollector::DomainData::setLoadingReference" alt="" coords="272,378,579,409"/>
-<area shape="rect" id="node19" href="$class_d_collector_1_1_parallel_data_collector.html#a08b0f16791aba6601177816c7ba2e3fa" title="DCollector::ParallelDataCollector::ParallelDataCollector" alt="" coords="247,431,604,462"/>
-<area shape="rect" id="node21" href="$class_d_collector_1_1_parallel_data_collector.html#acec973104fce6671a9d2bf4cad69c33b" title="DCollector::ParallelDataCollector::getMPISize" alt="" coords="276,485,575,515"/>
-<area shape="rect" id="node23" href="$class_d_collector_1_1_serial_data_collector.html#a97d79dca7be668d82dee82be44fb7768" title="DCollector::SerialDataCollector::readAttribute" alt="" coords="279,538,572,569"/>
-<area shape="rect" id="node25" href="$class_d_collector_1_1_serial_data_collector.html#afc590bfdd10e5d0362901e176bc71111" title="DCollector::SerialDataCollector::readMerged" alt="" coords="279,591,572,622"/>
-<area shape="rect" id="node27" href="$class_d_collector_1_1_serial_data_collector.html#aa24a7aebfe869e5a6d3f5e860a3e42a1" title="DCollector::SerialDataCollector::getMPISize" alt="" coords="281,645,569,675"/>
+<map id="DCollector::Dimensions::set" name="DCollector::Dimensions::set">
+<area shape="rect" id="node3" href="$class_d_collector_1_1_domain_collector.html#a11326f01b03d7ae27a9d64ef23853a8c" title="DCollector::DomainCollector\l::getTotalElements" alt="" coords="241,5,423,49"/>
+<area shape="rect" id="node5" href="$class_d_collector_1_1_domain_collector.html#a9943876f01c45a4f321b8d3c2f2d0122" title="DCollector::DomainCollector\l::getTotalDomain" alt="" coords="241,71,423,115"/>
+<area shape="rect" id="node7" href="$class_d_collector_1_1_domain_collector.html#a2932e7074320dace7b786f93d0a6a8b3" title="DCollector::DomainCollector\l::readDomain" alt="" coords="241,138,423,182"/>
+<area shape="rect" id="node9" href="$class_d_collector_1_1_domain_collector.html#a957fe5d9af058f1eac898953b8fbbf8c" title="DCollector::DomainCollector\l::appendDomain" alt="" coords="241,205,423,249"/>
+<area shape="rect" id="node11" href="$class_d_collector_1_1_data_collector.html#af8f05ed125dce36b15d00dbcb0591585" title="DCollector::DataCollector\l::initFileCreationAttr" alt="" coords="249,271,415,315"/>
+<area shape="rect" id="node13" href="$class_d_collector_1_1_data_container.html#ac403162dfea2100d2205d022a1a6b781" title="DCollector::DataContainer\l::DataContainer" alt="" coords="247,338,417,382"/>
+<area shape="rect" id="node15" href="$class_d_collector_1_1_domain_data.html#a1ff2627bc1e5dad684979d2e0e6e5ae5" title="DCollector::DomainData\l::setLoadingReference" alt="" coords="253,405,411,449"/>
+<area shape="rect" id="node17" href="$class_d_collector_1_1_parallel_data_collector.html#acec973104fce6671a9d2bf4cad69c33b" title="DCollector::ParallelData\lCollector::getMPISize" alt="" coords="253,471,411,515"/>
+<area shape="rect" id="node19" href="$class_d_collector_1_1_serial_data_collector.html#a97d79dca7be668d82dee82be44fb7768" title="DCollector::SerialDataCollector\l::readAttribute" alt="" coords="233,538,431,582"/>
+<area shape="rect" id="node21" href="$class_d_collector_1_1_serial_data_collector.html#aa24a7aebfe869e5a6d3f5e860a3e42a1" title="DCollector::SerialDataCollector\l::getMPISize" alt="" coords="233,605,431,649"/>
 </map>

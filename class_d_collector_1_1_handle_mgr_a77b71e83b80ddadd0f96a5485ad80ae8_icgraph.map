@@ -1,6 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_d_collector_1_1_parallel_data_collector.html#aeec71cadf5f11af3c4d467b76d58d110" title="DCollector::ParallelDataCollector::readAttribute" alt="" coords="241,5,545,35"/>
-<area shape="rect" id="node5" href="$class_d_collector_1_1_parallel_data_collector.html#a081a75e5104d4df767282eb3842caa1e" title="DCollector::ParallelDataCollector::write" alt="" coords="264,58,523,89"/>
-<area shape="rect" id="node7" href="$class_d_collector_1_1_parallel_data_collector.html#a8d210b4f65e3449e01fa01a23990c12d" title="DCollector::ParallelDataCollector::append" alt="" coords="256,111,531,142"/>
-<area shape="rect" id="node9" href="$class_d_collector_1_1_serial_data_collector.html#a071281afcac4f68b6edd12c175347ec6" title="DCollector::SerialDataCollector::close" alt="" coords="267,165,520,195"/>
-</map>

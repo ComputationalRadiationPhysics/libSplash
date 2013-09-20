@@ -1,4 +1,3 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_d_collector_1_1_dimensions.html#a433fe01b173c1e8537c83db50a4453de" title="DCollector::Dimensions::set" alt="" coords="376,5,565,35"/>
-<area shape="rect" id="node5" href="$class_d_collector_1_1_d_c_attribute.html#ad438f8a872593e27517d76763b1c900c" title="DCollector::DCAttribute::readAttribute" alt="" coords="349,58,592,89"/>
+<map id="DCollector::SerialDataCollector::readAttribute" name="DCollector::SerialDataCollector::readAttribute">
+<area shape="rect" id="node3" href="$class_d_collector_1_1_dimensions.html#a433fe01b173c1e8537c83db50a4453de" title="DCollector::Dimensions::set" alt="" coords="255,13,431,41"/>
 </map>

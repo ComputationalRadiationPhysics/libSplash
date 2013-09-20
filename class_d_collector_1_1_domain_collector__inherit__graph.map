@@ -1,5 +1,5 @@
-<map id="G" name="G">
-<area shape="rect" id="node2" href="$class_d_collector_1_1_i_domain_collector.html" title="DCollector::IDomainCollector" alt="" coords="5,86,203,117"/>
-<area shape="rect" id="node4" href="$class_d_collector_1_1_serial_data_collector.html" title="DCollector::SerialDataCollector" alt="" coords="227,86,437,117"/>
-<area shape="rect" id="node6" href="$class_d_collector_1_1_data_collector.html" title="DCollector::DataCollector" alt="" coords="244,6,420,37"/>
+<map id="DCollector::DomainCollector" name="DCollector::DomainCollector">
+<area shape="rect" id="node2" href="$class_d_collector_1_1_i_domain_collector.html" title="DCollector::IDomainCollector" alt="" coords="5,83,192,111"/>
+<area shape="rect" id="node4" href="$class_d_collector_1_1_serial_data_collector.html" title="DCollector::SerialDataCollector" alt="" coords="216,83,413,111"/>
+<area shape="rect" id="node6" href="$class_d_collector_1_1_data_collector.html" title="DCollector::DataCollector" alt="" coords="232,6,397,34"/>
 </map>

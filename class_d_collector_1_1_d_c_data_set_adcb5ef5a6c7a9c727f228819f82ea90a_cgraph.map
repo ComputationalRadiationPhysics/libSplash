@@ -1,6 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_d_collector_1_1_d_c_attribute.html#ad438f8a872593e27517d76763b1c900c" title="DCollector::DCAttribute::readAttribute" alt="" coords="253,5,496,35"/>
-<area shape="rect" id="node5" href="$class_d_collector_1_1_dimensions.html#a67e34e3b18f0b4715f2108822b851b51" title="DCollector::Dimensions::getPointer" alt="" coords="259,58,491,89"/>
-<area shape="rect" id="node7" href="$class_d_collector_1_1_dimensions.html#a0a3d73ff74b11e40d722f3fb8dc2f0b4" title="DCollector::Dimensions::swapDims" alt="" coords="257,111,492,142"/>
-<area shape="rect" id="node9" href="$class_d_collector_1_1_dimensions.html#a3b5040267a22c4d773e17882442cef8f" title="DCollector::Dimensions::getDimSize" alt="" coords="253,165,496,195"/>
-</map>

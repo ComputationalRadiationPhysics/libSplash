@@ -1,4 +1,4 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_d_collector_1_1_dimensions.html#a67e34e3b18f0b4715f2108822b851b51" title="DCollector::Dimensions::getPointer" alt="" coords="405,5,637,35"/>
-<area shape="rect" id="node5" href="$class_d_collector_1_1_dimensions.html#a3b5040267a22c4d773e17882442cef8f" title="DCollector::Dimensions::getDimSize" alt="" coords="400,58,643,89"/>
+<map id="DCollector::ParallelDomainCollector::getTotalDomain" name="DCollector::ParallelDomainCollector::getTotalDomain">
+<area shape="rect" id="node3" href="$class_d_collector_1_1_dimensions.html#a67e34e3b18f0b4715f2108822b851b51" title="DCollector::Dimensions\l::getPointer" alt="" coords="229,5,384,49"/>
+<area shape="rect" id="node5" href="$class_d_collector_1_1_dimensions.html#a3b5040267a22c4d773e17882442cef8f" title="DCollector::Dimensions\l::getDimSize" alt="" coords="229,71,384,115"/>
 </map>

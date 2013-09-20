@@ -1,8 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_d_collector_1_1_d_c_data_set.html#a6893f7491732b75233fe6ff7649b5912" title="DCollector::DCDataSet::open" alt="" coords="376,5,576,35"/>
-<area shape="rect" id="node5" href="$class_d_collector_1_1_d_c_data_set.html#adfc96cb12e94d0dec1c0db7e9f661c57" title="DCollector::DCDataSet::create" alt="" coords="372,58,580,89"/>
-<area shape="rect" id="node7" href="$class_d_collector_1_1_d_c_data_set.html#aac65f90d2670984114fd61664be49c74" title="DCollector::DCDataSet::write" alt="" coords="377,111,575,142"/>
-<area shape="rect" id="node9" href="$class_d_collector_1_1_d_c_data_set.html#a50e179c7a10fc5191c692418a7a9bb2e" title="DCollector::DCDataSet::append" alt="" coords="368,165,584,195"/>
-<area shape="rect" id="node13" href="$class_d_collector_1_1_d_c_data_set.html#aff05f708e978fd25256f59ed07831773" title="DCollector::DCDataSet::close" alt="" coords="375,218,577,249"/>
-<area shape="rect" id="node11" href="$class_d_collector_1_1_dimensions.html#a67e34e3b18f0b4715f2108822b851b51" title="DCollector::Dimensions::getPointer" alt="" coords="633,165,865,195"/>
-</map>

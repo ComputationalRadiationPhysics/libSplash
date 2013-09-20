@@ -1,7 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_d_collector_1_1_d_c_data_set.html#adcb5ef5a6c7a9c727f228819f82ea90a" title="DCollector::DCDataSet::read" alt="" coords="371,5,568,35"/>
-<area shape="rect" id="node5" href="$class_d_collector_1_1_s_d_c_helper.html#ae19bc960437bca6fd2016b04c4f7e898" title="DCollector::SDCHelper::getReferenceData" alt="" coords="329,58,609,89"/>
-<area shape="rect" id="node7" href="$class_d_collector_1_1_parallel_data_collector.html#a42bcdea1af1dd19f417a0686de6fbb9e" title="DCollector::ParallelDataCollector::readGlobalAttribute" alt="" coords="297,111,641,142"/>
-<area shape="rect" id="node9" href="$class_d_collector_1_1_serial_data_collector.html#a8a5a56e559daac8c25d33d8faf0530b4" title="DCollector::SerialDataCollector::readGlobalAttribute" alt="" coords="303,165,636,195"/>
-<area shape="rect" id="node11" href="$class_d_collector_1_1_serial_data_collector.html#a97d79dca7be668d82dee82be44fb7768" title="DCollector::SerialDataCollector::readAttribute" alt="" coords="323,218,616,249"/>
-</map>
