@@ -106,7 +106,7 @@ namespace DCollector
          * 
          * @return last element
          */
-        Dimensions getEnd()
+        Dimensions getEnd() const
         {
             return start + size - Dimensions(1, 1, 1);
         }

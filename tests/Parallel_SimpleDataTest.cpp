@@ -366,7 +366,7 @@ bool Parallel_SimpleDataTest::subtestFill(int32_t iteration,
 
         Dimensions write_offset(globalOffset + Dimensions(elements_written, 0, 0));
 
-        parallelDataCollector->append(iteration, write_size, ctInt, 1,
+        parallelDataCollector->append(iteration, write_size, 1,
                 write_offset, "reserved/reserved_data", &dataWrite);
 
         if (i < num_elements)

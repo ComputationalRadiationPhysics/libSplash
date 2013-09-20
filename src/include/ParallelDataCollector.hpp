@@ -383,6 +383,7 @@ namespace DCollector
         }
 
         void append(int32_t /*id*/,
+                const CollectionType& /*type*/,
                 size_t /*count*/,
                 const char* /*name*/,
                 const void* /*data*/)
@@ -391,6 +392,7 @@ namespace DCollector
         }
 
         void append(int32_t /*id*/,
+                const CollectionType& /*type*/,
                 size_t /*count*/,
                 size_t /*offset*/,
                 size_t /*stride*/,

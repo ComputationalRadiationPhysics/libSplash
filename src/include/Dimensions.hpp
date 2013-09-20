@@ -174,17 +174,6 @@ namespace DCollector
             s[1] = d[1];
             s[2] = d[2];
         }
-        
-        /**
-         * Set dimensions.
-         * @param d Dimensions object to copy data from
-         */
-        inline void set(Dimensions d)
-        {
-            s[0] = d[0];
-            s[1] = d[1];
-            s[2] = d[2];
-        }
 
         /**
          * Swaps the dimensions depending on \p rank.
