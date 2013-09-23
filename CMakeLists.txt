@@ -25,7 +25,7 @@ project (libSplash)
 #set helper pathes to find libraries and packages
 #- you need the multiarch dir x86_64-linux-gnu on 64bit Ubuntu's with
 #  self-compiled compilers
-SET(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}")
+SET(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}" "$ENV{HDF5_ROOT}")
 
 #-------------------------------------------------------------------------------
 
@@ -39,7 +39,6 @@ ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 # HDF5 is required package
 FIND_PACKAGE(HDF5 REQUIRED)
 INCLUDE_DIRECTORIES(SYSTEM ${HDF5_INCLUDE_DIR})
-LINK_DIRECTORIES(${HDF5_LIBRARY_DIRS})
 
 #-------------------------------------------------------------------------------
 
