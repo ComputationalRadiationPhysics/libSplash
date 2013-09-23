@@ -12,7 +12,6 @@ OPTION(WITH_MPI "use MPI-based tests" OFF)
 # HDF5 is required package
 FIND_PACKAGE(HDF5 REQUIRED)
 INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
-LINK_DIRECTORIES(${HDF5_LIBRARY_DIRS})
 
 IF(WITH_MPI)
     # MPI is required package
@@ -23,7 +22,6 @@ ENDIF(WITH_MPI)
 # CPPUNIT is required package (not available yet)
 #FIND_PACKAGE(CppUnit REQUIRED)
 #INCLUDE_DIRECTORIES(${CPPUNIT_INCLUDE_DIR})
-#LINK_DIRECTORIES(${CPPUNIT_LIBRARIES})
 
 #-------------------------------------------------------------------------------
 

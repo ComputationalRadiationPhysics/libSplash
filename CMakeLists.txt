@@ -39,7 +39,6 @@ ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 # HDF5 is required package
 FIND_PACKAGE(HDF5 REQUIRED)
 INCLUDE_DIRECTORIES(SYSTEM ${HDF5_INCLUDE_DIR})
-LINK_DIRECTORIES(${HDF5_LIBRARY_DIRS})
 
 #-------------------------------------------------------------------------------
 
