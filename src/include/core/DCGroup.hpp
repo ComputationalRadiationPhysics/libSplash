@@ -65,8 +65,8 @@ namespace DCollector
 
         H5Handle getHandle();
 
-        static void getEntriesInternal(H5Handle base, std::string baseName,
-                VisitObjCBType *param) throw (DCException);
+        static void getEntriesInternal(H5Handle base, const std::string baseGroup,
+                std::string baseName, VisitObjCBType *param) throw (DCException);
 
     protected:
         bool checkExistence;

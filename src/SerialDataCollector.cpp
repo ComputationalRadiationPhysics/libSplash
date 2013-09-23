@@ -1069,7 +1069,7 @@ namespace DCollector
         param.count = 0;
         param.entries = entries;
 
-        DCGroup::getEntriesInternal(group.getHandle(), group_id_name.str(), &param);
+        DCGroup::getEntriesInternal(group.getHandle(), group_id_name.str(), "", &param);
 
         if (count)
             *count = param.count;

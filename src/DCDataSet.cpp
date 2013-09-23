@@ -46,7 +46,7 @@ namespace DCollector
     {
         std::string::size_type pos = fullName.find_last_of('/');
 
-        if (pos == std::string::npos)
+        if (pos == std::string::npos || (pos == fullName.size() - 1))
         {
             path = "";
             name = fullName;

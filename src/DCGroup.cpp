@@ -153,8 +153,8 @@ namespace DCollector
             return INVALID_HANDLE;
     }
     
-    void DCGroup::getEntriesInternal(H5Handle base, std::string baseName,
-            VisitObjCBType *param)
+    void DCGroup::getEntriesInternal(H5Handle base, const std::string baseGroup,
+            std::string baseName, VisitObjCBType *param)
     throw (DCException)
     {
         H5G_info_t group_info;
@@ -163,6 +163,7 @@ namespace DCollector
         for (size_t i = 0; i < group_info.nlinks; ++i)
         {
             std::string currentBaseName = baseName;
+            std::string currentEntryName = "";
 
             H5O_info_t obj_info;
             H5Oget_info_by_idx(base, ".", H5_INDEX_NAME, H5_ITER_INC, i, &obj_info, H5P_DEFAULT);
@@ -175,21 +176,22 @@ namespace DCollector
                 H5Lget_name_by_idx(base, ".", H5_INDEX_NAME,
                         H5_ITER_INC, i, link_name_c, len_name + 1, H5P_LINK_ACCESS_DEFAULT);
 
-                currentBaseName += std::string("/") + std::string(link_name_c);
+                currentEntryName = std::string(link_name_c) + std::string("/");
+                currentBaseName += currentEntryName;
                 delete[] link_name_c;
             }
 
             if (obj_info.type == H5O_TYPE_GROUP)
             {
                 hid_t group_id = H5Oopen_by_idx(base, ".", H5_INDEX_NAME, H5_ITER_INC, i, H5P_DEFAULT);
-                getEntriesInternal(group_id, currentBaseName, param);
+                getEntriesInternal(group_id, baseGroup, currentBaseName, param);
                 H5Oclose(group_id);
             }
 
             if (obj_info.type == H5O_TYPE_DATASET)
             {
                 if (param->entries)
-                    param->entries[param->count].name = currentBaseName;
+                    param->entries[param->count].name = currentEntryName;
 
                 param->count++;
             }

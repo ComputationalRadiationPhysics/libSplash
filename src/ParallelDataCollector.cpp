@@ -260,7 +260,7 @@ throw (DCException)
     param.count = 0;
     param.entries = entries;
 
-    DCParallelGroup::getEntriesInternal(group.getHandle(), group_id_name.str(), &param);
+    DCParallelGroup::getEntriesInternal(group.getHandle(), group_id_name.str(), "", &param);
 
     if (count)
         *count = param.count;
