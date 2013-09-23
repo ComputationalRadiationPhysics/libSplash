@@ -21,7 +21,7 @@
 cmake_minimum_required(VERSION 2.8.5)
 
 project (domain_read)
-set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}")
+set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}" "$ENV{HDF5_ROOT}")
 
 SET(CMAKE_CXX_FLAGS_DEBUG "-g")
 SET(CMAKE_BUILD_TYPE Debug)
@@ -43,7 +43,6 @@ ENDFOREACH()
 # HDF5 is required
 FIND_PACKAGE(HDF5 REQUIRED)
 INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
-LINK_DIRECTORIES(${HDF5_LIBRARY_DIRS})
 SET(LIBS ${LIBS} ${HDF5_LIBRARIES})
 
 # libSplash installation is required
