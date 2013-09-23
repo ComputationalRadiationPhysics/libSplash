@@ -22,12 +22,13 @@ cmake_minimum_required(VERSION 2.8.5)
 
 IF(VAMPIR_ENABLE)
     MESSAGE("Building program with VampirTrace support")
+    SET(CMAKE_CXX_COMPILER "vtcc")
     SET(CMAKE_CXX_COMPILER "vtc++")
 ENDIF(VAMPIR_ENABLE)
 
 #-------------------------------------------------------------------------------
 
-project (libSplash)
+PROJECT(libSplash)
 
 #set helper pathes to find libraries and packages
 #- you need the multiarch dir x86_64-linux-gnu on 64bit Ubuntu's with
