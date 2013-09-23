@@ -20,6 +20,13 @@
 
 cmake_minimum_required(VERSION 2.8.5)
 
+IF(VAMPIR_ENABLE)
+    MESSAGE("Building program with VampirTrace support")
+    SET(CMAKE_CXX_COMPILER "vtc++")
+ENDIF(VAMPIR_ENABLE)
+
+#-------------------------------------------------------------------------------
+
 project (libSplash)
 
 #set helper pathes to find libraries and packages
@@ -97,21 +104,6 @@ FOREACH(class ${SPLASH_CLASSES})
     SET(LIBRARY_SOURCES "${LIBRARY_SOURCES};${CMAKE_CURRENT_SOURCE_DIR}/src/${class}.cpp")
 ENDFOREACH()
 AUX_SOURCE_DIRECTORY("${CMAKE_CURRENT_SOURCE_DIR}/tools" TOOLS_SOURCES)
-
-#-------------------------------------------------------------------------------
-
-IF(VAMPIR_ENABLE)
-    MESSAGE("Building program with VampirTrace support")
-    SET(CMAKE_CXX_COMPILER "vtc++")
-    SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} -vt:hyb -L/$ENV{VT_ROOT}/lib 
-        -finstrument-functions-exclude-file-list=${CMAKE_CXX_INST_FILE_FILTER}
-        -finstrument-functions-exclude-function-list=${CMAKE_CXX_INST_FUNC_FILTER}
-        -DVTRACE")
-    SET(CMAKE_CXX_FLAGS_DEFAULT "${CMAKE_CXX_FLAGS_DEFAULT} -vt:hyb -L/$ENV{VT_ROOT}/lib
-        -finstrument-functions-exclude-file-list=${CMAKE_CXX_INST_FILE_FILTER}
-        -finstrument-functions-exclude-function-list=${CMAKE_CXX_INST_FUNC_FILTER}
-        -DVTRACE")
-ENDIF(VAMPIR_ENABLE)
 
 #-------------------------------------------------------------------------------
 
