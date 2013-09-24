@@ -119,9 +119,12 @@ namespace DCollector
         // we can just open the last MPI position to get the total size.
         Dimensions mpi_position(mpi_size[0] - 1, mpi_size[1] - 1, mpi_size[2] - 1);
 
+        uint32_t subdomain_rank;
         Dimensions subdomain_size;
         Dimensions subdomain_start;
 
+        readAttribute(id, name, DOMCOL_ATTR_RANK,
+                &subdomain_rank, &mpi_position);
         readAttribute(id, name, DOMCOL_ATTR_SIZE,
                 subdomain_size.getPointer(), &mpi_position);
         readAttribute(id, name, DOMCOL_ATTR_START,
@@ -135,7 +138,7 @@ namespace DCollector
         if ((fileStatus == FST_MERGING) && (offset.getDimSize() != 0))
             throw DCException("DomainCollector::getTotalDomain: Invalid offset for total domain (must be (0, 0, 0) )");
 
-        Domain domain(offset, total_size - offset);
+        Domain domain(subdomain_rank, offset, total_size - offset);
         return domain;
     }
 
@@ -147,13 +150,19 @@ namespace DCollector
             Dimensions requestSize,
             Domain &fileDomain)
     {
-        Domain request_domain(requestOffset, requestSize);
+        uint32_t file_rank;
+
+        readAttribute(id, name, DOMCOL_ATTR_RANK,
+                &file_rank, &mpiPosition);
 
         readAttribute(id, name, DOMCOL_ATTR_START,
                 fileDomain.getStart().getPointer(), &mpiPosition);
 
         readAttribute(id, name, DOMCOL_ATTR_SIZE,
                 fileDomain.getSize().getPointer(), &mpiPosition);
+
+        Domain request_domain(file_rank, requestOffset, requestSize);
+        fileDomain.setRank(file_rank);
 
         return testIntersection(request_domain, fileDomain);
     }
@@ -173,14 +182,21 @@ namespace DCollector
 #endif
 
         bool readResult = false;
-        Domain request_domain(requestOffset, requestSize);
 
+        uint32_t client_domain_rank;
         Domain client_domain;
+
+        readAttribute(id, name, DOMCOL_ATTR_RANK,
+                &client_domain_rank, &mpiPosition);
+
         readAttribute(id, name, DOMCOL_ATTR_START,
                 client_domain.getStart().getPointer(), &mpiPosition);
 
         readAttribute(id, name, DOMCOL_ATTR_SIZE,
                 client_domain.getSize().getPointer(), &mpiPosition);
+
+        client_domain.setRank(client_domain_rank);
+        Domain request_domain(client_domain_rank, requestOffset, requestSize);
 
         Dimensions data_elements;
         readAttribute(id, name, DOMCOL_ATTR_ELEMENTS,
@@ -607,12 +623,12 @@ namespace DCollector
             const Dimensions domainOffset,
             const Dimensions domainSize,
             DomDataClass dataClass,
-            const void* data)
+            const void* buf)
     throw (DCException)
     {
 
         writeDomain(id, type, rank, srcData, Dimensions(1, 1, 1), srcData,
-                Dimensions(0, 0, 0), name, domainOffset, domainSize, dataClass, data);
+                Dimensions(0, 0, 0), name, domainOffset, domainSize, dataClass, buf);
     }
 
     void DomainCollector::writeDomain(int32_t id,
@@ -625,12 +641,12 @@ namespace DCollector
             const Dimensions domainOffset,
             const Dimensions domainSize,
             DomDataClass dataClass,
-            const void* data)
+            const void* buf)
     throw (DCException)
     {
 
         writeDomain(id, type, rank, srcBuffer, Dimensions(1, 1, 1), srcData, srcOffset,
-                name, domainOffset, domainSize, dataClass, data);
+                name, domainOffset, domainSize, dataClass, buf);
     }
 
     void DomainCollector::writeDomain(int32_t id,
@@ -644,15 +660,16 @@ namespace DCollector
             const Dimensions domainOffset,
             const Dimensions domainSize,
             DomDataClass dataClass,
-            const void* data)
+            const void* buf)
     throw (DCException)
     {
         ColTypeDim dim_t;
         ColTypeInt int_t;
 
-        write(id, type, rank, srcBuffer, srcStride, srcData, srcOffset, name, data);
+        write(id, type, rank, srcBuffer, srcStride, srcData, srcOffset, name, buf);
 
         writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
+        writeAttribute(id, int_t, name, DOMCOL_ATTR_RANK, &rank);
         writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, domainSize.getPointer());
         writeAttribute(id, dim_t, name, DOMCOL_ATTR_START, domainOffset.getPointer());
         writeAttribute(id, dim_t, name, DOMCOL_ATTR_ELEMENTS, srcData.getPointer());
@@ -664,10 +681,10 @@ namespace DCollector
             const char* name,
             const Dimensions domainOffset,
             const Dimensions domainSize,
-            const void* data)
+            const void* buf)
     throw (DCException)
     {
-        appendDomain(id, type, count, 0, 1, name, domainOffset, domainSize, data);
+        appendDomain(id, type, count, 0, 1, name, domainOffset, domainSize, buf);
     }
 
     void DomainCollector::appendDomain(int32_t id,
@@ -678,13 +695,14 @@ namespace DCollector
             const char* name,
             const Dimensions domainOffset,
             const Dimensions domainSize,
-            const void* data)
+            const void* buf)
     throw (DCException)
     {
         ColTypeDim dim_t;
         ColTypeInt int_t;
         DomDataClass data_class = PolyType;
         Dimensions elements(1, 1, 1);
+        uint32_t rank = 1;
 
         // temporarly change file access status to allow read access
         FileStatusType old_file_status = fileStatus;
@@ -704,9 +722,10 @@ namespace DCollector
 
         elements[0] = elements[0] + count;
 
-        append(id, type, count, offset, striding, name, data);
+        append(id, type, count, offset, striding, name, buf);
 
         writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &data_class);
+        writeAttribute(id, int_t, name, DOMCOL_ATTR_RANK, &rank);
         writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, domainSize.getPointer());
         writeAttribute(id, dim_t, name, DOMCOL_ATTR_START, domainOffset.getPointer());
         writeAttribute(id, dim_t, name, DOMCOL_ATTR_ELEMENTS, elements.getPointer());

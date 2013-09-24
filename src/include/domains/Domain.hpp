@@ -26,6 +26,7 @@
 
 #include <string>
 #include <sstream>
+#include <stdint.h>
 
 #include "Dimensions.hpp"
 
@@ -41,11 +42,12 @@ namespace DCollector
     public:
 
         /**
-         * Constructor.
+         * Default constructor.
          */
-        Domain(void) :
+        Domain() :
         start(0, 0, 0),
-        size(1, 1, 1)
+        size(1, 1, 1),
+        rank(3)
         {
 
         }
@@ -53,12 +55,27 @@ namespace DCollector
         /**
          * Constructor.
          * 
-         * @param start start/offset of this domain in the parent domain
-         * @param size extent of this domain in every dimension
+         * @param rank Number of dimensions (1-3).
          */
-        Domain(Dimensions start, Dimensions size) :
+        Domain(uint32_t rank) :
+        start(0, 0, 0),
+        size(1, 1, 1),
+        rank(rank)
+        {
+
+        }
+
+        /**
+         * Constructor.
+         * 
+         * @param rank Number of dimensions (1-3).
+         * @param start Start/offset of this domain in the parent domain.
+         * @param size Size of this domain in every dimension.
+         */
+        Domain(uint32_t rank, Dimensions start, Dimensions size) :
         start(start),
-        size(size)
+        size(size),
+        rank(rank)
         {
 
         }
@@ -72,15 +89,40 @@ namespace DCollector
         }
 
         /**
-         * Returns the extent of this domain in every dimension.
+         * Returns the number of dimensions of this domain.
          * 
-         * @return extent of this domain
+         * @return Number of dimensions (1-3).
+         */
+        uint32_t getRank() const
+        {
+            return rank;
+        }
+
+        /**
+         * Sets the number of dimensions of this domain.
+         * 
+         * @param rank New number of dimensions (1-3).
+         */
+        void setRank(uint32_t rank)
+        {
+            this->rank = rank;
+        }
+
+        /**
+         * Returns the size of this domain in every dimension.
+         * 
+         * @return Size of this domain.
          */
         Dimensions &getSize()
         {
             return size;
         }
 
+        /**
+         * Returns the size of this domain in every dimension.
+         * 
+         * @return Size of this domain.
+         */
         const Dimensions getSize() const
         {
             return size;
@@ -89,13 +131,18 @@ namespace DCollector
         /**
          * Returns the start/offset of this domain in the parent domain.
          * 
-         * @return start of this domain
+         * @return Start of this domain.
          */
         Dimensions &getStart()
         {
             return start;
         }
 
+        /**
+         * Returns the start/offset of this domain in the parent domain.
+         * 
+         * @return Start of this domain.
+         */
         const Dimensions getStart() const
         {
             return start;
@@ -104,7 +151,7 @@ namespace DCollector
         /**
          * Returns last element of this domain.
          * 
-         * @return last element
+         * @return Last element.
          */
         Dimensions getEnd() const
         {
@@ -121,8 +168,12 @@ namespace DCollector
             return !(*this == other);
         }
 
-        
-        std::string toString()
+        /**
+         * Returns a string representation.
+         * 
+         * @return String representation.
+         */
+        std::string toString() const
         {
             std::stringstream stream;
             stream << "(start: " << start.toString() << ", size: " << size.toString() << ")";
@@ -132,6 +183,7 @@ namespace DCollector
     protected:
         Dimensions start;
         Dimensions size;
+        uint32_t rank;
     };
 
 }
