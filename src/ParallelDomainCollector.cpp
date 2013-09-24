@@ -561,6 +561,7 @@ throw (DCException)
             srcData, srcOffset, name, data);
 
     writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
+    writeAttribute(id, int_t, name, DOMCOL_ATTR_RANK, &rank);
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, globalDomainSize.getPointer());
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_START, globalDomainOffset.getPointer());
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_ELEMENTS, globalSize.getPointer());
@@ -582,6 +583,7 @@ throw (DCException)
     reserve(id, globalSize, rank, type, name);
 
     writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
+    writeAttribute(id, int_t, name, DOMCOL_ATTR_RANK, &rank);
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, domainSize.getPointer());
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_START, domainOffset.getPointer());
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_ELEMENTS, globalSize.getPointer());
@@ -608,6 +610,7 @@ throw (DCException)
     reserve(id, size, globalSize, globalOffset, rank, type, name);
 
     writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
+    writeAttribute(id, int_t, name, DOMCOL_ATTR_RANK, &rank);
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, globalDomainSize.getPointer());
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_START, globalDomainOffset.getPointer());
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_ELEMENTS, globalSize->getPointer());
