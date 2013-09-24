@@ -20,8 +20,19 @@
 
 cmake_minimum_required(VERSION 2.8.5)
 
-project (domain_read)
-set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}" "$ENV{HDF5_ROOT}")
+IF(VAMPIR_ENABLE)
+    MESSAGE("Building examples with VampirTrace support")
+    SET(CMAKE_C_COMPILER "vtcc")
+    SET(CMAKE_CXX_COMPILER "vtc++")
+ENDIF(VAMPIR_ENABLE)
+
+#-------------------------------------------------------------------------------
+
+PROJECT(splash-examples)
+
+#-------------------------------------------------------------------------------
+
+SET(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}" "$ENV{HDF5_ROOT}")
 
 SET(CMAKE_CXX_FLAGS_DEBUG "-g")
 SET(CMAKE_BUILD_TYPE Debug)
@@ -47,14 +58,21 @@ SET(LIBS ${LIBS} ${HDF5_LIBRARIES})
 
 # libSplash installation is required
 find_path(SPLASH_ROOT_DIR
-  NAMES include/sdc_defines.hpp lib/libsplash.a
+  NAMES include/splash.h lib/libsplash.a
   PATHS ENV SPLASH_ROOT
   DOC "libSplash ROOT location"
 )
-
 INCLUDE_DIRECTORIES("${SPLASH_ROOT_DIR}/include")
-LINK_DIRECTORIES("${SPLASH_ROOT_DIR}/lib")
-SET(LIBS ${LIBS} splash)
+
+# link static
+ADD_LIBRARY(splash_static STATIC IMPORTED)
+SET_TARGET_PROPERTIES(splash_static PROPERTIES 
+	IMPORTED_LOCATION "${SPLASH_ROOT_DIR}/lib/libsplash.a")
+SET(LIBS splash_static ${LIBS})
+
+# link dynamic
+#LINK_DIRECTORIES("${SPLASH_ROOT_DIR}/lib")
+#SET(LIBS ${LIBS} splash)
 
 # MPI
 IF(WITH_MPI OR HDF5_IS_PARALLEL)

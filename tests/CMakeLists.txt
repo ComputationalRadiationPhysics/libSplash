@@ -20,7 +20,11 @@
 
 cmake_minimum_required(VERSION 2.8.5)
 
+#-------------------------------------------------------------------------------
+
 PROJECT(splash-tests)
+
+#-------------------------------------------------------------------------------
 
 SET(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}" "$ENV{HDF5_ROOT}")
 
