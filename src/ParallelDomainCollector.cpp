@@ -71,19 +71,21 @@ throw (DCException)
         throw DCException(getExceptionString("getTotalDomain",
             "this access is not permitted", NULL));
 
+    uint32_t rank;
     Dimensions size(1, 1, 1);
-    Dimensions offset(0, 0, 0);
+    Dimensions start(0, 0, 0);
 
+    readAttribute(id, name, DOMCOL_ATTR_RANK, &rank);
     readAttribute(id, name, DOMCOL_ATTR_SIZE, size.getPointer());
-    readAttribute(id, name, DOMCOL_ATTR_START, offset.getPointer());
+    readAttribute(id, name, DOMCOL_ATTR_START, start.getPointer());
 
-    if (offset.getDimSize() != 0)
+    if (start.getDimSize() != 0)
     {
         throw DCException(getExceptionString("getTotalDomain",
                 "Invalid offset for total domain (must be (0, 0, 0) )", NULL));
     }
 
-    Domain domain(offset, size);
+    Domain domain(rank, start, size);
 
     return domain;
 }
@@ -98,11 +100,15 @@ bool ParallelDomainCollector::readDomainDataForRank(
         bool lazyLoad)
 throw (DCException)
 {
-    Domain request_domain(requestOffset, requestSize);
-
+    uint32_t client_domain_rank;
     Domain client_domain;
+
+    readAttribute(id, name, DOMCOL_ATTR_RANK, &client_domain_rank);
     readAttribute(id, name, DOMCOL_ATTR_START, client_domain.getStart().getPointer());
     readAttribute(id, name, DOMCOL_ATTR_SIZE, client_domain.getSize().getPointer());
+
+    client_domain.setRank(client_domain_rank);
+    Domain request_domain(client_domain_rank, requestOffset, requestSize);
 
     Dimensions data_elements;
     readAttribute(id, name, DOMCOL_ATTR_ELEMENTS, data_elements.getPointer());

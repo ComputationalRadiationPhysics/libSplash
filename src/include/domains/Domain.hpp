@@ -42,6 +42,17 @@ namespace DCollector
     public:
 
         /**
+         * Default constructor.
+         */
+        Domain() :
+        start(0, 0, 0),
+        size(1, 1, 1),
+        rank(3)
+        {
+
+        }
+
+        /**
          * Constructor.
          * 
          * @param rank Number of dimensions (1-3).
@@ -49,7 +60,7 @@ namespace DCollector
         Domain(uint32_t rank) :
         start(0, 0, 0),
         size(1, 1, 1),
-                rank(rank)
+        rank(rank)
         {
 
         }
@@ -76,7 +87,7 @@ namespace DCollector
         {
 
         }
-        
+
         /**
          * Returns the number of dimensions of this domain.
          * 
@@ -85,6 +96,16 @@ namespace DCollector
         uint32_t getRank() const
         {
             return rank;
+        }
+
+        /**
+         * Sets the number of dimensions of this domain.
+         * 
+         * @param rank New number of dimensions (1-3).
+         */
+        void setRank(uint32_t rank)
+        {
+            this->rank = rank;
         }
 
         /**

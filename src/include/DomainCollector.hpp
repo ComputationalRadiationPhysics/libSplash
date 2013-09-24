@@ -83,7 +83,7 @@ namespace DCollector
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
                 DomDataClass dataClass,
-                const void* data) throw (DCException);
+                const void* buf) throw (DCException);
 
         void writeDomain(int32_t id,
                 const CollectionType& type,
@@ -95,7 +95,7 @@ namespace DCollector
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
                 DomDataClass dataClass,
-                const void* data) throw (DCException);
+                const void* buf) throw (DCException);
 
         void writeDomain(int32_t id,
                 const CollectionType& type,
@@ -108,7 +108,7 @@ namespace DCollector
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
                 DomDataClass dataClass,
-                const void* data) throw (DCException);
+                const void* buf) throw (DCException);
 
         void appendDomain(int32_t id,
                 const CollectionType& type,
@@ -116,7 +116,7 @@ namespace DCollector
                 const char *name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
-                const void *data) throw (DCException);
+                const void *buf) throw (DCException);
 
         void appendDomain(int32_t id,
                 const CollectionType& type,
@@ -126,7 +126,7 @@ namespace DCollector
                 const char *name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
-                const void *data) throw (DCException);
+                const void *buf) throw (DCException);
 
     protected:
         bool readDomainInfoForRank(
