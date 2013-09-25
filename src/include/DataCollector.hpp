@@ -188,14 +188,14 @@ namespace DCollector
          *
          * @param id ID for iteration.
          * @param type Type information for data.
-         * @param rank Number of dimensions (1-3).
+         * @param ndims Number of dimensions (1-3).
          * @param srcData Size of local buffer for to read from. 
          * @param name Name for the dataset.
          * @param buf Buffer for writing.
          */
         virtual void write(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcData,
                 const char* name,
                 const void* buf) = 0;
@@ -205,7 +205,7 @@ namespace DCollector
          *
          * @param id ID for iteration.
          * @param type Type information for data.
-         * @param rank Number of dimensions (1-3).
+         * @param ndims Number of dimensions (1-3).
          * @param srcBuffer dimensions of memory buffer
          * @param srcData intended 3D dimension for dataset
          * @param srcOffset offset of dataset in memory buffer
@@ -214,7 +214,7 @@ namespace DCollector
          */
         virtual void write(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcData,
                 const Dimensions srcOffset,
@@ -226,7 +226,7 @@ namespace DCollector
          *
          * @param id ID for iteration.
          * @param type Type information for data.
-         * @param rank Number of dimensions (1-3).
+         * @param ndims Number of dimensions (1-3).
          * @param srcBuffer Size of buffer for to read from.
          * @param srcStride Striding to be used for reading from
          * \p srcBuffer in each dimension. 1 means 'no stride'.
@@ -237,7 +237,7 @@ namespace DCollector
          */
         virtual void write(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcStride,
                 const Dimensions srcData,
@@ -400,13 +400,11 @@ namespace DCollector
          * the destination buffer (\p buf) must be allocated already.
          *
          * @param id ID for iteration.
-         * @param type Type information for data.
          * @param name Name for the dataset.
          * @param sizeRead Returns the size of the data in the file.
          * @param buf Buffer to read from file, can be NULL.
          */
         virtual void read(int32_t id,
-                const CollectionType& type,
                 const char* name,
                 Dimensions &sizeRead,
                 void* buf) = 0;
@@ -417,7 +415,6 @@ namespace DCollector
          * the destination buffer (\p buf) must be allocated already.
          *
          * @param id ID for iteration.
-         * @param type Type information for data.
          * @param name Name for the dataset.
          * @param dstBuffer Size of the buffer \p buf to read to.
          * @param dstOffset Offset in destination buffer to read to.
@@ -425,7 +422,6 @@ namespace DCollector
          * @param buf Buffer to read from file, can be NULL.
          */
         virtual void read(int32_t id,
-                const CollectionType& type,
                 const char* name,
                 const Dimensions dstBuffer,
                 const Dimensions dstOffset,

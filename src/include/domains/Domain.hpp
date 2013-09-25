@@ -45,9 +45,8 @@ namespace DCollector
          * Default constructor.
          */
         Domain() :
-        start(0, 0, 0),
-        size(1, 1, 1),
-        rank(3)
+        offset(0, 0, 0),
+        size(1, 1, 1)
         {
 
         }
@@ -55,27 +54,12 @@ namespace DCollector
         /**
          * Constructor.
          * 
-         * @param rank Number of dimensions (1-3).
-         */
-        Domain(uint32_t rank) :
-        start(0, 0, 0),
-        size(1, 1, 1),
-        rank(rank)
-        {
-
-        }
-
-        /**
-         * Constructor.
-         * 
-         * @param rank Number of dimensions (1-3).
-         * @param start Start/offset of this domain in the parent domain.
+         * @param offset Offset of this domain in the parent domain.
          * @param size Size of this domain in every dimension.
          */
-        Domain(uint32_t rank, Dimensions start, Dimensions size) :
-        start(start),
-        size(size),
-        rank(rank)
+        Domain(Dimensions offset, Dimensions size) :
+        offset(offset),
+        size(size)
         {
 
         }
@@ -93,19 +77,9 @@ namespace DCollector
          * 
          * @return Number of dimensions (1-3).
          */
-        uint32_t getRank() const
+        uint32_t getDims() const
         {
-            return rank;
-        }
-
-        /**
-         * Sets the number of dimensions of this domain.
-         * 
-         * @param rank New number of dimensions (1-3).
-         */
-        void setRank(uint32_t rank)
-        {
-            this->rank = rank;
+            return size.getDims();
         }
 
         /**
@@ -129,38 +103,39 @@ namespace DCollector
         }
 
         /**
-         * Returns the start/offset of this domain in the parent domain.
+         * Returns the offset/offset of this domain in the parent domain.
          * 
-         * @return Start of this domain.
+         * @return Offset of this domain.
          */
-        Dimensions &getStart()
+        Dimensions &getOffset()
         {
-            return start;
+            return offset;
         }
 
         /**
-         * Returns the start/offset of this domain in the parent domain.
+         * Returns the offset/offset of this domain in the parent domain.
          * 
-         * @return Start of this domain.
+         * @return Offset of this domain.
          */
-        const Dimensions getStart() const
+        const Dimensions getOffset() const
         {
-            return start;
+            return offset;
         }
 
         /**
-         * Returns last element of this domain.
+         * Returns the end of this domain which is the combination
+         * of its offset and size.
          * 
-         * @return Last element.
+         * @return End of domain.
          */
         Dimensions getEnd() const
         {
-            return start + size - Dimensions(1, 1, 1);
+            return offset + size - Dimensions(1, 1, 1);
         }
 
         bool operator==(Domain const& other) const
         {
-            return start == other.getStart() && size == other.getSize();
+            return offset == other.getOffset() && size == other.getSize();
         }
 
         bool operator!=(Domain const& other) const
@@ -176,14 +151,36 @@ namespace DCollector
         std::string toString() const
         {
             std::stringstream stream;
-            stream << "(start: " << start.toString() << ", size: " << size.toString() << ")";
+            stream << "(offset: " << offset.toString() << ", size: " << size.toString() << ")";
             return stream.str();
+        }
+        
+        /**
+         * Tests if two domains intersect.
+         * 
+         * @param d1 First domain.
+         * @param d2 Decond domain.
+         * @return True if domains overlap, false otherwise.
+         */
+        static bool testIntersection(const Domain& d1, const Domain& d2)
+        {
+            Dimensions d1_offset = d1.getOffset();
+            Dimensions d2_offset = d2.getOffset();
+            Dimensions d1_end = d1.getEnd();
+            Dimensions d2_end = d2.getEnd();
+
+            return (d1_offset[0] <= d2_end[0] && d1_end[0] >= d2_offset[0] &&
+                    d1_offset[1] <= d2_end[1] && d1_end[1] >= d2_offset[1] &&
+                    d1_offset[2] <= d2_end[2] && d1_end[2] >= d2_offset[2]) ||
+                    (d2_offset[0] <= d1_end[0] && d2_end[0] >= d1_offset[0] &&
+                    d2_offset[1] <= d1_end[1] && d2_end[1] >= d1_offset[1] &&
+                    d2_offset[2] <= d1_end[2] && d2_end[2] >= d1_offset[2]);
         }
 
     protected:
-        Dimensions start;
+        Dimensions offset;
         Dimensions size;
-        uint32_t rank;
+        uint32_t dims;
     };
 
 }

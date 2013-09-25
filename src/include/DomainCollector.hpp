@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #ifndef DOMAINCOLLECTOR_HPP
@@ -41,7 +41,7 @@ namespace DCollector
      * 
      * The following concept is used:
      * Each process (of the MPI topology) annotates its local data with
-     * local subdomain information when writing.
+     * local and global domain information when writing.
      * When reading from these files, data from all files can be accessed transparently
      * as if in one single file. This global view uses the global domain information,
      * created from all local subdomains.
@@ -60,10 +60,16 @@ namespace DCollector
          */
         virtual ~DomainCollector();
 
-        size_t getTotalElements(int32_t id,
+        /*size_t getGlobalElements(int32_t id,
+                const char* name) throw (DCException);*/
+
+        Domain getGlobalDomain(int32_t id,
                 const char* name) throw (DCException);
 
-        Domain getTotalDomain(int32_t id,
+        /*size_t getLocalElements(int32_t id,
+                const char* name) throw (DCException);*/
+
+        Domain getLocalDomain(int32_t id,
                 const char* name) throw (DCException);
 
         DataContainer *readDomain(int32_t id,
@@ -77,7 +83,7 @@ namespace DCollector
 
         void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcData,
                 const char* name,
                 const Dimensions domainOffset,
@@ -87,7 +93,7 @@ namespace DCollector
 
         void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcData,
                 const Dimensions srcOffset,
@@ -99,7 +105,7 @@ namespace DCollector
 
         void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcStride,
                 const Dimensions srcData,
@@ -135,7 +141,7 @@ namespace DCollector
                 const char* name,
                 Dimensions requestOffset,
                 Dimensions requestSize,
-                Domain &fileDomain);
+                Domain &fileDomain) throw (DCException);
 
         bool readDomainDataForRank(
                 DataContainer *dataContainer,
@@ -145,7 +151,17 @@ namespace DCollector
                 const char* name,
                 Dimensions requestOffset,
                 Dimensions requestSize,
-                bool lazyLoad);
+                bool lazyLoad) throw (DCException);
+
+        void readGlobalSizeFallback(int32_t id,
+                const char *dataName,
+                hsize_t* data,
+                Dimensions *mpiPosition) throw (DCException);
+
+        void readGlobalOffsetFallback(int32_t id,
+                const char *dataName,
+                hsize_t* data,
+                Dimensions *mpiPosition) throw (DCException);
     };
 
 }

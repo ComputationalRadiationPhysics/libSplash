@@ -49,45 +49,42 @@ ParallelDomainCollector::~ParallelDomainCollector()
 {
 }
 
-size_t ParallelDomainCollector::getTotalElements(int32_t id,
+/*size_t ParallelDomainCollector::getGlobalElements(int32_t id,
         const char* name)
 throw (DCException)
 {
     if (this->fileStatus == FST_CLOSED)
-        throw DCException(getExceptionString("getTotalElements",
+        throw DCException(getExceptionString("getGlobalElements",
             "this access is not permitted", NULL));
 
     Dimensions total_elements;
     readAttribute(id, name, DOMCOL_ATTR_ELEMENTS, total_elements.getPointer());
 
-    return total_elements.getDimSize();
+    return total_elements.getScalarSize();
+}*/
+
+Domain ParallelDomainCollector::getGlobalDomain(int32_t id,
+        const char* name)
+throw (DCException)
+{
+    return getLocalDomain(id, name);
 }
 
-Domain ParallelDomainCollector::getTotalDomain(int32_t id,
+Domain ParallelDomainCollector::getLocalDomain(int32_t id,
         const char* name)
 throw (DCException)
 {
     if (this->fileStatus == FST_CLOSED)
-        throw DCException(getExceptionString("getTotalDomain",
+        throw DCException(getExceptionString("getLocalDomain",
             "this access is not permitted", NULL));
 
-    uint32_t rank;
     Dimensions size(1, 1, 1);
-    Dimensions start(0, 0, 0);
+    Dimensions offset(0, 0, 0);
 
-    readAttribute(id, name, DOMCOL_ATTR_RANK, &rank);
     readAttribute(id, name, DOMCOL_ATTR_SIZE, size.getPointer());
-    readAttribute(id, name, DOMCOL_ATTR_START, start.getPointer());
+    readAttribute(id, name, DOMCOL_ATTR_OFFSET, offset.getPointer());
 
-    if (start.getDimSize() != 0)
-    {
-        throw DCException(getExceptionString("getTotalDomain",
-                "Invalid offset for total domain (must be (0, 0, 0) )", NULL));
-    }
-
-    Domain domain(rank, start, size);
-
-    return domain;
+    return Domain(offset, size);
 }
 
 bool ParallelDomainCollector::readDomainDataForRank(
@@ -100,15 +97,11 @@ bool ParallelDomainCollector::readDomainDataForRank(
         bool lazyLoad)
 throw (DCException)
 {
-    uint32_t client_domain_rank;
     Domain client_domain;
+    Domain request_domain(requestOffset, requestSize);
 
-    readAttribute(id, name, DOMCOL_ATTR_RANK, &client_domain_rank);
-    readAttribute(id, name, DOMCOL_ATTR_START, client_domain.getStart().getPointer());
+    readAttribute(id, name, DOMCOL_ATTR_OFFSET, client_domain.getOffset().getPointer());
     readAttribute(id, name, DOMCOL_ATTR_SIZE, client_domain.getSize().getPointer());
-
-    client_domain.setRank(client_domain_rank);
-    Domain request_domain(client_domain_rank, requestOffset, requestSize);
 
     Dimensions data_elements;
     readAttribute(id, name, DOMCOL_ATTR_ELEMENTS, data_elements.getPointer());
@@ -136,7 +129,7 @@ throw (DCException)
 #endif
 
     // test on intersection and add new DomainData to the container if necessary
-    if (!testIntersection(request_domain, client_domain))
+    if (!Domain::testIntersection(request_domain, client_domain))
         return false;
 
     // Poly data has no internal grid structure, 
@@ -146,7 +139,7 @@ throw (DCException)
 #if (DC_DEBUG == 1)
         std::cerr << "dataclass = Poly" << std::endl;
 #endif
-        if (data_elements.getDimSize() > 0)
+        if (data_elements.getScalarSize() > 0)
         {
             std::stringstream group_id_name;
             group_id_name << SDC_GROUP_DATA << "/" << id;
@@ -274,14 +267,14 @@ throw (DCException)
         Dimensions src_size(1, 1, 1);
         Dimensions src_offset(0, 0, 0);
 
-        Dimensions client_start = client_domain.getStart();
+        Dimensions client_start = client_domain.getOffset();
         Dimensions client_size = client_domain.getSize();
 
-        size_t rank = getRank(handles.get(id), id, name);
+        size_t rank = getNDims(handles.get(id), id, name);
 
         for (uint32_t i = 0; i < rank; ++i)
         {
-            dst_offset[i] = std::max((int64_t) client_domain.getStart()[i] -
+            dst_offset[i] = std::max((int64_t) client_domain.getOffset()[i] -
                     (int64_t) requestOffset[i], (int64_t) 0);
 
             if (requestOffset[i] <= client_start[i])
@@ -321,7 +314,7 @@ throw (DCException)
         // read intersecting partition into destination buffer
         Dimensions elements_read(0, 0, 0);
         uint32_t src_rank = 0;
-        if (src_size.getDimSize() > 0)
+        if (src_size.getScalarSize() > 0)
         {
             readDataSet(handles.get(id), id, name, false,
                     dataContainer->getIndex(0)->getSize(),
@@ -561,9 +554,8 @@ throw (DCException)
             srcData, srcOffset, name, data);
 
     writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
-    writeAttribute(id, int_t, name, DOMCOL_ATTR_RANK, &rank);
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, globalDomainSize.getPointer());
-    writeAttribute(id, dim_t, name, DOMCOL_ATTR_START, globalDomainOffset.getPointer());
+    writeAttribute(id, dim_t, name, DOMCOL_ATTR_OFFSET, globalDomainOffset.getPointer());
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_ELEMENTS, globalSize.getPointer());
 }
 
@@ -583,9 +575,8 @@ throw (DCException)
     reserve(id, globalSize, rank, type, name);
 
     writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
-    writeAttribute(id, int_t, name, DOMCOL_ATTR_RANK, &rank);
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, domainSize.getPointer());
-    writeAttribute(id, dim_t, name, DOMCOL_ATTR_START, domainOffset.getPointer());
+    writeAttribute(id, dim_t, name, DOMCOL_ATTR_OFFSET, domainOffset.getPointer());
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_ELEMENTS, globalSize.getPointer());
 }
 
@@ -610,9 +601,8 @@ throw (DCException)
     reserve(id, size, globalSize, globalOffset, rank, type, name);
 
     writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
-    writeAttribute(id, int_t, name, DOMCOL_ATTR_RANK, &rank);
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, globalDomainSize.getPointer());
-    writeAttribute(id, dim_t, name, DOMCOL_ATTR_START, globalDomainOffset.getPointer());
+    writeAttribute(id, dim_t, name, DOMCOL_ATTR_OFFSET, globalDomainOffset.getPointer());
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_ELEMENTS, globalSize->getPointer());
 }
 

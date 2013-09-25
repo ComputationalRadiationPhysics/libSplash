@@ -76,7 +76,7 @@ namespace DCollector
         datatype(datatype),
         datatypeSize(datatypeSize)
         {
-            data = new uint8_t[datatypeSize * elements.getDimSize()];
+            data = new uint8_t[datatypeSize * elements.getScalarSize()];
             assert(data != NULL);
         }
 

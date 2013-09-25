@@ -109,21 +109,21 @@ void Parallel_RemoveTest::testRemove()
     
     int *dataRead = new int[bufferSize];
     
-    dataCollector->read(0, ctInt, "data", gridSize, dataRead);
+    dataCollector->read(0, "data", gridSize, dataRead);
     dataCollector->remove(0, "data");
-    CPPUNIT_ASSERT_THROW(dataCollector->read(0, ctInt, "data", gridSize, dataRead),
+    CPPUNIT_ASSERT_THROW(dataCollector->read(0, "data", gridSize, dataRead),
             DCException);
     
-    dataCollector->read(0, ctInt, "folder/data2", gridSize, dataRead);
+    dataCollector->read(0, "folder/data2", gridSize, dataRead);
     dataCollector->remove(0, "folder/data2");
-    CPPUNIT_ASSERT_THROW(dataCollector->read(0, ctInt, "data2", gridSize, dataRead),
+    CPPUNIT_ASSERT_THROW(dataCollector->read(0, "data2", gridSize, dataRead),
             DCException);
-    CPPUNIT_ASSERT_THROW(dataCollector->read(0, ctInt, "folder/data2", gridSize, dataRead),
+    CPPUNIT_ASSERT_THROW(dataCollector->read(0, "folder/data2", gridSize, dataRead),
             DCException);
     
-    dataCollector->read(1, ctInt, "data3", gridSize, dataRead);
+    dataCollector->read(1, "data3", gridSize, dataRead);
     dataCollector->remove(1);
-    CPPUNIT_ASSERT_THROW(dataCollector->read(1, ctInt, "data3", gridSize, dataRead),
+    CPPUNIT_ASSERT_THROW(dataCollector->read(1, "data3", gridSize, dataRead),
             DCException);
     
     delete[] dataRead;

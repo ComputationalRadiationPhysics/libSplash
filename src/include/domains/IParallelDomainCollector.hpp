@@ -40,7 +40,7 @@ namespace DCollector
          */
         virtual void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t dims,
                 const Dimensions srcData,
                 const char* name,
                 const Dimensions domainOffset,
@@ -58,7 +58,7 @@ namespace DCollector
          */
         virtual void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t dims,
                 const Dimensions srcBuffer,
                 const Dimensions srcData,
                 const Dimensions srcOffset,
@@ -78,7 +78,7 @@ namespace DCollector
          */
         virtual void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t dims,
                 const Dimensions srcBuffer,
                 const Dimensions srcStride,
                 const Dimensions srcData,
@@ -96,7 +96,7 @@ namespace DCollector
          * @param globalSize dimensions for global collective buffer
          * @param globalOffset 3D-offset in the globalSize-buffer this process writes to
          * @param type type information for data
-         * @param rank number of dimensions (1-3) of the data
+         * @param dims number of dimensions (1-3) of the data
          * @param srcData dimensions of the data in the buffer
          * @param name name of the dataset
          * @param globalDomainOffset global offset of this domain
@@ -108,7 +108,7 @@ namespace DCollector
                 const Dimensions globalSize,
                 const Dimensions globalOffset,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t dims,
                 const Dimensions srcData,
                 const char* name,
                 const Dimensions globalDomainOffset,
@@ -123,7 +123,7 @@ namespace DCollector
          * @param globalSize dimensions for global collective buffer
          * @param globalOffset 3D-offset in the globalSize-buffer this process writes to
          * @param type type information for data
-         * @param rank number of dimensions (1-3) of the data
+         * @param dims number of dimensions (1-3) of the data
          * @param srcBuffer dimensions of the buffer to read from
          * @param srcData dimensions of the data in the buffer
          * @param srcOffset offset of srcData in srcBuffer
@@ -137,7 +137,7 @@ namespace DCollector
                 const Dimensions globalSize,
                 const Dimensions globalOffset,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t dims,
                 const Dimensions srcBuffer,
                 const Dimensions srcData,
                 const Dimensions srcOffset,
@@ -154,7 +154,7 @@ namespace DCollector
          * @param globalSize dimensions for global collective buffer
          * @param globalOffset 3D-offset in the globalSize-buffer this process writes to
          * @param type type information for data
-         * @param rank number of dimensions (1-3) of the data
+         * @param dims number of dimensions (1-3) of the data
          * @param srcBuffer dimensions of the buffer to read from
          * @param srcStride sizeof striding in each dimension. 1 means 'no stride'
          * @param srcData dimensions of the data in the buffer
@@ -169,7 +169,7 @@ namespace DCollector
                 const Dimensions globalSize,
                 const Dimensions globalOffset,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t dims,
                 const Dimensions srcBuffer,
                 const Dimensions srcStride,
                 const Dimensions srcData,
@@ -185,7 +185,7 @@ namespace DCollector
          * 
          * @param id ID for iteration.
          * @param globalSize Global size for reserved dataset.
-         * @param rank Number of dimensions (1-3).
+         * @param dims Number of dimensions (1-3).
          * @param type Type information for data.
          * @param name Name for the dataset.
          * @param domainOffset Global domain offset.
@@ -194,7 +194,7 @@ namespace DCollector
          */
         virtual void reserveDomain(int32_t id,
                 const Dimensions globalSize,
-                uint32_t rank,
+                uint32_t dims,
                 const CollectionType& type,
                 const char* name,
                 const Dimensions domainOffset,
@@ -212,7 +212,7 @@ namespace DCollector
          * @param size Global size for reserved dataset.
          * @param globalSize Returns the global size of the dataset, can be NULL.
          * @param globalOffset Returns the global offset for the calling process, can be NULL.
-         * @param rank Number of dimensions (1-3).
+         * @param dims Number of dimensions (1-3).
          * @param type Type information for data.
          * @param name Name for the dataset.
          * @param domainOffset Offset of this local subdomain in the global domain.
@@ -223,7 +223,7 @@ namespace DCollector
                 const Dimensions size,
                 Dimensions *globalSize,
                 Dimensions *globalOffset,
-                uint32_t rank,
+                uint32_t dims,
                 const CollectionType& type,
                 const char* name,
                 const Dimensions domainOffset,

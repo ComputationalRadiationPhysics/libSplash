@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #ifndef DATACONTAINER_HPP
@@ -35,6 +35,7 @@ namespace DCollector
 
     /**
      * Container for storing domain-annotated data representing a specific subdomain.
+     * The container contains information on the specific subdomain and its global domain.
      * This should regularly not be constructed by a user but internally, only.
      */
     class DataContainer
@@ -44,35 +45,48 @@ namespace DCollector
         /**
          * Constructor.
          */
-        DataContainer()
+        DataContainer() :
+        offset(0, 0, 0),
+        size(1, 1, 1)
         {
-            size.set(1, 1, 1);
         }
 
         /**
          * Destructor.
+         * 
+         * Deletes all subdomains it contains.
          */
         virtual ~DataContainer()
         {
             for (std::vector<DomainData* >::iterator iter = subdomains.begin();
                     iter != subdomains.end(); ++iter)
+            {
                 if (*iter != NULL)
                     delete (*iter);
+            }
 
             subdomains.clear();
         }
 
+        /**
+         * Internal use only!
+         */
         void add(DomainData* entry)
         {
             if (entry == NULL)
                 throw DCException("Entry in DataContainer must not be NULL.");
-            
+
             if (entry->getData() == NULL)
                 throw DCException("Data in entry in DataContainer must not be NULL.");
 
+            const Dimensions &entryOffset = entry->getOffset();
+            const Dimensions entryEnd = entry->getEnd();
+            
             for (uint32_t i = 0; i < 3; ++i)
-                if (entry->getEnd()[i] > size[i])
-                    size[i] = entry->getEnd()[i] + 1;
+            {
+                offset[i] = std::min(entryOffset[i], offset[i]);
+                size[i] = std::max(entryEnd[i] - offset[i], size[i]);
+            }
 
             subdomains.push_back(entry);
         }
@@ -80,7 +94,7 @@ namespace DCollector
         /**
          * Returns the number of subdomain partitions in the container.
          * 
-         * @return number of subdomain partitions
+         * @return Number of subdomain partitions.
          */
         size_t getNumSubdomains()
         {
@@ -98,7 +112,9 @@ namespace DCollector
 
             for (std::vector<DomainData* >::const_iterator iter = subdomains.begin();
                     iter != subdomains.end(); ++iter)
-                num_elements += (*iter)->getElements().getDimSize();
+            {
+                num_elements += (*iter)->getElements().getScalarSize();
+            }
 
             return num_elements;
         }
@@ -108,9 +124,30 @@ namespace DCollector
          * 
          * @return Size of total domain partition in this container.
          */
-        Dimensions getSize()
+        Dimensions getSize() const
         {
             return size;
+        }
+        
+        /**
+         * Returns the offset of the partition represented by this container.
+         * 
+         * @return Offset of total domain partition in this container.
+         */
+        Dimensions getOffset() const
+        {
+            return offset;
+        }
+        
+        /**
+         * Returns the end of the partition represented by this container
+         * which is the combination of its offset and size.
+         * 
+         * @return End of total domain partition in this container.
+         */
+        Dimensions getEnd() const
+        {
+            return offset + size;
         }
 
         /**
@@ -189,20 +226,19 @@ namespace DCollector
             for (size_t i = 0; i < subdomains.size(); ++i)
             {
                 DomainData *subdomain = subdomains[i];
-                size_t subdomain_elements = subdomain->getElements().getDimSize();
+                size_t subdomain_elements = subdomain->getElements().getScalarSize();
 
                 if (elements + subdomain_elements > index)
                 {
                     size_t type_size = subdomain->getTypeSize();
                     size_t local_index = index - elements;
-                    
+
                     assert(subdomain->getData() != NULL);
                     if (subdomain->getData() == NULL)
                         return NULL;
 
-                    return (((uint8_t*)(subdomain->getData())) + (type_size * local_index));
-                }
-                else
+                    return (((uint8_t*) (subdomain->getData())) + (type_size * local_index));
+                } else
                     elements += subdomain_elements;
             }
 
@@ -211,6 +247,7 @@ namespace DCollector
 
     private:
         std::vector<DomainData* > subdomains;
+        Dimensions offset;
         Dimensions size;
     };
 

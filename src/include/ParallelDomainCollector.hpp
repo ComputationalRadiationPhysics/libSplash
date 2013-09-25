@@ -60,10 +60,13 @@ namespace DCollector
          */
         virtual ~ParallelDomainCollector();
 
-        size_t getTotalElements(int32_t id,
-                const char* name) throw (DCException);
+        /*size_t getGlobalElements(int32_t id,
+                const char* name) throw (DCException);*/
 
-        Domain getTotalDomain(int32_t id,
+        Domain getGlobalDomain(int32_t id,
+                const char* name) throw (DCException);
+        
+        Domain getLocalDomain(int32_t id,
                 const char* name) throw (DCException);
 
         DataContainer *readDomain(int32_t id,

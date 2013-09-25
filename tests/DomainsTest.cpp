@@ -79,14 +79,14 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
     if (mpi_rank < max_rank)
     {
         // write data
-        int *data_write = new int[gridSize.getDimSize()];
+        int *data_write = new int[gridSize.getScalarSize()];
 
         // initialize data for writing with mpi index (mpi rank)
         Dimensions mpi_position(mpi_rank % mpiSize[0],
                 (mpi_rank / mpiSize[0]) % mpiSize[1],
                 (mpi_rank / mpiSize[0]) / mpiSize[1]);
 
-        for (size_t i = 0; i < gridSize.getDimSize(); ++i)
+        for (size_t i = 0; i < gridSize.getScalarSize(); ++i)
             data_write[i] = mpi_rank;
 
         DataCollector::FileCreationAttr fattr;
@@ -109,7 +109,7 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
 
         dataCollector->close();
         
-        int *data_read = new int[gridSize.getDimSize()];
+        int *data_read = new int[gridSize.getScalarSize()];
         fattr.fileAccType = DataCollector::FAT_READ;
         
         dataCollector->open(hdf5_file_grid, fattr);
@@ -120,9 +120,9 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
         
         CPPUNIT_ASSERT(container != NULL);
         CPPUNIT_ASSERT(container->getNumSubdomains() == 1);
-        CPPUNIT_ASSERT(container->getNumElements() == gridSize.getDimSize());
+        CPPUNIT_ASSERT(container->getNumElements() == gridSize.getScalarSize());
         
-        for (size_t i = 0; i < gridSize.getDimSize(); ++i)
+        for (size_t i = 0; i < gridSize.getScalarSize(); ++i)
             CPPUNIT_ASSERT(*((int*)(container->getElement(i))) == mpi_rank);
         
         delete container;
@@ -143,15 +143,11 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
         fattr.mpiSize = mpiSize;
         dataCollector->open(hdf5_file_grid, fattr);
 
-        size_t global_domain_elements = dataCollector->getTotalElements(iteration, "grid_data");
         Dimensions global_grid_size = mpiSize * gridSize;
 
 #if defined TESTS_DEBUG
-        std::cout << "global_domain_elements = " << global_domain_elements << std::endl;
         std::cout << "global_grid_size = " << global_grid_size.toString() << std::endl;
 #endif
-
-        CPPUNIT_ASSERT(global_domain_elements == global_grid_size.getDimSize());
 
         // test different domain offsets
         for (uint32_t i = 0; i < 5; ++i)
@@ -170,8 +166,8 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
             IDomainCollector::DomDataClass data_class = IDomainCollector::UndefinedType;
 
 			Domain total_domain;
-			total_domain = dataCollector->getTotalDomain(iteration, "grid_data");
-			CPPUNIT_ASSERT(total_domain.getStart() == Dimensions(0, 0, 0));
+			total_domain = dataCollector->getGlobalDomain(iteration, "grid_data");
+			CPPUNIT_ASSERT(total_domain.getOffset() == Dimensions(0, 0, 0));
 			CPPUNIT_ASSERT(total_domain.getSize() == global_grid_size);
 
             // read data container
@@ -193,18 +189,18 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
             CPPUNIT_ASSERT(subdomain->getData() != NULL);
 
             Dimensions subdomain_elements = subdomain->getElements();
-            Dimensions subdomain_start = subdomain->getStart();
+            Dimensions subdomain_offset = subdomain->getOffset();
 
 #if defined TESTS_DEBUG
-            std::cout << "subdomain->getStart() = " << subdomain->getStart().toString() << std::endl;
+            std::cout << "subdomain->getOffset() = " << subdomain->getOffset().toString() << std::endl;
             std::cout << "subdomain->getElements() = " << subdomain_elements.toString() << std::endl;
 #endif
 
             int *subdomain_data = (int*) (subdomain->getData());
-            CPPUNIT_ASSERT(subdomain_elements.getDimSize() != 0);
-            CPPUNIT_ASSERT(gridSize.getDimSize() != 0);
+            CPPUNIT_ASSERT(subdomain_elements.getScalarSize() != 0);
+            CPPUNIT_ASSERT(gridSize.getScalarSize() != 0);
 
-            for (int j = 0; j < subdomain_elements.getDimSize(); ++j)
+            for (int j = 0; j < subdomain_elements.getScalarSize(); ++j)
             {
                 // Find out the expected value (original mpi rank) 
                 // for exactly this data element.
@@ -213,7 +209,7 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
                         (j / subdomain_elements[0]) / subdomain_elements[1]);
 
                 Dimensions total_grid_position =
-                        (subdomain_start + j_grid_position) / gridSize;
+                        (subdomain_offset + j_grid_position) / gridSize;
 
                 int expected_value = total_grid_position[2] * mpiSize[0] * mpiSize[1] +
                         total_grid_position[1] * mpiSize[0] + total_grid_position[0];
@@ -344,17 +340,13 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
         fattr.mpiSize = mpiSize;
         dataCollector->open(hdf5_file_poly, fattr);
 
-        size_t global_domain_elements = dataCollector->getTotalElements(iteration, "poly_data");
         size_t global_num_elements = 0;
-        for (int i = 0; i < mpiSize.getDimSize(); ++i)
+        for (int i = 0; i < mpiSize.getScalarSize(); ++i)
             global_num_elements += numElements * (i + 1);
 
 #if defined TESTS_DEBUG
-        std::cout << "global_domain_elements = " << global_domain_elements << std::endl;
         std::cout << "global_num_elements = " << global_num_elements << std::endl;
 #endif
-
-        CPPUNIT_ASSERT(global_domain_elements == global_num_elements);
 
         // test different domain offsets
         for (uint32_t i = 0; i < 5; ++i)
@@ -392,7 +384,7 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
                 CPPUNIT_ASSERT(subdomain->getData() != NULL);
 
                 Dimensions subdomain_elements = subdomain->getElements();
-                Dimensions subdomain_start = subdomain->getStart();
+                Dimensions subdomain_offset = subdomain->getOffset();
 
 #if defined TESTS_DEBUG
                 std::cout << "subdomain->getElements() = " << subdomain->getElements().toString() << std::endl;
@@ -400,18 +392,18 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
 #endif
 
                 float *subdomain_data = (float*) (subdomain->getData());
-                CPPUNIT_ASSERT(subdomain_elements.getDimSize() != 0);
+                CPPUNIT_ASSERT(subdomain_elements.getScalarSize() != 0);
 
                 // Find out the expected value (original mpi rank) 
                 // for this subdomain.
-                Dimensions subdomain_mpi_pos = subdomain_start / grid_size;
+                Dimensions subdomain_mpi_pos = subdomain_offset / grid_size;
 
                 int subdomain_mpi_rank = subdomain_mpi_pos[2] * mpiSize[1] * mpiSize[0] +
                         subdomain_mpi_pos[1] * mpiSize[0] + subdomain_mpi_pos[0];
 
-                CPPUNIT_ASSERT(subdomain_elements.getDimSize() == numElements * (subdomain_mpi_rank + 1));
+                CPPUNIT_ASSERT(subdomain_elements.getScalarSize() == numElements * (subdomain_mpi_rank + 1));
 
-                for (int j = 0; j < subdomain_elements.getDimSize(); ++j)
+                for (int j = 0; j < subdomain_elements.getScalarSize(); ++j)
                 {
 #if defined TESTS_DEBUG
                     std::cout << "j = " << j << ", subdomain_data[j]) = " << subdomain_data[j] <<
@@ -544,7 +536,7 @@ void DomainsTest::testAppendDomains()
 #endif
 
         float *subdomain_data = (float*) (subdomain->getData());
-        CPPUNIT_ASSERT(subdomain_elements.getDimSize() == elements && subdomain_elements[0] == elements);
+        CPPUNIT_ASSERT(subdomain_elements.getScalarSize() == elements && subdomain_elements[0] == elements);
 
         for (int j = 0; j < elements; ++j)
         {

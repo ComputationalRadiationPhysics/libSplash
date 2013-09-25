@@ -100,7 +100,7 @@ namespace DCollector
     handles(maxFileHandles, HandleMgr::FNS_MPI),
     fileStatus(FST_CLOSED),
     maxID(-1),
-    mpiSize(0, 0, 0)
+    mpiTopology(1, 1, 1)
     {
 #ifdef COL_TYPE_CPP
         throw DCException("Check your defines !");
@@ -177,10 +177,7 @@ namespace DCollector
         }
 
         maxID = -1;
-        for (int i = 0; i < 3; i++)
-        {
-            mpiSize[i] = 0;
-        }
+        mpiTopology.set(1, 1, 1);
 
         // close opened hdf5 file handles
         handles.close();
@@ -217,7 +214,7 @@ namespace DCollector
             if (mpiPosition != NULL)
                 mpi_pos = *mpiPosition;
 
-            mpi_rank = mpi_pos[2] * mpiSize[0] * mpiSize[1] + mpi_pos[1] * mpiSize[0] + mpi_pos[0];
+            mpi_rank = mpi_pos[2] * mpiTopology[0] * mpiTopology[1] + mpi_pos[1] * mpiTopology[0] + mpi_pos[0];
         }
 
         DCGroup group_custom;
@@ -342,17 +339,15 @@ namespace DCollector
     }
 
     void SerialDataCollector::read(int32_t id,
-            const CollectionType& type,
             const char* name,
             Dimensions &sizeRead,
             void* data)
     throw (DCException)
     {
-        this->read(id, type, name, Dimensions(0, 0, 0), Dimensions(0, 0, 0), sizeRead, data);
+        this->read(id, name, Dimensions(0, 0, 0), Dimensions(0, 0, 0), sizeRead, data);
     }
 
     void SerialDataCollector::read(int32_t id,
-            const CollectionType& type,
             const char* name,
             const Dimensions dstBuffer,
             const Dimensions dstOffset,
@@ -363,33 +358,27 @@ namespace DCollector
         if (fileStatus != FST_READING && fileStatus != FST_WRITING && fileStatus != FST_MERGING)
             throw DCException(getExceptionString("read", "this access is not permitted"));
 
-        if (fileStatus == FST_MERGING)
-        {
-            readMerged(id, type, name, dstBuffer, dstOffset, sizeRead, data);
-        } else
-        {
-            uint32_t rank = 0;
-            readInternal(handles.get(0), id, name, dstBuffer, dstOffset,
-                    Dimensions(0, 0, 0), Dimensions(0, 0, 0), sizeRead, rank, data);
-        }
+        uint32_t ndims = 0;
+        readInternal(handles.get(0), id, name, dstBuffer, dstOffset,
+                Dimensions(0, 0, 0), Dimensions(0, 0, 0), sizeRead, ndims, data);
     }
 
-    void SerialDataCollector::write(int32_t id, const CollectionType& type, uint32_t rank,
+    void SerialDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
             const Dimensions srcData, const char* name, const void* data)
     throw (DCException)
     {
-        write(id, type, rank, srcData, Dimensions(1, 1, 1), srcData, Dimensions(0, 0, 0), name, data);
+        write(id, type, ndims, srcData, Dimensions(1, 1, 1), srcData, Dimensions(0, 0, 0), name, data);
     }
 
-    void SerialDataCollector::write(int32_t id, const CollectionType& type, uint32_t rank,
+    void SerialDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
             const Dimensions srcBuffer, const Dimensions srcData, const Dimensions srcOffset,
             const char* name, const void* data)
     throw (DCException)
     {
-        write(id, type, rank, srcBuffer, Dimensions(1, 1, 1), srcData, srcOffset, name, data);
+        write(id, type, ndims, srcBuffer, Dimensions(1, 1, 1), srcData, srcOffset, name, data);
     }
 
-    void SerialDataCollector::write(int32_t id, const CollectionType& type, uint32_t rank,
+    void SerialDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
             const Dimensions srcBuffer, const Dimensions srcStride, const Dimensions srcData,
             const Dimensions srcOffset, const char* name, const void* data)
     throw (DCException)
@@ -400,7 +389,7 @@ namespace DCollector
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
             throw DCException(getExceptionString("write", "this access is not permitted"));
 
-        if (rank < 1 || rank > 3)
+        if (ndims < 1 || ndims > 3)
             throw DCException(getExceptionString("write", "maximum dimension is invalid"));
 
         if (id > this->maxID)
@@ -415,7 +404,7 @@ namespace DCollector
         // write data to the group
         try
         {
-            writeDataSet(group.getHandle(), type, rank,
+            writeDataSet(group.getHandle(), type, ndims,
                     srcBuffer, srcStride, srcData, srcOffset, dset_name.c_str(), data);
         } catch (DCException)
         {
@@ -647,11 +636,11 @@ namespace DCollector
         handles.open(full_filename, fileAccProperties, H5F_ACC_TRUNC);
 
         this->maxID = 0;
-        this->mpiSize.set(attr.mpiSize);
+        this->mpiTopology.set(attr.mpiSize);
 
         // write datatypes and header information to the file
         SDCHelper::writeHeader(handles.get(0), attr.mpiPosition, &(this->maxID),
-                &(this->enableCompression), &(this->mpiSize), false);
+                &(this->enableCompression), &(this->mpiTopology), false);
 
         // the custom group hold user-specified attributes
         DCGroup group;
@@ -679,7 +668,7 @@ namespace DCollector
         if (fileExists(full_filename))
         {
             // read reference data from target file
-            SDCHelper::getReferenceData(full_filename.c_str(), &(this->maxID), &(this->mpiSize));
+            SDCHelper::getReferenceData(full_filename.c_str(), &(this->maxID), &(this->mpiTopology));
 
             handles.open(full_filename, fileAccProperties, H5F_ACC_RDWR);
         } else
@@ -705,12 +694,12 @@ namespace DCollector
         }
 
         // read reference data from target file
-        SDCHelper::getReferenceData(full_filename.c_str(), &(this->maxID), &(this->mpiSize));
+        SDCHelper::getReferenceData(full_filename.c_str(), &(this->maxID), &(this->mpiTopology));
 
         // no compression for in-memory datasets
         this->enableCompression = false;
 
-        handles.open(mpiSize, filename, fileAccProperties, H5F_ACC_RDONLY);
+        handles.open(mpiTopology, filename, fileAccProperties, H5F_ACC_RDONLY);
     }
 
     void SerialDataCollector::openRead(const char* filename, FileCreationAttr& attr)
@@ -731,12 +720,13 @@ namespace DCollector
         }
 
         // read reference data from target file
-        SDCHelper::getReferenceData(full_filename.c_str(), &(this->maxID), &(this->mpiSize));
+        SDCHelper::getReferenceData(full_filename.c_str(), &(this->maxID), &(this->mpiTopology));
 
         handles.open(full_filename, fileAccProperties, H5F_ACC_RDONLY);
     }
 
-    void SerialDataCollector::writeDataSet(hid_t group, const CollectionType& datatype, uint32_t rank,
+    void SerialDataCollector::writeDataSet(hid_t group, const CollectionType& datatype,
+            uint32_t ndims,
             const Dimensions srcBuffer, const Dimensions srcStride,
             const Dimensions srcData, const Dimensions srcOffset,
             const char* name, const void* data) throw (DCException)
@@ -746,8 +736,8 @@ namespace DCollector
 #endif
         DCDataSet dataset(name);
         // always create dataset but write data only if all dimensions > 0
-        dataset.create(datatype, group, srcData, rank, this->enableCompression);
-        if (srcData.getDimSize() > 0)
+        dataset.create(datatype, group, srcData, ndims, this->enableCompression);
+        if (srcData.getScalarSize() > 0)
             dataset.write(srcBuffer, srcStride, srcOffset, srcData, data);
         dataset.close();
     }
@@ -779,16 +769,16 @@ namespace DCollector
         dataset.close();
     }
 
-    size_t SerialDataCollector::getRank(H5Handle h5File,
+    size_t SerialDataCollector::getNDims(H5Handle h5File,
             int32_t id,
             const char* name)
     {
 #if defined SDC_DEBUG_OUTPUT
-        std::cerr << "# SerialDataCollector::getRank #" << std::endl;
+        std::cerr << "# SerialDataCollector::getNDims #" << std::endl;
 #endif
 
         if (h5File < 0 || name == NULL)
-            throw DCException(getExceptionString("getRank", "invalid parameters"));
+            throw DCException(getExceptionString("getNDims", "invalid parameters"));
 
         std::string group_path, dset_name;
         DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
@@ -796,14 +786,14 @@ namespace DCollector
         DCGroup group;
         group.open(h5File, group_path);
 
-        size_t rank = 0;
+        size_t ndims = 0;
 
         try
         {
             DCDataSet dataset(dset_name.c_str());
             dataset.open(group.getHandle());
 
-            rank = dataset.getRank();
+            ndims = dataset.getNDims();
 
             dataset.close();
         } catch (DCException e)
@@ -811,7 +801,7 @@ namespace DCollector
             throw e;
         }
 
-        return rank;
+        return ndims;
     }
 
     void SerialDataCollector::readInternal(H5Handle h5File,
@@ -822,7 +812,7 @@ namespace DCollector
             const Dimensions srcSize,
             const Dimensions srcOffset,
             Dimensions &sizeRead,
-            uint32_t& srcRank,
+            uint32_t& srcDims,
             void* dst)
     throw (DCException)
     {
@@ -843,170 +833,12 @@ namespace DCollector
         {
             DCDataSet dataset(dset_name.c_str());
             dataset.open(group.getHandle());
-            dataset.read(dstBuffer, dstOffset, srcSize, srcOffset, sizeRead, srcRank, dst);
+            dataset.read(dstBuffer, dstOffset, srcSize, srcOffset, sizeRead, srcDims, dst);
             dataset.close();
         } catch (DCException e)
         {
             throw e;
         }
-    }
-
-    void SerialDataCollector::readMerged(int32_t id,
-            const CollectionType& type,
-            const char* name,
-            Dimensions dstBuffer,
-            Dimensions dstOffset,
-            Dimensions& srcData,
-            void* data)
-    throw (DCException)
-    {
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "# SerialDataCollector::readMerged #" << std::endl;
-#endif
-
-        // set the master 'file' to be in-memory only
-        hid_t fileAccPList = H5Pcreate(H5P_FILE_ACCESS);
-        H5Pset_fapl_core(fileAccPList, 4 * 1024 * 1024, false);
-        /**
-         * \todo: allow changing master filename
-         */
-        H5Handle master_file = H5Fcreate("/tmp/master.h5",
-                H5F_ACC_TRUNC, H5P_FILE_CREATE_DEFAULT, fileAccPList);
-        if (master_file < 0)
-            throw DCException(getExceptionString("readMerged", "failed to create master file", name));
-
-        DCGroup master_group;
-        master_group.create(master_file, "master_group");
-
-        Dimensions dim_master(1, 1, 1);
-
-        int rank_1_counter = 0;
-
-        // read size of client buffer from first file to get master buffer size
-        uint32_t client_rank = 0;
-        Dimensions *client_size = new Dimensions[mpiSize.getDimSize()];
-
-        readInternal(handles.get(0), id, name, Dimensions(), Dimensions(),
-                Dimensions(0, 0, 0), Dimensions(0, 0, 0), client_size[0], client_rank, NULL);
-
-        // on first access, create master data buffer depending on tmp_buffer_size
-        size_t buffer_size = 1;
-
-        // for 2D/3D, all clients must have written same sizes
-        if (client_rank > 1)
-        {
-            for (size_t i = 1; i < mpiSize.getDimSize(); i++)
-                client_size[i].set(client_size[0]);
-
-            for (uint32_t i = 0; i < client_rank; i++)
-            {
-                srcData[i] = client_size[0][i] * mpiSize[i];
-                dim_master[i] = srcData[i];
-                buffer_size *= dim_master[i];
-            }
-        } else
-        {
-            // for 1D, clients may have written differing sizes,
-            // so each one has to be read seperately
-            srcData.set(client_size[0]);
-
-            for (size_t i = 1; i < mpiSize.getDimSize(); i++)
-            {
-                readInternal(handles.get(i), id, name,
-                        Dimensions(), Dimensions(),
-                        Dimensions(), Dimensions(0, 0, 0),
-                        client_size[i], client_rank, NULL);
-                assert(client_rank <= 1);
-                srcData[0] += client_size[i][0];
-            }
-
-            dim_master[0] = srcData[0];
-            buffer_size = dim_master[0];
-        }
-
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "client_rank = " << client_rank << std::endl;
-        std::cerr << "dim_master = " << dim_master.toString() << std::endl;
-
-        std::cerr << "client_size[0] = " << client_size[0].toString() << std::endl;
-        if (client_rank == 1)
-            for (size_t i = 1; i < mpiSize.getDimSize(); i++)
-                std::cerr << "client_size[" << i << "] = " << client_size[i].toString() << std::endl;
-#endif
-
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "creating master dataset..." << std::endl;
-#endif
-
-        DCDataSet dataset_master("master");
-        dataset_master.create(type, master_group.getHandle(), dim_master,
-                client_rank, this->enableCompression);
-
-        // open files and read data
-        for (size_t z = 0; z < mpiSize[2]; z++)
-            for (size_t y = 0; y < mpiSize[1]; y++)
-                for (size_t x = 0; x < mpiSize[0]; x++)
-                {
-                    Dimensions mpi_position(x, y, z);
-
-                    size_t mpi_rank = z * mpiSize[0] * mpiSize[1] + y * mpiSize[0] + x;
-
-#if defined SDC_DEBUG_OUTPUT
-                    std::cerr << std::endl;
-                    std::cerr << "mpi position = (" << x << ", " << y << ", " << z << ")" << std::endl;
-                    std::cerr << "mpi_rank == h5handle == " << mpi_rank << std::endl;
-#endif
-                    // copy data from client buffer to relevant position in master buffer
-                    char *tmp_buffer = new char[client_size[mpi_rank].getDimSize() * type.getSize()];
-                    uint32_t tmp_rank(0);
-                    readInternal(handles.get(mpi_position), id, name, client_size[mpi_rank],
-                            Dimensions(0, 0, 0), Dimensions(0, 0, 0), Dimensions(0, 0, 0),
-                            client_size[mpi_rank], tmp_rank, tmp_buffer);
-
-                    if (tmp_rank > 0)
-                    {
-                        if (tmp_rank != client_rank)
-                            throw DCException(getExceptionString("readMerged",
-                                "Reading dataset with invalid rank while merging", name));
-
-                        Dimensions master_offset(0, 0, 0);
-
-                        if (client_rank > 1)
-                        {
-                            for (uint32_t i = 0; i < client_rank; i++)
-                                master_offset[i] = client_size[mpi_rank][i] * mpi_position[i];
-                        } else
-                        {
-                            master_offset[0] = rank_1_counter;
-                            rank_1_counter += client_size[mpi_rank][0];
-                        }
-
-#if defined SDC_DEBUG_OUTPUT
-                        std::cerr << "master_offset = " << master_offset.toString() << std::endl;
-                        std::cerr << "client_size[" << mpi_rank << "] = " << client_size[mpi_rank].toString() << std::endl;
-#endif
-
-                        dataset_master.write(client_size[mpi_rank], Dimensions(0, 0, 0),
-                                client_size[mpi_rank], master_offset, tmp_buffer);
-                    }
-                    delete[] tmp_buffer;
-
-                }
-
-
-
-        dataset_master.read(dstBuffer, dstOffset, srcData, client_rank, data);
-        //srcData.swapDims(client_rank);
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "srcBuffer = " << srcData.toString() << std::endl;
-#endif
-
-        delete[] client_size;
-
-        dataset_master.close();
-
-        H5Fclose(master_file);
-        H5Pclose(fileAccPList);
     }
 
     int32_t SerialDataCollector::getMaxID()
@@ -1016,7 +848,7 @@ namespace DCollector
 
     void SerialDataCollector::getMPISize(Dimensions& mpiSize)
     {
-        mpiSize.set(this->mpiSize);
+        mpiSize.set(this->mpiTopology);
     }
 
     void SerialDataCollector::getEntryIDs(int32_t* ids, size_t* count)

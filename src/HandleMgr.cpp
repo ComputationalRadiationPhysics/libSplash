@@ -70,7 +70,7 @@ std::string HandleMgr::getExceptionString(std::string func,
 void HandleMgr::open(Dimensions mpiSize, const std::string baseFilename,
         hid_t fileAccProperties, unsigned flags)
 {
-    this->numHandles = mpiSize.getDimSize();
+    this->numHandles = mpiSize.getScalarSize();
     this->mpiSize.set(mpiSize);
     this->filename = baseFilename;
     this->fileAccProperties = fileAccProperties;

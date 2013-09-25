@@ -82,11 +82,11 @@ namespace DCollector
          * @param colType collection type of the dataset
          * @param group group for this dataset
          * @param size target size
-         * @param rank number of dimensions
+         * @param ndims number of dimensions
          * @param compression enables transparent compression on the data
          */
         void create(const CollectionType& colType, hid_t group, const Dimensions size,
-                uint32_t rank, bool compression) throw (DCException);
+                uint32_t ndims, bool compression) throw (DCException);
 
         /**
          * Create an object reference
@@ -150,13 +150,13 @@ namespace DCollector
          * @param dstBuffer size of the buffer to read into
          * @param dstOffset offset in destination buffer to read to
          * @param sizeRead returns the size of the read dataset
-         * @param srcRank returns the dimensions of the read dataset
+         * @param srcNDims returns the dimensions of the read dataset
          * @param dst pointer to destination buffer for reading
          */
         void read(Dimensions dstBuffer,
                 Dimensions dstOffset,
                 Dimensions &sizeRead,
-                uint32_t& srcRank,
+                uint32_t& srcNDims,
                 void* dst) throw (DCException);
 
         /**
@@ -167,7 +167,7 @@ namespace DCollector
          * @param srcSize the size of the requested buffer
          * @param srcOffset offset in source buffer to read from
          * @param sizeRead returns the size of the read dataset
-         * @param srcRank returns the dimensions of the read dataset
+         * @param srcNDims returns the dimensions of the read dataset
          * @param dst pointer to destination buffer for reading
          */
         void read(Dimensions dstBuffer,
@@ -175,7 +175,7 @@ namespace DCollector
                 Dimensions srcSize,
                 Dimensions srcOffset,
                 Dimensions& sizeRead,
-                uint32_t& srcRank,
+                uint32_t& srcNDims,
                 void* dst) throw (DCException);
 
         /**
@@ -198,7 +198,7 @@ namespace DCollector
          *
          * @return number of dimensions
          */
-        size_t getRank();
+        size_t getNDims();
 
         /**
          * Returns the DataSpace associated with this DataSet.
@@ -250,7 +250,7 @@ namespace DCollector
         hid_t dataspace;
         hdset_reg_ref_t regionRef;
         Dimensions logicalSize;
-        size_t rank;
+        size_t ndims;
         std::string name;
         bool opened;
         bool isReference;

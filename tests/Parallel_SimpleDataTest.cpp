@@ -145,8 +145,8 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
 
     Dimensions size_read;
     Dimensions full_grid_size = gridSize * mpiSize;
-    int *data_read = new int[full_grid_size.getDimSize()];
-    memset(data_read, 0, sizeof (int) * full_grid_size.getDimSize());
+    int *data_read = new int[full_grid_size.getScalarSize()];
+    memset(data_read, 0, sizeof (int) * full_grid_size.getScalarSize());
 
     // test using SerialDataCollector
     if (currentMpiRank == 0)
@@ -154,7 +154,7 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
         DataCollector *dataCollector = new SerialDataCollector(1);
         dataCollector->open(filename_stream.str().c_str(), fileCAttr);
 
-        dataCollector->read(iteration, ctInt, "deep/folder/data", size_read, data_read);
+        dataCollector->read(iteration, "deep/folder/data", size_read, data_read);
         dataCollector->close();
         delete dataCollector;
 
@@ -165,12 +165,12 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
     MPI_CHECK(MPI_Barrier(mpiComm));
 
     // test using full read per process
-    memset(data_read, 0, sizeof (int) * full_grid_size.getDimSize());
+    memset(data_read, 0, sizeof (int) * full_grid_size.getScalarSize());
     ParallelDataCollector *readCollector = new ParallelDataCollector(mpiComm,
             MPI_INFO_NULL, mpiSize, 1);
 
     readCollector->open(HDF5_FILE, fileCAttr);
-    readCollector->read(iteration, ctInt, "deep/folder/data", size_read, data_read);
+    readCollector->read(iteration, "deep/folder/data", size_read, data_read);
     readCollector->close();
 
     CPPUNIT_ASSERT(size_read == full_grid_size);
@@ -180,12 +180,12 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
     MPI_CHECK(MPI_Barrier(mpiComm));
 
     // test using parallel read
-    data_read = new int[gridSize.getDimSize()];
-    memset(data_read, 0, sizeof (int) * gridSize.getDimSize());
+    data_read = new int[gridSize.getScalarSize()];
+    memset(data_read, 0, sizeof (int) * gridSize.getScalarSize());
 
     const Dimensions globalOffset = gridSize * mpiPos;
     readCollector->open(HDF5_FILE, fileCAttr);
-    readCollector->read(iteration, gridSize, globalOffset, ctInt, "deep/folder/data",
+    readCollector->read(iteration, gridSize, globalOffset, "deep/folder/data",
             size_read, data_read);
     readCollector->close();
     delete readCollector;
@@ -242,7 +242,7 @@ void Parallel_SimpleDataTest::testWriteRead()
             for (uint32_t mpi_x = 1; mpi_x < 3; ++mpi_x)
             {
                 Dimensions mpi_size(mpi_x, mpi_y, mpi_z);
-                size_t num_ranks = mpi_size.getDimSize();
+                size_t num_ranks = mpi_size.getScalarSize();
 
                 int ranks[num_ranks];
                 for (uint32_t i = 0; i < num_ranks; ++i)
@@ -357,7 +357,7 @@ bool Parallel_SimpleDataTest::subtestFill(int32_t iteration,
             "reserved_attr", &attrVal);
 
     uint32_t elements_written = 0;
-    uint32_t global_max_elements = mpiSize.getDimSize() * elements;
+    uint32_t global_max_elements = mpiSize.getScalarSize() * elements;
     for (size_t i = 0; i < global_max_elements; ++i)
     {
         Dimensions write_size(1, 1, 1);
@@ -398,13 +398,13 @@ bool Parallel_SimpleDataTest::subtestFill(int32_t iteration,
     // test using SerialDataCollector
     if (currentMpiRank == 0)
     {
-        int *data_read = new int[full_grid_size.getDimSize()];
-        memset(data_read, 0, sizeof (int) * full_grid_size.getDimSize());
+        int *data_read = new int[full_grid_size.getScalarSize()];
+        memset(data_read, 0, sizeof (int) * full_grid_size.getScalarSize());
 
         DataCollector *dataCollector = new SerialDataCollector(1);
         dataCollector->open(filename_stream.str().c_str(), fileCAttr);
 
-        dataCollector->read(iteration, ctInt, "reserved/reserved_data",
+        dataCollector->read(iteration, "reserved/reserved_data",
                 size_read, data_read);
         dataCollector->close();
         delete dataCollector;
@@ -414,7 +414,7 @@ bool Parallel_SimpleDataTest::subtestFill(int32_t iteration,
 
         int this_rank = 0;
         uint32_t elements_this_rank = num_elements;
-        for (uint32_t i = 0; i < size_read.getDimSize(); ++i)
+        for (uint32_t i = 0; i < size_read.getScalarSize(); ++i)
         {
             if (i == elements_this_rank)
             {
@@ -442,7 +442,7 @@ void Parallel_SimpleDataTest::testFill()
             for (uint32_t mpi_x = 1; mpi_x < 3; ++mpi_x)
             {
                 Dimensions mpi_size(mpi_x, mpi_y, mpi_z);
-                size_t num_ranks = mpi_size.getDimSize();
+                size_t num_ranks = mpi_size.getScalarSize();
 
                 int ranks[num_ranks];
                 for (uint32_t i = 0; i < num_ranks; ++i)

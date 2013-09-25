@@ -96,7 +96,7 @@ void AttributesTest::testDataAttributes()
     dataCollector->open(TEST_FILE, attr);
     
     Dimensions src_data;
-    dataCollector->read(0, ctInt2, "datasets/my_dataset", src_data, dummy_data);
+    dataCollector->read(0, "datasets/my_dataset", src_data, dummy_data);
     
     for (int i = 0; i < BUF_SIZE; i++)
     {

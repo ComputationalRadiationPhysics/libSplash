@@ -74,7 +74,7 @@ namespace DCollector
     dataset(-1),
     datatype(-1),
     logicalSize(),
-    rank(0),
+    ndims(0),
     name(name),
     opened(false),
     isReference(false),
@@ -100,7 +100,7 @@ namespace DCollector
     Dimensions DCDataSet::getPhysicalSize()
     {
         Dimensions result(logicalSize);
-        result.swapDims(rank);
+        result.swapDims(ndims);
         return result;
     }
 
@@ -129,14 +129,14 @@ namespace DCollector
             throw DCException(getExceptionString("open: Failed to open dataspace"));
         }
 
-        int rank_result = H5Sget_simple_extent_ndims(dataspace);
-        if (rank_result < 0)
+        int dims_result = H5Sget_simple_extent_ndims(dataspace);
+        if (dims_result < 0)
         {
             close();
             throw DCException(getExceptionString("open: Failed to get dimensions"));
         }
         
-        rank = rank_result;
+        ndims = dims_result;
 
         getLogicalSize().set(1, 1, 1);
         if (H5Sget_simple_extent_dims(dataspace, getLogicalSize().getPointer(), NULL) < 0)
@@ -145,7 +145,7 @@ namespace DCollector
             throw DCException(getExceptionString("open: Failed to get sizes"));
         }
 
-        getLogicalSize().swapDims(rank);
+        getLogicalSize().swapDims(ndims);
 
         opened = true;
 
@@ -155,18 +155,18 @@ namespace DCollector
     void DCDataSet::setChunking(size_t typeSize)
     throw (DCException)
     {
-        if (getPhysicalSize().getDimSize() != 0)
+        if (getPhysicalSize().getScalarSize() != 0)
         {
             // get chunking dimensions
-            hsize_t chunk_dims[rank];
-            DCHelper::getOptimalChunkDims(getPhysicalSize().getPointer(), rank,
+            hsize_t chunk_dims[ndims];
+            DCHelper::getOptimalChunkDims(getPhysicalSize().getPointer(), ndims,
                     typeSize, chunk_dims);
 
-            if (H5Pset_chunk(this->dsetProperties, rank, chunk_dims) < 0)
+            if (H5Pset_chunk(this->dsetProperties, ndims, chunk_dims) < 0)
                 throw DCException(getExceptionString("setChunking: Failed to set chunking"));
 
 #if defined SDC_DEBUG_OUTPUT
-            DCHelper::printhsizet("chunk_dims", chunk_dims, rank);
+            DCHelper::printhsizet("chunk_dims", chunk_dims, ndims);
 #endif
         }
     }
@@ -174,7 +174,7 @@ namespace DCollector
     void DCDataSet::setCompression()
     throw (DCException)
     {
-        if (this->compression && getPhysicalSize().getDimSize() != 0)
+        if (this->compression && getPhysicalSize().getScalarSize() != 0)
         {
             // shuffling reorders bytes for better compression
             // set gzip compression level (1=lowest - 9=highest)
@@ -185,7 +185,7 @@ namespace DCollector
     }
 
     void DCDataSet::create(const CollectionType& colType,
-            hid_t group, const Dimensions size, uint32_t rank, bool compression)
+            hid_t group, const Dimensions size, uint32_t ndims, bool compression)
     throw (DCException)
     {
 #if defined SDC_DEBUG_OUTPUT
@@ -202,7 +202,7 @@ namespace DCollector
         if (!checkExistence || (checkExistence && H5Lexists(group, name.c_str(), H5P_LINK_ACCESS_DEFAULT)))
             H5Ldelete(group, name.c_str(), H5P_LINK_ACCESS_DEFAULT);
 
-        this->rank = rank;
+        this->ndims = ndims;
         this->compression = compression;
         this->datatype = colType.getDataType();
 
@@ -211,13 +211,13 @@ namespace DCollector
         setChunking(colType.getSize());
         setCompression();
 
-        if (getPhysicalSize().getDimSize() != 0)
+        if (getPhysicalSize().getScalarSize() != 0)
         {
-            hsize_t *max_dims = new hsize_t[rank];
-            for (size_t i = 0; i < rank; ++i)
+            hsize_t *max_dims = new hsize_t[ndims];
+            for (size_t i = 0; i < ndims; ++i)
                 max_dims[i] = H5F_UNLIMITED;
 
-            dataspace = H5Screate_simple(rank, getPhysicalSize().getPointer(), max_dims);
+            dataspace = H5Screate_simple(ndims, getPhysicalSize().getPointer(), max_dims);
 
             delete[] max_dims;
             max_dims = NULL;
@@ -252,13 +252,13 @@ namespace DCollector
             throw DCException(getExceptionString("createReference: this reference already exists"));
 
         getLogicalSize().set(srcDataSet.getLogicalSize());
-        this->rank = srcDataSet.getRank();
+        this->ndims = srcDataSet.getNDims();
 
         if (H5Rcreate(&regionRef, srcGroup, srcDataSet.getName().c_str(), H5R_OBJECT, -1) < 0)
             throw DCException(getExceptionString("createReference: failed to create region reference"));
 
-        hsize_t dims = 1;
-        dataspace = H5Screate_simple(1, &dims, NULL);
+        hsize_t ndims = 1;
+        dataspace = H5Screate_simple(1, &ndims, NULL);
         if (dataspace < 0)
             throw DCException(getExceptionString("createReference: failed to create dataspace for reference"));
 
@@ -291,11 +291,11 @@ namespace DCollector
             throw DCException(getExceptionString("createReference: this reference already exists"));
 
         getLogicalSize().set(count);
-        this->rank = srcDataSet.getRank();
+        this->ndims = srcDataSet.getNDims();
 
-        count.swapDims(this->rank);
-        offset.swapDims(this->rank);
-        stride.swapDims(this->rank);
+        count.swapDims(this->ndims);
+        offset.swapDims(this->ndims);
+        stride.swapDims(this->ndims);
 
         // select region hyperslab in source dataset
         if (H5Sselect_hyperslab(srcDataSet.getDataSpace(), H5S_SELECT_SET,
@@ -308,8 +308,8 @@ namespace DCollector
                 srcDataSet.getDataSpace()) < 0)
             throw DCException(getExceptionString("createReference: failed to create region reference"));
 
-        hsize_t dims = 1;
-        dataspace = H5Screate_simple(1, &dims, NULL);
+        hsize_t ndims = 1;
+        dataspace = H5Screate_simple(1, &ndims, NULL);
         if (dataspace < 0)
             throw DCException(getExceptionString("createReference: failed to create dataspace for reference"));
 
@@ -337,9 +337,9 @@ namespace DCollector
             throw DCException(getExceptionString("close: Failed to close dataset"));
     }
 
-    size_t DCDataSet::getRank()
+    size_t DCDataSet::getNDims()
     {
-        return rank;
+        return ndims;
     }
 
     hid_t DCDataSet::getDataSpace()
@@ -412,12 +412,12 @@ namespace DCollector
     void DCDataSet::read(Dimensions dstBuffer,
             Dimensions dstOffset,
             Dimensions &sizeRead,
-            uint32_t& srcRank,
+            uint32_t& srcNDims,
             void* dst)
     throw (DCException)
     {
         read(dstBuffer, dstOffset, Dimensions(0, 0, 0), Dimensions(0, 0, 0),
-                sizeRead, srcRank, dst);
+                sizeRead, srcNDims, dst);
     }
 
     void DCDataSet::read(Dimensions dstBuffer,
@@ -425,7 +425,7 @@ namespace DCollector
             Dimensions srcSize,
             Dimensions srcOffset,
             Dimensions& sizeRead,
-            uint32_t& srcRank,
+            uint32_t& srcNDims,
             void* dst)
     throw (DCException)
     {
@@ -436,19 +436,19 @@ namespace DCollector
         if (!opened)
             throw DCException(getExceptionString("read: Dataset has not been opened/created"));
 
-        if (dstBuffer.getDimSize() == 0)
+        if (dstBuffer.getScalarSize() == 0)
             dstBuffer.set(getLogicalSize());
 
-        if (srcSize.getDimSize() == 0)
+        if (srcSize.getScalarSize() == 0)
             srcSize.set(getLogicalSize() - srcOffset);
 
         // dst buffer is allowed to be NULL
         // in this case, only the size of the dataset is returned
         // if the dataset is empty, return just its size as there is nothing to read
-        if (dst != NULL && getRank() > 0)
+        if (dst != NULL && getNDims() > 0)
         {
 #if defined SDC_DEBUG_OUTPUT
-            std::cerr << " rank = " << rank << std::endl;
+            std::cerr << " ndims = " << ndims << std::endl;
             std::cerr << " logical_size = " << getLogicalSize().toString() << std::endl;
             std::cerr << " physical_size = " << getPhysicalSize().toString() << std::endl;
             std::cerr << " [1] dstBuffer = " << dstBuffer.toString() << std::endl;
@@ -457,10 +457,10 @@ namespace DCollector
             std::cerr << " [1] srcOffset = " << srcOffset.toString() << std::endl;
 #endif
 
-            dstBuffer.swapDims(rank);
-            dstOffset.swapDims(rank);
-            srcSize.swapDims(rank);
-            srcOffset.swapDims(rank);
+            dstBuffer.swapDims(ndims);
+            dstOffset.swapDims(ndims);
+            srcSize.swapDims(ndims);
+            srcOffset.swapDims(ndims);
 
 #if defined SDC_DEBUG_OUTPUT
             std::cerr << " [2] dstBuffer = " << dstBuffer.toString() << std::endl;
@@ -469,11 +469,11 @@ namespace DCollector
             std::cerr << " [2] srcOffset = " << srcOffset.toString() << std::endl;
 #endif
 
-            hid_t dst_dataspace = H5Screate_simple(rank, dstBuffer.getPointer(), NULL);
+            hid_t dst_dataspace = H5Screate_simple(ndims, dstBuffer.getPointer(), NULL);
             if (dst_dataspace < 0)
                 throw DCException(getExceptionString("read: Failed to create target dataspace"));
 
-            if (rank == 1)
+            if (ndims == 1)
             {
                 // read data
                 if (H5Sselect_hyperslab(dst_dataspace, H5S_SELECT_SET, dstOffset.getPointer(), NULL,
@@ -497,12 +497,12 @@ namespace DCollector
                 DCAttribute::readAttribute(SDC_ATTR_SIZE, dataset, client_size.getPointer());
                 DCAttribute::readAttribute(SDC_ATTR_MPI_SIZE, dataset, local_mpi_size.getPointer());
 
-                client_size.swapDims(rank);
-                local_mpi_size.swapDims(rank);
+                client_size.swapDims(ndims);
+                local_mpi_size.swapDims(ndims);
 
-                if (local_mpi_size.getDimSize() != 1)
+                if (local_mpi_size.getScalarSize() != 1)
                 {
-                    if (srcOffset.getDimSize() != 0 || srcSize != getPhysicalSize())
+                    if (srcOffset.getScalarSize() != 0 || srcSize != getPhysicalSize())
                         throw DCException(
                             getExceptionString("read: reading composite datasets with source offset is not supported !"));
 
@@ -550,15 +550,15 @@ namespace DCollector
 
             H5Sclose(dst_dataspace);
 
-            srcSize.swapDims(rank);
+            srcSize.swapDims(ndims);
         }
 
         // swap dimensions if necessary
         sizeRead.set(srcSize);
-        srcRank = this->rank;
+        srcNDims = this->ndims;
 
 #if defined SDC_DEBUG_OUTPUT
-        std::cerr << " returns rank = " << rank << std::endl;
+        std::cerr << " returns ndims = " << ndims << std::endl;
         std::cerr << " returns sizeRead = " << sizeRead.toString() << std::endl;
 #endif
     }
@@ -593,7 +593,7 @@ namespace DCollector
             throw DCException(getExceptionString("write: Cannot write NULL data"));
 
 #if defined SDC_DEBUG_OUTPUT
-        std::cerr << " rank = " << rank << std::endl;
+        std::cerr << " ndims = " << ndims << std::endl;
         std::cerr << " logical_size = " << getLogicalSize().toString() << std::endl;
         std::cerr << " physical_size = " << getPhysicalSize().toString() << std::endl;
 
@@ -604,11 +604,11 @@ namespace DCollector
         std::cerr << " [1] dst_offset = " << dstOffset.toString() << std::endl;
 #endif
         // swap dimensions if necessary
-        srcBuffer.swapDims(rank);
-        srcStride.swapDims(rank);
-        srcData.swapDims(rank);
-        srcOffset.swapDims(rank);
-        dstOffset.swapDims(rank);
+        srcBuffer.swapDims(ndims);
+        srcStride.swapDims(ndims);
+        srcData.swapDims(ndims);
+        srcOffset.swapDims(ndims);
+        dstOffset.swapDims(ndims);
 
 #if defined SDC_DEBUG_OUTPUT
         std::cerr << " [2] src_buffer = " << srcBuffer.toString() << std::endl;
@@ -621,9 +621,9 @@ namespace DCollector
         // dataspace to read from
         hid_t dsp_src;
 
-        if (getLogicalSize().getDimSize() != 0)
+        if (getLogicalSize().getScalarSize() != 0)
         {
-            dsp_src = H5Screate_simple(rank, srcBuffer.getPointer(), NULL);
+            dsp_src = H5Screate_simple(ndims, srcBuffer.getPointer(), NULL);
             if (dsp_src < 0)
                 throw DCException(getExceptionString("write: Failed to create source dataspace"));
 
@@ -632,7 +632,7 @@ namespace DCollector
                     H5Sselect_valid(dsp_src) <= 0)
                 throw DCException(getExceptionString("write: Invalid source hyperslap selection"));
             
-            if (srcData.getDimSize() == 0)
+            if (srcData.getScalarSize() == 0)
                 H5Sselect_none(dsp_src);
 
             // dataspace to write to
@@ -641,7 +641,7 @@ namespace DCollector
                     H5Sselect_valid(dataspace) <= 0)
                 throw DCException(getExceptionString("write: Invalid target hyperslap selection"));
             
-            if (srcData.getDimSize() == 0)
+            if (srcData.getScalarSize() == 0)
             {
                 H5Sselect_none(dataspace);
                 data = NULL;
@@ -651,7 +651,7 @@ namespace DCollector
             if (H5Dwrite(dataset, this->datatype, dsp_src, dataspace, dsetWriteProperties, data) < 0)
                 throw DCException(getExceptionString("write: Failed to write dataset"));
 
-            if (rank > 1)
+            if (ndims > 1)
             {
                 // write (client) size of this dataset
                 DCAttribute::writeAttribute(SDC_ATTR_SIZE, dimType.getDataType(),
@@ -684,8 +684,8 @@ namespace DCollector
         // extend size (dataspace) of existing dataset with count elements
         getLogicalSize()[0] += count;
 
-        hsize_t *max_dims = new hsize_t[rank];
-        for (size_t i = 0; i < rank; ++i)
+        hsize_t *max_dims = new hsize_t[ndims];
+        for (size_t i = 0; i < ndims; ++i)
             max_dims[i] = H5F_UNLIMITED;
 
         if (H5Sset_extent_simple(dataspace, 1, getLogicalSize().getPointer(), max_dims) < 0)

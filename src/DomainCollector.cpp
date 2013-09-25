@@ -42,7 +42,7 @@ namespace DCollector
     {
     }
 
-    size_t DomainCollector::getTotalElements(int32_t id,
+    /*size_t DomainCollector::getGlobalElements(int32_t id,
             const char* name)
     throw (DCException)
     {
@@ -50,13 +50,13 @@ namespace DCollector
             throw DCException("DomainCollector::getTotalElements: this access is not permitted");
 
         size_t total_elements = 0;
-        Dimensions mpi_size;
-        if (fileStatus == FST_MERGING)
-            mpi_size.set(mpiSize);
-        else
-            mpi_size.set(1, 1, 1);
-
         Dimensions mpi_position(0, 0, 0);
+        Dimensions access_mpi_size;
+
+        if (fileStatus == FST_MERGING)
+            access_mpi_size.set(mpiTopology);
+        else
+            access_mpi_size.set(1, 1, 1);
 
         DomDataClass data_class = UndefinedType;
         readAttribute(id, name, DOMCOL_ATTR_CLASS, &data_class, &mpi_position);
@@ -66,52 +66,47 @@ namespace DCollector
             // For Grid data, we can just read from the last MPI position since
             // all processes need to write as a regular grid.
             Dimensions subdomain_size;
-            Dimensions subdomain_start;
+            Dimensions subdomain_offset;
 
-            mpi_position.set(mpi_size[0] - 1, mpi_size[1] - 1, mpi_size[2] - 1);
+            mpi_position.set(access_mpi_size[0] - 1, access_mpi_size[1] - 1, access_mpi_size[2] - 1);
 
-            readAttribute(id, name, DOMCOL_ATTR_SIZE,
-                    subdomain_size.getPointer(), &mpi_position);
-            readAttribute(id, name, DOMCOL_ATTR_START,
-                    subdomain_start.getPointer(), &mpi_position);
+            readGlobalSizeFallback(id, name, subdomain_size.getPointer(), &mpi_position);
 
-            total_elements = (subdomain_start + subdomain_size).getDimSize();
+            total_elements = subdomain_size.getScalarSize();
         } else
         {
             // For Poly data, we currently need to open every file (slow!)
             Dimensions subdomain_elements;
-            for (size_t z = 0; z < mpi_size[2]; z++)
+            for (size_t z = 0; z < access_mpi_size[2]; z++)
             {
-                for (size_t y = 0; y < mpi_size[1]; y++)
+                for (size_t y = 0; y < access_mpi_size[1]; y++)
                 {
-                    for (size_t x = 0; x < mpi_size[0]; x++)
+                    for (size_t x = 0; x < access_mpi_size[0]; x++)
                     {
                         mpi_position.set(x, y, z);
 
                         readAttribute(id, name, DOMCOL_ATTR_ELEMENTS,
                                 subdomain_elements.getPointer(), &mpi_position);
 
-                        total_elements += subdomain_elements.getDimSize();
+                        total_elements += subdomain_elements.getScalarSize();
                     }
                 }
             }
         }
 
         return total_elements;
-    }
+    }*/
 
-    Domain DomainCollector::getTotalDomain(int32_t id,
+    Domain DomainCollector::getGlobalDomain(int32_t id,
             const char* name)
     throw (DCException)
     {
         if ((fileStatus != FST_MERGING) && (fileStatus != FST_READING))
-            throw DCException("DomainCollector::getTotalDomain: this access is not permitted");
+            throw DCException("DomainCollector::getGlobalDomain: this access is not permitted");
 
-        Dimensions total_size(1, 1, 1);
-        Dimensions offset(0, 0, 0);
         Dimensions mpi_size;
         if (fileStatus == FST_MERGING)
-            mpi_size.set(mpiSize);
+            mpi_size.set(mpiTopology);
         else
             mpi_size.set(1, 1, 1);
 
@@ -119,27 +114,43 @@ namespace DCollector
         // we can just open the last MPI position to get the total size.
         Dimensions mpi_position(mpi_size[0] - 1, mpi_size[1] - 1, mpi_size[2] - 1);
 
-        uint32_t subdomain_rank;
-        Dimensions subdomain_size;
-        Dimensions subdomain_start;
+        Dimensions domain_size;
+        Dimensions domain_offset;
 
-        readAttribute(id, name, DOMCOL_ATTR_RANK,
-                &subdomain_rank, &mpi_position);
-        readAttribute(id, name, DOMCOL_ATTR_SIZE,
-                subdomain_size.getPointer(), &mpi_position);
-        readAttribute(id, name, DOMCOL_ATTR_START,
-                subdomain_start.getPointer(), &mpi_position);
+        readGlobalSizeFallback(id, name, domain_size.getPointer(), &mpi_position);
+        readGlobalSizeFallback(id, name, domain_offset.getPointer(), &mpi_position);
 
-        total_size.set(subdomain_start + subdomain_size);
+        return Domain(domain_offset, domain_size);
+    }
 
-        if (fileStatus == FST_READING)
-            offset.set(subdomain_start);
+    /*size_t DomainCollector::getLocalElements(int32_t id,
+            const char* name) throw (DCException)
+    {
+        if ((fileStatus != FST_MERGING) && (fileStatus != FST_READING))
+            throw DCException("DomainCollector::getLocalDomain: this access is not permitted");
+        
+        // this accesses the local information, for both normal and merged read
+        Dimensions mpi_position(0, 0, 0);
+        
+        
+    }*/
 
-        if ((fileStatus == FST_MERGING) && (offset.getDimSize() != 0))
-            throw DCException("DomainCollector::getTotalDomain: Invalid offset for total domain (must be (0, 0, 0) )");
+    Domain DomainCollector::getLocalDomain(int32_t id,
+            const char* name) throw (DCException)
+    {
+        if ((fileStatus != FST_MERGING) && (fileStatus != FST_READING))
+            throw DCException("DomainCollector::getLocalDomain: this access is not permitted");
+        
+        // this accesses the local information, for both normal and merged read
+        Dimensions mpi_position(0, 0, 0);
+        
+        Dimensions domain_size;
+        Dimensions domain_offset;
 
-        Domain domain(subdomain_rank, offset, total_size - offset);
-        return domain;
+        readAttribute(id, name, DOMCOL_ATTR_SIZE, domain_size.getPointer(), &mpi_position);
+        readAttribute(id, name, DOMCOL_ATTR_OFFSET, domain_offset.getPointer(), &mpi_position);
+
+        return Domain(domain_offset, domain_size);
     }
 
     bool DomainCollector::readDomainInfoForRank(
@@ -149,22 +160,17 @@ namespace DCollector
             Dimensions requestOffset,
             Dimensions requestSize,
             Domain &fileDomain)
+    throw (DCException)
     {
-        uint32_t file_rank;
-
-        readAttribute(id, name, DOMCOL_ATTR_RANK,
-                &file_rank, &mpiPosition);
-
-        readAttribute(id, name, DOMCOL_ATTR_START,
-                fileDomain.getStart().getPointer(), &mpiPosition);
+        readAttribute(id, name, DOMCOL_ATTR_OFFSET,
+                fileDomain.getOffset().getPointer(), &mpiPosition);
 
         readAttribute(id, name, DOMCOL_ATTR_SIZE,
                 fileDomain.getSize().getPointer(), &mpiPosition);
 
-        Domain request_domain(file_rank, requestOffset, requestSize);
-        fileDomain.setRank(file_rank);
+        Domain request_domain(requestOffset, requestSize);
 
-        return testIntersection(request_domain, fileDomain);
+        return Domain::testIntersection(request_domain, fileDomain);
     }
 
     bool DomainCollector::readDomainDataForRank(
@@ -176,27 +182,21 @@ namespace DCollector
             Dimensions requestOffset,
             Dimensions requestSize,
             bool lazyLoad)
+    throw (DCException)
     {
 #if (DC_DEBUG == 1)
         std::cerr << "\nloading from mpi_position " << mpiPosition.toString() << std::endl;
 #endif
 
         bool readResult = false;
-
-        uint32_t client_domain_rank;
         Domain client_domain;
+        Domain request_domain(requestOffset, requestSize);
 
-        readAttribute(id, name, DOMCOL_ATTR_RANK,
-                &client_domain_rank, &mpiPosition);
-
-        readAttribute(id, name, DOMCOL_ATTR_START,
-                client_domain.getStart().getPointer(), &mpiPosition);
+        readAttribute(id, name, DOMCOL_ATTR_OFFSET,
+                client_domain.getOffset().getPointer(), &mpiPosition);
 
         readAttribute(id, name, DOMCOL_ATTR_SIZE,
                 client_domain.getSize().getPointer(), &mpiPosition);
-
-        client_domain.setRank(client_domain_rank);
-        Domain request_domain(client_domain_rank, requestOffset, requestSize);
 
         Dimensions data_elements;
         readAttribute(id, name, DOMCOL_ATTR_ELEMENTS,
@@ -223,7 +223,7 @@ namespace DCollector
 #endif
 
         // test on intersection and add new DomainData to the container if necessary
-        if (testIntersection(request_domain, client_domain))
+        if (Domain::testIntersection(request_domain, client_domain))
         {
             readResult = true;
 
@@ -234,7 +234,7 @@ namespace DCollector
 #if (DC_DEBUG == 1)
                 std::cerr << "dataclass = Poly" << std::endl;
 #endif
-                if (data_elements.getDimSize() > 0)
+                if (data_elements.getScalarSize() > 0)
                 {
                     std::stringstream group_id_name;
                     group_id_name << SDC_GROUP_DATA << "/" << id;
@@ -278,14 +278,14 @@ namespace DCollector
                     } else
                     {
                         Dimensions elements_read;
-                        uint32_t src_rank = 0;
+                        uint32_t src_dims = 0;
                         readInternal(handles.get(mpiPosition), id, name,
                                 data_elements,
                                 Dimensions(0, 0, 0),
                                 Dimensions(0, 0, 0),
                                 Dimensions(0, 0, 0),
                                 elements_read,
-                                src_rank,
+                                src_dims,
                                 client_data->getData());
 
 #if (DC_DEBUG == 1)
@@ -358,16 +358,16 @@ namespace DCollector
                 Dimensions src_size(1, 1, 1);
                 Dimensions src_offset(0, 0, 0);
 
-                Dimensions client_start = client_domain.getStart();
+                Dimensions client_start = client_domain.getOffset();
                 Dimensions client_size = client_domain.getSize();
 
-                size_t rank = getRank(handles.get(mpiPosition), id, name);
+                size_t rank = getNDims(handles.get(mpiPosition), id, name);
 
                 for (uint32_t i = 0; i < rank; ++i)
                 {
-                    dst_offset[i] = std::max((int64_t) client_domain.getStart()[i] - (int64_t) requestOffset[i], (int64_t) 0);
+                    dst_offset[i] = std::max((int64_t) client_domain.getOffset()[i] - (int64_t) requestOffset[i], (int64_t) 0);
 
-                    dst_offset[i] = std::max((int64_t) client_domain.getStart()[i] -
+                    dst_offset[i] = std::max((int64_t) client_domain.getOffset()[i] -
                             (int64_t) requestOffset[i], (int64_t) 0);
 
                     if (requestOffset[i] <= client_start[i])
@@ -412,14 +412,14 @@ namespace DCollector
 
                 // read intersecting partition into destination buffer
                 Dimensions elements_read(0, 0, 0);
-                uint32_t src_rank = 0;
+                uint32_t src_dims = 0;
                 readInternal(handles.get(mpiPosition), id, name,
                         dataContainer->getIndex(0)->getSize(),
                         dst_offset,
                         src_size,
                         src_offset,
                         elements_read,
-                        src_rank,
+                        src_dims,
                         dataContainer->getIndex(0)->getData());
 
 #if (DC_DEBUG == 1)
@@ -462,13 +462,13 @@ namespace DCollector
 
         if (fileStatus == FST_MERGING)
         {
-            mpi_size.set(mpiSize);
+            mpi_size.set(mpiTopology);
         } else
             mpi_size.set(1, 1, 1);
 
-        Dimensions min_rank(0, 0, 0);
-        Dimensions max_rank(mpi_size);
-        max_rank = max_rank - Dimensions(1, 1, 1);
+        Dimensions min_dims(0, 0, 0);
+        Dimensions max_dims(mpi_size);
+        max_dims = max_dims - Dimensions(1, 1, 1);
         Dimensions current_mpi_pos(0, 0, 0);
         Dimensions point_dim(1, 1, 1);
 
@@ -482,11 +482,11 @@ namespace DCollector
             Domain file_domain;
             last_mpi_pos = current_mpi_pos;
 
-            // set current_mpi_pos to be the 'center' between min_rank and max_rank
+            // set current_mpi_pos to be the 'center' between min_dims and max_dims
             for (size_t i = 0; i < 3; ++i)
             {
-                current_mpi_pos[i] = min_rank[i] +
-                        ceil(((double) max_rank[i] - (double) min_rank[i]) / 2.0);
+                current_mpi_pos[i] = min_dims[i] +
+                        ceil(((double) max_dims[i] - (double) min_dims[i]) / 2.0);
             }
 
             if (readDomainInfoForRank(current_mpi_pos, id, name,
@@ -498,11 +498,11 @@ namespace DCollector
 
             for (size_t i = 0; i < 3; ++i)
             {
-                if (requestOffset[i] >= file_domain.getStart()[i])
-                    min_rank[i] = current_mpi_pos[i];
+                if (requestOffset[i] >= file_domain.getOffset()[i])
+                    min_dims[i] = current_mpi_pos[i];
 
-                if (requestOffset[i] < file_domain.getStart()[i])
-                    max_rank[i] = current_mpi_pos[i] - 1;
+                if (requestOffset[i] < file_domain.getOffset()[i])
+                    max_dims[i] = current_mpi_pos[i] - 1;
             }
         } while (last_mpi_pos != current_mpi_pos);
 
@@ -514,16 +514,16 @@ namespace DCollector
         // If the file domain and the requested domain intersect,
         // the file domain is added to the DataContainer.
 
-        // set new min_rank to top-left corner 
-        max_rank = (mpi_size - Dimensions(1, 1, 1));
-        min_rank = current_mpi_pos;
+        // set new min_dims to top-left corner 
+        max_dims = (mpi_size - Dimensions(1, 1, 1));
+        min_dims = current_mpi_pos;
 
         bool found_last_entry = false;
-        for (size_t z = min_rank[2]; z <= max_rank[2]; z++)
+        for (size_t z = min_dims[2]; z <= max_dims[2]; z++)
         {
-            for (size_t y = min_rank[1]; y <= max_rank[1]; y++)
+            for (size_t y = min_dims[1]; y <= max_dims[1]; y++)
             {
-                for (size_t x = min_rank[0]; x <= max_rank[0]; x++)
+                for (size_t x = min_dims[0]; x <= max_dims[0]; x++)
                 {
                     Dimensions mpi_position(x, y, z);
 
@@ -538,14 +538,14 @@ namespace DCollector
                     {
                         // readDomainDataForRank returns false if no intersection
                         // has been found.
-                        // Cut max_rank in the currently extending dimension if
+                        // Cut max_dims in the currently extending dimension if
                         // nothing can be found there, anymore.
-                        if (z == min_rank[2])
+                        if (z == min_dims[2])
                         {
-                            if (y == min_rank[1])
-                                max_rank[0] = x - 1;
+                            if (y == min_dims[1])
+                                max_dims[0] = x - 1;
                             else
-                                max_rank[1] = y - 1;
+                                max_dims[1] = y - 1;
                         } else
                         {
                             found_last_entry = true;
@@ -590,7 +590,7 @@ namespace DCollector
         if (loadingRef->dataClass == PolyType)
         {
             Dimensions elements_read;
-            uint32_t src_rank = 0;
+            uint32_t src_dims = 0;
             readInternal(loadingRef->handle,
                     loadingRef->id,
                     loadingRef->name.c_str(),
@@ -599,7 +599,7 @@ namespace DCollector
                     loadingRef->srcSize,
                     loadingRef->srcOffset,
                     elements_read,
-                    src_rank,
+                    src_dims,
                     domainData->getData());
 
 #if (DC_DEBUG == 1)
@@ -669,9 +669,8 @@ namespace DCollector
         write(id, type, rank, srcBuffer, srcStride, srcData, srcOffset, name, buf);
 
         writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
-        writeAttribute(id, int_t, name, DOMCOL_ATTR_RANK, &rank);
         writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, domainSize.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_START, domainOffset.getPointer());
+        writeAttribute(id, dim_t, name, DOMCOL_ATTR_OFFSET, domainOffset.getPointer());
         writeAttribute(id, dim_t, name, DOMCOL_ATTR_ELEMENTS, srcData.getPointer());
     }
 
@@ -702,7 +701,6 @@ namespace DCollector
         ColTypeInt int_t;
         DomDataClass data_class = PolyType;
         Dimensions elements(1, 1, 1);
-        uint32_t rank = 1;
 
         // temporarly change file access status to allow read access
         FileStatusType old_file_status = fileStatus;
@@ -725,9 +723,43 @@ namespace DCollector
         append(id, type, count, offset, striding, name, buf);
 
         writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &data_class);
-        writeAttribute(id, int_t, name, DOMCOL_ATTR_RANK, &rank);
         writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, domainSize.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_START, domainOffset.getPointer());
+        writeAttribute(id, dim_t, name, DOMCOL_ATTR_OFFSET, domainOffset.getPointer());
         writeAttribute(id, dim_t, name, DOMCOL_ATTR_ELEMENTS, elements.getPointer());
+    }
+
+    void DomainCollector::readGlobalSizeFallback(int32_t id,
+            const char *dataName,
+            hsize_t* data,
+            Dimensions *mpiPosition)
+    throw (DCException)
+    {
+        try
+        {
+            readAttribute(id, dataName, DOMCOL_ATTR_GLOBAL_SIZE, data, mpiPosition);
+        } catch (DCException)
+        {
+            hsize_t local_size[3];
+            readAttribute(id, dataName, DOMCOL_ATTR_SIZE, local_size, mpiPosition);
+
+            for (int i = 0; i < 3; ++i)
+                data[i] = mpiTopology[i] * local_size[i];
+        }
+    }
+    
+    void DomainCollector::readGlobalOffsetFallback(int32_t id,
+            const char *dataName,
+            hsize_t* data,
+            Dimensions *mpiPosition)
+    throw (DCException)
+    {
+        try
+        {
+            readAttribute(id, dataName, DOMCOL_ATTR_GLOBAL_OFFSET, data, mpiPosition);
+        } catch (DCException)
+        {
+            for (int i = 0; i < 3; ++i)
+                data[i] = 0;
+        }
     }
 }

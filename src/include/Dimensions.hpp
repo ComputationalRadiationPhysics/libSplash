@@ -134,8 +134,8 @@ namespace DCollector
         }
 
         /**
-         * Get the size in bytes of the data array
-         * @return size in bytes of data array
+         * Get the size in bytes of the data array.
+         * @return Size in bytes of data array.
          */
         inline static size_t getSize()
         {
@@ -144,18 +144,18 @@ namespace DCollector
 
         /**
          * Get the scalar size.
-         * @return total elements from all dimensions
+         * @return Scalar number of elements spanned by all dimensions.
          */
-        inline size_t getDimSize() const
+        inline size_t getScalarSize() const
         {
             return s[0] * s[1] * s[2];
         }
 
         /**
          * Set dimensions.
-         * @param x first dimension
-         * @param y second dimension
-         * @param z third dimension
+         * @param x First dimension.
+         * @param y Second dimension.
+         * @param z Third dimension.
          */
         inline void set(hsize_t x, hsize_t y, hsize_t z)
         {
@@ -166,7 +166,7 @@ namespace DCollector
 
         /**
          * Set dimensions.
-         * @param d Dimensions object to copy data from
+         * @param d Dimensions object to copy data from.
          */
         inline void set(const Dimensions d)
         {
@@ -174,17 +174,34 @@ namespace DCollector
             s[1] = d[1];
             s[2] = d[2];
         }
+        
+        /**
+         * Get the number of dimensions.
+         * @return Number of dimensions.
+         */
+        inline uint32_t getDims(void) const
+        {
+            uint32_t dims = 3;
+            if (s[2] == 1)
+            {
+                dims = 2;
+                if (s[1] == 1)
+                    dims = 1;
+            }
+            
+            return dims;
+        }
 
         /**
-         * Swaps the dimensions depending on \p rank.
-         * @param rank number of dimensions for swapping.
+         * Swaps the dimensions depending on \p dims.
+         * @param dims Number of dimensions for swapping.
          */
-        void swapDims(uint32_t rank)
+        void swapDims(uint32_t dims)
         {
             hsize_t tmp1 = s[0];
             hsize_t tmp2[3] = {s[2], s[1], s[0]};
 
-            switch (rank)
+            switch (dims)
             {
                 case 2:
                     s[0] = s[1];
