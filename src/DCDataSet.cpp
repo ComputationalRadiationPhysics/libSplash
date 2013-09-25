@@ -445,7 +445,7 @@ namespace DCollector
         // dst buffer is allowed to be NULL
         // in this case, only the size of the dataset is returned
         // if the dataset is empty, return just its size as there is nothing to read
-        if (dst != NULL && getNDims() > 0)
+        if ((dst != NULL) && (getNDims() > 0))
         {
 #if defined SDC_DEBUG_OUTPUT
             std::cerr << " ndims = " << ndims << std::endl;

@@ -156,6 +156,8 @@ namespace DCollector
                 const char* name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 DomDataClass dataClass,
                 const void* buf) = 0;
 
@@ -183,6 +185,8 @@ namespace DCollector
                 const char* name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 DomDataClass dataClass,
                 const void* buf) = 0;
 
@@ -212,6 +216,8 @@ namespace DCollector
                 const char* name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 DomDataClass dataClass,
                 const void* buf) = 0;
 
@@ -232,6 +238,8 @@ namespace DCollector
                 const char *name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 const void *buf) = 0;
 
         /**
@@ -257,6 +265,8 @@ namespace DCollector
                 const char *name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 const void *buf) = 0;
     };
 

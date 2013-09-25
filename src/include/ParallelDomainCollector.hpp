@@ -85,6 +85,8 @@ namespace DCollector
                 const char* name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 DomDataClass dataClass,
                 const void* data) throw (DCException);
 
@@ -97,6 +99,8 @@ namespace DCollector
                 const char* name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 DomDataClass dataClass,
                 const void* data) throw (DCException);
 
@@ -110,6 +114,8 @@ namespace DCollector
                 const char* name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 DomDataClass dataClass,
                 const void* data) throw (DCException);
 
@@ -159,8 +165,8 @@ namespace DCollector
                 uint32_t rank,
                 const CollectionType& type,
                 const char* name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 DomDataClass dataClass) throw (DCException);
         
         void reserveDomain(int32_t id,
@@ -170,8 +176,8 @@ namespace DCollector
                 uint32_t rank,
                 const CollectionType& type,
                 const char* name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 DomDataClass dataClass) throw (DCException);
 
         void appendDomain(int32_t id,
@@ -180,6 +186,8 @@ namespace DCollector
                 const char *name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 const void *data) throw (DCException);
 
         void appendDomain(int32_t id,
@@ -190,19 +198,11 @@ namespace DCollector
                 const char *name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 const void *data) throw (DCException);
 
     protected:
-        void gatherMPIDomains(int rank,
-                const Dimensions localDomainSize, const Dimensions localDomainOffset,
-                Dimensions &globalDomainSize, Dimensions &globalDomainOffset)
-        throw (DCException);
-        
-        void gatherMPIWrites(int rank, const Dimensions localSize,
-                const Dimensions localDomainSize, const Dimensions localDomainOffset,
-                Dimensions &globalSize, Dimensions &globalOffset,
-                Dimensions &globalDomainSize, Dimensions &globalDomainOffset)
-        throw (DCException);
 
         bool readDomainDataForRank(
                 DataContainer *dataContainer,

@@ -118,7 +118,7 @@ namespace DCollector
         Dimensions domain_offset;
 
         readGlobalSizeFallback(id, name, domain_size.getPointer(), &mpi_position);
-        readGlobalSizeFallback(id, name, domain_offset.getPointer(), &mpi_position);
+        readGlobalOffsetFallback(id, name, domain_offset.getPointer(), &mpi_position);
 
         return Domain(domain_offset, domain_size);
     }
@@ -140,10 +140,10 @@ namespace DCollector
     {
         if ((fileStatus != FST_MERGING) && (fileStatus != FST_READING))
             throw DCException("DomainCollector::getLocalDomain: this access is not permitted");
-        
+
         // this accesses the local information, for both normal and merged read
         Dimensions mpi_position(0, 0, 0);
-        
+
         Dimensions domain_size;
         Dimensions domain_offset;
 
@@ -198,15 +198,17 @@ namespace DCollector
         readAttribute(id, name, DOMCOL_ATTR_SIZE,
                 client_domain.getSize().getPointer(), &mpiPosition);
 
-        Dimensions data_elements;
-        readAttribute(id, name, DOMCOL_ATTR_ELEMENTS,
-                data_elements.getPointer(), &mpiPosition);
+        Dimensions data_size;
+        this->read(id, name, data_size, NULL);
 
         DomDataClass tmp_data_class = UndefinedType;
         readAttribute(id, name, DOMCOL_ATTR_CLASS, &tmp_data_class, &mpiPosition);
 
-        if (tmp_data_class == GridType && data_elements != client_domain.getSize())
-            throw DCException("DomainCollector::readDomain: Number of data elements must match domain size for Grid data.");
+        if (tmp_data_class == GridType && data_size != client_domain.getSize())
+        {
+            std::cout << data_size.toString() << ", " << client_domain.getSize().toString() << std::endl;
+            throw DCException("DomainCollector::readDomain: Size of data must match domain size for Grid data.");
+        }
 
         if (*dataClass == UndefinedType)
         {
@@ -234,7 +236,7 @@ namespace DCollector
 #if (DC_DEBUG == 1)
                 std::cerr << "dataclass = Poly" << std::endl;
 #endif
-                if (data_elements.getScalarSize() > 0)
+                if (data_size.getScalarSize() > 0)
                 {
                     std::stringstream group_id_name;
                     group_id_name << SDC_GROUP_DATA << "/" << id;
@@ -265,13 +267,13 @@ namespace DCollector
                     H5Gclose(group_id);
 
                     DomainData *client_data = new DomainData(client_domain,
-                            data_elements, datatype_size, dc_datatype);
+                            data_size, datatype_size, dc_datatype);
 
                     if (lazyLoad)
                     {
                         client_data->setLoadingReference(*dataClass,
                                 handles.get(mpiPosition), id, name,
-                                data_elements,
+                                data_size,
                                 Dimensions(0, 0, 0),
                                 Dimensions(0, 0, 0),
                                 Dimensions(0, 0, 0));
@@ -280,7 +282,7 @@ namespace DCollector
                         Dimensions elements_read;
                         uint32_t src_dims = 0;
                         readInternal(handles.get(mpiPosition), id, name,
-                                data_elements,
+                                data_size,
                                 Dimensions(0, 0, 0),
                                 Dimensions(0, 0, 0),
                                 Dimensions(0, 0, 0),
@@ -293,7 +295,7 @@ namespace DCollector
                         std::cerr << data_elements.toString() << std::endl;
 #endif
 
-                        if (!(elements_read == data_elements))
+                        if (!(elements_read == data_size))
                             throw DCException("DomainCollector::readDomain: Sizes are not equal but should be (1).");
                     }
 
@@ -622,13 +624,16 @@ namespace DCollector
             const char* name,
             const Dimensions domainOffset,
             const Dimensions domainSize,
+            const Dimensions globalDomainOffset,
+            const Dimensions globalDomainSize,
             DomDataClass dataClass,
             const void* buf)
     throw (DCException)
     {
 
         writeDomain(id, type, rank, srcData, Dimensions(1, 1, 1), srcData,
-                Dimensions(0, 0, 0), name, domainOffset, domainSize, dataClass, buf);
+                Dimensions(0, 0, 0), name, domainOffset, domainSize,
+                globalDomainOffset, globalDomainSize, dataClass, buf);
     }
 
     void DomainCollector::writeDomain(int32_t id,
@@ -640,13 +645,16 @@ namespace DCollector
             const char* name,
             const Dimensions domainOffset,
             const Dimensions domainSize,
+            const Dimensions globalDomainOffset,
+            const Dimensions globalDomainSize,
             DomDataClass dataClass,
             const void* buf)
     throw (DCException)
     {
 
         writeDomain(id, type, rank, srcBuffer, Dimensions(1, 1, 1), srcData, srcOffset,
-                name, domainOffset, domainSize, dataClass, buf);
+                name, domainOffset, domainSize, globalDomainOffset, globalDomainSize,
+                dataClass, buf);
     }
 
     void DomainCollector::writeDomain(int32_t id,
@@ -659,6 +667,8 @@ namespace DCollector
             const char* name,
             const Dimensions domainOffset,
             const Dimensions domainSize,
+            const Dimensions globalDomainOffset,
+            const Dimensions globalDomainSize,
             DomDataClass dataClass,
             const void* buf)
     throw (DCException)
@@ -671,7 +681,8 @@ namespace DCollector
         writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
         writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, domainSize.getPointer());
         writeAttribute(id, dim_t, name, DOMCOL_ATTR_OFFSET, domainOffset.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_ELEMENTS, srcData.getPointer());
+        writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_SIZE, globalDomainSize.getPointer());
+        writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_OFFSET, globalDomainOffset.getPointer());
     }
 
     void DomainCollector::appendDomain(int32_t id,
@@ -680,10 +691,13 @@ namespace DCollector
             const char* name,
             const Dimensions domainOffset,
             const Dimensions domainSize,
+            const Dimensions globalDomainOffset,
+            const Dimensions globalDomainSize,
             const void* buf)
     throw (DCException)
     {
-        appendDomain(id, type, count, 0, 1, name, domainOffset, domainSize, buf);
+        appendDomain(id, type, count, 0, 1, name, domainOffset, domainSize,
+                globalDomainOffset, globalDomainSize, buf);
     }
 
     void DomainCollector::appendDomain(int32_t id,
@@ -694,6 +708,8 @@ namespace DCollector
             const char* name,
             const Dimensions domainOffset,
             const Dimensions domainSize,
+            const Dimensions globalDomainOffset,
+            const Dimensions globalDomainSize,
             const void* buf)
     throw (DCException)
     {
@@ -709,7 +725,7 @@ namespace DCollector
         // try to get the number of elements already written, if any.
         try
         {
-            readAttribute(id, name, DOMCOL_ATTR_ELEMENTS, elements.getPointer(), NULL);
+            this->read(id, name, elements, NULL);
         } catch (DCException expected_exception)
         {
             // nothing to do here but to make sure elements is set correctly
@@ -725,7 +741,8 @@ namespace DCollector
         writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &data_class);
         writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, domainSize.getPointer());
         writeAttribute(id, dim_t, name, DOMCOL_ATTR_OFFSET, domainOffset.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_ELEMENTS, elements.getPointer());
+        writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_SIZE, globalDomainSize.getPointer());
+        writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_OFFSET, globalDomainOffset.getPointer());
     }
 
     void DomainCollector::readGlobalSizeFallback(int32_t id,
@@ -746,7 +763,7 @@ namespace DCollector
                 data[i] = mpiTopology[i] * local_size[i];
         }
     }
-    
+
     void DomainCollector::readGlobalOffsetFallback(int32_t id,
             const char *dataName,
             hsize_t* data,

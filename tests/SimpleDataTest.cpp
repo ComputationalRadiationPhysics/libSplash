@@ -148,14 +148,14 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
     for (uint32_t i = 0; i < bufferSize; i++)
         dataRead[i] = -1;
 
-    dataCollector->read(20, "deep/folders/data_without_borders", gridSize, resultSize,
-            borderSize, NULL);
+    dataCollector->read(20, "deep/folders/data_without_borders", gridSize, borderSize,
+            resultSize, NULL);
 
     for (uint32_t i = 0; i < 3; i++)
         CPPUNIT_ASSERT(resultSize[i] == smallGridSize[i]);
 
-    dataCollector->read(20, "deep/folders/data_without_borders", gridSize, resultSize,
-            borderSize, dataRead);
+    dataCollector->read(20, "deep/folders/data_without_borders", gridSize, borderSize,
+            resultSize, dataRead);
 
     // print out read and written data for debugging purposes
 #if defined TESTS_DEBUG

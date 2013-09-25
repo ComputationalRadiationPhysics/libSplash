@@ -87,6 +87,9 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
 
     for (size_t i = 0; i < gridSize.getScalarSize(); ++i)
         data_write[i] = currentMpiRank + 1;
+    
+    const Dimensions globalGridOffset = mpiPos * gridSize;
+    const Dimensions globalGridSize = mpiSize * gridSize;
 
     DataCollector::initFileCreationAttr(fattr);
     fattr.fileAccType = DataCollector::FAT_CREATE;
@@ -102,7 +105,9 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
 
     // initial part of the test: data is written to the file
     parallelDomainCollector->writeDomain(iteration, ctInt, 3, gridSize, "grid_data",
-            domain_offset, gridSize, IDomainCollector::GridType, data_write);
+            domain_offset, gridSize, 
+            globalGridOffset, globalGridSize,
+            IDomainCollector::GridType, data_write);
     parallelDomainCollector->close();
 
     delete[] data_write;
@@ -309,6 +314,9 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
 {
     Dimensions domain_size(20, 10, 5);
     Dimensions global_domain_size = domain_size * mpiSize;
+    
+    const Dimensions globalGridOffset = mpiPos * domain_size;
+    const Dimensions globalGridSize = mpiSize * domain_size;
 
     size_t mpi_elements = numElements * (currentMpiRank + 1);
     Dimensions poly_size(mpi_elements, 1, 1);
@@ -333,7 +341,9 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
 #endif
 
     parallelDomainCollector->writeDomain(iteration, ctFloat, 1, poly_size,
-            "poly_data", domain_offset, domain_size, IDomainCollector::PolyType, data_write);
+            "poly_data", domain_offset, domain_size, 
+            globalGridOffset, globalGridSize,
+            IDomainCollector::PolyType, data_write);
 
     parallelDomainCollector->close();
 

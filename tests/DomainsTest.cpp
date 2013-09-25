@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #include <time.h>
@@ -46,7 +46,7 @@ ctInt()
     char** argv;
     int initialized;
     MPI_Initialized(&initialized);
-    if( !initialized )
+    if (!initialized)
         MPI_Init(&argc, &argv);
 
     MPI_Comm_size(MPI_COMM_WORLD, &totalMpiSize);
@@ -64,7 +64,7 @@ DomainsTest::~DomainsTest()
     int finalized;
     MPI_Finalized(&finalized);
     if (!finalized)
-       MPI_Finalize();
+        MPI_Finalize();
 }
 
 void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions gridSize,
@@ -86,6 +86,9 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
                 (mpi_rank / mpiSize[0]) % mpiSize[1],
                 (mpi_rank / mpiSize[0]) / mpiSize[1]);
 
+        const Dimensions globalDomainOffset(0, 0, 0);
+        const Dimensions globalDomainSize = mpiSize * gridSize;
+
         for (size_t i = 0; i < gridSize.getScalarSize(); ++i)
             data_write[i] = mpi_rank;
 
@@ -105,34 +108,35 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
 #endif
 
         dataCollector->writeDomain(iteration, ctInt, rank, gridSize, "grid_data",
-                domain_offset, gridSize, DomainCollector::GridType, data_write);
+                domain_offset, gridSize, globalDomainOffset, globalDomainSize,
+                DomainCollector::GridType, data_write);
 
         dataCollector->close();
-        
+
         int *data_read = new int[gridSize.getScalarSize()];
         fattr.fileAccType = DataCollector::FAT_READ;
-        
+
         dataCollector->open(hdf5_file_grid, fattr);
         DomainCollector::DomDataClass data_class = DomainCollector::UndefinedType;
         DataContainer *container = dataCollector->readDomain(iteration, "grid_data",
                 domain_offset, gridSize, &data_class, false);
         dataCollector->close();
-        
+
         CPPUNIT_ASSERT(container != NULL);
         CPPUNIT_ASSERT(container->getNumSubdomains() == 1);
         CPPUNIT_ASSERT(container->getNumElements() == gridSize.getScalarSize());
-        
+
         for (size_t i = 0; i < gridSize.getScalarSize(); ++i)
-            CPPUNIT_ASSERT(*((int*)(container->getElement(i))) == mpi_rank);
-        
+            CPPUNIT_ASSERT(*((int*) (container->getElement(i))) == mpi_rank);
+
         delete container;
-        
+
         delete[] data_read;
 
         delete[] data_write;
         data_write = NULL;
     }
-    
+
     MPI_Barrier(MPI_COMM_WORLD);
 
     if (mpi_rank == 0)
@@ -165,10 +169,10 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
 
             IDomainCollector::DomDataClass data_class = IDomainCollector::UndefinedType;
 
-			Domain total_domain;
-			total_domain = dataCollector->getGlobalDomain(iteration, "grid_data");
-			CPPUNIT_ASSERT(total_domain.getOffset() == Dimensions(0, 0, 0));
-			CPPUNIT_ASSERT(total_domain.getSize() == global_grid_size);
+            Domain global_domain;
+            global_domain = dataCollector->getGlobalDomain(iteration, "grid_data");
+            CPPUNIT_ASSERT(global_domain.getOffset().getScalarSize() == 0);
+            CPPUNIT_ASSERT(global_domain.getSize() == global_grid_size);
 
             // read data container
             DataContainer *container = dataCollector->readDomain(iteration, "grid_data",
@@ -220,7 +224,7 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize, const Dimensions 
 #endif
                 CPPUNIT_ASSERT(subdomain_data[j] == expected_value);
             }
-            
+
             delete container;
             container = NULL;
         }
@@ -266,7 +270,7 @@ void DomainsTest::testGridDomains()
                             MPI_Barrier(MPI_COMM_WORLD);
 
                             subTestGridDomains(mpi_size, grid_size, 3, iteration);
-                            
+
                             MPI_Barrier(MPI_COMM_WORLD);
                             iteration++;
                         }
@@ -303,6 +307,9 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
                 (mpi_rank / mpiSize[0]) % mpiSize[1],
                 (mpi_rank / mpiSize[0]) / mpiSize[1]);
 
+        const Dimensions globalDomainOffset(0, 0, 0);
+        const Dimensions globalDomainSize = mpiSize * grid_size;
+
         for (size_t i = 0; i < mpi_elements; ++i)
             data_write[i] = (float) mpi_rank;
 
@@ -322,7 +329,9 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
 #endif
 
         dataCollector->writeDomain(iteration, ctFloat, 1, Dimensions(mpi_elements, 1, 1),
-                "poly_data", domain_offset, grid_size, DomainCollector::PolyType, data_write);
+                "poly_data", domain_offset, grid_size,
+                globalDomainOffset, globalDomainSize,
+                DomainCollector::PolyType, data_write);
 
         dataCollector->close();
 
@@ -412,7 +421,7 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
                     CPPUNIT_ASSERT(subdomain_data[j] == (float) subdomain_mpi_rank);
                 }
             }
-            
+
             delete container;
             container = NULL;
         }
@@ -477,6 +486,9 @@ void DomainsTest::testAppendDomains()
         Dimensions grid_size(12, 40, 7);
         uint32_t elements = 100;
 
+        const Dimensions globalDomainOffset(0, 0, 0);
+        const Dimensions globalDomainSize(grid_size);
+
         DataCollector::FileCreationAttr fattr;
         fattr.fileAccType = DataCollector::FAT_CREATE;
         fattr.mpiSize.set(mpi_size);
@@ -495,10 +507,12 @@ void DomainsTest::testAppendDomains()
             data_write[i] = (float) i;
 
         dataCollector->appendDomain(0, ctFloat, 10, 0, 1, "append_data",
-                Dimensions(0, 0, 0), grid_size, data_write);
+                Dimensions(0, 0, 0), grid_size,
+                globalDomainOffset, globalDomainSize, data_write);
 
         dataCollector->appendDomain(0, ctFloat, elements - 10, 10, 1, "append_data",
-                Dimensions(0, 0, 0), grid_size, data_write);
+                Dimensions(0, 0, 0), grid_size,
+                globalDomainOffset, globalDomainSize, data_write);
 
         dataCollector->close();
 
@@ -542,10 +556,10 @@ void DomainsTest::testAppendDomains()
         {
             CPPUNIT_ASSERT(subdomain_data[j] == (float) j);
         }
-        
+
         delete container;
         container = NULL;
-        
+
         dataCollector->close();
     }
 
