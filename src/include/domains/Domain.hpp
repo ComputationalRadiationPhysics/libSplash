@@ -180,7 +180,6 @@ namespace DCollector
     protected:
         Dimensions offset;
         Dimensions size;
-        uint32_t dims;
     };
 
 }
