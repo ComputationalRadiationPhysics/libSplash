@@ -29,6 +29,7 @@
 #include "basetypes/ColTypeInt.hpp"
 #include "DomainCollector.hpp"
 #include "core/DCDataSet.hpp"
+#include "include/core/DCGroup.hpp"
 
 namespace DCollector
 {
@@ -173,6 +174,221 @@ namespace DCollector
         return Domain::testIntersection(request_domain, fileDomain);
     }
 
+    void DomainCollector::readGridInternal(
+            DataContainer *dataContainer,
+            Dimensions mpiPosition,
+            int32_t id,
+            const char* name,
+            Domain &clientDomain,
+            Domain &requestDomain
+            )
+    throw (DCException)
+    {
+#if (DC_DEBUG == 1)
+        std::cerr << "dataclass = Grid" << std::endl;
+#endif
+
+        // When the first intersection is found, the whole destination 
+        // buffer is allocated and added to the container.
+        if (dataContainer->getNumSubdomains() == 0)
+        {
+            std::stringstream group_id_name;
+            group_id_name << SDC_GROUP_DATA << "/" << id;
+            std::string group_id_string = group_id_name.str();
+
+            DCGroup group;
+            group.open(handles.get(mpiPosition), group_id_string);
+
+            size_t datatype_size = 0;
+            DCDataSet::DCDataType dc_datatype = DCDataSet::DCDT_UNKNOWN;
+
+            try
+            {
+                DCDataSet tmp_dataset(name);
+                tmp_dataset.open(group.getHandle());
+
+                datatype_size = tmp_dataset.getDataTypeSize();
+                dc_datatype = tmp_dataset.getDCDataType();
+
+                tmp_dataset.close();
+            } catch (DCException e)
+            {
+                throw e;
+            }
+
+            group.close();
+
+            DomainData *target_data = new DomainData(
+                    requestDomain, requestDomain.getSize(),
+                    datatype_size, dc_datatype);
+
+            dataContainer->add(target_data);
+        }
+
+        // Compute the offsets and sizes for reading and
+        // writing this intersection.
+        Dimensions dst_offset(0, 0, 0);
+        Dimensions src_size(1, 1, 1);
+        Dimensions src_offset(0, 0, 0);
+
+        Dimensions client_start = clientDomain.getOffset();
+        Dimensions client_size = clientDomain.getSize();
+
+        size_t ndims = getNDims(handles.get(mpiPosition), id, name);
+        const Dimensions &request_offset = requestDomain.getOffset();
+        const Dimensions &request_size = requestDomain.getSize();
+
+        for (uint32_t i = 0; i < ndims; ++i)
+        {
+            dst_offset[i] = std::max((int64_t) clientDomain.getOffset()[i] - (int64_t) request_offset[i], (int64_t) 0);
+
+            dst_offset[i] = std::max((int64_t) clientDomain.getOffset()[i] -
+                    (int64_t) request_offset[i], (int64_t) 0);
+
+            if (request_offset[i] <= client_start[i])
+            {
+                // request starts before/equal client offset
+                src_offset[i] = 0;
+
+                if (request_offset[i] + request_size[i] >= client_start[i] + client_size[i])
+                    // end of request stretches beyond client limits
+                    src_size[i] = client_size[i];
+                else
+                    // end of request within client limits
+                    src_size[i] = request_offset[i] + request_size[i] - client_start[i];
+            } else
+            {
+                // request starts after client offset
+                src_offset[i] = request_offset[i] - client_start[i];
+
+                if (request_offset[i] + request_size[i] >= client_start[i] + client_size[i])
+                    // end of request stretches beyond client limits
+                    src_size[i] = client_size[i] - src_offset[i];
+                else
+                    // end of request within client limits
+                    src_size[i] = request_offset[i] + request_size[i] -
+                        (client_start[i] + src_offset[i]);
+            }
+        }
+
+#if (DC_DEBUG == 1)
+        std::cerr << "clientDomain.getSize() = " <<
+                clientDomain.getSize().toString() << std::endl;
+        std::cerr << "data_size = " <<
+                data_size.toString() << std::endl;
+        std::cerr << "dst_offset = " << dst_offset.toString() << std::endl;
+        std::cerr << "src_size = " << src_size.toString() << std::endl;
+        std::cerr << "src_offset = " << src_offset.toString() << std::endl;
+
+        assert(src_size[0] <= request_size[0]);
+        assert(src_size[1] <= request_size[1]);
+        assert(src_size[2] <= request_size[2]);
+#endif
+
+        // read intersecting partition into destination buffer
+        Dimensions elements_read(0, 0, 0);
+        uint32_t src_dims = 0;
+        readInternal(handles.get(mpiPosition), id, name,
+                dataContainer->getIndex(0)->getSize(),
+                dst_offset,
+                src_size,
+                src_offset,
+                elements_read,
+                src_dims,
+                dataContainer->getIndex(0)->getData());
+
+#if (DC_DEBUG == 1)
+        std::cerr << "elements_read = " << elements_read.toString() << std::endl;
+#endif
+
+        if (!(elements_read == src_size))
+            throw DCException("DomainCollector::readGridInternal: Sizes are not equal but should be (2).");
+    }
+
+    void DomainCollector::readPolyInternal(
+            DataContainer *dataContainer,
+            Dimensions mpiPosition,
+            int32_t id,
+            const char* name,
+            const Dimensions &dataSize,
+            Domain &clientDomain,
+            bool lazyLoad
+            )
+    throw (DCException)
+    {
+#if (DC_DEBUG == 1)
+        std::cerr << "dataclass = Poly" << std::endl;
+#endif
+        if (dataSize.getScalarSize() > 0)
+        {
+            std::stringstream group_id_name;
+            group_id_name << SDC_GROUP_DATA << "/" << id;
+            std::string group_id_string = group_id_name.str();
+
+            DCGroup group;
+            group.open(handles.get(mpiPosition), group_id_string);
+
+            size_t datatype_size = 0;
+            DCDataSet::DCDataType dc_datatype = DCDataSet::DCDT_UNKNOWN;
+
+            try
+            {
+                DCDataSet tmp_dataset(name);
+                tmp_dataset.open(group.getHandle());
+
+                datatype_size = tmp_dataset.getDataTypeSize();
+                dc_datatype = tmp_dataset.getDCDataType();
+
+                tmp_dataset.close();
+            } catch (DCException e)
+            {
+                throw e;
+            }
+
+            group.close();
+
+            DomainData *client_data = new DomainData(clientDomain,
+                    dataSize, datatype_size, dc_datatype);
+
+            if (lazyLoad)
+            {
+                client_data->setLoadingReference(PolyType,
+                        handles.get(mpiPosition), id, name,
+                        dataSize,
+                        Dimensions(0, 0, 0),
+                        Dimensions(0, 0, 0),
+                        Dimensions(0, 0, 0));
+            } else
+            {
+                Dimensions size_read;
+                uint32_t src_ndims = 0;
+                readInternal(handles.get(mpiPosition), id, name,
+                        dataSize,
+                        Dimensions(0, 0, 0),
+                        Dimensions(0, 0, 0),
+                        Dimensions(0, 0, 0),
+                        size_read,
+                        src_ndims,
+                        client_data->getData());
+
+#if (DC_DEBUG == 1)
+                std::cerr << size_read.toString() << std::endl;
+                std::cerr << dataSize.toString() << std::endl;
+#endif
+
+                if (!(size_read == dataSize))
+                    throw DCException("DomainCollector::readPolyInternal: Sizes are not equal but should be (1).");
+            }
+
+            dataContainer->add(client_data);
+        } else
+        {
+#if (DC_DEBUG == 1)
+            std::cerr << "skipping entry with 0 elements" << std::endl;
+#endif
+        }
+    }
+
     bool DomainCollector::readDomainDataForRank(
             DataContainer *dataContainer,
             DomDataClass *dataClass,
@@ -191,6 +407,8 @@ namespace DCollector
         bool readResult = false;
         Domain client_domain;
         Domain request_domain(requestOffset, requestSize);
+        Dimensions data_size;
+        DomDataClass tmp_data_class = UndefinedType;
 
         readAttribute(id, name, DOMCOL_ATTR_OFFSET,
                 client_domain.getOffset().getPointer(), &mpiPosition);
@@ -198,10 +416,8 @@ namespace DCollector
         readAttribute(id, name, DOMCOL_ATTR_SIZE,
                 client_domain.getSize().getPointer(), &mpiPosition);
 
-        Dimensions data_size;
-        this->read(id, name, data_size, NULL);
+        readSizeInternal(handles.get(mpiPosition), id, name, data_size);
 
-        DomDataClass tmp_data_class = UndefinedType;
         readAttribute(id, name, DOMCOL_ATTR_CLASS, &tmp_data_class, &mpiPosition);
 
         if (tmp_data_class == GridType && data_size != client_domain.getSize())
@@ -221,7 +437,8 @@ namespace DCollector
 
 #if (DC_DEBUG == 1)
         std::cerr << "clientdom. = " << client_domain.toString() << std::endl;
-        std::cerr << "requestdom. = " << request_domain.toString() << std::endl;
+        std::cerr << "requestdom.= " << request_domain.toString() << std::endl;
+        std::cerr << "data size  = " << data_size.toString() << std::endl;
 #endif
 
         // test on intersection and add new DomainData to the container if necessary
@@ -229,207 +446,22 @@ namespace DCollector
         {
             readResult = true;
 
-            // Poly data has no internal grid structure, 
-            // so the whole chunk has to be read and is added to the DataContainer.
-            if (*dataClass == PolyType)
+            switch (*dataClass)
             {
-#if (DC_DEBUG == 1)
-                std::cerr << "dataclass = Poly" << std::endl;
-#endif
-                if (data_size.getScalarSize() > 0)
-                {
-                    std::stringstream group_id_name;
-                    group_id_name << SDC_GROUP_DATA << "/" << id;
-                    std::string group_id_string = group_id_name.str();
-
-                    hid_t group_id = H5Gopen(handles.get(mpiPosition), group_id_string.c_str(), H5P_DEFAULT);
-                    if (group_id < 0)
-                        throw DCException("DomainCollector::readDomain: group not found");
-
-                    size_t datatype_size = 0;
-                    DCDataSet::DCDataType dc_datatype = DCDataSet::DCDT_UNKNOWN;
-
-                    try
-                    {
-                        DCDataSet tmp_dataset(name);
-                        tmp_dataset.open(group_id);
-
-                        datatype_size = tmp_dataset.getDataTypeSize();
-                        dc_datatype = tmp_dataset.getDCDataType();
-
-                        tmp_dataset.close();
-                    } catch (DCException e)
-                    {
-                        H5Gclose(group_id);
-                        throw e;
-                    }
-
-                    H5Gclose(group_id);
-
-                    DomainData *client_data = new DomainData(client_domain,
-                            data_size, datatype_size, dc_datatype);
-
-                    if (lazyLoad)
-                    {
-                        client_data->setLoadingReference(*dataClass,
-                                handles.get(mpiPosition), id, name,
-                                data_size,
-                                Dimensions(0, 0, 0),
-                                Dimensions(0, 0, 0),
-                                Dimensions(0, 0, 0));
-                    } else
-                    {
-                        Dimensions elements_read;
-                        uint32_t src_dims = 0;
-                        readInternal(handles.get(mpiPosition), id, name,
-                                data_size,
-                                Dimensions(0, 0, 0),
-                                Dimensions(0, 0, 0),
-                                Dimensions(0, 0, 0),
-                                elements_read,
-                                src_dims,
-                                client_data->getData());
-
-#if (DC_DEBUG == 1)
-                        std::cerr << elements_read.toString() << std::endl;
-                        std::cerr << data_elements.toString() << std::endl;
-#endif
-
-                        if (!(elements_read == data_size))
-                            throw DCException("DomainCollector::readDomain: Sizes are not equal but should be (1).");
-                    }
-
-                    dataContainer->add(client_data);
-                } else
-                {
-#if (DC_DEBUG == 1)
-                    std::cerr << "skipping entry with 0 elements" << std::endl;
-#endif
-                }
-            } else
-                // For Grid data, only the subchunk is read into its target position
-                // in the destination buffer.
-                if (*dataClass == GridType)
-            {
-#if (DC_DEBUG == 1)
-                std::cerr << "dataclass = Grid" << std::endl;
-#endif
-
-                // When the first intersection is found, the whole destination 
-                // buffer is allocated and added to the container.
-                if (dataContainer->getNumSubdomains() == 0)
-                {
-                    std::stringstream group_id_name;
-                    group_id_name << SDC_GROUP_DATA << "/" << id;
-                    std::string group_id_string = group_id_name.str();
-
-                    hid_t group_id = H5Gopen(handles.get(mpiPosition), group_id_string.c_str(), H5P_DEFAULT);
-                    if (group_id < 0)
-                        throw DCException("DomainCollector::readDomain: group not found");
-
-                    size_t datatype_size = 0;
-                    DCDataSet::DCDataType dc_datatype = DCDataSet::DCDT_UNKNOWN;
-
-                    try
-                    {
-                        DCDataSet tmp_dataset(name);
-                        tmp_dataset.open(group_id);
-
-                        datatype_size = tmp_dataset.getDataTypeSize();
-                        dc_datatype = tmp_dataset.getDCDataType();
-
-                        tmp_dataset.close();
-                    } catch (DCException e)
-                    {
-                        H5Gclose(group_id);
-                        throw e;
-                    }
-
-                    H5Gclose(group_id);
-
-                    DomainData *target_data = new DomainData(
-                            request_domain, request_domain.getSize(),
-                            datatype_size, dc_datatype);
-
-                    dataContainer->add(target_data);
-                }
-
-                // Compute the offsets and sizes for reading and
-                // writing this intersection.
-                Dimensions dst_offset(0, 0, 0);
-                Dimensions src_size(1, 1, 1);
-                Dimensions src_offset(0, 0, 0);
-
-                Dimensions client_start = client_domain.getOffset();
-                Dimensions client_size = client_domain.getSize();
-
-                size_t rank = getNDims(handles.get(mpiPosition), id, name);
-
-                for (uint32_t i = 0; i < rank; ++i)
-                {
-                    dst_offset[i] = std::max((int64_t) client_domain.getOffset()[i] - (int64_t) requestOffset[i], (int64_t) 0);
-
-                    dst_offset[i] = std::max((int64_t) client_domain.getOffset()[i] -
-                            (int64_t) requestOffset[i], (int64_t) 0);
-
-                    if (requestOffset[i] <= client_start[i])
-                    {
-                        // request starts before/equal client offset
-                        src_offset[i] = 0;
-
-                        if (requestOffset[i] + requestSize[i] >= client_start[i] + client_size[i])
-                            // end of request stretches beyond client limits
-                            src_size[i] = client_size[i];
-                        else
-                            // end of request within client limits
-                            src_size[i] = requestOffset[i] + requestSize[i] - client_start[i];
-                    } else
-                    {
-                        // request starts after client offset
-                        src_offset[i] = requestOffset[i] - client_start[i];
-
-                        if (requestOffset[i] + requestSize[i] >= client_start[i] + client_size[i])
-                            // end of request stretches beyond client limits
-                            src_size[i] = client_size[i] - src_offset[i];
-                        else
-                            // end of request within client limits
-                            src_size[i] = requestOffset[i] + requestSize[i] -
-                                (client_start[i] + src_offset[i]);
-                    }
-                }
-
-#if (DC_DEBUG == 1)
-                std::cerr << "client_domain.getSize() = " <<
-                        client_domain.getSize().toString() << std::endl;
-                std::cerr << "data_elements = " <<
-                        data_elements.toString() << std::endl;
-                std::cerr << "dst_offset = " << dst_offset.toString() << std::endl;
-                std::cerr << "src_size = " << src_size.toString() << std::endl;
-                std::cerr << "src_offset = " << src_offset.toString() << std::endl;
-
-                assert(src_size[0] <= request_domain.getSize()[0]);
-                assert(src_size[1] <= request_domain.getSize()[1]);
-                assert(src_size[2] <= request_domain.getSize()[2]);
-#endif
-
-                // read intersecting partition into destination buffer
-                Dimensions elements_read(0, 0, 0);
-                uint32_t src_dims = 0;
-                readInternal(handles.get(mpiPosition), id, name,
-                        dataContainer->getIndex(0)->getSize(),
-                        dst_offset,
-                        src_size,
-                        src_offset,
-                        elements_read,
-                        src_dims,
-                        dataContainer->getIndex(0)->getData());
-
-#if (DC_DEBUG == 1)
-                std::cerr << "elements_read = " << elements_read.toString() << std::endl;
-#endif
-
-                if (!(elements_read == src_size))
-                    throw DCException("DomainCollector::readDomain: Sizes are not equal but should be (2).");
+                case PolyType:
+                    // Poly data has no internal grid structure, 
+                    // so the whole chunk has to be read and is added to the DataContainer.
+                    readPolyInternal(dataContainer, mpiPosition, id, name,
+                            data_size, client_domain, lazyLoad);
+                    break;
+                case GridType:
+                    // For Grid data, only the subchunk is read into its target position
+                    // in the destination buffer.
+                    readGridInternal(dataContainer, mpiPosition, id, name,
+                            client_domain, request_domain);
+                    break;
+                default:
+                    return false;
             }
         } else
         {
@@ -725,7 +757,7 @@ namespace DCollector
         // try to get the number of elements already written, if any.
         try
         {
-            this->read(id, name, elements, NULL);
+            readSizeInternal(handles.get(0), id, name, elements);
         } catch (DCException expected_exception)
         {
             // nothing to do here but to make sure elements is set correctly

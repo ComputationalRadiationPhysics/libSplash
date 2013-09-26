@@ -814,10 +814,7 @@ throw (DCException)
     //this->options.enableCompression = attr.enableCompression;
 
 #if defined SDC_DEBUG_OUTPUT
-    if (attr.enableCompression)
-        std::cerr << "compression is ON" << std::endl;
-    else
-        std::cerr << "compression is OFF" << std::endl;
+    std::cerr << "compression is OFF" << std::endl;
 #endif
 
     options.maxID = -1;

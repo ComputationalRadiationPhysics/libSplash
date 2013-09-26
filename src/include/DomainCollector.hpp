@@ -163,6 +163,23 @@ namespace DCollector
                 Dimensions requestSize,
                 bool lazyLoad) throw (DCException);
 
+        void readGridInternal(
+                DataContainer *dataContainer,
+                Dimensions mpiPosition,
+                int32_t id,
+                const char* name,
+                Domain &clientDomain,
+                Domain &requestDomain) throw (DCException);
+
+        void readPolyInternal(
+                DataContainer *dataContainer,
+                Dimensions mpiPosition,
+                int32_t id,
+                const char* name,
+                const Dimensions &dataSize,
+                Domain &clientDomain,
+                bool lazyLoad) throw (DCException);
+
         void readGlobalSizeFallback(int32_t id,
                 const char *dataName,
                 hsize_t* data,

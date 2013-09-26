@@ -161,6 +161,11 @@ namespace DCollector
                 Dimensions& sizeRead,
                 uint32_t& srcDims,
                 void* dst) throw (DCException);
+        
+        void readSizeInternal(H5Handle h5File,
+            int32_t id,
+            const char* name,
+            Dimensions &sizeRead) throw (DCException);
 
         /**
          * Basic method for writing to a single DataSet.

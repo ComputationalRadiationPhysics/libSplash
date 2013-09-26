@@ -41,7 +41,7 @@ namespace DCollector
         return (std::string("Exception for DCDataSet [") + name + std::string("] ") +
                 msg);
     }
-    
+
     void DCDataSet::splitPath(const std::string fullName, std::string &path, std::string &name)
     {
         std::string::size_type pos = fullName.find_last_of('/');
@@ -135,7 +135,7 @@ namespace DCollector
             close();
             throw DCException(getExceptionString("open: Failed to get dimensions"));
         }
-        
+
         ndims = dims_result;
 
         getLogicalSize().set(1, 1, 1);
@@ -473,80 +473,18 @@ namespace DCollector
             if (dst_dataspace < 0)
                 throw DCException(getExceptionString("read: Failed to create target dataspace"));
 
-            if (ndims == 1)
-            {
-                // read data
-                if (H5Sselect_hyperslab(dst_dataspace, H5S_SELECT_SET, dstOffset.getPointer(), NULL,
-                        srcSize.getPointer(), NULL) < 0 ||
-                        H5Sselect_valid(dst_dataspace) <= 0)
-                    throw DCException(getExceptionString("read: Target dataspace hyperslab selection is not valid!"));
+            if (H5Sselect_hyperslab(dst_dataspace, H5S_SELECT_SET, dstOffset.getPointer(), NULL,
+                    srcSize.getPointer(), NULL) < 0 ||
+                    H5Sselect_valid(dst_dataspace) <= 0)
+                throw DCException(getExceptionString("read: Target dataspace hyperslab selection is not valid!"));
 
-                if (H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, srcOffset.getPointer(), NULL,
-                        srcSize.getPointer(), NULL) < 0 ||
-                        H5Sselect_valid(dataspace) <= 0)
-                    throw DCException(getExceptionString("read: Source dataspace hyperslab selection is not valid!"));
+            if (H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, srcOffset.getPointer(), NULL,
+                    srcSize.getPointer(), NULL) < 0 ||
+                    H5Sselect_valid(dataspace) <= 0)
+                throw DCException(getExceptionString("read: Source dataspace hyperslab selection is not valid!"));
 
-                if (H5Dread(dataset, this->datatype, dst_dataspace, dataspace, dsetReadProperties, dst) < 0)
-                    throw DCException(getExceptionString("read: Failed to read dataset"));
-
-            } else
-            {
-                Dimensions client_size(1, 1, 1);
-                Dimensions local_mpi_size(1, 1, 1);
-
-                DCAttribute::readAttribute(SDC_ATTR_SIZE, dataset, client_size.getPointer());
-                DCAttribute::readAttribute(SDC_ATTR_MPI_SIZE, dataset, local_mpi_size.getPointer());
-
-                client_size.swapDims(ndims);
-                local_mpi_size.swapDims(ndims);
-
-                if (local_mpi_size.getScalarSize() != 1)
-                {
-                    if (srcOffset.getScalarSize() != 0 || srcSize != getPhysicalSize())
-                        throw DCException(
-                            getExceptionString("read: reading composite datasets with source offset is not supported !"));
-
-                    // read data in parts (each part is for one mpi position)
-                    for (size_t x = 0; x < local_mpi_size[0]; x++)
-                        for (size_t y = 0; y < local_mpi_size[1]; y++)
-                            for (size_t z = 0; z < local_mpi_size[2]; z++)
-                            {
-                                Dimensions offset(x * client_size[0], y * client_size[1], z * client_size[2]);
-                                Dimensions dst_offset(offset);
-
-                                for (int i = 0; i < 3; i++)
-                                    dst_offset[i] += dstOffset[i];
-
-                                if (H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, offset.getPointer(), NULL,
-                                        client_size.getPointer(), NULL) < 0 ||
-                                        H5Sselect_valid(dataspace) <= 0)
-                                    throw DCException(getExceptionString("read: Source hyperslab selection is not valid !"));
-
-                                if (H5Sselect_hyperslab(dst_dataspace, H5S_SELECT_SET, dst_offset.getPointer(), NULL,
-                                        client_size.getPointer(), NULL) < 0 ||
-                                        H5Sselect_valid(dst_dataspace) <= 0)
-                                    throw DCException(getExceptionString("read: Target dataspace hyperslab selection is not valid!"));
-
-
-                                if (H5Dread(dataset, this->datatype, dst_dataspace, dataspace, dsetReadProperties, dst) < 0)
-                                    throw DCException(getExceptionString("read: Failed to read dataset"));
-                            }
-                } else
-                {
-                    if (H5Sselect_hyperslab(dst_dataspace, H5S_SELECT_SET, dstOffset.getPointer(), NULL,
-                            srcSize.getPointer(), NULL) < 0 ||
-                            H5Sselect_valid(dst_dataspace) <= 0)
-                        throw DCException(getExceptionString("read: Target dataspace hyperslab selection is not valid!"));
-
-                    if (H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, srcOffset.getPointer(), NULL,
-                            srcSize.getPointer(), NULL) < 0 ||
-                            H5Sselect_valid(dataspace) <= 0)
-                        throw DCException(getExceptionString("read: Source dataspace hyperslab selection is not valid!"));
-
-                    if (H5Dread(dataset, this->datatype, dst_dataspace, dataspace, dsetReadProperties, dst) < 0)
-                        throw DCException(getExceptionString("read: Failed to read dataset"));
-                }
-            }
+            if (H5Dread(dataset, this->datatype, dst_dataspace, dataspace, dsetReadProperties, dst) < 0)
+                throw DCException(getExceptionString("read: Failed to read dataset"));
 
             H5Sclose(dst_dataspace);
 
@@ -631,7 +569,7 @@ namespace DCollector
                     srcStride.getPointer(), srcData.getPointer(), NULL) < 0 ||
                     H5Sselect_valid(dsp_src) <= 0)
                 throw DCException(getExceptionString("write: Invalid source hyperslap selection"));
-            
+
             if (srcData.getScalarSize() == 0)
                 H5Sselect_none(dsp_src);
 
@@ -640,7 +578,7 @@ namespace DCollector
                     NULL, srcData.getPointer(), NULL) < 0 ||
                     H5Sselect_valid(dataspace) <= 0)
                 throw DCException(getExceptionString("write: Invalid target hyperslap selection"));
-            
+
             if (srcData.getScalarSize() == 0)
             {
                 H5Sselect_none(dataspace);

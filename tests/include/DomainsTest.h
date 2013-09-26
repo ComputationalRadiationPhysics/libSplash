@@ -34,9 +34,9 @@ class DomainsTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE(DomainsTest);
 
-    //CPPUNIT_TEST(testGridDomains);
+    CPPUNIT_TEST(testGridDomains);
     CPPUNIT_TEST(testPolyDomains);
-    //CPPUNIT_TEST(testAppendDomains);
+    CPPUNIT_TEST(testAppendDomains);
 
     CPPUNIT_TEST_SUITE_END();
 

@@ -820,9 +820,6 @@ namespace DCollector
         std::cerr << "# SerialDataCollector::readInternal #" << std::endl;
 #endif
 
-        if (h5File < 0 || name == NULL)
-            throw DCException(getExceptionString("readInternal", "invalid parameters"));
-
         std::string group_path, dset_name;
         DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
 
@@ -834,6 +831,36 @@ namespace DCollector
             DCDataSet dataset(dset_name.c_str());
             dataset.open(group.getHandle());
             dataset.read(dstBuffer, dstOffset, srcSize, srcOffset, sizeRead, srcDims, dst);
+            dataset.close();
+        } catch (DCException e)
+        {
+            throw e;
+        }
+    }
+    
+    void SerialDataCollector::readSizeInternal(H5Handle h5File,
+            int32_t id,
+            const char* name,
+            Dimensions &sizeRead)
+    throw (DCException)
+    {
+#if defined SDC_DEBUG_OUTPUT
+        std::cerr << "# SerialDataCollector::readSizeInternal #" << std::endl;
+#endif
+
+        std::string group_path, dset_name;
+        DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
+
+        DCGroup group;
+        Dimensions tmpDim(0, 0, 0);
+        group.open(h5File, group_path);
+
+        try
+        {
+            uint32_t src_dims;
+            DCDataSet dataset(dset_name.c_str());
+            dataset.open(group.getHandle());
+            dataset.read(tmpDim, tmpDim, tmpDim, tmpDim, sizeRead, src_dims, NULL);
             dataset.close();
         } catch (DCException e)
         {
