@@ -115,13 +115,13 @@ namespace DCollector
         // we can just open the last MPI position to get the total size.
         Dimensions mpi_position(mpi_size[0] - 1, mpi_size[1] - 1, mpi_size[2] - 1);
 
-        Dimensions domain_size;
-        Dimensions domain_offset;
+        Dimensions global_domain_size;
+        Dimensions global_domain_offset;
 
-        readGlobalSizeFallback(id, name, domain_size.getPointer(), &mpi_position);
-        readGlobalOffsetFallback(id, name, domain_offset.getPointer(), &mpi_position);
+        readGlobalSizeFallback(id, name, global_domain_size.getPointer(), &mpi_position);
+        readGlobalOffsetFallback(id, name, global_domain_offset.getPointer(), &mpi_position);
 
-        return Domain(domain_offset, domain_size);
+        return Domain(global_domain_offset, global_domain_size);
     }
 
     /*size_t DomainCollector::getLocalElements(int32_t id,
@@ -274,8 +274,6 @@ namespace DCollector
 #if (DC_DEBUG == 1)
         std::cerr << "clientDomain.getSize() = " <<
                 clientDomain.getSize().toString() << std::endl;
-        std::cerr << "data_size = " <<
-                data_size.toString() << std::endl;
         std::cerr << "dst_offset = " << dst_offset.toString() << std::endl;
         std::cerr << "src_size = " << src_size.toString() << std::endl;
         std::cerr << "src_offset = " << src_offset.toString() << std::endl;

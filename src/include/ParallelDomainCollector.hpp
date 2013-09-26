@@ -65,7 +65,7 @@ namespace DCollector
 
         Domain getGlobalDomain(int32_t id,
                 const char* name) throw (DCException);
-        
+
         Domain getLocalDomain(int32_t id,
                 const char* name) throw (DCException);
 
@@ -80,7 +80,7 @@ namespace DCollector
 
         void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcData,
                 const char* name,
                 const Dimensions domainOffset,
@@ -88,11 +88,11 @@ namespace DCollector
                 const Dimensions globalDomainOffset,
                 const Dimensions globalDomainSize,
                 DomDataClass dataClass,
-                const void* data) throw (DCException);
+                const void* buf) throw (DCException);
 
         void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcData,
                 const Dimensions srcOffset,
@@ -102,11 +102,11 @@ namespace DCollector
                 const Dimensions globalDomainOffset,
                 const Dimensions globalDomainSize,
                 DomDataClass dataClass,
-                const void* data) throw (DCException);
+                const void* buf) throw (DCException);
 
         void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcStride,
                 const Dimensions srcData,
@@ -117,25 +117,25 @@ namespace DCollector
                 const Dimensions globalDomainOffset,
                 const Dimensions globalDomainSize,
                 DomDataClass dataClass,
-                const void* data) throw (DCException);
+                const void* buf) throw (DCException);
 
         void writeDomain(int32_t id,
                 const Dimensions globalSize,
                 const Dimensions globalOffset,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcData,
                 const char* name,
                 const Dimensions globalDomainOffset,
                 const Dimensions globalDomainSize,
                 DomDataClass dataClass,
-                const void* data) throw (DCException);
+                const void* buf) throw (DCException);
 
         void writeDomain(int32_t id,
                 const Dimensions globalSize,
                 const Dimensions globalOffset,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcData,
                 const Dimensions srcOffset,
@@ -143,13 +143,13 @@ namespace DCollector
                 const Dimensions globalDomainOffset,
                 const Dimensions globalDomainSize,
                 DomDataClass dataClass,
-                const void* data) throw (DCException);
+                const void* buf) throw (DCException);
 
         void writeDomain(int32_t id,
                 const Dimensions globalSize,
                 const Dimensions globalOffset,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcStride,
                 const Dimensions srcData,
@@ -158,27 +158,38 @@ namespace DCollector
                 const Dimensions globalDomainOffset,
                 const Dimensions globalDomainSize,
                 DomDataClass dataClass,
-                const void* data) throw (DCException);
-        
+                const void* buf) throw (DCException);
+
         void reserveDomain(int32_t id,
                 const Dimensions globalSize,
-                uint32_t rank,
+                uint32_t ndims,
                 const CollectionType& type,
                 const char* name,
                 const Dimensions globalDomainOffset,
                 const Dimensions globalDomainSize,
                 DomDataClass dataClass) throw (DCException);
-        
+
         void reserveDomain(int32_t id,
                 const Dimensions size,
                 Dimensions *globalSize,
                 Dimensions *globalOffset,
-                uint32_t rank,
+                uint32_t ndims,
                 const CollectionType& type,
                 const char* name,
                 const Dimensions globalDomainOffset,
                 const Dimensions globalDomainSize,
                 DomDataClass dataClass) throw (DCException);
+        
+    protected:
+
+        bool readDomainDataForRank(
+                DataContainer *dataContainer,
+                DomDataClass *dataClass,
+                int32_t id,
+                const char* name,
+                Dimensions requestOffset,
+                Dimensions requestSize,
+                bool lazyLoad) throw (DCException);
 
         void appendDomain(int32_t id,
                 const CollectionType& type,
@@ -188,7 +199,7 @@ namespace DCollector
                 const Dimensions domainSize,
                 const Dimensions globalDomainOffset,
                 const Dimensions globalDomainSize,
-                const void *data) throw (DCException);
+                const void *buf) throw (DCException);
 
         void appendDomain(int32_t id,
                 const CollectionType& type,
@@ -200,18 +211,7 @@ namespace DCollector
                 const Dimensions domainSize,
                 const Dimensions globalDomainOffset,
                 const Dimensions globalDomainSize,
-                const void *data) throw (DCException);
-
-    protected:
-
-        bool readDomainDataForRank(
-                DataContainer *dataContainer,
-                DomDataClass *dataClass,
-                int32_t id,
-                const char* name,
-                Dimensions requestOffset,
-                Dimensions requestSize,
-                bool lazyLoad) throw (DCException);
+                const void *buf) throw (DCException);
 
     };
 
