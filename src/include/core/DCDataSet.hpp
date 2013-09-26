@@ -35,6 +35,19 @@
 
 namespace DCollector
 {
+    /**
+     * Possible data types.
+     */
+    enum DCDataType
+    {
+        DCDT_UNKNOWN,
+        DCDT_FLOAT32,
+        DCDT_FLOAT64,
+        DCDT_INT32,
+        DCDT_INT64,
+        DCDT_UINT32,
+        DCDT_UINT64
+    };
 
     /**
      * \cond HIDDEN_SYMBOLS
@@ -42,15 +55,6 @@ namespace DCollector
     class DCDataSet
     {
     public:
-
-        enum DCDataType
-        {
-            DCDT_UNKNOWN,
-            DCDT_FLOAT32, DCDT_FLOAT64,
-            DCDT_INT32, DCDT_INT64,
-            DCDT_UINT32, DCDT_UINT64
-        };
-
         /**
          * Constructor.
          *
@@ -210,10 +214,9 @@ namespace DCollector
         hid_t getDataSpace() throw (DCException);
 
         /**
-         * Returns the DCDataType associated with this DataSet.
+         * Returns the \p DCDataType associated with this DataSet.
          * A DCException is thrown if the DataSet has not been
-         * properly opened/created or if its type is not a
-         * known trivial type.
+         * properly opened/created.
          * 
          * @return the DataType
          */
@@ -232,11 +235,11 @@ namespace DCollector
          * @return dataset name
          */
         std::string getName();
-        
+
         static void splitPath(const std::string fullName, std::string &path, std::string &name);
-        
+
         static void getFullDataPath(const std::string fullUserName, const std::string pathBase,
-            uint32_t id, std::string &path, std::string &name);
+                uint32_t id, std::string &path, std::string &name);
 
     protected:
         void setChunking(size_t typeSize) throw (DCException);

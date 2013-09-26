@@ -62,13 +62,13 @@ namespace DCollector
          * Constructor.
          * Allocates enough memory to hold 'elements' data of 'type'.
          * 
-         * @param domain the underlying Domain.
-         * @param elements the number of data elements in every dimension.
-         * @param datatypeSize size of each element in bytes
-         * @param datatype hdf5 datatype
+         * @param domain The underlying Domain.
+         * @param elements Number of data elements in every dimension.
+         * @param datatypeSize Size of each element in bytes.
+         * @param datatype Internal representation of HDF5 datatype.
          */
         DomainData(Domain& domain, const Dimensions elements,
-                size_t datatypeSize, DCDataSet::DCDataType datatype) :
+                size_t datatypeSize, DCDataType datatype) :
         Domain(domain),
         elements(elements),
         data(NULL),
@@ -143,7 +143,7 @@ namespace DCollector
          * 
          * @return the datatype
          */
-        DCDataSet::DCDataType getDataType()
+        DCDataType getDataType()
         {
             return datatype;
         }
@@ -197,20 +197,20 @@ namespace DCollector
 
             switch (datatype)
             {
-                case DCDataSet::DCDT_FLOAT32:
-                case DCDataSet::DCDT_FLOAT64:
+                case DCDT_FLOAT32:
+                case DCDT_FLOAT64:
                     format_string << "f";
                     break;
-                case DCDataSet::DCDT_UINT32:
+                case DCDT_UINT32:
                     format_string << "u";
                     break;
-                case DCDataSet::DCDT_UINT64:
+                case DCDT_UINT64:
                     format_string << "lu";
                     break;
-                case DCDataSet::DCDT_INT32:
+                case DCDT_INT32:
                     format_string << "d";
                     break;
-                case DCDataSet::DCDT_INT64:
+                case DCDT_INT64:
                     format_string << "ld";
                     break;
                 default:
@@ -225,7 +225,7 @@ namespace DCollector
         uint8_t* data;
         DomainH5Ref *loadingReference;
 
-        DCDataSet::DCDataType datatype;
+        DCDataType datatype;
         size_t datatypeSize;
     };
 

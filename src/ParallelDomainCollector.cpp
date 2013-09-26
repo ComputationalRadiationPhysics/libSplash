@@ -151,7 +151,7 @@ throw (DCException)
                     "group not found", group_id_string.c_str()));
 
             size_t datatype_size = 0;
-            DCDataSet::DCDataType dc_datatype = DCDataSet::DCDT_UNKNOWN;
+            DCDataType dc_datatype = DCDT_UNKNOWN;
 
             try
             {
@@ -235,7 +235,7 @@ throw (DCException)
                     "group not found", group_id_string.c_str()));
 
             size_t datatype_size = 0;
-            DCDataSet::DCDataType dc_datatype = DCDataSet::DCDT_UNKNOWN;
+            DCDataType dc_datatype = DCDT_UNKNOWN;
 
             try
             {

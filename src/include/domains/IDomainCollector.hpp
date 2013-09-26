@@ -141,7 +141,7 @@ namespace DCollector
          * 
          * @param id ID of the iteration for writing.
          * @param type Type information for data.
-         * @param rank Number of dimensions (1-3).
+         * @param ndims Number of dimensions (1-3).
          * @param srcData dimensions of the data in the buffer
          * @param name Name for the dataset to create/append.
          * @param domainOffset Offset of this subdomain in the domain.
@@ -151,7 +151,7 @@ namespace DCollector
          */
         virtual void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcData,
                 const char* name,
                 const Dimensions domainOffset,
@@ -166,7 +166,7 @@ namespace DCollector
          * 
          * @param id ID of the iteration for writing.
          * @param type Type information for data.
-         * @param rank Number of dimensions (1-3).
+         * @param ndims Number of dimensions (1-3).
          * @param srcBuffer Size of the buffer to read from.
          * @param srcData dimensions of the data in the buffer
          * @param srcOffset Offset of \p srcData in \p srcBuffer.
@@ -178,7 +178,7 @@ namespace DCollector
          */
         virtual void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcData,
                 const Dimensions srcOffset,
@@ -195,7 +195,7 @@ namespace DCollector
          * 
          * @param id ID of the iteration for writing.
          * @param type Type information for data.
-         * @param rank Number of dimensions (1-3).
+         * @param ndims Number of dimensions (1-3).
          * @param srcBuffer Size of the buffer to read from.
          * @param srcStride Size of striding in each dimension. 1 means 'no stride'.
          * @param srcData Size of the data in the buffer.
@@ -208,7 +208,7 @@ namespace DCollector
          */
         virtual void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcStride,
                 const Dimensions srcData,

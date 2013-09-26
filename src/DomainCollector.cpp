@@ -200,7 +200,7 @@ namespace DCollector
             group.open(handles.get(mpiPosition), group_id_string);
 
             size_t datatype_size = 0;
-            DCDataSet::DCDataType dc_datatype = DCDataSet::DCDT_UNKNOWN;
+            DCDataType dc_datatype = DCDT_UNKNOWN;
 
             try
             {
@@ -327,7 +327,7 @@ namespace DCollector
             group.open(handles.get(mpiPosition), group_id_string);
 
             size_t datatype_size = 0;
-            DCDataSet::DCDataType dc_datatype = DCDataSet::DCDT_UNKNOWN;
+            DCDataType dc_datatype = DCDT_UNKNOWN;
 
             try
             {

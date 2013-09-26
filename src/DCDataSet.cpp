@@ -351,7 +351,7 @@ namespace DCollector
         return dataspace;
     }
 
-    DCDataSet::DCDataType DCDataSet::getDCDataType() throw (DCException)
+    DCDataType DCDataSet::getDCDataType() throw (DCException)
     {
         if (!opened)
             throw DCException(getExceptionString("getDCDataType: dataset is not opened"));
