@@ -63,7 +63,7 @@ namespace DCollector
         /**
          * Destructor
          */
-        virtual ~Dimensions()
+        ~Dimensions()
         {
 
         }
