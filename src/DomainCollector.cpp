@@ -43,61 +43,6 @@ namespace DCollector
     {
     }
 
-    /*size_t DomainCollector::getGlobalElements(int32_t id,
-            const char* name)
-    throw (DCException)
-    {
-        if ((fileStatus != FST_MERGING) && (fileStatus != FST_READING))
-            throw DCException("DomainCollector::getTotalElements: this access is not permitted");
-
-        size_t total_elements = 0;
-        Dimensions mpi_position(0, 0, 0);
-        Dimensions access_mpi_size;
-
-        if (fileStatus == FST_MERGING)
-            access_mpi_size.set(mpiTopology);
-        else
-            access_mpi_size.set(1, 1, 1);
-
-        DomDataClass data_class = UndefinedType;
-        readAttribute(id, name, DOMCOL_ATTR_CLASS, &data_class, &mpi_position);
-
-        if (data_class == DomainCollector::GridType)
-        {
-            // For Grid data, we can just read from the last MPI position since
-            // all processes need to write as a regular grid.
-            Dimensions subdomain_size;
-            Dimensions subdomain_offset;
-
-            mpi_position.set(access_mpi_size[0] - 1, access_mpi_size[1] - 1, access_mpi_size[2] - 1);
-
-            readGlobalSizeFallback(id, name, subdomain_size.getPointer(), &mpi_position);
-
-            total_elements = subdomain_size.getScalarSize();
-        } else
-        {
-            // For Poly data, we currently need to open every file (slow!)
-            Dimensions subdomain_elements;
-            for (size_t z = 0; z < access_mpi_size[2]; z++)
-            {
-                for (size_t y = 0; y < access_mpi_size[1]; y++)
-                {
-                    for (size_t x = 0; x < access_mpi_size[0]; x++)
-                    {
-                        mpi_position.set(x, y, z);
-
-                        readAttribute(id, name, DOMCOL_ATTR_ELEMENTS,
-                                subdomain_elements.getPointer(), &mpi_position);
-
-                        total_elements += subdomain_elements.getScalarSize();
-                    }
-                }
-            }
-        }
-
-        return total_elements;
-    }*/
-
     Domain DomainCollector::getGlobalDomain(int32_t id,
             const char* name)
     throw (DCException)
@@ -123,18 +68,6 @@ namespace DCollector
 
         return Domain(global_domain_offset, global_domain_size);
     }
-
-    /*size_t DomainCollector::getLocalElements(int32_t id,
-            const char* name) throw (DCException)
-    {
-        if ((fileStatus != FST_MERGING) && (fileStatus != FST_READING))
-            throw DCException("DomainCollector::getLocalDomain: this access is not permitted");
-        
-        // this accesses the local information, for both normal and merged read
-        Dimensions mpi_position(0, 0, 0);
-        
-        
-    }*/
 
     Domain DomainCollector::getLocalDomain(int32_t id,
             const char* name) throw (DCException)

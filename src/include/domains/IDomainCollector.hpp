@@ -54,18 +54,6 @@ namespace DCollector
         };
 
         /**
-         * Returns the global number of domain elements for a dataset,
-         * which is the sum of all subdomain elements.
-         * This function does not check that domain classes match.
-         * 
-         * @param id ID of iteration.
-         * @param name Name of the dataset.
-         * @return Global number of domain elements.
-         */
-        /*virtual size_t getGlobalElements(int32_t id,
-                const char* name) = 0;*/
-
-        /**
          * Returns the global domain that is spanned by all
          * local datasets (subdomains) of the currently accessed files.
          * The user is responsible to guarantee that the actual subdomains
@@ -77,18 +65,6 @@ namespace DCollector
          */
         virtual Domain getGlobalDomain(int32_t id,
                 const char* name) = 0;
-        
-        /**
-         * Returns the local number of domain elements for a dataset
-         * in the currently accessed file.
-         * This function does not check that domain classes match.
-         * 
-         * @param id ID of iteration.
-         * @param name Name of the dataset.
-         * @return Local number of domain elements.
-         */
-        /*virtual size_t getLocalElements(int32_t id,
-                const char* name) = 0;*/
 
         /**
          * Returns the local domain for a dataset 
@@ -144,8 +120,10 @@ namespace DCollector
          * @param ndims Number of dimensions (1-3).
          * @param srcData dimensions of the data in the buffer
          * @param name Name for the dataset to create/append.
-         * @param domainOffset Offset of this subdomain in the domain.
-         * @param domainSize Size of this subdomain in the domain.
+         * @param domainOffset Local offset of this subdomain in the global domain.
+         * @param domainSize Local size of this subdomain.
+         * @param globalDomainOffset Logical offset of the global domain.
+         * @param globalDomainSIze Logical size of the global domain.
          * @param dataClass Subdomain type annotation.
          * @param buf Buffer with data.
          */
@@ -171,8 +149,10 @@ namespace DCollector
          * @param srcData dimensions of the data in the buffer
          * @param srcOffset Offset of \p srcData in \p srcBuffer.
          * @param name Name for the dataset to create/append.
-         * @param domainOffset Offset of this subdomain in the domain.
-         * @param domainSize Size of this subdomain in the domain.
+         * @param domainOffset Local offset of this subdomain in the global domain.
+         * @param domainSize Local size of this subdomain.
+         * @param globalDomainOffset Logical offset of the global domain.
+         * @param globalDomainSIze Logical size of the global domain.
          * @param dataClass Subdomain type annotation.
          * @param buf Buffer with data.
          */
@@ -201,8 +181,10 @@ namespace DCollector
          * @param srcData Size of the data in the buffer.
          * @param srcOffset Offset of \p srcData in \p srcBuffer.
          * @param name Name for the dataset to create/append.
-         * @param domainOffset Offset of this subdomain in the domain.
-         * @param domainSize Size of this subdomain in the domain.
+         * @param domainOffset Local offset of this subdomain in the global domain.
+         * @param domainSize Local size of this subdomain.
+         * @param globalDomainOffset Logical offset of the global domain.
+         * @param globalDomainSIze Logical size of the global domain.
          * @param dataClass Subdomain type annotation.
          * @param buf Buffer with data.
          */
@@ -228,8 +210,10 @@ namespace DCollector
          * @param type Type information for data.
          * @param count Number of elements to append.
          * @param name Name for the dataset to create/append.
-         * @param domainOffset Offset of this subdomain in the domain.
-         * @param domainSize Size of this subdomain in the domain.
+         * @param domainOffset Local offset of this subdomain in the global domain.
+         * @param domainSize Local size of this subdomain.
+         * @param globalDomainOffset Logical offset of the global domain.
+         * @param globalDomainSIze Logical size of the global domain.
          * @param buf Buffer with data.
          */
         virtual void appendDomain(int32_t id,
@@ -253,8 +237,10 @@ namespace DCollector
          * Data must contain at least (striding * count) elements. 
          * 1 mean 'no striding'.
          * @param name Name for the dataset to create/append.
-         * @param domainOffset Offset of this subdomain in the domain.
-         * @param domainSize Size of this subdomain in the domain.
+         * @param domainOffset Local offset of this subdomain in the global domain.
+         * @param domainSize Local size of this subdomain.
+         * @param globalDomainOffset Logical offset of the global domain.
+         * @param globalDomainSIze Logical size of the global domain.
          * @param buf Buffer with data.
          */
         virtual void appendDomain(int32_t id,

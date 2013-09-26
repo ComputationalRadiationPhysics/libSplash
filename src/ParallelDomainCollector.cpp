@@ -49,20 +49,6 @@ ParallelDomainCollector::~ParallelDomainCollector()
 {
 }
 
-/*size_t ParallelDomainCollector::getGlobalElements(int32_t id,
-        const char* name)
-throw (DCException)
-{
-    if (this->fileStatus == FST_CLOSED)
-        throw DCException(getExceptionString("getGlobalElements",
-            "this access is not permitted", NULL));
-
-    Dimensions total_elements;
-    readAttribute(id, name, DOMCOL_ATTR_ELEMENTS, total_elements.getPointer());
-
-    return total_elements.getScalarSize();
-}*/
-
 Domain ParallelDomainCollector::getGlobalDomain(int32_t id,
         const char* name)
 throw (DCException)

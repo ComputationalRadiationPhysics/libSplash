@@ -60,14 +60,8 @@ namespace DCollector
          */
         virtual ~DomainCollector();
 
-        /*size_t getGlobalElements(int32_t id,
-                const char* name) throw (DCException);*/
-
         Domain getGlobalDomain(int32_t id,
                 const char* name) throw (DCException);
-
-        /*size_t getLocalElements(int32_t id,
-                const char* name) throw (DCException);*/
 
         Domain getLocalDomain(int32_t id,
                 const char* name) throw (DCException);
