@@ -96,7 +96,7 @@ bool StridingTest::subtestStriding(Dimensions gridSize, Dimensions striding, uin
         dataRead[i] = -1;
 
     Dimensions resultSize;
-    dataCollector->read(0, ctInt, "data_strided", resultSize, dataRead);
+    dataCollector->read(0, "data_strided", resultSize, dataRead);
 
     dataCollector->close();
 

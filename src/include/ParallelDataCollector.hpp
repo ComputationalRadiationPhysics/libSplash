@@ -162,13 +162,13 @@ namespace DCollector
                 Dimensions &globalSize, Dimensions &globalOffset) throw (DCException);
 
         /**
-         * Returns the rank (number of dimensions) for a dataset
-         * @param h5File file handle
-         * @param id id of the group to read from
-         * @param name name of the dataset
-         * @return rank
+         * Returns the number of dimensions for a dataset.
+         * @param h5File File handle.
+         * @param id ID of the group to read from.
+         * @param name Name of the dataset.
+         * @return Number of dimensions.
          */
-        size_t getRank(H5Handle h5File,
+        size_t getNDims(H5Handle h5File,
                 int32_t id,
                 const char* name);
 
@@ -320,13 +320,11 @@ namespace DCollector
                 const void *buf) throw (DCException);
 
         void read(int32_t id,
-                const CollectionType& type,
                 const char* name,
                 Dimensions &sizeRead,
                 void* buf) throw (DCException);
 
         void read(int32_t id,
-                const CollectionType& type,
                 const char* name,
                 const Dimensions dstBuffer,
                 const Dimensions dstOffset,
@@ -341,7 +339,6 @@ namespace DCollector
          * @param id ID for iteration.
          * @param localSize Size of data to be read, starting at \p globalOffset.
          * @param globalOffset Global offset in source data to start reading from.
-         * @param type Type information for data.
          * @param name Name for the dataset.
          * @param sizeRead Returns the size of the data in the file.
          * @param buf Buffer to read from file, can be NULL.
@@ -349,7 +346,6 @@ namespace DCollector
         void read(int32_t id,
                 const Dimensions localSize,
                 const Dimensions globalOffset,
-                const CollectionType& type,
                 const char* name,
                 Dimensions &sizeRead,
                 void* buf) throw (DCException);
@@ -362,7 +358,6 @@ namespace DCollector
          * @param id ID for iteration.
          * @param localSize Size of data to be read, starting at \p globalOffset.
          * @param globalOffset Global offset in source data to start reading from.
-         * @param type Type information for data.
          * @param name Name for the dataset.
          * @param dstBuffer Size of destination buffer.
          * @param dstOffset Offset in destination buffer to read to.
@@ -372,7 +367,6 @@ namespace DCollector
         void read(int32_t id,
                 const Dimensions localSize,
                 const Dimensions globalOffset,
-                const CollectionType& type,
                 const char* name,
                 const Dimensions dstBuffer,
                 const Dimensions dstOffset,

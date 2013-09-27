@@ -137,7 +137,7 @@ fileStatus(FST_CLOSED)
     options.enableCompression = false;
     options.mpiComm = comm;
     options.mpiInfo = info;
-    options.mpiSize = topology.getDimSize();
+    options.mpiSize = topology.getScalarSize();
     options.mpiTopology.set(topology);
     options.maxID = -1;
 
@@ -391,17 +391,15 @@ throw (DCException)
 }
 
 void ParallelDataCollector::read(int32_t id,
-        const CollectionType& type,
         const char* name,
         Dimensions &sizeRead,
         void* buf)
 throw (DCException)
 {
-    this->read(id, type, name, Dimensions(0, 0, 0), Dimensions(0, 0, 0), sizeRead, buf);
+    this->read(id, name, Dimensions(0, 0, 0), Dimensions(0, 0, 0), sizeRead, buf);
 }
 
 void ParallelDataCollector::read(int32_t id,
-        const CollectionType& /*type*/,
         const char* name,
         Dimensions dstBuffer,
         Dimensions dstOffset,
@@ -412,27 +410,25 @@ throw (DCException)
     if (fileStatus != FST_READING && fileStatus != FST_WRITING)
         throw DCException(getExceptionString("read", "this access is not permitted"));
 
-    uint32_t rank = 0;
+    uint32_t ndims = 0;
     readDataSet(handles.get(id), id, name, false, dstBuffer, dstOffset,
-            Dimensions(0, 0, 0), Dimensions(0, 0, 0), sizeRead, rank, buf);
+            Dimensions(0, 0, 0), Dimensions(0, 0, 0), sizeRead, ndims, buf);
 }
 
 void ParallelDataCollector::read(int32_t id,
         const Dimensions localSize,
         const Dimensions globalOffset,
-        const CollectionType& type,
         const char* name,
         Dimensions &sizeRead,
         void* buf) throw (DCException)
 {
-    this->read(id, localSize, globalOffset, type, name, localSize,
+    this->read(id, localSize, globalOffset, name, localSize,
             Dimensions(0, 0, 0), sizeRead, buf);
 }
 
 void ParallelDataCollector::read(int32_t id,
         const Dimensions localSize,
         const Dimensions globalOffset,
-        const CollectionType& /*type*/,
         const char* name,
         const Dimensions dstBuffer,
         const Dimensions dstOffset,
@@ -442,71 +438,71 @@ void ParallelDataCollector::read(int32_t id,
     if (fileStatus != FST_READING && fileStatus != FST_WRITING)
         throw DCException(getExceptionString("read", "this access is not permitted"));
 
-    uint32_t rank = 0;
+    uint32_t ndims = 0;
     readDataSet(handles.get(id), id, name, true, dstBuffer, dstOffset,
-            localSize, globalOffset, sizeRead, rank, buf);
+            localSize, globalOffset, sizeRead, ndims, buf);
 }
 
-void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32_t rank,
+void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
         const Dimensions srcData, const char* name, const void* data)
 throw (DCException)
 {
     Dimensions globalSize, globalOffset;
-    gatherMPIWrites(rank, srcData, globalSize, globalOffset);
+    gatherMPIWrites(ndims, srcData, globalSize, globalOffset);
 
     write(id, globalSize, globalOffset,
-            type, rank, srcData, Dimensions(1, 1, 1),
+            type, ndims, srcData, Dimensions(1, 1, 1),
             srcData, Dimensions(0, 0, 0), name, data);
 }
 
-void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32_t rank,
+void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
         const Dimensions srcBuffer, const Dimensions srcData, const Dimensions srcOffset,
         const char* name, const void* data)
 throw (DCException)
 {
     Dimensions globalSize, globalOffset;
-    gatherMPIWrites(rank, srcData, globalSize, globalOffset);
+    gatherMPIWrites(ndims, srcData, globalSize, globalOffset);
 
     write(id, globalSize, globalOffset,
-            type, rank, srcBuffer, Dimensions(1, 1, 1),
+            type, ndims, srcBuffer, Dimensions(1, 1, 1),
             srcData, srcOffset, name, data);
 }
 
-void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32_t rank,
+void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
         const Dimensions srcBuffer, const Dimensions srcStride, const Dimensions srcData,
         const Dimensions srcOffset, const char* name, const void* buf)
 throw (DCException)
 {
     Dimensions globalSize, globalOffset;
-    gatherMPIWrites(rank, srcData, globalSize, globalOffset);
+    gatherMPIWrites(ndims, srcData, globalSize, globalOffset);
 
     write(id, globalSize, globalOffset,
-            type, rank, srcBuffer, srcStride, srcData,
+            type, ndims, srcBuffer, srcStride, srcData,
             srcOffset, name, buf);
 }
 
 void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
         const Dimensions globalOffset,
-        const CollectionType& type, uint32_t rank, const Dimensions srcData,
+        const CollectionType& type, uint32_t ndims, const Dimensions srcData,
         const char* name, const void* buf)
 {
-    write(id, globalSize, globalOffset, type, rank, srcData, Dimensions(1, 1, 1), srcData,
+    write(id, globalSize, globalOffset, type, ndims, srcData, Dimensions(1, 1, 1), srcData,
             Dimensions(0, 0, 0), name, buf);
 }
 
 void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
         const Dimensions globalOffset,
-        const CollectionType& type, uint32_t rank, const Dimensions srcBuffer,
+        const CollectionType& type, uint32_t ndims, const Dimensions srcBuffer,
         const Dimensions srcData, const Dimensions srcOffset, const char* name,
         const void* buf)
 {
-    write(id, globalSize, globalOffset, type, rank, srcBuffer, Dimensions(1, 1, 1),
+    write(id, globalSize, globalOffset, type, ndims, srcBuffer, Dimensions(1, 1, 1),
             srcData, srcOffset, name, buf);
 }
 
 void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
         const Dimensions globalOffset,
-        const CollectionType& type, uint32_t rank, const Dimensions srcBuffer,
+        const CollectionType& type, uint32_t ndims, const Dimensions srcBuffer,
         const Dimensions srcStride, const Dimensions srcData,
         const Dimensions srcOffset, const char* name, const void* buf)
 {
@@ -516,7 +512,7 @@ void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
         throw DCException(getExceptionString("write", "this access is not permitted"));
 
-    if (rank < 1 || rank > 3)
+    if (ndims < 1 || ndims > 3)
         throw DCException(getExceptionString("write", "maximum dimension is invalid"));
 
     // create group for this id/iteration
@@ -529,7 +525,7 @@ void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
     // write data to the group
     try
     {
-        writeDataSet(group.getHandle(), globalSize, globalOffset, type, rank,
+        writeDataSet(group.getHandle(), globalSize, globalOffset, type, ndims,
                 srcBuffer, srcStride, srcData, srcOffset, dset_name.c_str(), buf);
     } catch (DCException)
     {
@@ -539,7 +535,7 @@ void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
 
 void ParallelDataCollector::reserve(int32_t id,
         const Dimensions globalSize,
-        uint32_t rank,
+        uint32_t ndims,
         const CollectionType& type,
         const char* name) throw (DCException)
 {
@@ -549,17 +545,17 @@ void ParallelDataCollector::reserve(int32_t id,
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
         throw DCException(getExceptionString("write", "this access is not permitted"));
 
-    if (rank < 1 || rank > 3)
+    if (ndims < 1 || ndims > 3)
         throw DCException(getExceptionString("write", "maximum dimension is invalid"));
 
-    reserveInternal(id, globalSize, rank, type, name);
+    reserveInternal(id, globalSize, ndims, type, name);
 }
 
 void ParallelDataCollector::reserve(int32_t id,
         const Dimensions size,
         Dimensions *globalSize,
         Dimensions *globalOffset,
-        uint32_t rank,
+        uint32_t ndims,
         const CollectionType& type,
         const char* name) throw (DCException)
 {
@@ -569,13 +565,13 @@ void ParallelDataCollector::reserve(int32_t id,
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
         throw DCException(getExceptionString("write", "this access is not permitted"));
 
-    if (rank < 1 || rank > 3)
+    if (ndims < 1 || ndims > 3)
         throw DCException(getExceptionString("write", "maximum dimension is invalid"));
 
     Dimensions global_size, global_offset;
-    gatherMPIWrites(rank, size, global_size, global_offset);
+    gatherMPIWrites(ndims, size, global_size, global_offset);
 
-    reserveInternal(id, global_size, rank, type, name);
+    reserveInternal(id, global_size, ndims, type, name);
 
     if (globalSize)
         globalSize->set(global_size);
@@ -586,7 +582,7 @@ void ParallelDataCollector::reserve(int32_t id,
 
 void ParallelDataCollector::append(int32_t id,
         const Dimensions size,
-        uint32_t rank,
+        uint32_t ndims,
         const Dimensions globalOffset,
         const char *name,
         const void *buf)
@@ -597,7 +593,7 @@ void ParallelDataCollector::append(int32_t id,
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
         throw DCException(getExceptionString("append", "this access is not permitted"));
 
-    if (rank < 1 || rank > 3)
+    if (ndims < 1 || ndims > 3)
         throw DCException(getExceptionString("append", "maximum dimension is invalid"));
 
     // create group for this id/iteration
@@ -818,10 +814,7 @@ throw (DCException)
     //this->options.enableCompression = attr.enableCompression;
 
 #if defined SDC_DEBUG_OUTPUT
-    if (attr.enableCompression)
-        std::cerr << "compression is ON" << std::endl;
-    else
-        std::cerr << "compression is OFF" << std::endl;
+    std::cerr << "compression is OFF" << std::endl;
 #endif
 
     options.maxID = -1;
@@ -886,7 +879,7 @@ throw (DCException)
     {
         DCParallelDataSet dataset(dset_name.c_str());
         dataset.open(group.getHandle());
-        if (!parallelRead && (src_size.getDimSize() == 0))
+        if (!parallelRead && (src_size.getScalarSize() == 0))
         {
             dataset.read(dstBuffer, dstOffset, src_size, src_offset, sizeRead, srcRank, NULL);
             src_size.set(sizeRead);
@@ -903,7 +896,7 @@ throw (DCException)
 
 void ParallelDataCollector::writeDataSet(H5Handle group, const Dimensions globalSize,
         const Dimensions globalOffset,
-        const CollectionType& datatype, uint32_t rank,
+        const CollectionType& datatype, uint32_t ndims,
         const Dimensions srcBuffer, const Dimensions srcStride,
         const Dimensions srcData, const Dimensions srcOffset,
         const char* name, const void* data) throw (DCException)
@@ -913,13 +906,13 @@ void ParallelDataCollector::writeDataSet(H5Handle group, const Dimensions global
 #endif
     DCParallelDataSet dataset(name);
     // always create dataset but write data only if all dimensions > 0
-    dataset.create(datatype, group, globalSize, rank, this->options.enableCompression);
-    if (srcData.getDimSize() > 0)
+    dataset.create(datatype, group, globalSize, ndims, this->options.enableCompression);
+    if (srcData.getScalarSize() > 0)
         dataset.write(srcBuffer, srcStride, srcOffset, srcData, globalOffset, data);
     dataset.close();
 }
 
-void ParallelDataCollector::gatherMPIWrites(int rank, const Dimensions localSize,
+void ParallelDataCollector::gatherMPIWrites(int ndims, const Dimensions localSize,
         Dimensions &globalSize, Dimensions &globalOffset)
 throw (DCException)
 {
@@ -936,19 +929,19 @@ throw (DCException)
 
     Dimensions tmp_mpi_topology(options.mpiTopology);
     Dimensions tmp_mpi_pos(options.mpiPos);
-    if (rank == 1)
+    if (ndims == 1)
     {
-        tmp_mpi_topology.set(options.mpiTopology.getDimSize(), 1, 1);
+        tmp_mpi_topology.set(options.mpiTopology.getScalarSize(), 1, 1);
         tmp_mpi_pos.set(options.mpiRank, 0, 0);
     }
 
-    if ((rank == 2) && (tmp_mpi_topology[2] > 1))
+    if ((ndims == 2) && (tmp_mpi_topology[2] > 1))
     {
         throw DCException(getExceptionString("gatherMPIWrites",
                 "cannot auto-detect global size/offset for 2D data when writing with 3D topology", NULL));
     }
 
-    for (int i = 0; i < rank; ++i)
+    for (int i = 0; i < ndims; ++i)
     {
         globalSize[i] = 0;
         size_t index;
@@ -973,15 +966,15 @@ throw (DCException)
     }
 }
 
-size_t ParallelDataCollector::getRank(H5Handle h5File,
+size_t ParallelDataCollector::getNDims(H5Handle h5File,
         int32_t id, const char* name)
 {
 #if defined SDC_DEBUG_OUTPUT
-    std::cerr << "# ParallelDataCollector::getRank #" << std::endl;
+    std::cerr << "# ParallelDataCollector::getNDims #" << std::endl;
 #endif
 
     if (h5File < 0 || name == NULL)
-        throw DCException(getExceptionString("getRank", "invalid parameters"));
+        throw DCException(getExceptionString("getNDims", "invalid parameters"));
 
     std::string group_path, dset_name;
     DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
@@ -989,14 +982,14 @@ size_t ParallelDataCollector::getRank(H5Handle h5File,
     DCParallelGroup group;
     group.open(h5File, group_path);
 
-    size_t rank = 0;
+    size_t ndims = 0;
 
     try
     {
         DCParallelDataSet dataset(dset_name.c_str());
         dataset.open(group.getHandle());
 
-        rank = dataset.getRank();
+        ndims = dataset.getNDims();
 
         dataset.close();
     } catch (DCException e)
@@ -1004,12 +997,12 @@ size_t ParallelDataCollector::getRank(H5Handle h5File,
         throw e;
     }
 
-    return rank;
+    return ndims;
 }
 
 void ParallelDataCollector::reserveInternal(int32_t id,
         const Dimensions globalSize,
-        uint32_t rank,
+        uint32_t ndims,
         const CollectionType& type,
         const char* name)
 throw (DCException)
@@ -1023,6 +1016,6 @@ throw (DCException)
 
     DCParallelDataSet dataset(dset_name.c_str());
     // create the empty dataset
-    dataset.create(type, group.getHandle(), globalSize, rank, this->options.enableCompression);
+    dataset.create(type, group.getHandle(), globalSize, ndims, this->options.enableCompression);
     dataset.close();
 }

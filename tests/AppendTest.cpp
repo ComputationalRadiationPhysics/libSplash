@@ -114,7 +114,7 @@ void AppendTest::testAppend()
         float *testData = new float[data_count];
 
         Dimensions testDim(1, 1, 1);
-        dataCollector->read(0, ctFloat, "data", testDim, testData);
+        dataCollector->read(0, "data", testDim, testData);
 
         dataCollector->close();
 

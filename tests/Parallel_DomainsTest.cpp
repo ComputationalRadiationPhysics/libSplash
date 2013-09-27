@@ -83,17 +83,23 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
     DataCollector::FileCreationAttr fattr;
 
     // write data to file
-    int *data_write = new int[gridSize.getDimSize()];
+    int *data_write = new int[gridSize.getScalarSize()];
 
-    for (size_t i = 0; i < gridSize.getDimSize(); ++i)
+    for (size_t i = 0; i < gridSize.getScalarSize(); ++i)
         data_write[i] = currentMpiRank + 1;
+    
+    const Dimensions domain_size = gridSize;
+    const Dimensions global_domain_offset(17, 32, 5);
+    const Dimensions domain_offset = (mpiPos * gridSize) + global_domain_offset;
+    const Dimensions global_domain_size = domain_size * mpiSize;
+    const Dimensions full_grid_size = gridSize * mpiSize;
 
     DataCollector::initFileCreationAttr(fattr);
     fattr.fileAccType = DataCollector::FAT_CREATE;
     fattr.enableCompression = true;
     parallelDomainCollector->open(hdf5_file_grid, fattr);
 
-    Dimensions domain_offset = mpiPos * gridSize;
+    
 
 #if defined TESTS_DEBUG
     std::cout << "writing..." << std::endl;
@@ -102,7 +108,9 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
 
     // initial part of the test: data is written to the file
     parallelDomainCollector->writeDomain(iteration, ctInt, 3, gridSize, "grid_data",
-            domain_offset, gridSize, IDomainCollector::GridType, data_write);
+            domain_offset, domain_size, 
+            global_domain_offset, global_domain_size,
+            IDomainCollector::GridType, data_write);
     parallelDomainCollector->close();
 
     delete[] data_write;
@@ -112,29 +120,25 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
 
     // test written data using all processes
     fattr.fileAccType = DataCollector::FAT_READ;
-    Dimensions full_grid_size = gridSize * mpiSize;
+    
 
     // now read again
     parallelDomainCollector->open(hdf5_file_grid, fattr);
 
-    size_t global_domain_elements = parallelDomainCollector->getTotalElements(
-            iteration, "grid_data");
-
 #if defined TESTS_DEBUG
-    std::cout << "global_domain_elements = " << global_domain_elements << std::endl;
     std::cout << "full_grid_size = " << full_grid_size.toString() << std::endl;
 #endif
-
-    CPPUNIT_ASSERT(global_domain_elements == full_grid_size.getDimSize());
 
     // test different domain offsets
     for (uint32_t i = 0; i < 5; ++i)
     {
-        Dimensions offset(rand() % full_grid_size[0],
-                rand() % full_grid_size[1],
-                rand() % full_grid_size[2]);
+        Dimensions offset(rand() % global_domain_size[0],
+                rand() % global_domain_size[1],
+                rand() % global_domain_size[2]);
 
-        Dimensions partition_size = full_grid_size - offset;
+        Dimensions partition_size = global_domain_size - offset;
+        
+        offset = offset + global_domain_offset;
 
 #if defined TESTS_DEBUG
         std::cout << "offset = " << offset.toString() << std::endl;
@@ -144,9 +148,9 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
         IDomainCollector::DomDataClass data_class = IDomainCollector::UndefinedType;
 
         Domain total_domain;
-        total_domain = parallelDomainCollector->getTotalDomain(iteration, "grid_data");
-        CPPUNIT_ASSERT(total_domain.getStart() == Dimensions(0, 0, 0));
-        CPPUNIT_ASSERT(total_domain.getSize() == full_grid_size);
+        total_domain = parallelDomainCollector->getGlobalDomain(iteration, "grid_data");
+        CPPUNIT_ASSERT(total_domain.getOffset() == global_domain_offset);
+        CPPUNIT_ASSERT(total_domain.getSize() == global_domain_size);
 
         // read data container
         DataContainer *container = parallelDomainCollector->readDomain(
@@ -168,18 +172,18 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
         CPPUNIT_ASSERT(subdomain->getData() != NULL);
 
         Dimensions subdomain_elements = subdomain->getElements();
-        Dimensions subdomain_start = subdomain->getStart();
+        Dimensions subdomain_offset = subdomain->getOffset();
 
 #if defined TESTS_DEBUG
-        std::cout << "subdomain->getStart() = " << subdomain->getStart().toString() << std::endl;
+        std::cout << "subdomain->getOffset() = " << subdomain->getOffset().toString() << std::endl;
         std::cout << "subdomain->getElements() = " << subdomain_elements.toString() << std::endl;
 #endif
 
         int *subdomain_data = (int*) (subdomain->getData());
-        CPPUNIT_ASSERT(subdomain_elements.getDimSize() != 0);
-        CPPUNIT_ASSERT(gridSize.getDimSize() != 0);
+        CPPUNIT_ASSERT(subdomain_elements.getScalarSize() != 0);
+        CPPUNIT_ASSERT(gridSize.getScalarSize() != 0);
 
-        for (int j = 0; j < subdomain_elements.getDimSize(); ++j)
+        for (int j = 0; j < subdomain_elements.getScalarSize(); ++j)
         {
             // Find out the expected value (original mpi rank) 
             // for exactly this data element.
@@ -188,7 +192,7 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
                     (j / subdomain_elements[0]) / subdomain_elements[1]);
 
             Dimensions total_grid_position =
-                    (subdomain_start + j_grid_position) / gridSize;
+                    (subdomain_offset - global_domain_offset + j_grid_position) / gridSize;
 
             int expected_value = total_grid_position[2] * mpiSize[0] * mpiSize[1] +
                     total_grid_position[1] * mpiSize[0] + total_grid_position[0] + 1;
@@ -228,7 +232,7 @@ void Parallel_DomainsTest::testGridDomains()
             for (uint32_t mpi_x = 1; mpi_x < 3; ++mpi_x)
             {
                 Dimensions mpi_size(mpi_x, mpi_y, mpi_z);
-                size_t num_ranks = mpi_size.getDimSize();
+                size_t num_ranks = mpi_size.getScalarSize();
 
                 int ranks[num_ranks];
                 for (uint32_t i = 0; i < num_ranks; ++i)
@@ -315,6 +319,8 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
 {
     Dimensions domain_size(20, 10, 5);
     Dimensions global_domain_size = domain_size * mpiSize;
+    
+    const Dimensions global_domain_offset(2, 4, 8);
 
     size_t mpi_elements = numElements * (currentMpiRank + 1);
     Dimensions poly_size(mpi_elements, 1, 1);
@@ -329,7 +335,7 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
 
     parallelDomainCollector->open(hdf5_file_poly, fattr);
 
-    Dimensions domain_offset = mpiPos * domain_size;
+    Dimensions domain_offset = mpiPos * domain_size + global_domain_offset;
 
 #if defined TESTS_DEBUG
     std::cout << "[" << currentMpiRank << "] writing..." << std::endl;
@@ -339,7 +345,9 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
 #endif
 
     parallelDomainCollector->writeDomain(iteration, ctFloat, 1, poly_size,
-            "poly_data", domain_offset, domain_size, IDomainCollector::PolyType, data_write);
+            "poly_data", domain_offset, domain_size, 
+            global_domain_offset, global_domain_size,
+            IDomainCollector::PolyType, data_write);
 
     parallelDomainCollector->close();
 
@@ -352,20 +360,17 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
     fattr.fileAccType = DataCollector::FAT_READ;
     parallelDomainCollector->open(hdf5_file_poly, fattr);
 
-    size_t global_domain_elements = parallelDomainCollector->getTotalElements(iteration, "poly_data");
-    CPPUNIT_ASSERT(parallelDomainCollector->getTotalDomain(iteration, "poly_data").getSize() ==
-            global_domain_size);
+    Domain total_domain = parallelDomainCollector->getGlobalDomain(iteration, "poly_data");
+    CPPUNIT_ASSERT(total_domain.getSize() == global_domain_size);
+    CPPUNIT_ASSERT(total_domain.getOffset() == global_domain_offset);
 
     size_t global_num_elements = 0;
-    for (int i = 0; i < mpiSize.getDimSize(); ++i)
+    for (int i = 0; i < mpiSize.getScalarSize(); ++i)
         global_num_elements += numElements * (i + 1);
 
 #if defined TESTS_DEBUG
-    std::cout << "[" << currentMpiRank << "] global_domain_elements = " << global_domain_elements << std::endl;
     std::cout << "[" << currentMpiRank << "] global_num_elements = " << global_num_elements << std::endl;
 #endif
-
-    CPPUNIT_ASSERT(global_domain_elements == global_num_elements);
 
     // test different domain offsets
     for (uint32_t i = 0; i < 5; ++i)
@@ -375,6 +380,8 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
                 rand() % global_domain_size[2]);
 
         Dimensions partition_size = global_domain_size - offset;
+        
+        offset = offset + global_domain_offset;
 
 #if defined TESTS_DEBUG
         std::cout << "offset = " << offset.toString() << std::endl;
@@ -406,11 +413,11 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
 
         float *subdomain_data = (float*) (subdomain->getData());
         Dimensions subdomain_elements = subdomain->getElements();
-        CPPUNIT_ASSERT(subdomain_elements.getDimSize() == global_num_elements);
+        CPPUNIT_ASSERT(subdomain_elements.getScalarSize() == global_num_elements);
 
         size_t elements_this_rank = numElements;
         size_t this_rank = 0;
-        for (int j = 0; j < subdomain_elements.getDimSize(); ++j)
+        for (int j = 0; j < subdomain_elements.getScalarSize(); ++j)
         {
             if (j == elements_this_rank)
             {
@@ -446,7 +453,7 @@ void Parallel_DomainsTest::testPolyDomains()
             for (uint32_t mpi_x = 1; mpi_x < 3; ++mpi_x)
             {
                 Dimensions mpi_size(mpi_x, mpi_y, mpi_z);
-                size_t num_ranks = mpi_size.getDimSize();
+                size_t num_ranks = mpi_size.getScalarSize();
 
                 int ranks[num_ranks];
                 for (uint32_t i = 0; i < num_ranks; ++i)

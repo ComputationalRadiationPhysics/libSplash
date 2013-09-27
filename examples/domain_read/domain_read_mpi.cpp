@@ -113,7 +113,7 @@ int main(int argc, char **argv)
     file_mpi_size.set(f_mpi_size[0], f_mpi_size[1], f_mpi_size[2]);
 
     // get number of files for this MPI process
-    filesToProcesses(mpi_size, mpi_rank, file_mpi_size.getDimSize(),
+    filesToProcesses(mpi_size, mpi_rank, file_mpi_size.getScalarSize(),
             files_start, files_end);
 
     for (int f = files_start; f <= files_end; ++f)
@@ -161,10 +161,10 @@ int main(int argc, char **argv)
         std::cout << "  " << mpi_rank << ": reading entry " << first_entry.name << std::endl;
 
         // read complete domain
-        Domain domain = dc.getTotalDomain(ids[0], first_entry.name.c_str());
+        Domain domain = dc.getGlobalDomain(ids[0], first_entry.name.c_str());
         DomainCollector::DomDataClass dataClass = DomainCollector::UndefinedType;
         DataContainer* container = dc.readDomain(ids[0], first_entry.name.c_str(),
-                domain.getStart(), domain.getSize(), &dataClass, false);
+                domain.getOffset(), domain.getSize(), &dataClass, false);
 
         // access all elements, no matter how many subdomains
         for (size_t i = 0; i < container->getNumElements(); ++i)

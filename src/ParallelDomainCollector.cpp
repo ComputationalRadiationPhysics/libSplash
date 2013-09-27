@@ -49,45 +49,28 @@ ParallelDomainCollector::~ParallelDomainCollector()
 {
 }
 
-size_t ParallelDomainCollector::getTotalElements(int32_t id,
+Domain ParallelDomainCollector::getGlobalDomain(int32_t id,
         const char* name)
 throw (DCException)
 {
-    if (this->fileStatus == FST_CLOSED)
-        throw DCException(getExceptionString("getTotalElements",
-            "this access is not permitted", NULL));
-
-    Dimensions total_elements;
-    readAttribute(id, name, DOMCOL_ATTR_ELEMENTS, total_elements.getPointer());
-
-    return total_elements.getDimSize();
+    return getLocalDomain(id, name);
 }
 
-Domain ParallelDomainCollector::getTotalDomain(int32_t id,
+Domain ParallelDomainCollector::getLocalDomain(int32_t id,
         const char* name)
 throw (DCException)
 {
     if (this->fileStatus == FST_CLOSED)
-        throw DCException(getExceptionString("getTotalDomain",
+        throw DCException(getExceptionString("getLocalDomain",
             "this access is not permitted", NULL));
 
-    uint32_t rank;
     Dimensions size(1, 1, 1);
-    Dimensions start(0, 0, 0);
+    Dimensions offset(0, 0, 0);
 
-    readAttribute(id, name, DOMCOL_ATTR_RANK, &rank);
     readAttribute(id, name, DOMCOL_ATTR_SIZE, size.getPointer());
-    readAttribute(id, name, DOMCOL_ATTR_START, start.getPointer());
+    readAttribute(id, name, DOMCOL_ATTR_OFFSET, offset.getPointer());
 
-    if (start.getDimSize() != 0)
-    {
-        throw DCException(getExceptionString("getTotalDomain",
-                "Invalid offset for total domain (must be (0, 0, 0) )", NULL));
-    }
-
-    Domain domain(rank, start, size);
-
-    return domain;
+    return Domain(offset, size);
 }
 
 bool ParallelDomainCollector::readDomainDataForRank(
@@ -100,18 +83,14 @@ bool ParallelDomainCollector::readDomainDataForRank(
         bool lazyLoad)
 throw (DCException)
 {
-    uint32_t client_domain_rank;
     Domain client_domain;
+    Domain request_domain(requestOffset, requestSize);
 
-    readAttribute(id, name, DOMCOL_ATTR_RANK, &client_domain_rank);
-    readAttribute(id, name, DOMCOL_ATTR_START, client_domain.getStart().getPointer());
+    readAttribute(id, name, DOMCOL_ATTR_OFFSET, client_domain.getOffset().getPointer());
     readAttribute(id, name, DOMCOL_ATTR_SIZE, client_domain.getSize().getPointer());
 
-    client_domain.setRank(client_domain_rank);
-    Domain request_domain(client_domain_rank, requestOffset, requestSize);
-
     Dimensions data_elements;
-    readAttribute(id, name, DOMCOL_ATTR_ELEMENTS, data_elements.getPointer());
+    read(id, name, data_elements, NULL);
 
     DomDataClass tmp_data_class = UndefinedType;
     readAttribute(id, name, DOMCOL_ATTR_CLASS, &tmp_data_class);
@@ -136,7 +115,7 @@ throw (DCException)
 #endif
 
     // test on intersection and add new DomainData to the container if necessary
-    if (!testIntersection(request_domain, client_domain))
+    if (!Domain::testIntersection(request_domain, client_domain))
         return false;
 
     // Poly data has no internal grid structure, 
@@ -146,7 +125,7 @@ throw (DCException)
 #if (DC_DEBUG == 1)
         std::cerr << "dataclass = Poly" << std::endl;
 #endif
-        if (data_elements.getDimSize() > 0)
+        if (data_elements.getScalarSize() > 0)
         {
             std::stringstream group_id_name;
             group_id_name << SDC_GROUP_DATA << "/" << id;
@@ -158,7 +137,7 @@ throw (DCException)
                     "group not found", group_id_string.c_str()));
 
             size_t datatype_size = 0;
-            DCDataSet::DCDataType dc_datatype = DCDataSet::DCDT_UNKNOWN;
+            DCDataType dc_datatype = DCDT_UNKNOWN;
 
             try
             {
@@ -242,7 +221,7 @@ throw (DCException)
                     "group not found", group_id_string.c_str()));
 
             size_t datatype_size = 0;
-            DCDataSet::DCDataType dc_datatype = DCDataSet::DCDT_UNKNOWN;
+            DCDataType dc_datatype = DCDT_UNKNOWN;
 
             try
             {
@@ -274,14 +253,14 @@ throw (DCException)
         Dimensions src_size(1, 1, 1);
         Dimensions src_offset(0, 0, 0);
 
-        Dimensions client_start = client_domain.getStart();
+        Dimensions client_start = client_domain.getOffset();
         Dimensions client_size = client_domain.getSize();
 
-        size_t rank = getRank(handles.get(id), id, name);
+        size_t ndims = getNDims(handles.get(id), id, name);
 
-        for (uint32_t i = 0; i < rank; ++i)
+        for (uint32_t i = 0; i < ndims; ++i)
         {
-            dst_offset[i] = std::max((int64_t) client_domain.getStart()[i] -
+            dst_offset[i] = std::max((int64_t) client_domain.getOffset()[i] -
                     (int64_t) requestOffset[i], (int64_t) 0);
 
             if (requestOffset[i] <= client_start[i])
@@ -321,7 +300,7 @@ throw (DCException)
         // read intersecting partition into destination buffer
         Dimensions elements_read(0, 0, 0);
         uint32_t src_rank = 0;
-        if (src_size.getDimSize() > 0)
+        if (src_size.getScalarSize() > 0)
         {
             readDataSet(handles.get(id), id, name, false,
                     dataContainer->getIndex(0)->getSize(),
@@ -436,93 +415,97 @@ throw (DCException)
 
 void ParallelDomainCollector::writeDomain(int32_t id,
         const CollectionType& type,
-        uint32_t rank,
+        uint32_t ndims,
         const Dimensions srcData,
         const char* name,
-        const Dimensions domainOffset,
-        const Dimensions domainSize,
+        const Dimensions /*localDomainOffset*/,
+        const Dimensions /*localDomainSize*/,
+        const Dimensions globalDomainOffset,
+        const Dimensions globalDomainSize,
         DomDataClass dataClass,
-        const void* data)
+        const void* buf)
 throw (DCException)
 {
-    Dimensions globalSize, globalOffset, globalDomSize, globalDomOffset;
-    gatherMPIWrites(rank, srcData, domainSize, domainOffset,
-            globalSize, globalOffset, globalDomSize, globalDomOffset);
+    Dimensions globalSize, globalOffset;
+    gatherMPIWrites(ndims, srcData, globalSize, globalOffset);
 
     writeDomain(id, globalSize, globalOffset,
-            type, rank, srcData, Dimensions(1, 1, 1), srcData,
-            Dimensions(0, 0, 0), name, globalDomOffset, globalDomSize, dataClass, data);
+            type, ndims, srcData, Dimensions(1, 1, 1), srcData,
+            Dimensions(0, 0, 0), name, 
+            globalDomainOffset, globalDomainSize, dataClass, buf);
 }
 
 void ParallelDomainCollector::writeDomain(int32_t id,
         const CollectionType& type,
-        uint32_t rank,
+        uint32_t ndims,
         const Dimensions srcBuffer,
         const Dimensions srcData,
         const Dimensions srcOffset,
         const char* name,
-        const Dimensions domainOffset,
-        const Dimensions domainSize,
+        const Dimensions /*localDomainOffset*/,
+        const Dimensions /*localDomainSize*/,
+        const Dimensions globalDomainOffset,
+        const Dimensions globalDomainSize,
         DomDataClass dataClass,
-        const void* data)
+        const void* buf)
 throw (DCException)
 {
-    Dimensions globalSize, globalOffset, globalDomSize, globalDomOffset;
-    gatherMPIWrites(rank, srcData, domainSize, domainOffset,
-            globalSize, globalOffset, globalDomSize, globalDomOffset);
+    Dimensions globalSize, globalOffset;
+    gatherMPIWrites(ndims, srcData, globalSize, globalOffset);
 
     writeDomain(id, globalSize, globalOffset,
-            type, rank, srcBuffer, Dimensions(1, 1, 1), srcData, srcOffset,
-            name, globalDomOffset, globalDomSize, dataClass, data);
+            type, ndims, srcBuffer, Dimensions(1, 1, 1), srcData, srcOffset,
+            name, globalDomainOffset, globalDomainSize, dataClass, buf);
 }
 
 void ParallelDomainCollector::writeDomain(int32_t id,
         const CollectionType& type,
-        uint32_t rank,
+        uint32_t ndims,
         const Dimensions srcBuffer,
         const Dimensions srcStride,
         const Dimensions srcData,
         const Dimensions srcOffset,
         const char* name,
-        const Dimensions domainOffset,
-        const Dimensions domainSize,
+        const Dimensions /*localDomainOffset*/,
+        const Dimensions /*localDomainSize*/,
+        const Dimensions globalDomainOffset,
+        const Dimensions globalDomainSize,
         DomDataClass dataClass,
-        const void* data)
+        const void* buf)
 throw (DCException)
 {
-    Dimensions globalSize, globalOffset, globalDomSize, globalDomOffset;
-    gatherMPIWrites(rank, srcData, domainSize, domainOffset,
-            globalSize, globalOffset, globalDomSize, globalDomOffset);
+    Dimensions globalSize, globalOffset;
+    gatherMPIWrites(ndims, srcData, globalSize, globalOffset);
 
     writeDomain(id, globalSize, globalOffset,
-            type, rank, srcBuffer, srcStride, srcData, srcOffset,
-            name, globalDomOffset, globalDomSize, dataClass, data);
+            type, ndims, srcBuffer, srcStride, srcData, srcOffset,
+            name, globalDomainOffset, globalDomainSize, dataClass, buf);
 }
 
 void ParallelDomainCollector::writeDomain(int32_t id,
         const Dimensions globalSize,
         const Dimensions globalOffset,
         const CollectionType& type,
-        uint32_t rank,
+        uint32_t ndims,
         const Dimensions srcData,
         const char* name,
         const Dimensions globalDomainOffset,
         const Dimensions globalDomainSize,
         DomDataClass dataClass,
-        const void* data)
+        const void* buf)
 throw (DCException)
 {
     writeDomain(id, globalSize, globalOffset,
-            type, rank, srcData, Dimensions(1, 1, 1), srcData,
+            type, ndims, srcData, Dimensions(1, 1, 1), srcData,
             Dimensions(0, 0, 0), name, globalDomainOffset, globalDomainSize,
-            dataClass, data);
+            dataClass, buf);
 }
 
 void ParallelDomainCollector::writeDomain(int32_t id,
         const Dimensions globalSize,
         const Dimensions globalOffset,
         const CollectionType& type,
-        uint32_t rank,
+        uint32_t ndims,
         const Dimensions srcBuffer,
         const Dimensions srcData,
         const Dimensions srcOffset,
@@ -530,19 +513,19 @@ void ParallelDomainCollector::writeDomain(int32_t id,
         const Dimensions globalDomainOffset,
         const Dimensions globalDomainSize,
         DomDataClass dataClass,
-        const void* data)
+        const void* buf)
 throw (DCException)
 {
     writeDomain(id, globalSize, globalOffset,
-            type, rank, srcBuffer, Dimensions(1, 1, 1), srcData, srcOffset,
-            name, globalDomainOffset, globalDomainSize, dataClass, data);
+            type, ndims, srcBuffer, Dimensions(1, 1, 1), srcData, srcOffset,
+            name, globalDomainOffset, globalDomainSize, dataClass, buf);
 }
 
 void ParallelDomainCollector::writeDomain(int32_t id,
         const Dimensions globalSize,
         const Dimensions globalOffset,
         const CollectionType& type,
-        uint32_t rank,
+        uint32_t ndims,
         const Dimensions srcBuffer,
         const Dimensions srcStride,
         const Dimensions srcData,
@@ -551,69 +534,66 @@ void ParallelDomainCollector::writeDomain(int32_t id,
         const Dimensions globalDomainOffset,
         const Dimensions globalDomainSize,
         DomDataClass dataClass,
-        const void* data)
+        const void* buf)
 throw (DCException)
 {
     ColTypeDim dim_t;
     ColTypeInt int_t;
 
-    write(id, globalSize, globalOffset, type, rank, srcBuffer, srcStride,
-            srcData, srcOffset, name, data);
+    write(id, globalSize, globalOffset, type, ndims, srcBuffer, srcStride,
+            srcData, srcOffset, name, buf);
 
     writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
-    writeAttribute(id, int_t, name, DOMCOL_ATTR_RANK, &rank);
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, globalDomainSize.getPointer());
-    writeAttribute(id, dim_t, name, DOMCOL_ATTR_START, globalDomainOffset.getPointer());
-    writeAttribute(id, dim_t, name, DOMCOL_ATTR_ELEMENTS, globalSize.getPointer());
+    writeAttribute(id, dim_t, name, DOMCOL_ATTR_OFFSET, globalDomainOffset.getPointer());
+    writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_SIZE, globalDomainSize.getPointer());
+    writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_OFFSET, globalDomainOffset.getPointer());
 }
 
 void ParallelDomainCollector::reserveDomain(int32_t id,
         const Dimensions globalSize,
-        uint32_t rank,
+        uint32_t ndims,
         const CollectionType& type,
         const char* name,
-        const Dimensions domainOffset,
-        const Dimensions domainSize,
+        const Dimensions globalDomainOffset,
+        const Dimensions globalDomainSize,
         DomDataClass dataClass)
 throw (DCException)
 {
     ColTypeDim dim_t;
     ColTypeInt int_t;
 
-    reserve(id, globalSize, rank, type, name);
+    reserve(id, globalSize, ndims, type, name);
 
     writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
-    writeAttribute(id, int_t, name, DOMCOL_ATTR_RANK, &rank);
-    writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, domainSize.getPointer());
-    writeAttribute(id, dim_t, name, DOMCOL_ATTR_START, domainOffset.getPointer());
-    writeAttribute(id, dim_t, name, DOMCOL_ATTR_ELEMENTS, globalSize.getPointer());
+    writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, globalDomainSize.getPointer());
+    writeAttribute(id, dim_t, name, DOMCOL_ATTR_OFFSET, globalDomainOffset.getPointer());
+    writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_SIZE, globalDomainSize.getPointer());
+    writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_OFFSET, globalDomainOffset.getPointer());
 }
 
 void ParallelDomainCollector::reserveDomain(int32_t id,
         const Dimensions size,
         Dimensions *globalSize,
         Dimensions *globalOffset,
-        uint32_t rank,
+        uint32_t ndims,
         const CollectionType& type,
         const char* name,
-        const Dimensions domainOffset,
-        const Dimensions domainSize,
+        const Dimensions globalDomainOffset,
+        const Dimensions globalDomainSize,
         DomDataClass dataClass)
 throw (DCException)
 {
     ColTypeDim dim_t;
     ColTypeInt int_t;
 
-    Dimensions globalDomainSize, globalDomainOffset;
-    gatherMPIDomains(rank, domainSize, domainOffset, globalDomainSize, globalDomainOffset);
-
-    reserve(id, size, globalSize, globalOffset, rank, type, name);
+    reserve(id, size, globalSize, globalOffset, ndims, type, name);
 
     writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
-    writeAttribute(id, int_t, name, DOMCOL_ATTR_RANK, &rank);
     writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, globalDomainSize.getPointer());
-    writeAttribute(id, dim_t, name, DOMCOL_ATTR_START, globalDomainOffset.getPointer());
-    writeAttribute(id, dim_t, name, DOMCOL_ATTR_ELEMENTS, globalSize->getPointer());
+    writeAttribute(id, dim_t, name, DOMCOL_ATTR_OFFSET, globalDomainOffset.getPointer());
+    writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_SIZE, globalDomainSize.getPointer());
+    writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_OFFSET, globalDomainOffset.getPointer());
 }
 
 void ParallelDomainCollector::appendDomain(int32_t id,
@@ -622,10 +602,13 @@ void ParallelDomainCollector::appendDomain(int32_t id,
         const char *name,
         const Dimensions domainOffset,
         const Dimensions domainSize,
-        const void *data)
+        const Dimensions globalDomainOffset,
+        const Dimensions globalDomainSize,
+        const void *buf)
 throw (DCException)
 {
-    appendDomain(id, type, count, 0, 1, name, domainOffset, domainSize, data);
+    appendDomain(id, type, count, 0, 1, name, domainOffset, domainSize, 
+            globalDomainOffset, globalDomainSize, buf);
 }
 
 void ParallelDomainCollector::appendDomain(int32_t /*id*/,
@@ -636,55 +619,11 @@ void ParallelDomainCollector::appendDomain(int32_t /*id*/,
         const char* /*name*/,
         const Dimensions /*domainOffset*/,
         const Dimensions /*domainSize*/,
-        const void* /*data*/)
+        const Dimensions /*globalDomainOffset*/,
+        const Dimensions /*globalDomainSize*/,
+        const void* /*buf*/)
 throw (DCException)
 {
     throw DCException("This feature is not supported in ParallelDomainCollector. "
             "Use ParallelDataCollector::append instead.");
-}
-
-void ParallelDomainCollector::gatherMPIDomains(int /*rank*/,
-        const Dimensions localDomainSize, const Dimensions /*localDomainOffset*/,
-        Dimensions &globalDomainSize, Dimensions &globalDomainOffset)
-throw (DCException)
-{
-    //uint64_t send_offsets[3] = {localDomainOffset[0], localDomainOffset[1], localDomainOffset[2]};
-    //uint64_t recv_offsets[3];
-    uint64_t send_sizes[3] = {localDomainSize[0], localDomainSize[1], localDomainSize[2]};
-    uint64_t recv_sizes[3];
-
-    if ((options.mpiPos[1] != 0) || (options.mpiPos[2] != 0))
-        send_sizes[0] = 0;
-
-    if ((options.mpiPos[0] != 0) || (options.mpiPos[2] != 0))
-        send_sizes[1] = 0;
-
-    if ((options.mpiPos[0] != 0) || (options.mpiPos[1] != 0))
-        send_sizes[2] = 0;
-
-    /*if (MPI_Allreduce(send_offsets, recv_offsets, 3, MPI_INTEGER8, MPI_MIN,
-            options.mpiComm) != MPI_SUCCESS)
-        throw DCException(getExceptionString("gatherMPIWrites",
-            "MPI_Allreduce (1) failed", NULL));*/
-
-    if (MPI_Allreduce(send_sizes, recv_sizes, 3, MPI_INTEGER8, MPI_SUM,
-            options.mpiComm) != MPI_SUCCESS)
-        throw DCException(getExceptionString("gatherMPIWrites",
-            "MPI_Allreduce (2) failed", NULL));
-
-    // every total domain (all combined MPI processes) is required to start at
-    // (0, 0, 0)
-    globalDomainOffset.set(0, 0, 0);
-    globalDomainSize.set(recv_sizes[0], recv_sizes[1], recv_sizes[2]);
-}
-
-void ParallelDomainCollector::gatherMPIWrites(int rank, const Dimensions localSize,
-        const Dimensions localDomainSize, const Dimensions localDomainOffset,
-        Dimensions &globalSize, Dimensions &globalOffset,
-        Dimensions &globalDomainSize, Dimensions &globalDomainOffset)
-throw (DCException)
-{
-    ParallelDataCollector::gatherMPIWrites(rank, localSize, globalSize, globalOffset);
-
-    gatherMPIDomains(rank, localDomainSize, localDomainOffset, globalDomainSize, globalDomainOffset);
 }

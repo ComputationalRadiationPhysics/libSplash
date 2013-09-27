@@ -65,7 +65,7 @@ void BenchmarkTest::runComparison(uint32_t cx, uint32_t cy, uint32_t cz,
 
     FILE *file = fopen(file_stream.str().c_str(), "w");
 
-    fwrite(data, ctInt.getSize(), gridSize.getDimSize(), file);
+    fwrite(data, ctInt.getSize(), gridSize.getScalarSize(), file);
 
     fclose(file);
 }
