@@ -90,7 +90,7 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
     
     const Dimensions domain_size = gridSize;
     const Dimensions global_domain_offset(17, 32, 5);
-    const Dimensions domain_offset = (mpiPos * gridSize);
+    const Dimensions domain_offset = (mpiPos * gridSize) + global_domain_offset;
     const Dimensions global_domain_size = domain_size * mpiSize;
     const Dimensions full_grid_size = gridSize * mpiSize;
 
@@ -335,7 +335,7 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
 
     parallelDomainCollector->open(hdf5_file_poly, fattr);
 
-    Dimensions domain_offset = mpiPos * domain_size;
+    Dimensions domain_offset = mpiPos * domain_size + global_domain_offset;
 
 #if defined TESTS_DEBUG
     std::cout << "[" << currentMpiRank << "] writing..." << std::endl;
