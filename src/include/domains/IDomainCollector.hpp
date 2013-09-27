@@ -28,9 +28,10 @@
 #include "domains/Domain.hpp"
 
 #define DOMCOL_ATTR_CLASS "_class"
-#define DOMCOL_ATTR_RANK "_rank"
 #define DOMCOL_ATTR_SIZE "_size"
-#define DOMCOL_ATTR_START "_start"
+#define DOMCOL_ATTR_GLOBAL_SIZE "_global_size"
+#define DOMCOL_ATTR_OFFSET "_start"
+#define DOMCOL_ATTR_GLOBAL_OFFSET "_global_start"
 #define DOMCOL_ATTR_ELEMENTS "_elements"
 
 namespace DCollector
@@ -53,51 +54,27 @@ namespace DCollector
         };
 
         /**
-         * Tests if two domains intersect.
-         * Both domains must be of the same dimensionality.
-         * 
-         * @param d1 First domain.
-         * @param d2 Decond domain.
-         * @return True if domains overlap, false otherwise.
-         */
-        static bool testIntersection(const Domain& d1, const Domain& d2)
-        {
-            Dimensions d1_start = d1.getStart();
-            Dimensions d2_start = d2.getStart();
-            Dimensions d1_end = d1.getEnd();
-            Dimensions d2_end = d2.getEnd();
-
-            return (d1_start[0] <= d2_end[0] && d1_end[0] >= d2_start[0] &&
-                    d1_start[1] <= d2_end[1] && d1_end[1] >= d2_start[1] &&
-                    d1_start[2] <= d2_end[2] && d1_end[2] >= d2_start[2]) ||
-                    (d2_start[0] <= d1_end[0] && d2_end[0] >= d1_start[0] &&
-                    d2_start[1] <= d1_end[1] && d2_end[1] >= d1_start[1] &&
-                    d2_start[2] <= d1_end[2] && d2_end[2] >= d1_start[2]);
-        }
-
-        /**
-         * Returns the total number of domain elements for a dataset,
-         * which is the sum of all subdomain elements.
-         * This function does not check that domain classes match.
-         * 
-         * @param id ID of iteration.
-         * @param name name of the dataset
-         * @return total domain elements
-         */
-        virtual size_t getTotalElements(int32_t id,
-                const char* name) = 0;
-
-        /**
-         * Returns the total domain that is spanned by all
-         * datasets (subdomains) of the currently accessed files.
+         * Returns the global domain that is spanned by all
+         * local datasets (subdomains) of the currently accessed files.
          * The user is responsible to guarantee that the actual subdomains
-         * form a line/rectangle/cuboid that starts at (0, 0, 0)
+         * form a line/rectangle/cuboid.
          * 
          * @param id ID of iteration.
          * @param name Name of the dataset.
-         * @return Total domain size and offset spanned by all subdomains.
+         * @return Global domain spanned by all subdomains.
          */
-        virtual Domain getTotalDomain(int32_t id,
+        virtual Domain getGlobalDomain(int32_t id,
+                const char* name) = 0;
+
+        /**
+         * Returns the local domain for a dataset 
+         * in currently accessed file.
+         * 
+         * @param id ID of iteration.
+         * @param name Name of the dataset.
+         * @return Local sudomain.
+         */
+        virtual Domain getLocalDomain(int32_t id,
                 const char* name) = 0;
 
         /**
@@ -110,14 +87,14 @@ namespace DCollector
          * the container and DomainData buffers are dealloated when the DomainData
          * object is deleted, which must be done by the user.
          * 
-         * @tparam DomDataType data type of the data to be read (e.g. int, float, ...)
-         * @param id ID of the iteration for reading.
-         * @param name name of the dataset
-         * @param domainOffset domain offset for reading (logical start of the requested partition)
-         * @param domainSize domain size for reading (logical size of the requested partition)
-         * @param dataClass optional domain type annotation (can be NULL)
-         * @param lazyLoad set to load only size information for each subdomain, data must be loaded later using readDomainLazy
-         * @return returns a pointer to a newly allocated DataContainer holding all subdomains
+         * @param id ID of the iteration.
+         * @param name Name of the dataset.
+         * @param domainOffset Domain offset for reading (logical start of the requested partition).
+         * @param domainSize Domain size for reading (logical size of the requested partition).
+         * @param dataClass Optional domain type annotation, can be NULL.
+         * @param lazyLoad Set to load only size information for each subdomain,
+         * data must be loaded later using \ref DataContainer::readDomainLazy.
+         * @return Returns a pointer to a newly allocated DataContainer holding all subdomains.
          */
         virtual DataContainer *readDomain(int32_t id,
                 const char* name,
@@ -140,21 +117,25 @@ namespace DCollector
          * 
          * @param id ID of the iteration for writing.
          * @param type Type information for data.
-         * @param rank Number of dimensions (1-3).
+         * @param ndims Number of dimensions (1-3).
          * @param srcData dimensions of the data in the buffer
          * @param name Name for the dataset to create/append.
-         * @param domainOffset Offset of this subdomain in the domain.
-         * @param domainSize Size of this subdomain in the domain.
+         * @param domainOffset Local offset of this subdomain.
+         * @param domainSize Local size of this subdomain.
+         * @param globalDomainOffset Logical offset of the global domain.
+         * @param globalDomainSIze Logical size of the global domain.
          * @param dataClass Subdomain type annotation.
          * @param buf Buffer with data.
          */
         virtual void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcData,
                 const char* name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 DomDataClass dataClass,
                 const void* buf) = 0;
 
@@ -163,25 +144,29 @@ namespace DCollector
          * 
          * @param id ID of the iteration for writing.
          * @param type Type information for data.
-         * @param rank Number of dimensions (1-3).
+         * @param ndims Number of dimensions (1-3).
          * @param srcBuffer Size of the buffer to read from.
          * @param srcData dimensions of the data in the buffer
          * @param srcOffset Offset of \p srcData in \p srcBuffer.
          * @param name Name for the dataset to create/append.
-         * @param domainOffset Offset of this subdomain in the domain.
-         * @param domainSize Size of this subdomain in the domain.
+         * @param domainOffset Local offset of this subdomain.
+         * @param domainSize Local size of this subdomain.
+         * @param globalDomainOffset Logical offset of the global domain.
+         * @param globalDomainSIze Logical size of the global domain.
          * @param dataClass Subdomain type annotation.
          * @param buf Buffer with data.
          */
         virtual void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcData,
                 const Dimensions srcOffset,
                 const char* name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 DomDataClass dataClass,
                 const void* buf) = 0;
 
@@ -190,20 +175,22 @@ namespace DCollector
          * 
          * @param id ID of the iteration for writing.
          * @param type Type information for data.
-         * @param rank Number of dimensions (1-3).
+         * @param ndims Number of dimensions (1-3).
          * @param srcBuffer Size of the buffer to read from.
          * @param srcStride Size of striding in each dimension. 1 means 'no stride'.
          * @param srcData Size of the data in the buffer.
          * @param srcOffset Offset of \p srcData in \p srcBuffer.
          * @param name Name for the dataset to create/append.
-         * @param domainOffset Offset of this subdomain in the domain.
-         * @param domainSize Size of this subdomain in the domain.
+         * @param domainOffset Local offset of this subdomain.
+         * @param domainSize Local size of this subdomain.
+         * @param globalDomainOffset Logical offset of the global domain.
+         * @param globalDomainSIze Logical size of the global domain.
          * @param dataClass Subdomain type annotation.
          * @param buf Buffer with data.
          */
         virtual void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcStride,
                 const Dimensions srcData,
@@ -211,6 +198,8 @@ namespace DCollector
                 const char* name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 DomDataClass dataClass,
                 const void* buf) = 0;
 
@@ -221,8 +210,10 @@ namespace DCollector
          * @param type Type information for data.
          * @param count Number of elements to append.
          * @param name Name for the dataset to create/append.
-         * @param domainOffset Offset of this subdomain in the domain.
-         * @param domainSize Size of this subdomain in the domain.
+         * @param domainOffset Local offset of this subdomain.
+         * @param domainSize Local size of this subdomain.
+         * @param globalDomainOffset Logical offset of the global domain.
+         * @param globalDomainSIze Logical size of the global domain.
          * @param buf Buffer with data.
          */
         virtual void appendDomain(int32_t id,
@@ -231,6 +222,8 @@ namespace DCollector
                 const char *name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 const void *buf) = 0;
 
         /**
@@ -244,8 +237,10 @@ namespace DCollector
          * Data must contain at least (striding * count) elements. 
          * 1 mean 'no striding'.
          * @param name Name for the dataset to create/append.
-         * @param domainOffset Offset of this subdomain in the domain.
-         * @param domainSize Size of this subdomain in the domain.
+         * @param domainOffset Local offset of this subdomain.
+         * @param domainSize Local size of this subdomain.
+         * @param globalDomainOffset Logical offset of the global domain.
+         * @param globalDomainSIze Logical size of the global domain.
          * @param buf Buffer with data.
          */
         virtual void appendDomain(int32_t id,
@@ -256,6 +251,8 @@ namespace DCollector
                 const char *name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 const void *buf) = 0;
     };
 

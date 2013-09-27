@@ -40,13 +40,15 @@ namespace DCollector
          */
         virtual void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcData,
                 const char* name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 DomDataClass dataClass,
-                const void* data) = 0;
+                const void* buf) = 0;
 
         /**
          * The global size and the write offset for the calling process are
@@ -58,15 +60,17 @@ namespace DCollector
          */
         virtual void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcData,
                 const Dimensions srcOffset,
                 const char* name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 DomDataClass dataClass,
-                const void* data) = 0;
+                const void* buf) = 0;
 
         /**
          * The global size and the write offset for the calling process are
@@ -78,7 +82,7 @@ namespace DCollector
          */
         virtual void writeDomain(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcStride,
                 const Dimensions srcData,
@@ -86,58 +90,60 @@ namespace DCollector
                 const char* name,
                 const Dimensions domainOffset,
                 const Dimensions domainSize,
+                const Dimensions globalDomainOffset,
+                const Dimensions globalDomainSize,
                 DomDataClass dataClass,
-                const void* data) = 0;
+                const void* buf) = 0;
 
         /**
          * Writes data with annotated domain information.
          * 
-         * @param id id of the group to read from
-         * @param globalSize dimensions for global collective buffer
-         * @param globalOffset 3D-offset in the globalSize-buffer this process writes to
-         * @param type type information for data
-         * @param rank number of dimensions (1-3) of the data
-         * @param srcData dimensions of the data in the buffer
-         * @param name name of the dataset
-         * @param globalDomainOffset global offset of this domain
-         * @param globalDomainSize global domain size
-         * @param dataClass domain type annotation
-         * @param data buffer with data
+         * @param id ID for iteration.
+         * @param globalSize Dimensions for global collective buffer.
+         * @param globalOffset 3D-offset in the globalSize-buffer this process writes to.
+         * @param type Type information for data.
+         * @param ndims Number of dimensions (1-3) of the buffer.
+         * @param srcData Dimensions of the data in the buffer.
+         * @param name Name of the dataset.
+         * @param globalDomainOffset Global offset of this domain.
+         * @param globalDomainSize Global domain size.
+         * @param dataClass Domain type annotation.
+         * @param buf Buffer with data.
          */
         virtual void writeDomain(int32_t id,
                 const Dimensions globalSize,
                 const Dimensions globalOffset,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcData,
                 const char* name,
                 const Dimensions globalDomainOffset,
                 const Dimensions globalDomainSize,
                 DomDataClass dataClass,
-                const void* data) = 0;
+                const void* buf) = 0;
 
         /**
          * Writes data with annotated domain information.
          * 
-         * @param id id of the group to read from
-         * @param globalSize dimensions for global collective buffer
-         * @param globalOffset 3D-offset in the globalSize-buffer this process writes to
-         * @param type type information for data
-         * @param rank number of dimensions (1-3) of the data
-         * @param srcBuffer dimensions of the buffer to read from
-         * @param srcData dimensions of the data in the buffer
-         * @param srcOffset offset of srcData in srcBuffer
-         * @param name name of the dataset
-         * @param globalDomainOffset global offset of this domain
-         * @param globalDomainSize global domain size
-         * @param dataClass domain type annotation
-         * @param data buffer with data
+         * @param id ID for iteration.
+         * @param globalSize Dimensions for global collective buffer.
+         * @param globalOffset 3D-offset in the globalSize-buffer this process writes to.
+         * @param type Type information for data.
+         * @param ndims Number of dimensions (1-3) of the buffer.
+         * @param srcBuffer Dimensions of the buffer to read from.
+         * @param srcData Dimensions of the data in the buffer.
+         * @param srcOffset Offset of \p srcData in \p srcBuffer.
+         * @param name Name of the dataset.
+         * @param globalDomainOffset Global offset of this domain.
+         * @param globalDomainSize Global domain size.
+         * @param dataClass Domain type annotation.
+         * @param buf Buffer with data.
          */
         virtual void writeDomain(int32_t id,
                 const Dimensions globalSize,
                 const Dimensions globalOffset,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcData,
                 const Dimensions srcOffset,
@@ -145,31 +151,31 @@ namespace DCollector
                 const Dimensions globalDomainOffset,
                 const Dimensions globalDomainSize,
                 DomDataClass dataClass,
-                const void* data) = 0;
+                const void* buf) = 0;
 
         /**
          * Writes data with annotated domain information.
          * 
-         * @param id id of the group to read from
-         * @param globalSize dimensions for global collective buffer
-         * @param globalOffset 3D-offset in the globalSize-buffer this process writes to
-         * @param type type information for data
-         * @param rank number of dimensions (1-3) of the data
-         * @param srcBuffer dimensions of the buffer to read from
-         * @param srcStride sizeof striding in each dimension. 1 means 'no stride'
-         * @param srcData dimensions of the data in the buffer
-         * @param srcOffset offset of srcData in srcBuffer
-         * @param name name of the dataset
-         * @param globalDomainOffset global offset of this domain
-         * @param globalDomainSize global domain size
-         * @param dataClass domain type annotation
-         * @param data buffer with data
+         * @param id ID for iteration.
+         * @param globalSize Dimensions for global collective buffer.
+         * @param globalOffset 3D-offset in the globalSize-buffer this process writes to.
+         * @param type Type information for data.
+         * @param ndims Number of dimensions (1-3) of the buffer.
+         * @param srcBuffer Dimensions of the buffer to read from.
+         * @param srcStride Size of striding in each dimension. 1 means 'no stride'.
+         * @param srcData Dimensions of the data in the buffer.
+         * @param srcOffset Offset of \p srcData in \p srcBuffer.
+         * @param name Name of the dataset.
+         * @param globalDomainOffset Global offset of this domain.
+         * @param globalDomainSize Global domain size.
+         * @param dataClass Domain type annotation.
+         * @param buf Buffer with data.
          */
         virtual void writeDomain(int32_t id,
                 const Dimensions globalSize,
                 const Dimensions globalOffset,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcStride,
                 const Dimensions srcData,
@@ -178,14 +184,14 @@ namespace DCollector
                 const Dimensions globalDomainOffset,
                 const Dimensions globalDomainSize,
                 DomDataClass dataClass,
-                const void* data) = 0;
+                const void* buf) = 0;
         
         /**
          * Reserves a dataset with annotated domain information for parallel access. 
          * 
          * @param id ID for iteration.
          * @param globalSize Global size for reserved dataset.
-         * @param rank Number of dimensions (1-3).
+         * @param ndims Number of dimensions (1-3).
          * @param type Type information for data.
          * @param name Name for the dataset.
          * @param domainOffset Global domain offset.
@@ -194,7 +200,7 @@ namespace DCollector
          */
         virtual void reserveDomain(int32_t id,
                 const Dimensions globalSize,
-                uint32_t rank,
+                uint32_t ndims,
                 const CollectionType& type,
                 const char* name,
                 const Dimensions domainOffset,
@@ -212,7 +218,7 @@ namespace DCollector
          * @param size Global size for reserved dataset.
          * @param globalSize Returns the global size of the dataset, can be NULL.
          * @param globalOffset Returns the global offset for the calling process, can be NULL.
-         * @param rank Number of dimensions (1-3).
+         * @param ndims Number of dimensions (1-3).
          * @param type Type information for data.
          * @param name Name for the dataset.
          * @param domainOffset Offset of this local subdomain in the global domain.
@@ -223,7 +229,7 @@ namespace DCollector
                 const Dimensions size,
                 Dimensions *globalSize,
                 Dimensions *globalOffset,
-                uint32_t rank,
+                uint32_t ndims,
                 const CollectionType& type,
                 const char* name,
                 const Dimensions domainOffset,

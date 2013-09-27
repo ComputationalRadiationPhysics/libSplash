@@ -76,14 +76,14 @@ void FileAccessTest::testWriteAfterCreate()
     
     CPPUNIT_ASSERT(dataCollector->getMaxID() == 2);
     
-    dataCollector->read(1, ctInt, "data", data_size, &data);
+    dataCollector->read(1, "data", data_size, &data);
     
-    CPPUNIT_ASSERT(data_size.getDimSize() == 1);
+    CPPUNIT_ASSERT(data_size.getScalarSize() == 1);
     CPPUNIT_ASSERT(data == 1);
     
-    dataCollector->read(2, ctInt, "data", data_size, &data);
+    dataCollector->read(2, "data", data_size, &data);
     
-    CPPUNIT_ASSERT(data_size.getDimSize() == 1);
+    CPPUNIT_ASSERT(data_size.getScalarSize() == 1);
     CPPUNIT_ASSERT(data == 2);
     
     dataCollector->close();
@@ -92,7 +92,7 @@ void FileAccessTest::testWriteAfterCreate()
     attr.fileAccType = DataCollector::FAT_CREATE;
     dataCollector->open(HDF5_FILE, attr);
     
-    CPPUNIT_ASSERT_THROW(dataCollector->read(1, ctInt, "data", data_size, &data),
+    CPPUNIT_ASSERT_THROW(dataCollector->read(1, "data", data_size, &data),
             DCException);
     
     dataCollector->close();

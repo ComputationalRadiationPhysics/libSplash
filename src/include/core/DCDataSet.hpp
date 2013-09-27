@@ -35,6 +35,19 @@
 
 namespace DCollector
 {
+    /**
+     * Possible data types.
+     */
+    enum DCDataType
+    {
+        DCDT_UNKNOWN,
+        DCDT_FLOAT32,
+        DCDT_FLOAT64,
+        DCDT_INT32,
+        DCDT_INT64,
+        DCDT_UINT32,
+        DCDT_UINT64
+    };
 
     /**
      * \cond HIDDEN_SYMBOLS
@@ -42,15 +55,6 @@ namespace DCollector
     class DCDataSet
     {
     public:
-
-        enum DCDataType
-        {
-            DCDT_UNKNOWN,
-            DCDT_FLOAT32, DCDT_FLOAT64,
-            DCDT_INT32, DCDT_INT64,
-            DCDT_UINT32, DCDT_UINT64
-        };
-
         /**
          * Constructor.
          *
@@ -82,11 +86,11 @@ namespace DCollector
          * @param colType collection type of the dataset
          * @param group group for this dataset
          * @param size target size
-         * @param rank number of dimensions
+         * @param ndims number of dimensions
          * @param compression enables transparent compression on the data
          */
         void create(const CollectionType& colType, hid_t group, const Dimensions size,
-                uint32_t rank, bool compression) throw (DCException);
+                uint32_t ndims, bool compression) throw (DCException);
 
         /**
          * Create an object reference
@@ -150,13 +154,13 @@ namespace DCollector
          * @param dstBuffer size of the buffer to read into
          * @param dstOffset offset in destination buffer to read to
          * @param sizeRead returns the size of the read dataset
-         * @param srcRank returns the dimensions of the read dataset
+         * @param srcNDims returns the dimensions of the read dataset
          * @param dst pointer to destination buffer for reading
          */
         void read(Dimensions dstBuffer,
                 Dimensions dstOffset,
                 Dimensions &sizeRead,
-                uint32_t& srcRank,
+                uint32_t& srcNDims,
                 void* dst) throw (DCException);
 
         /**
@@ -167,7 +171,7 @@ namespace DCollector
          * @param srcSize the size of the requested buffer
          * @param srcOffset offset in source buffer to read from
          * @param sizeRead returns the size of the read dataset
-         * @param srcRank returns the dimensions of the read dataset
+         * @param srcNDims returns the dimensions of the read dataset
          * @param dst pointer to destination buffer for reading
          */
         void read(Dimensions dstBuffer,
@@ -175,7 +179,7 @@ namespace DCollector
                 Dimensions srcSize,
                 Dimensions srcOffset,
                 Dimensions& sizeRead,
-                uint32_t& srcRank,
+                uint32_t& srcNDims,
                 void* dst) throw (DCException);
 
         /**
@@ -198,7 +202,7 @@ namespace DCollector
          *
          * @return number of dimensions
          */
-        size_t getRank();
+        size_t getNDims();
 
         /**
          * Returns the DataSpace associated with this DataSet.
@@ -210,10 +214,9 @@ namespace DCollector
         hid_t getDataSpace() throw (DCException);
 
         /**
-         * Returns the DCDataType associated with this DataSet.
+         * Returns the \p DCDataType associated with this DataSet.
          * A DCException is thrown if the DataSet has not been
-         * properly opened/created or if its type is not a
-         * known trivial type.
+         * properly opened/created.
          * 
          * @return the DataType
          */
@@ -232,11 +235,11 @@ namespace DCollector
          * @return dataset name
          */
         std::string getName();
-        
+
         static void splitPath(const std::string fullName, std::string &path, std::string &name);
-        
+
         static void getFullDataPath(const std::string fullUserName, const std::string pathBase,
-            uint32_t id, std::string &path, std::string &name);
+                uint32_t id, std::string &path, std::string &name);
 
     protected:
         void setChunking(size_t typeSize) throw (DCException);
@@ -250,7 +253,7 @@ namespace DCollector
         hid_t dataspace;
         hdset_reg_ref_t regionRef;
         Dimensions logicalSize;
-        size_t rank;
+        size_t ndims;
         std::string name;
         bool opened;
         bool isReference;

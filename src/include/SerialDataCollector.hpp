@@ -38,9 +38,9 @@ namespace DCollector
 {
 
     /**
-     * Realizes a DataCollector which creates a hdf5 file for each mpi process and can merge data to single file.
+     * Realizes a DataCollector which creates an HDF5 file for each MPI process.
      *
-     * see DataCollector interface for function documentation.
+     * See \ref DataCollector interface for function documentation.
      */
     class SerialDataCollector : public DataCollector
     {
@@ -93,10 +93,10 @@ namespace DCollector
             FST_CLOSED, FST_WRITING, FST_READING, FST_CREATING, FST_MERGING
         };
 
-        // internal hdf5 file handles
+        // internal HDF5 file handles
         HandleMgr handles;
 
-        // property list for hdf5 file access
+        // property list for HDF5 file access
         hid_t fileAccProperties;
 
         // current file access type
@@ -105,8 +105,8 @@ namespace DCollector
         // id for last written iteration
         int32_t maxID;
 
-        // the current size of the mpi grid
-        Dimensions mpiSize;
+        // the MPI topology for a distributed file
+        Dimensions mpiTopology;
 
         // enable data compression
         bool enableCompression;
@@ -123,7 +123,7 @@ namespace DCollector
         void openMerge(const char *filename) throw (DCException);
 
         /**
-         * Reads from single hdf5 files and merges data to single master buffer.
+         * Reads from single HDF5 files and merges data to single master buffer.
          *
          * @param id id of the group to read from
          * @param type type information for data
@@ -142,29 +142,14 @@ namespace DCollector
                 void* data) throw (DCException);
 
         /**
-         * Returns the rank (number of dimensions) for a dataset
-         * @param h5File file handle
-         * @param id id of the group to read from
-         * @param name name of the dataset
-         * @return rank
+         * Returns the number of dimensions for a dataset.
          */
-        size_t getRank(H5Handle h5File,
+        size_t getNDims(H5Handle h5File,
                 int32_t id,
                 const char* name);
 
         /**
          * Internal reading method.
-         *
-         * @param h5File HDF5 file to read from
-         * @param id id of the group to read from
-         * @param name name of the dataset
-         * @param dstBuffer dimensions of the buffer to read into
-         * @param dstOffset offset in destination buffer to read to
-         * @param srcSize the size of the requested data buffer, starting at srcOffset
-         * @param srcOffset offset in the source buffer to start reading from
-         * @param sizeRead returns the size of the read dataset
-         * @param srcRank returns the number of dimensions of srcBuffer
-         * @param dst buffer to hold read data
          */
         void readInternal(H5Handle h5File,
                 int32_t id,
@@ -174,26 +159,21 @@ namespace DCollector
                 const Dimensions srcSize,
                 const Dimensions srcOffset,
                 Dimensions& sizeRead,
-                uint32_t& srcRank,
+                uint32_t& srcDims,
                 void* dst) throw (DCException);
+        
+        void readSizeInternal(H5Handle h5File,
+            int32_t id,
+            const char* name,
+            Dimensions &sizeRead) throw (DCException);
 
         /**
          * Basic method for writing to a single DataSet.
-         *
-         * @param group group holding the DataSet
-         * @param datatype H5::DataType information for data
-         * @param rank number of dimensions of the dataset
-         * @param srcBuffer dimensions of the buffer
-         * @param srcStride sizeof striding in each dimension. 1 means 'no stride'
-         * @param srcData dimensions of the data in the buffer
-         * @param srcOffset offset of srcData in srcBuffer
-         * @param name name of the dataset
-         * @param data buffer with data
          */
         void writeDataSet(
                 hid_t group,
                 const CollectionType& datatype,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcStride,
                 const Dimensions srcData,
@@ -205,14 +185,6 @@ namespace DCollector
          * Basic method for appending data to a 1-dimensional DataSet.
          * 
          * The targeted DataSet is created or extended if necessary.
-         *
-         * @param group group holding the DataSet
-         * @param datatype H5::DataType information for data
-         * @param count number of elements in the buffer
-         * @param offset offset to be used for reading from data buffer
-         * @param stride stride size to be used for reading from data buffer
-         * @param name name of the dataset
-         * @param data buffer with data
          */
         void appendDataSet(
                 hid_t group,
@@ -250,14 +222,14 @@ namespace DCollector
 
         void write(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcData,
                 const char* name,
                 const void* data) throw (DCException);
 
         void write(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcData,
                 const Dimensions srcOffset,
@@ -266,7 +238,7 @@ namespace DCollector
 
         void write(int32_t id,
                 const CollectionType& type,
-                uint32_t rank,
+                uint32_t ndims,
                 const Dimensions srcBuffer,
                 const Dimensions srcStride,
                 const Dimensions srcData,
@@ -328,13 +300,11 @@ namespace DCollector
                 const void *data) throw (DCException);
 
         void read(int32_t id,
-                const CollectionType& type,
                 const char* name,
                 Dimensions &sizeRead,
                 void* data) throw (DCException);
 
         void read(int32_t id,
-                const CollectionType& type,
                 const char* name,
                 const Dimensions dstBuffer,
                 const Dimensions dstOffset,

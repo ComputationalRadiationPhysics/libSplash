@@ -41,8 +41,6 @@ testSerial ./ReferencesTest.cpp.out "Testing references..."
 
 testMPI ./DomainsTest.cpp.out 8 "Testing domains..."
 
-#testMPI ./MergedReadTest.cpp.out 1 "Testing merged read..."
-
 cd ..
 
 exit $OK

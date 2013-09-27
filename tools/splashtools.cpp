@@ -380,7 +380,7 @@ int executeToolFunction(Options& options,
         if (options.mpiRank != 0)
             fileMPISizeDim.set(fileMPISizeBuffer[0], fileMPISizeBuffer[1], fileMPISizeBuffer[2]);
 
-        if (fileMPISizeDim.getDimSize() == 0)
+        if (fileMPISizeDim.getScalarSize() == 0)
             return RESULT_ERROR;
 
         fileMPISize = fileMPISizeBuffer[0] * fileMPISizeBuffer[1] * fileMPISizeBuffer[2];
