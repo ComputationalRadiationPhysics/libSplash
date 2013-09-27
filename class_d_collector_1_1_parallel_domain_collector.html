@@ -72,19 +72,18 @@ Collaboration diagram for DCollector::ParallelDomainCollector:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a0ddc0ca2208f85208ef7e402671e404a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a0ddc0ca2208f85208ef7e402671e404a">ParallelDomainCollector</a> (MPI_Comm comm, MPI_Info info, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> topology, uint32_t maxFileHandles)</td></tr>
 <tr class="memitem:a9f6f713fe07a2b379e2f8a774820b792"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a9f6f713fe07a2b379e2f8a774820b792">~ParallelDomainCollector</a> ()</td></tr>
-<tr class="memitem:a6fef7ec3b67159ea14952b671a386d78"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a6fef7ec3b67159ea14952b671a386d78">getTotalElements</a> (int32_t id, const char *name)  throw (DCException)</td></tr>
-<tr class="memitem:a24a6e4fb42341fc5fbb90f2efcc54138"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_d_collector_1_1_domain.html">Domain</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a24a6e4fb42341fc5fbb90f2efcc54138">getTotalDomain</a> (int32_t id, const char *name)  throw (DCException)</td></tr>
+<tr class="memitem:abece5f4eb2bddb1aa8b85adc3e12ffc8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_d_collector_1_1_domain.html">Domain</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#abece5f4eb2bddb1aa8b85adc3e12ffc8">getGlobalDomain</a> (int32_t id, const char *name)  throw (DCException)</td></tr>
+<tr class="memitem:ac88e818aebb80d4297e26dbba8c9c9ef"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_d_collector_1_1_domain.html">Domain</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#ac88e818aebb80d4297e26dbba8c9c9ef">getLocalDomain</a> (int32_t id, const char *name)  throw (DCException)</td></tr>
 <tr class="memitem:a422d68b8e2673d10f9abf37c3d346a04"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_d_collector_1_1_data_container.html">DataContainer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a422d68b8e2673d10f9abf37c3d346a04">readDomain</a> (int32_t id, const char *name, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> requestOffset, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> requestSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> *dataClass, bool lazyLoad=false)  throw (DCException)</td></tr>
 <tr class="memitem:a971e342ec0d9225aa0208666a69cc971"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a971e342ec0d9225aa0208666a69cc971">readDomainLazy</a> (<a class="el" href="class_d_collector_1_1_domain_data.html">DomainData</a> *domainData)  throw (DCException)</td></tr>
-<tr class="memitem:ac1b0ea9337421556369edd8f771993df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#ac1b0ea9337421556369edd8f771993df">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t rank, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *data)  throw (DCException)</td></tr>
-<tr class="memitem:a3fb95228da0cc31518fe60f43f9f2b60"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a3fb95228da0cc31518fe60f43f9f2b60">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t rank, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *data)  throw (DCException)</td></tr>
-<tr class="memitem:a85ca7a23c48dfb2e0679783151bd5402"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a85ca7a23c48dfb2e0679783151bd5402">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t rank, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcStride, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *data)  throw (DCException)</td></tr>
-<tr class="memitem:ac7ab9f512c24df4171b46f6e83ae7bb8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#ac7ab9f512c24df4171b46f6e83ae7bb8">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t rank, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *data)  throw (DCException)</td></tr>
-<tr class="memitem:a46c40b9fcbd41c689cb13c62e613f388"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a46c40b9fcbd41c689cb13c62e613f388">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t rank, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *data)  throw (DCException)</td></tr>
-<tr class="memitem:a2e59d2484d365a4128efb278f01592e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a2e59d2484d365a4128efb278f01592e0">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t rank, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcStride, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *data)  throw (DCException)</td></tr>
-<tr class="memitem:a1f89564c06d91d94bc0f889c5bd9f35a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a1f89564c06d91d94bc0f889c5bd9f35a">reserveDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> size, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> *globalSize, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> *globalOffset, uint32_t rank, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass)  throw (DCException)</td></tr>
-<tr class="memitem:a422a98abae2a77cc70d0895b2b1b4c79"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a422a98abae2a77cc70d0895b2b1b4c79">appendDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, size_t count, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, const void *data)  throw (DCException)</td></tr>
-<tr class="memitem:ae23dd88ff6d526a6dfe873d5c41c2e94"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#ae23dd88ff6d526a6dfe873d5c41c2e94">appendDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, size_t count, size_t offset, size_t striding, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, const void *data)  throw (DCException)</td></tr>
+<tr class="memitem:ab74497318d0a18ef985f50d020d180f0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#ab74497318d0a18ef985f50d020d180f0">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *buf)  throw (DCException)</td></tr>
+<tr class="memitem:adb3f975e185a6e95ced00931eb9d0117"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#adb3f975e185a6e95ced00931eb9d0117">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *buf)  throw (DCException)</td></tr>
+<tr class="memitem:aed1abf15e5c0ee05ce30240518760881"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#aed1abf15e5c0ee05ce30240518760881">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcStride, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *buf)  throw (DCException)</td></tr>
+<tr class="memitem:ae8ec29437388df3ca1228a19734b26d7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#ae8ec29437388df3ca1228a19734b26d7">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *buf)  throw (DCException)</td></tr>
+<tr class="memitem:a10b25ca2a1df4da568d61c26a6e2fe60"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a10b25ca2a1df4da568d61c26a6e2fe60">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *buf)  throw (DCException)</td></tr>
+<tr class="memitem:a8d5e9ca7b9026040a4cb5b9d2a459670"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a8d5e9ca7b9026040a4cb5b9d2a459670">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcStride, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *buf)  throw (DCException)</td></tr>
+<tr class="memitem:a1f399f1c4093b90a9360407adbcd5c1c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a1f399f1c4093b90a9360407adbcd5c1c">reserveDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalSize, uint32_t ndims, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass)  throw (DCException)</td></tr>
+<tr class="memitem:aaf2f68ed64cbabb0f31537f256a21225"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#aaf2f68ed64cbabb0f31537f256a21225">reserveDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> size, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> *globalSize, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> *globalOffset, uint32_t ndims, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass)  throw (DCException)</td></tr>
 <tr class="inherit_header pub_methods_class_d_collector_1_1_parallel_data_collector"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_d_collector_1_1_parallel_data_collector')"><img src="closed.png" alt="-"/>&nbsp;Public Member Functions inherited from <a class="el" href="class_d_collector_1_1_parallel_data_collector.html">DCollector::ParallelDataCollector</a></td></tr>
 <tr class="memitem:a08b0f16791aba6601177816c7ba2e3fa inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a08b0f16791aba6601177816c7ba2e3fa">ParallelDataCollector</a> (MPI_Comm comm, MPI_Info info, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> topology, uint32_t maxFileHandles)</td></tr>
 <tr class="memitem:a2d8824b95fb2184f65e9500beb9445ef inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a2d8824b95fb2184f65e9500beb9445ef">~ParallelDataCollector</a> ()</td></tr>
@@ -100,6 +99,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af40963ddd44801f1d5ab769bf010dcad inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#af40963ddd44801f1d5ab769bf010dcad">write</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t rank, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const char *name, const void *buf)</td></tr>
 <tr class="memitem:a3b31a079244c1c0e5dacb71723a261b2 inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a3b31a079244c1c0e5dacb71723a261b2">write</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t rank, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const void *buf)</td></tr>
 <tr class="memitem:a871b713c3d6fdccc4d601ef4097e1889 inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a871b713c3d6fdccc4d601ef4097e1889">write</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t rank, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcStride, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const void *buf)</td></tr>
+<tr class="memitem:a4a72ad6548a71e08abd1560a6c455542 inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a4a72ad6548a71e08abd1560a6c455542">reserve</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalSize, uint32_t rank, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *name)  throw (DCException)</td></tr>
 <tr class="memitem:a017cf083b5af5a0b4ed38547757b3608 inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a017cf083b5af5a0b4ed38547757b3608">reserve</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> size, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> *globalSize, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> *globalOffset, uint32_t rank, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *name)  throw (DCException)</td></tr>
 <tr class="memitem:a0bb56724e459a6536416f9e06b646fba inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a0bb56724e459a6536416f9e06b646fba">append</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> size, uint32_t rank, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const char *name, const void *buf)</td></tr>
 <tr class="memitem:a7237d90f95282df036072babc44b970c inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a7237d90f95282df036072babc44b970c">remove</a> (int32_t id)  throw (DCException)</td></tr>
@@ -109,10 +109,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae4d10827c2032797bf1d0a59acf76685 inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#ae4d10827c2032797bf1d0a59acf76685">writeGlobalAttribute</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *name, const void *buf)  throw (DCException)</td></tr>
 <tr class="memitem:ab1312694063a3cca1b340907be04456d inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#ab1312694063a3cca1b340907be04456d">readAttribute</a> (int32_t id, const char *dataName, const char *attrName, void *buf, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> *mpiPosition=NULL)  throw (DCException)</td></tr>
 <tr class="memitem:a424fd248c203ec2de674c51fea7e74a0 inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a424fd248c203ec2de674c51fea7e74a0">writeAttribute</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *dataName, const char *attrName, const void *buf)  throw (DCException)</td></tr>
-<tr class="memitem:ac5b3b9bbaae78dcae6cb8ae983132c36 inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#ac5b3b9bbaae78dcae6cb8ae983132c36">read</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *name, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> &amp;sizeRead, void *buf)  throw (DCException)</td></tr>
-<tr class="memitem:ae27d27edd572ef8f6c4bf761b8e1c8b5 inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#ae27d27edd572ef8f6c4bf761b8e1c8b5">read</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> dstBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> dstOffset, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> &amp;sizeRead, void *buf)  throw (DCException)</td></tr>
-<tr class="memitem:a7a2736251faaf72298eef54ccac34aae inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a7a2736251faaf72298eef54ccac34aae">read</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> localSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *name, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> &amp;sizeRead, void *buf)  throw (DCException)</td></tr>
-<tr class="memitem:a14fa8df20698bcf4b297b72e227798bd inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a14fa8df20698bcf4b297b72e227798bd">read</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> localSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> dstBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> dstOffset, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> &amp;sizeRead, void *buf)  throw (DCException)</td></tr>
+<tr class="memitem:a406f36b424dcabe8f5ad90ce4026964a inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a406f36b424dcabe8f5ad90ce4026964a">read</a> (int32_t id, const char *name, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> &amp;sizeRead, void *buf)  throw (DCException)</td></tr>
+<tr class="memitem:ae373a3dc0abc8ccdaf0600b42caffad7 inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#ae373a3dc0abc8ccdaf0600b42caffad7">read</a> (int32_t id, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> dstBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> dstOffset, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> &amp;sizeRead, void *buf)  throw (DCException)</td></tr>
+<tr class="memitem:a41bdff9a09933d6779c5fef177d0da2f inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a41bdff9a09933d6779c5fef177d0da2f">read</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> localSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const char *name, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> &amp;sizeRead, void *buf)  throw (DCException)</td></tr>
+<tr class="memitem:a73e3bd0abb6011b1ac6323ae34ab2c81 inherit pub_methods_class_d_collector_1_1_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a73e3bd0abb6011b1ac6323ae34ab2c81">read</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> localSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> dstBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> dstOffset, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> &amp;sizeRead, void *buf)  throw (DCException)</td></tr>
 <tr class="inherit_header pub_methods_class_d_collector_1_1_i_parallel_data_collector"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_d_collector_1_1_i_parallel_data_collector')"><img src="closed.png" alt="-"/>&nbsp;Public Member Functions inherited from <a class="el" href="class_d_collector_1_1_i_parallel_data_collector.html">DCollector::IParallelDataCollector</a></td></tr>
 <tr class="memitem:ae1b16c0b7f21c1b3f9c1e1ef5f4a6b46 inherit pub_methods_class_d_collector_1_1_i_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_parallel_data_collector.html#ae1b16c0b7f21c1b3f9c1e1ef5f4a6b46">readGlobalAttribute</a> (const char *name, void *buf, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> *mpiPosition=NULL)=0</td></tr>
 <tr class="memitem:a562649d956191279b436937efc97d911 inherit pub_methods_class_d_collector_1_1_i_parallel_data_collector"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_parallel_data_collector.html#a562649d956191279b436937efc97d911">writeGlobalAttribute</a> (const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *name, const void *buf)=0</td></tr>
@@ -139,8 +139,6 @@ Additional Inherited Members</h2></td></tr>
 <a class="el" href="struct_d_collector_1_1_data_collector_1_1___file_creation_attr.html">DCollector::DataCollector::_FileCreationAttr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_collector.html#ac80e36f6d5205ce36a6c14a77b3d4590">FileCreationAttr</a></td></tr>
 <tr class="memitem:a4400afb1a8b6133db19330dec0a94952 inherit pub_types_class_d_collector_1_1_data_collector"><td class="memItemLeft" align="right" valign="top">typedef struct <br class="typebreak"/>
 <a class="el" href="struct_d_collector_1_1_data_collector_1_1___d_c_entry.html">DCollector::DataCollector::_DCEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_collector.html#a4400afb1a8b6133db19330dec0a94952">DCEntry</a></td></tr>
-<tr class="inherit_header pub_static_methods_class_d_collector_1_1_i_domain_collector"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_class_d_collector_1_1_i_domain_collector')"><img src="closed.png" alt="-"/>&nbsp;Static Public Member Functions inherited from <a class="el" href="class_d_collector_1_1_i_domain_collector.html">DCollector::IDomainCollector</a></td></tr>
-<tr class="memitem:ae05cc3289e3f9485ed4c690f0e55d362 inherit pub_static_methods_class_d_collector_1_1_i_domain_collector"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#ae05cc3289e3f9485ed4c690f0e55d362">testIntersection</a> (const <a class="el" href="class_d_collector_1_1_domain.html">Domain</a> &amp;d1, const <a class="el" href="class_d_collector_1_1_domain.html">Domain</a> &amp;d2)</td></tr>
 <tr class="inherit_header pub_static_methods_class_d_collector_1_1_data_collector"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_class_d_collector_1_1_data_collector')"><img src="closed.png" alt="-"/>&nbsp;Static Public Member Functions inherited from <a class="el" href="class_d_collector_1_1_data_collector.html">DCollector::DataCollector</a></td></tr>
 <tr class="memitem:af8f05ed125dce36b15d00dbcb0591585 inherit pub_static_methods_class_d_collector_1_1_data_collector"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_collector.html#af8f05ed125dce36b15d00dbcb0591585">initFileCreationAttr</a> (<a class="el" href="class_d_collector_1_1_data_collector.html#ac80e36f6d5205ce36a6c14a77b3d4590">FileCreationAttr</a> &amp;attr)</td></tr>
 </table>
@@ -225,7 +223,7 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2>Member Function Documentation</h2>
-<a class="anchor" id="a422a98abae2a77cc70d0895b2b1b4c79"></a>
+<a class="anchor" id="abece5f4eb2bddb1aa8b85adc3e12ffc8"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -233,183 +231,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void ParallelDomainCollector::appendDomain </td>
-          <td>(</td>
-          <td class="paramtype">int32_t&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;&#160;</td>
-          <td class="paramname"><em>type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>count</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>domainOffset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>domainSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>  throw (<a class="el" href="class_d_collector_1_1_d_c_exception.html">DCException</a>)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Appends 1D data with annotated domain information.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>ID of the iteration for appending. </td></tr>
-    <tr><td class="paramname">type</td><td>type information for data </td></tr>
-    <tr><td class="paramname">count</td><td>number of elements to append </td></tr>
-    <tr><td class="paramname">name</td><td>name for the dataset to create/append to, e.g. 'ions' </td></tr>
-    <tr><td class="paramname">domainOffset</td><td>offset of this subdomain in the domain </td></tr>
-    <tr><td class="paramname">domainSize</td><td>size of this subdomain in the domain </td></tr>
-    <tr><td class="paramname">data</td><td>buffer with data </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a7955657e8ae15758ecf2f4dd9191b720">DCollector::IDomainCollector</a>.</p>
-
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00589">589</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ae23dd88ff6d526a6dfe873d5c41c2e94"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ParallelDomainCollector::appendDomain </td>
-          <td>(</td>
-          <td class="paramtype">int32_t&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;&#160;</td>
-          <td class="paramname"><em>type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>count</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>offset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>striding</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>domainOffset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>domainSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>  throw (<a class="el" href="class_d_collector_1_1_d_c_exception.html">DCException</a>)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Appends 1D data with annotated domain information.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>ID of the iteration for appending. </td></tr>
-    <tr><td class="paramname">type</td><td>type information for data </td></tr>
-    <tr><td class="paramname">count</td><td>number of elements to append </td></tr>
-    <tr><td class="paramname">offset</td><td>offset in elements to start reading from </td></tr>
-    <tr><td class="paramname">striding</td><td>striding to be used for reading. data must contain at least (striding * count) elements. 1 mean 'no striding' </td></tr>
-    <tr><td class="paramname">name</td><td>name for the dataset to create/append to, e.g. 'ions' </td></tr>
-    <tr><td class="paramname">domainOffset</td><td>offset of this subdomain in the domain </td></tr>
-    <tr><td class="paramname">domainSize</td><td>size of this subdomain in the domain </td></tr>
-    <tr><td class="paramname">data</td><td>buffer with data </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a522a87e572a857b1b790b8484bc2c070">DCollector::IDomainCollector</a>.</p>
-
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00601">601</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a24a6e4fb42341fc5fbb90f2efcc54138"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_d_collector_1_1_domain.html">Domain</a> ParallelDomainCollector::getTotalDomain </td>
+          <td class="memname"><a class="el" href="class_d_collector_1_1_domain.html">Domain</a> ParallelDomainCollector::getGlobalDomain </td>
           <td>(</td>
           <td class="paramtype">int32_t&#160;</td>
           <td class="paramname"><em>id</em>, </td>
@@ -432,82 +254,73 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the total domain that is spanned by all datasets (subdomains). The user is responsible to guarantee that the actual subdomains form a line/rectangle/cuboid that starts at (0, 0, 0)</p>
+<p>Returns the global domain that is spanned by all local datasets (subdomains) of the currently accessed files. The user is responsible to guarantee that the actual subdomains form a line/rectangle/cuboid.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>ID of iteration. </td></tr>
-    <tr><td class="paramname">name</td><td>name of the dataset </td></tr>
+    <tr><td class="paramname">name</td><td>Name of the dataset. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>total domain size and offset spanned of all subdomains </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Global domain spanned by all subdomains. </dd></dl>
 
-<p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a3fa2cd9495718ee4d56e277b08c8cf02">DCollector::IDomainCollector</a>.</p>
-
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00066">66</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
-
-<p><div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="class_d_collector_1_1_parallel_domain_collector_a24a6e4fb42341fc5fbb90f2efcc54138_cgraph.png" border="0" usemap="#class_d_collector_1_1_parallel_domain_collector_a24a6e4fb42341fc5fbb90f2efcc54138_cgraph" alt=""/></div>
-<map name="class_d_collector_1_1_parallel_domain_collector_a24a6e4fb42341fc5fbb90f2efcc54138_cgraph" id="class_d_collector_1_1_parallel_domain_collector_a24a6e4fb42341fc5fbb90f2efcc54138_cgraph">
-<area shape="rect" id="node3" href="class_d_collector_1_1_dimensions.html#a67e34e3b18f0b4715f2108822b851b51" title="DCollector::Dimensions\l::getPointer" alt="" coords="229,5,384,49"/><area shape="rect" id="node5" href="class_d_collector_1_1_dimensions.html#a3b5040267a22c4d773e17882442cef8f" title="DCollector::Dimensions\l::getDimSize" alt="" coords="229,71,384,115"/></map>
-</div>
-</p>
-
-</div>
-</div>
-<a class="anchor" id="a6fef7ec3b67159ea14952b671a386d78"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t ParallelDomainCollector::getTotalElements </td>
-          <td>(</td>
-          <td class="paramtype">int32_t&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>name</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>  throw (<a class="el" href="class_d_collector_1_1_d_c_exception.html">DCException</a>)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Returns the total number of domain elements for a dataset, which is the sum of all subdomain elements. This function does not check that domain classes match.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>ID of iteration. </td></tr>
-    <tr><td class="paramname">name</td><td>name of the dataset </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>total domain elements </dd></dl>
-
-<p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a87b84995d6e987cea27851db2fdc5b23">DCollector::IDomainCollector</a>.</p>
+<p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a1cedde239611d76895a7b130b2009434">DCollector::IDomainCollector</a>.</p>
 
 <p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00052">52</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
+</div>
+</div>
+<a class="anchor" id="ac88e818aebb80d4297e26dbba8c9c9ef"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_d_collector_1_1_domain.html">Domain</a> ParallelDomainCollector::getLocalDomain </td>
+          <td>(</td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>  throw (<a class="el" href="class_d_collector_1_1_d_c_exception.html">DCException</a>)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the local domain for a dataset in currently accessed file.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>ID of iteration. </td></tr>
+    <tr><td class="paramname">name</td><td>Name of the dataset. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Local sudomain. </dd></dl>
+
+<p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#ae20dcd9c4dc147dab8316a1610794362">DCollector::IDomainCollector</a>.</p>
+
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00059">59</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="class_d_collector_1_1_parallel_domain_collector_a6fef7ec3b67159ea14952b671a386d78_cgraph.png" border="0" usemap="#class_d_collector_1_1_parallel_domain_collector_a6fef7ec3b67159ea14952b671a386d78_cgraph" alt=""/></div>
-<map name="class_d_collector_1_1_parallel_domain_collector_a6fef7ec3b67159ea14952b671a386d78_cgraph" id="class_d_collector_1_1_parallel_domain_collector_a6fef7ec3b67159ea14952b671a386d78_cgraph">
-<area shape="rect" id="node3" href="class_d_collector_1_1_dimensions.html#a67e34e3b18f0b4715f2108822b851b51" title="DCollector::Dimensions\l::getPointer" alt="" coords="232,5,387,49"/><area shape="rect" id="node5" href="class_d_collector_1_1_dimensions.html#a3b5040267a22c4d773e17882442cef8f" title="DCollector::Dimensions\l::getDimSize" alt="" coords="232,71,387,115"/></map>
+<div class="center"><img src="class_d_collector_1_1_parallel_domain_collector_ac88e818aebb80d4297e26dbba8c9c9ef_cgraph.png" border="0" usemap="#class_d_collector_1_1_parallel_domain_collector_ac88e818aebb80d4297e26dbba8c9c9ef_cgraph" alt=""/></div>
+<map name="class_d_collector_1_1_parallel_domain_collector_ac88e818aebb80d4297e26dbba8c9c9ef_cgraph" id="class_d_collector_1_1_parallel_domain_collector_ac88e818aebb80d4297e26dbba8c9c9ef_cgraph">
+<area shape="rect" id="node3" href="class_d_collector_1_1_dimensions.html#a67e34e3b18f0b4715f2108822b851b51" title="DCollector::Dimensions\l::getPointer" alt="" coords="229,5,384,49"/></map>
 </div>
 </p>
 
@@ -569,28 +382,22 @@ Here is the call graph for this function:</div>
 </table>
 </div><div class="memdoc">
 <p>Efficiently reads domain-annotated data. In comparison to the standard read method, only data required for the requested partition is read. It passes back a <a class="el" href="class_d_collector_1_1_data_container.html">DataContainer</a> holding all subdomains or subdomain portions, respectively, which make up the requested partition. Data from the files is immediately copied to the <a class="el" href="class_d_collector_1_1_domain_data.html">DomainData</a> objects in the container and <a class="el" href="class_d_collector_1_1_domain_data.html">DomainData</a> buffers are dealloated when the <a class="el" href="class_d_collector_1_1_domain_data.html">DomainData</a> object is deleted, which must be done by the user.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">DomDataType</td><td>data type of the data to be read (e.g. int, float, ...) </td></tr>
-  </table>
-  </dd>
-</dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">id</td><td>ID of the iteration for reading. </td></tr>
-    <tr><td class="paramname">name</td><td>name of the dataset </td></tr>
-    <tr><td class="paramname">domainOffset</td><td>domain offset for reading (logical start of the requested partition) </td></tr>
-    <tr><td class="paramname">domainSize</td><td>domain size for reading (logical size of the requested partition) </td></tr>
-    <tr><td class="paramname">dataClass</td><td>optional domain type annotation (can be NULL) </td></tr>
-    <tr><td class="paramname">lazyLoad</td><td>set to load only size information for each subdomain, data must be loaded later using readDomainLazy </td></tr>
+    <tr><td class="paramname">id</td><td>ID of the iteration. </td></tr>
+    <tr><td class="paramname">name</td><td>Name of the dataset. </td></tr>
+    <tr><td class="paramname">domainOffset</td><td><a class="el" href="class_d_collector_1_1_domain.html">Domain</a> offset for reading (logical start of the requested partition). </td></tr>
+    <tr><td class="paramname">domainSize</td><td><a class="el" href="class_d_collector_1_1_domain.html">Domain</a> size for reading (logical size of the requested partition). </td></tr>
+    <tr><td class="paramname">dataClass</td><td>Optional domain type annotation, can be NULL. </td></tr>
+    <tr><td class="paramname">lazyLoad</td><td>Set to load only size information for each subdomain, data must be loaded later using DataContainer::readDomainLazy. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>returns a pointer to a newly allocated <a class="el" href="class_d_collector_1_1_data_container.html">DataContainer</a> holding all subdomains </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns a pointer to a newly allocated <a class="el" href="class_d_collector_1_1_data_container.html">DataContainer</a> holding all subdomains. </dd></dl>
 
 <p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#ab603048ff15cbbd13c33af22e9f534b5">DCollector::IDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00342">342</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00327">327</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -618,18 +425,18 @@ Here is the call graph for this function:</div>
 <p>Reads a subdomain which has been loaded using readDomain with lazyLoad activated. The <a class="el" href="class_d_collector_1_1_domain_collector.html">DomainCollector</a> instance must not have been closed in between. Currently only supported for domain annotated data of type DomDataClass::PolyType.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">domainData</td><td>pointer to subdomain loaded using lazyLoad == true </td></tr>
+    <tr><td class="paramname">domainData</td><td>Pointer to subdomain loaded using lazyLoad == true. </td></tr>
   </table>
   </dd>
 </dl>
 
 <p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a9a0221555685693b67b0584df5e6cd84">DCollector::IDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00377">377</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00362">362</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a1f89564c06d91d94bc0f889c5bd9f35a"></a>
+<a class="anchor" id="a1f399f1c4093b90a9360407adbcd5c1c"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -646,25 +453,13 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>size</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> *&#160;</td>
           <td class="paramname"><em>globalSize</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> *&#160;</td>
-          <td class="paramname"><em>globalOffset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>rank</em>, </td>
+          <td class="paramname"><em>ndims</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -711,36 +506,128 @@ Here is the call graph for this function:</div>
 <p>Reserves a dataset with annotated domain information for parallel access.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">id</td><td>id for fileentry. e.g. iteration </td></tr>
-    <tr><td class="paramname">size</td><td>intended 3D dimension for local dataset </td></tr>
-    <tr><td class="paramname">globalSize</td><td>if not NULL, returns the global size of the dataset </td></tr>
-    <tr><td class="paramname">globalOffset</td><td>if not NULL, returns the global offset for the calling process </td></tr>
-    <tr><td class="paramname">rank</td><td>maximum dimension (must be between 1-3) </td></tr>
-    <tr><td class="paramname">type</td><td>type information for data. available types must be implemented by concrete <a class="el" href="class_d_collector_1_1_data_collector.html">DataCollector</a> </td></tr>
-    <tr><td class="paramname">name</td><td>name for the dataset, e.g. 'ions' </td></tr>
-    <tr><td class="paramname">domainOffset</td><td>offset of this subdomain in the domain </td></tr>
-    <tr><td class="paramname">domainSize</td><td>size of this subdomain in the domain </td></tr>
-    <tr><td class="paramname">dataClass</td><td>subdomain type annotation </td></tr>
+    <tr><td class="paramname">id</td><td>ID for iteration. </td></tr>
+    <tr><td class="paramname">globalSize</td><td>Global size for reserved dataset. </td></tr>
+    <tr><td class="paramname">ndims</td><td>Number of dimensions (1-3). </td></tr>
+    <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
+    <tr><td class="paramname">name</td><td>Name for the dataset. </td></tr>
+    <tr><td class="paramname">domainOffset</td><td>Global domain offset. </td></tr>
+    <tr><td class="paramname">domainSize</td><td>Global domain size. </td></tr>
+    <tr><td class="paramname">dataClass</td><td>Subdomain type annotation. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implements <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#a1da67b3600fc9141ccacb4f9a817ab5b">DCollector::IParallelDomainCollector</a>.</p>
+<p>Implements <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#abd4c50d4c01428ee5e75af567c855941">DCollector::IParallelDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00563">563</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
-
-<p><div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="class_d_collector_1_1_parallel_domain_collector_a1f89564c06d91d94bc0f889c5bd9f35a_cgraph.png" border="0" usemap="#class_d_collector_1_1_parallel_domain_collector_a1f89564c06d91d94bc0f889c5bd9f35a_cgraph" alt=""/></div>
-<map name="class_d_collector_1_1_parallel_domain_collector_a1f89564c06d91d94bc0f889c5bd9f35a_cgraph" id="class_d_collector_1_1_parallel_domain_collector_a1f89564c06d91d94bc0f889c5bd9f35a_cgraph">
-<area shape="rect" id="node3" href="class_d_collector_1_1_dimensions.html#a67e34e3b18f0b4715f2108822b851b51" title="DCollector::Dimensions\l::getPointer" alt="" coords="229,5,384,49"/></map>
-</div>
-</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00553">553</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ac1b0ea9337421556369edd8f771993df"></a>
+<a class="anchor" id="aaf2f68ed64cbabb0f31537f256a21225"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ParallelDomainCollector::reserveDomain </td>
+          <td>(</td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> *&#160;</td>
+          <td class="paramname"><em>globalSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> *&#160;</td>
+          <td class="paramname"><em>globalOffset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>ndims</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>domainOffset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>domainSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a>&#160;</td>
+          <td class="paramname"><em>dataClass</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>  throw (<a class="el" href="class_d_collector_1_1_d_c_exception.html">DCException</a>)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Reserves a dataset with annotated domain information for parallel access.</p>
+<p>The global size and the global offset for the calling process are determined automatically via MPI among all participating processes. Note: This is not possible when writing 2D data with a 3D MPI topology.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>ID for iteration. </td></tr>
+    <tr><td class="paramname">size</td><td>Global size for reserved dataset. </td></tr>
+    <tr><td class="paramname">globalSize</td><td>Returns the global size of the dataset, can be NULL. </td></tr>
+    <tr><td class="paramname">globalOffset</td><td>Returns the global offset for the calling process, can be NULL. </td></tr>
+    <tr><td class="paramname">ndims</td><td>Number of dimensions (1-3). </td></tr>
+    <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
+    <tr><td class="paramname">name</td><td>Name for the dataset. </td></tr>
+    <tr><td class="paramname">domainOffset</td><td>Offset of this local subdomain in the global domain. </td></tr>
+    <tr><td class="paramname">domainSize</td><td>Size of this local subdomain in the global domain. </td></tr>
+    <tr><td class="paramname">dataClass</td><td>Subdomain type annotation. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#aebda5f18986d01669e0493beea4cdecb">DCollector::IParallelDomainCollector</a>.</p>
+
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00575">575</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab74497318d0a18ef985f50d020d180f0"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -763,7 +650,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>rank</em>, </td>
+          <td class="paramname"><em>ndims</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -792,6 +679,18 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalDomainOffset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalDomainSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a>&#160;</td>
           <td class="paramname"><em>dataClass</em>, </td>
         </tr>
@@ -799,7 +698,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
+          <td class="paramname"><em>buf</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -816,13 +715,13 @@ Here is the call graph for this function:</div>
 <p>The global size and the write offset for the calling process are determined automatically via MPI among all participating processes. Note: This is not possible when writing 2D data with a 3D MPI topology.</p>
 <p>The global domain size and the domain offset for the calling process are determined automatically via MPI among all participating processes. </p>
 
-<p>Implements <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#a8687cb40ee5e0fd376ef941accca7595">DCollector::IParallelDomainCollector</a>.</p>
+<p>Implements <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#ab6bb3dd740b4e79a1358a6264b4ba66f">DCollector::IParallelDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00431">431</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00416">416</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a3fb95228da0cc31518fe60f43f9f2b60"></a>
+<a class="anchor" id="adb3f975e185a6e95ced00931eb9d0117"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -845,7 +744,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>rank</em>, </td>
+          <td class="paramname"><em>ndims</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -886,6 +785,18 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalDomainOffset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalDomainSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a>&#160;</td>
           <td class="paramname"><em>dataClass</em>, </td>
         </tr>
@@ -893,7 +804,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
+          <td class="paramname"><em>buf</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -910,13 +821,13 @@ Here is the call graph for this function:</div>
 <p>The global size and the write offset for the calling process are determined automatically via MPI among all participating processes. Note: This is not possible when writing 2D data with a 3D MPI topology.</p>
 <p>The global domain size and the domain offset for the calling process are determined automatically via MPI among all participating processes. </p>
 
-<p>Implements <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#a5ca061cba976069fec96d4f17211e3fa">DCollector::IParallelDomainCollector</a>.</p>
+<p>Implements <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#a61f387e1bb43b28e2f700c2d6696bb50">DCollector::IParallelDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00451">451</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00438">438</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a85ca7a23c48dfb2e0679783151bd5402"></a>
+<a class="anchor" id="aed1abf15e5c0ee05ce30240518760881"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -939,7 +850,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>rank</em>, </td>
+          <td class="paramname"><em>ndims</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -986,6 +897,18 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalDomainOffset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalDomainSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a>&#160;</td>
           <td class="paramname"><em>dataClass</em>, </td>
         </tr>
@@ -993,7 +916,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
+          <td class="paramname"><em>buf</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1010,13 +933,13 @@ Here is the call graph for this function:</div>
 <p>The global size and the write offset for the calling process are determined automatically via MPI among all participating processes. Note: This is not possible when writing 2D data with a 3D MPI topology.</p>
 <p>The global domain size and the domain offset for the calling process are determined automatically via MPI among all participating processes. </p>
 
-<p>Implements <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#af4609db0f5233ae55f8ccec5a4ca9eec">DCollector::IParallelDomainCollector</a>.</p>
+<p>Implements <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#a638172944ea0af97ed0120e2ac6b6cd6">DCollector::IParallelDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00473">473</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00461">461</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ac7ab9f512c24df4171b46f6e83ae7bb8"></a>
+<a class="anchor" id="ae8ec29437388df3ca1228a19734b26d7"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1051,7 +974,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>rank</em>, </td>
+          <td class="paramname"><em>ndims</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1087,7 +1010,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
+          <td class="paramname"><em>buf</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1104,28 +1027,28 @@ Here is the call graph for this function:</div>
 <p>Writes data with annotated domain information.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">id</td><td>id of the group to read from </td></tr>
-    <tr><td class="paramname">globalSize</td><td>dimensions for global collective buffer </td></tr>
-    <tr><td class="paramname">globalOffset</td><td>3D-offset in the globalSize-buffer this process writes to </td></tr>
-    <tr><td class="paramname">type</td><td>type information for data </td></tr>
-    <tr><td class="paramname">rank</td><td>number of dimensions (1-3) of the data </td></tr>
-    <tr><td class="paramname">srcData</td><td>dimensions of the data in the buffer </td></tr>
-    <tr><td class="paramname">name</td><td>name of the dataset </td></tr>
-    <tr><td class="paramname">globalDomainOffset</td><td>global offset of this domain </td></tr>
-    <tr><td class="paramname">globalDomainSize</td><td>global domain size </td></tr>
-    <tr><td class="paramname">dataClass</td><td>domain type annotation </td></tr>
-    <tr><td class="paramname">data</td><td>buffer with data </td></tr>
+    <tr><td class="paramname">id</td><td>ID for iteration. </td></tr>
+    <tr><td class="paramname">globalSize</td><td><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> for global collective buffer. </td></tr>
+    <tr><td class="paramname">globalOffset</td><td>3D-offset in the globalSize-buffer this process writes to. </td></tr>
+    <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
+    <tr><td class="paramname">ndims</td><td>Number of dimensions (1-3) of the buffer. </td></tr>
+    <tr><td class="paramname">srcData</td><td><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> of the data in the buffer. </td></tr>
+    <tr><td class="paramname">name</td><td>Name of the dataset. </td></tr>
+    <tr><td class="paramname">globalDomainOffset</td><td>Global offset of this domain. </td></tr>
+    <tr><td class="paramname">globalDomainSize</td><td>Global domain size. </td></tr>
+    <tr><td class="paramname">dataClass</td><td><a class="el" href="class_d_collector_1_1_domain.html">Domain</a> type annotation. </td></tr>
+    <tr><td class="paramname">buf</td><td>Buffer with data. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implements <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#a8c3f985f41e4cc30e5552d049c208fb1">DCollector::IParallelDomainCollector</a>.</p>
+<p>Implements <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#a43811911b91ad84af6a3dc15dafc8ed9">DCollector::IParallelDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00496">496</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00485">485</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a46c40b9fcbd41c689cb13c62e613f388"></a>
+<a class="anchor" id="a10b25ca2a1df4da568d61c26a6e2fe60"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1160,7 +1083,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>rank</em>, </td>
+          <td class="paramname"><em>ndims</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1208,7 +1131,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
+          <td class="paramname"><em>buf</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1225,30 +1148,30 @@ Here is the call graph for this function:</div>
 <p>Writes data with annotated domain information.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">id</td><td>id of the group to read from </td></tr>
-    <tr><td class="paramname">globalSize</td><td>dimensions for global collective buffer </td></tr>
-    <tr><td class="paramname">globalOffset</td><td>3D-offset in the globalSize-buffer this process writes to </td></tr>
-    <tr><td class="paramname">type</td><td>type information for data </td></tr>
-    <tr><td class="paramname">rank</td><td>number of dimensions (1-3) of the data </td></tr>
-    <tr><td class="paramname">srcBuffer</td><td>dimensions of the buffer to read from </td></tr>
-    <tr><td class="paramname">srcData</td><td>dimensions of the data in the buffer </td></tr>
-    <tr><td class="paramname">srcOffset</td><td>offset of srcData in srcBuffer </td></tr>
-    <tr><td class="paramname">name</td><td>name of the dataset </td></tr>
-    <tr><td class="paramname">globalDomainOffset</td><td>global offset of this domain </td></tr>
-    <tr><td class="paramname">globalDomainSize</td><td>global domain size </td></tr>
-    <tr><td class="paramname">dataClass</td><td>domain type annotation </td></tr>
-    <tr><td class="paramname">data</td><td>buffer with data </td></tr>
+    <tr><td class="paramname">id</td><td>ID for iteration. </td></tr>
+    <tr><td class="paramname">globalSize</td><td><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> for global collective buffer. </td></tr>
+    <tr><td class="paramname">globalOffset</td><td>3D-offset in the globalSize-buffer this process writes to. </td></tr>
+    <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
+    <tr><td class="paramname">ndims</td><td>Number of dimensions (1-3) of the buffer. </td></tr>
+    <tr><td class="paramname">srcBuffer</td><td><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> of the buffer to read from. </td></tr>
+    <tr><td class="paramname">srcData</td><td><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> of the data in the buffer. </td></tr>
+    <tr><td class="paramname">srcOffset</td><td>Offset of <code>srcData</code> in <code>srcBuffer</code>. </td></tr>
+    <tr><td class="paramname">name</td><td>Name of the dataset. </td></tr>
+    <tr><td class="paramname">globalDomainOffset</td><td>Global offset of this domain. </td></tr>
+    <tr><td class="paramname">globalDomainSize</td><td>Global domain size. </td></tr>
+    <tr><td class="paramname">dataClass</td><td><a class="el" href="class_d_collector_1_1_domain.html">Domain</a> type annotation. </td></tr>
+    <tr><td class="paramname">buf</td><td>Buffer with data. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implements <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#a957590289d12f4d1befc3bd3e6503833">DCollector::IParallelDomainCollector</a>.</p>
+<p>Implements <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#a08cf7be8e50ae61c109b484c78acbc08">DCollector::IParallelDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00515">515</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00504">504</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a2e59d2484d365a4128efb278f01592e0"></a>
+<a class="anchor" id="a8d5e9ca7b9026040a4cb5b9d2a459670"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1283,7 +1206,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>rank</em>, </td>
+          <td class="paramname"><em>ndims</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1337,7 +1260,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
+          <td class="paramname"><em>buf</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1354,38 +1277,38 @@ Here is the call graph for this function:</div>
 <p>Writes data with annotated domain information.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">id</td><td>id of the group to read from </td></tr>
-    <tr><td class="paramname">globalSize</td><td>dimensions for global collective buffer </td></tr>
-    <tr><td class="paramname">globalOffset</td><td>3D-offset in the globalSize-buffer this process writes to </td></tr>
-    <tr><td class="paramname">type</td><td>type information for data </td></tr>
-    <tr><td class="paramname">rank</td><td>number of dimensions (1-3) of the data </td></tr>
-    <tr><td class="paramname">srcBuffer</td><td>dimensions of the buffer to read from </td></tr>
-    <tr><td class="paramname">srcStride</td><td>sizeof striding in each dimension. 1 means 'no stride' </td></tr>
-    <tr><td class="paramname">srcData</td><td>dimensions of the data in the buffer </td></tr>
-    <tr><td class="paramname">srcOffset</td><td>offset of srcData in srcBuffer </td></tr>
-    <tr><td class="paramname">name</td><td>name of the dataset </td></tr>
-    <tr><td class="paramname">globalDomainOffset</td><td>global offset of this domain </td></tr>
-    <tr><td class="paramname">globalDomainSize</td><td>global domain size </td></tr>
-    <tr><td class="paramname">dataClass</td><td>domain type annotation </td></tr>
-    <tr><td class="paramname">data</td><td>buffer with data </td></tr>
+    <tr><td class="paramname">id</td><td>ID for iteration. </td></tr>
+    <tr><td class="paramname">globalSize</td><td><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> for global collective buffer. </td></tr>
+    <tr><td class="paramname">globalOffset</td><td>3D-offset in the globalSize-buffer this process writes to. </td></tr>
+    <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
+    <tr><td class="paramname">ndims</td><td>Number of dimensions (1-3) of the buffer. </td></tr>
+    <tr><td class="paramname">srcBuffer</td><td><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> of the buffer to read from. </td></tr>
+    <tr><td class="paramname">srcStride</td><td>Size of striding in each dimension. 1 means 'no stride'. </td></tr>
+    <tr><td class="paramname">srcData</td><td><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> of the data in the buffer. </td></tr>
+    <tr><td class="paramname">srcOffset</td><td>Offset of <code>srcData</code> in <code>srcBuffer</code>. </td></tr>
+    <tr><td class="paramname">name</td><td>Name of the dataset. </td></tr>
+    <tr><td class="paramname">globalDomainOffset</td><td>Global offset of this domain. </td></tr>
+    <tr><td class="paramname">globalDomainSize</td><td>Global domain size. </td></tr>
+    <tr><td class="paramname">dataClass</td><td><a class="el" href="class_d_collector_1_1_domain.html">Domain</a> type annotation. </td></tr>
+    <tr><td class="paramname">buf</td><td>Buffer with data. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implements <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#a881eb0bdf2d36b42ba7c78846958e004">DCollector::IParallelDomainCollector</a>.</p>
+<p>Implements <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#ac2690ff3b79fe514d507102db71c1803">DCollector::IParallelDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00535">535</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00524">524</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>/tmp/tmp.3rqnQsFfwK/libSplash/src/include/<a class="el" href="_parallel_domain_collector_8hpp_source.html">ParallelDomainCollector.hpp</a></li>
-<li>/tmp/tmp.3rqnQsFfwK/libSplash/src/<a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a></li>
+<li>libSplash/src/include/<a class="el" href="_parallel_domain_collector_8hpp_source.html">ParallelDomainCollector.hpp</a></li>
+<li>libSplash/src/<a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Sep 20 2013 13:25:32 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Sep 27 2013 10:40:33 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

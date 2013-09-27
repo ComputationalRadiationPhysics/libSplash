@@ -78,6 +78,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aca79b6a764f283c245b52f72a12d793c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_parallel_data_collector.html#aca79b6a764f283c245b52f72a12d793c">write</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t rank, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const char *name, const void *buf)=0</td></tr>
 <tr class="memitem:a8d993adbb818058b122c2528d5e99679"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_parallel_data_collector.html#a8d993adbb818058b122c2528d5e99679">write</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t rank, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const void *buf)=0</td></tr>
 <tr class="memitem:a7e3e4f3f7e6e64933ba501e3dc0b7f38"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_parallel_data_collector.html#a7e3e4f3f7e6e64933ba501e3dc0b7f38">write</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalOffset, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t rank, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcStride, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const void *buf)=0</td></tr>
+<tr class="memitem:a7e91ac5ec9ff61a2c556a5867cb7f0bb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_parallel_data_collector.html#a7e91ac5ec9ff61a2c556a5867cb7f0bb">reserve</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalSize, uint32_t rank, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *name)=0</td></tr>
 <tr class="memitem:a7dc045d33f057a19a533b0103bdea4f6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_parallel_data_collector.html#a7dc045d33f057a19a533b0103bdea4f6">reserve</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> size, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> *globalSize, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> *globalOffset, uint32_t rank, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *name)=0</td></tr>
 <tr class="memitem:aa856356d84144ba5557d17cebaba3538"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_parallel_data_collector.html#aa856356d84144ba5557d17cebaba3538">readGlobalAttribute</a> (int32_t id, const char *name, void *buf)=0</td></tr>
 <tr class="memitem:a8919b788a1ef8bb37c034f674d27ac9d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_parallel_data_collector.html#a8919b788a1ef8bb37c034f674d27ac9d">writeGlobalAttribute</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *name, const void *buf)=0</td></tr>
@@ -100,8 +101,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af52a030dabeac4cc4138fc8eb010987f inherit pub_methods_class_d_collector_1_1_data_collector"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_collector.html#af52a030dabeac4cc4138fc8eb010987f">createReference</a> (int32_t srcID, const char *srcName, int32_t dstID, const char *dstName, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> count, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> offset, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> stride)=0</td></tr>
 <tr class="memitem:a2299ead210a1f8b38b85320b52fb2201 inherit pub_methods_class_d_collector_1_1_data_collector"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_collector.html#a2299ead210a1f8b38b85320b52fb2201">readAttribute</a> (int32_t id, const char *dataName, const char *attrName, void *buf, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> *mpiPosition=NULL)=0</td></tr>
 <tr class="memitem:a49cd0850ef8985fec10c870087e6a931 inherit pub_methods_class_d_collector_1_1_data_collector"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_collector.html#a49cd0850ef8985fec10c870087e6a931">writeAttribute</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *dataName, const char *attrName, const void *buf)=0</td></tr>
-<tr class="memitem:a3398deae560d98743366144f007b3d94 inherit pub_methods_class_d_collector_1_1_data_collector"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_collector.html#a3398deae560d98743366144f007b3d94">read</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *name, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> &amp;sizeRead, void *buf)=0</td></tr>
-<tr class="memitem:a642a523da86cb21c2d47347a6b92eda6 inherit pub_methods_class_d_collector_1_1_data_collector"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_collector.html#a642a523da86cb21c2d47347a6b92eda6">read</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> dstBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> dstOffset, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> &amp;sizeRead, void *buf)=0</td></tr>
+<tr class="memitem:a4921db66b5690132bea0a06247d795b9 inherit pub_methods_class_d_collector_1_1_data_collector"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_collector.html#a4921db66b5690132bea0a06247d795b9">read</a> (int32_t id, const char *name, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> &amp;sizeRead, void *buf)=0</td></tr>
+<tr class="memitem:ab2fe345d20db48ed4942e653cc54f617 inherit pub_methods_class_d_collector_1_1_data_collector"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_collector.html#ab2fe345d20db48ed4942e653cc54f617">read</a> (int32_t id, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> dstBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> dstOffset, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> &amp;sizeRead, void *buf)=0</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -178,7 +179,7 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Appends (1-3) dimensional data to a dataset created with <a class="el" href="class_d_collector_1_1_i_parallel_data_collector.html#a7dc045d33f057a19a533b0103bdea4f6">IParallelDataCollector::reserve</a>.</p>
+<p>Appends (1-3) dimensional data to a dataset created with <a class="el" href="class_d_collector_1_1_i_parallel_data_collector.html#a7e91ac5ec9ff61a2c556a5867cb7f0bb">IParallelDataCollector::reserve</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>ID for iteration. </td></tr>
@@ -443,6 +444,71 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a7e91ac5ec9ff61a2c556a5867cb7f0bb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void DCollector::IParallelDataCollector::reserve </td>
+          <td>(</td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>rank</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Reserves a dataset for parallel access.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>ID for iteration. </td></tr>
+    <tr><td class="paramname">size</td><td>Size to reserve for global data. </td></tr>
+    <tr><td class="paramname">rank</td><td>Number of dimensions (1-3). </td></tr>
+    <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
+    <tr><td class="paramname">name</td><td>Name for the dataset. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a4a72ad6548a71e08abd1560a6c455542">DCollector::ParallelDataCollector</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a7dc045d33f057a19a533b0103bdea4f6"></a>
 <div class="memitem">
 <div class="memproto">
@@ -577,9 +643,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Implements <a class="el" href="class_d_collector_1_1_data_collector.html#a9a828b91566e27be866b4c189ffd759e">DataCollector::write</a> The global size and the write offset for the calling process are determined automatically via MPI among all participating processes. Note: This is not possible when writing 2D data with a 3D MPI topology. </p>
+<p>Implements <a class="el" href="class_d_collector_1_1_data_collector.html#a433aab6850aad5449b3f4f1542cf34d5">DataCollector::write</a> The global size and the write offset for the calling process are determined automatically via MPI among all participating processes. Note: This is not possible when writing 2D data with a 3D MPI topology. </p>
 
-<p>Implements <a class="el" href="class_d_collector_1_1_data_collector.html#a9a828b91566e27be866b4c189ffd759e">DCollector::DataCollector</a>.</p>
+<p>Implements <a class="el" href="class_d_collector_1_1_data_collector.html#a433aab6850aad5449b3f4f1542cf34d5">DCollector::DataCollector</a>.</p>
 
 <p>Implemented in <a class="el" href="class_d_collector_1_1_parallel_data_collector.html#ac10d328de559e1a95674f228eeb95ce0">DCollector::ParallelDataCollector</a>.</p>
 
@@ -652,9 +718,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Implements <a class="el" href="class_d_collector_1_1_data_collector.html#a9a828b91566e27be866b4c189ffd759e">DataCollector::write</a> The global size and the write offset for the calling process are determined automatically via MPI among all participating processes. Note: This is not possible when writing 2D data with a 3D MPI topology. </p>
+<p>Implements <a class="el" href="class_d_collector_1_1_data_collector.html#a433aab6850aad5449b3f4f1542cf34d5">DataCollector::write</a> The global size and the write offset for the calling process are determined automatically via MPI among all participating processes. Note: This is not possible when writing 2D data with a 3D MPI topology. </p>
 
-<p>Implements <a class="el" href="class_d_collector_1_1_data_collector.html#a331a4ff045be017737bea43d197a25dd">DCollector::DataCollector</a>.</p>
+<p>Implements <a class="el" href="class_d_collector_1_1_data_collector.html#a55f3617851c8b8f8d181953d8f164fa8">DCollector::DataCollector</a>.</p>
 
 <p>Implemented in <a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a7211cedf77e0a5fb245024ffe98c74aa">DCollector::ParallelDataCollector</a>.</p>
 
@@ -733,9 +799,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Implements <a class="el" href="class_d_collector_1_1_data_collector.html#a9a828b91566e27be866b4c189ffd759e">DataCollector::write</a> The global size and the write offset for the calling process are determined automatically via MPI among all participating processes. Note: This is not possible when writing 2D data with a 3D MPI topology. </p>
+<p>Implements <a class="el" href="class_d_collector_1_1_data_collector.html#a433aab6850aad5449b3f4f1542cf34d5">DataCollector::write</a> The global size and the write offset for the calling process are determined automatically via MPI among all participating processes. Note: This is not possible when writing 2D data with a 3D MPI topology. </p>
 
-<p>Implements <a class="el" href="class_d_collector_1_1_data_collector.html#aea7bd731c70987598155d1ee1dcff0ab">DCollector::DataCollector</a>.</p>
+<p>Implements <a class="el" href="class_d_collector_1_1_data_collector.html#a26fe0a706059b27b858be23b8211bb37">DCollector::DataCollector</a>.</p>
 
 <p>Implemented in <a class="el" href="class_d_collector_1_1_parallel_data_collector.html#a4b046b7f63dba616edc636fc117ebcad">DCollector::ParallelDataCollector</a>.</p>
 
@@ -1144,12 +1210,12 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/tmp/tmp.3rqnQsFfwK/libSplash/src/include/<a class="el" href="_i_parallel_data_collector_8hpp_source.html">IParallelDataCollector.hpp</a></li>
+<li>libSplash/src/include/<a class="el" href="_i_parallel_data_collector_8hpp_source.html">IParallelDataCollector.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Sep 20 2013 13:25:32 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Sep 27 2013 10:40:33 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

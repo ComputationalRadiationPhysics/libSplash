@@ -1,6 +1,6 @@
 <map id="DCollector::DataContainer::getElement" name="DCollector::DataContainer::getElement">
 <area shape="rect" id="node3" href="$class_d_collector_1_1_domain_data.html#a7964a315b57c7e5bc56f0702e05029e6" title="DCollector::DomainData\l::getElements" alt="" coords="225,5,383,49"/>
-<area shape="rect" id="node5" href="$class_d_collector_1_1_dimensions.html#a3b5040267a22c4d773e17882442cef8f" title="DCollector::Dimensions\l::getDimSize" alt="" coords="227,71,381,115"/>
+<area shape="rect" id="node5" href="$class_d_collector_1_1_dimensions.html#ab050c0c38fbf57023e354fc633b5145e" title="DCollector::Dimensions\l::getScalarSize" alt="" coords="227,71,381,115"/>
 <area shape="rect" id="node7" href="$class_d_collector_1_1_domain_data.html#a24085aa3fc8350e2256485c9f3417513" title="DCollector::DomainData\l::getTypeSize" alt="" coords="225,138,383,182"/>
 <area shape="rect" id="node9" href="$class_d_collector_1_1_domain_data.html#a940f2c2d46f07a2b042488ef690884c1" title="DCollector::DomainData\l::getData" alt="" coords="225,205,383,249"/>
 </map>

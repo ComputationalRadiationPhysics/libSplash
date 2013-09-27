@@ -1,0 +1,5 @@
+<map id="DCollector::Dimensions::getScalarSize" name="DCollector::Dimensions::getScalarSize">
+<area shape="rect" id="node3" href="$class_d_collector_1_1_data_container.html#a99e4204c761882beeb5d009128de6e0a" title="DCollector::DataContainer\l::getElement" alt="" coords="223,5,393,49"/>
+<area shape="rect" id="node5" href="$class_d_collector_1_1_domain_data.html#a16b4689d012f642195f49b2d12d58d13" title="DCollector::DomainData\l::DomainData" alt="" coords="229,71,387,115"/>
+<area shape="rect" id="node7" href="$class_d_collector_1_1_parallel_data_collector.html#a08b0f16791aba6601177816c7ba2e3fa" title="DCollector::ParallelData\lCollector::ParallelDataCollector" alt="" coords="208,138,408,182"/>
+</map>

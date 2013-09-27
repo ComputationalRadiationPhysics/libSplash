@@ -49,7 +49,6 @@
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="class_d_collector_1_1_i_domain_collector-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">DCollector::IDomainCollector Class Reference</div>  </div>
@@ -74,24 +73,20 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a87b84995d6e987cea27851db2fdc5b23"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a87b84995d6e987cea27851db2fdc5b23">getTotalElements</a> (int32_t id, const char *name)=0</td></tr>
-<tr class="memitem:a3fa2cd9495718ee4d56e277b08c8cf02"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="class_d_collector_1_1_domain.html">Domain</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a3fa2cd9495718ee4d56e277b08c8cf02">getTotalDomain</a> (int32_t id, const char *name)=0</td></tr>
+<tr class="memitem:a1cedde239611d76895a7b130b2009434"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="class_d_collector_1_1_domain.html">Domain</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a1cedde239611d76895a7b130b2009434">getGlobalDomain</a> (int32_t id, const char *name)=0</td></tr>
+<tr class="memitem:ae20dcd9c4dc147dab8316a1610794362"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="class_d_collector_1_1_domain.html">Domain</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#ae20dcd9c4dc147dab8316a1610794362">getLocalDomain</a> (int32_t id, const char *name)=0</td></tr>
 <tr class="memitem:ab603048ff15cbbd13c33af22e9f534b5"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="class_d_collector_1_1_data_container.html">DataContainer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#ab603048ff15cbbd13c33af22e9f534b5">readDomain</a> (int32_t id, const char *name, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> *dataClass, bool lazyLoad=false)=0</td></tr>
 <tr class="memitem:a9a0221555685693b67b0584df5e6cd84"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a9a0221555685693b67b0584df5e6cd84">readDomainLazy</a> (<a class="el" href="class_d_collector_1_1_domain_data.html">DomainData</a> *domainData)=0</td></tr>
-<tr class="memitem:a764847537ff54a4724726515f7b6d6bf"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a764847537ff54a4724726515f7b6d6bf">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t rank, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *data)=0</td></tr>
-<tr class="memitem:a790a17d5e57a7011a307d660aaa65811"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a790a17d5e57a7011a307d660aaa65811">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t rank, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *data)=0</td></tr>
-<tr class="memitem:a8f206e67632c9414dd627bc681169195"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a8f206e67632c9414dd627bc681169195">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t rank, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcStride, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *data)=0</td></tr>
-<tr class="memitem:a7955657e8ae15758ecf2f4dd9191b720"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a7955657e8ae15758ecf2f4dd9191b720">appendDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, size_t count, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, const void *data)=0</td></tr>
-<tr class="memitem:a522a87e572a857b1b790b8484bc2c070"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a522a87e572a857b1b790b8484bc2c070">appendDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, size_t count, size_t offset, size_t striding, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, const void *data)=0</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2><a name="pub-static-methods"></a>
-Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ae05cc3289e3f9485ed4c690f0e55d362"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#ae05cc3289e3f9485ed4c690f0e55d362">testIntersection</a> (const <a class="el" href="class_d_collector_1_1_domain.html">Domain</a> &amp;d1, const <a class="el" href="class_d_collector_1_1_domain.html">Domain</a> &amp;d2)</td></tr>
+<tr class="memitem:ae73fbb88acaa8cec40f534cb5ab782e9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#ae73fbb88acaa8cec40f534cb5ab782e9">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *buf)=0</td></tr>
+<tr class="memitem:ad9855a49c5959ab31ef6c6ff5101501f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#ad9855a49c5959ab31ef6c6ff5101501f">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *buf)=0</td></tr>
+<tr class="memitem:aa07a66ac70676dafeb38f9fc8afa3ed6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#aa07a66ac70676dafeb38f9fc8afa3ed6">writeDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcStride, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a> dataClass, const void *buf)=0</td></tr>
+<tr class="memitem:a3778340a556bfa886a5950869725d08a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a3778340a556bfa886a5950869725d08a">appendDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, size_t count, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainSize, const void *buf)=0</td></tr>
+<tr class="memitem:aaef28a64fe690c73d66ff3591e12c3a5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#aaef28a64fe690c73d66ff3591e12c3a5">appendDomain</a> (int32_t id, const <a class="el" href="class_d_collector_1_1_collection_type.html">CollectionType</a> &amp;type, size_t count, size_t offset, size_t striding, const char *name, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> domainSize, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> globalDomainSize, const void *buf)=0</td></tr>
 </table>
 <a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Interface for managing domains. See <a class="el" href="class_d_collector_1_1_domain_collector.html">DomainCollector</a> for more information. </p>
 
-<p>Definition at line <a class="el" href="_i_domain_collector_8hpp_source.html#l00042">42</a> of file <a class="el" href="_i_domain_collector_8hpp_source.html">IDomainCollector.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_i_domain_collector_8hpp_source.html#l00044">44</a> of file <a class="el" href="_i_domain_collector_8hpp_source.html">IDomainCollector.hpp</a>.</p>
 </div><h2>Member Enumeration Documentation</h2>
 <a class="anchor" id="a440f900fd20fcecfd890170db0d52afb"></a>
 <div class="memitem">
@@ -104,12 +99,12 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Annotation (attribute) class for domain data. </p>
 
-<p>Definition at line <a class="el" href="_i_domain_collector_8hpp_source.html#l00049">49</a> of file <a class="el" href="_i_domain_collector_8hpp_source.html">IDomainCollector.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_i_domain_collector_8hpp_source.html#l00051">51</a> of file <a class="el" href="_i_domain_collector_8hpp_source.html">IDomainCollector.hpp</a>.</p>
 
 </div>
 </div>
 <h2>Member Function Documentation</h2>
-<a class="anchor" id="a7955657e8ae15758ecf2f4dd9191b720"></a>
+<a class="anchor" id="a3778340a556bfa886a5950869725d08a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -155,8 +150,20 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalDomainOffset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalDomainSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
+          <td class="paramname"><em>buf</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -173,22 +180,24 @@ Static Public Member Functions</h2></td></tr>
 <p>Appends 1D data with annotated domain information.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">id</td><td>ID of the iteration for appending. </td></tr>
-    <tr><td class="paramname">type</td><td>type information for data </td></tr>
-    <tr><td class="paramname">count</td><td>number of elements to append </td></tr>
-    <tr><td class="paramname">name</td><td>name for the dataset to create/append to, e.g. 'ions' </td></tr>
-    <tr><td class="paramname">domainOffset</td><td>offset of this subdomain in the domain </td></tr>
-    <tr><td class="paramname">domainSize</td><td>size of this subdomain in the domain </td></tr>
-    <tr><td class="paramname">data</td><td>buffer with data </td></tr>
+    <tr><td class="paramname">id</td><td>ID of iteration. </td></tr>
+    <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
+    <tr><td class="paramname">count</td><td>Number of elements to append. </td></tr>
+    <tr><td class="paramname">name</td><td>Name for the dataset to create/append. </td></tr>
+    <tr><td class="paramname">domainOffset</td><td>Local offset of this subdomain. </td></tr>
+    <tr><td class="paramname">domainSize</td><td>Local size of this subdomain. </td></tr>
+    <tr><td class="paramname">globalDomainOffset</td><td>Logical offset of the global domain. </td></tr>
+    <tr><td class="paramname">globalDomainSIze</td><td>Logical size of the global domain. </td></tr>
+    <tr><td class="paramname">buf</td><td>Buffer with data. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a422a98abae2a77cc70d0895b2b1b4c79">DCollector::ParallelDomainCollector</a>, and <a class="el" href="class_d_collector_1_1_domain_collector.html#a9f1973c8ca21b6538145f3bfd7780926">DCollector::DomainCollector</a>.</p>
+<p>Implemented in <a class="el" href="class_d_collector_1_1_domain_collector.html#a2bf2bc90dd5d18d51afe5d2ed0207e3d">DCollector::DomainCollector</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a522a87e572a857b1b790b8484bc2c070"></a>
+<a class="anchor" id="aaef28a64fe690c73d66ff3591e12c3a5"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -246,8 +255,20 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalDomainOffset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalDomainSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
+          <td class="paramname"><em>buf</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -264,24 +285,26 @@ Static Public Member Functions</h2></td></tr>
 <p>Appends 1D data with annotated domain information.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">id</td><td>ID of the iteration for appending. </td></tr>
-    <tr><td class="paramname">type</td><td>type information for data </td></tr>
-    <tr><td class="paramname">count</td><td>number of elements to append </td></tr>
-    <tr><td class="paramname">offset</td><td>offset in elements to start reading from </td></tr>
-    <tr><td class="paramname">striding</td><td>striding to be used for reading. data must contain at least (striding * count) elements. 1 mean 'no striding' </td></tr>
-    <tr><td class="paramname">name</td><td>name for the dataset to create/append to, e.g. 'ions' </td></tr>
-    <tr><td class="paramname">domainOffset</td><td>offset of this subdomain in the domain </td></tr>
-    <tr><td class="paramname">domainSize</td><td>size of this subdomain in the domain </td></tr>
-    <tr><td class="paramname">data</td><td>buffer with data </td></tr>
+    <tr><td class="paramname">id</td><td>ID of iteration. </td></tr>
+    <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
+    <tr><td class="paramname">count</td><td>Number of elements to append. </td></tr>
+    <tr><td class="paramname">offset</td><td>Offset in elements to start reading from. </td></tr>
+    <tr><td class="paramname">striding</td><td>Striding to be used for reading. Data must contain at least (striding * count) elements. 1 mean 'no striding'. </td></tr>
+    <tr><td class="paramname">name</td><td>Name for the dataset to create/append. </td></tr>
+    <tr><td class="paramname">domainOffset</td><td>Local offset of this subdomain. </td></tr>
+    <tr><td class="paramname">domainSize</td><td>Local size of this subdomain. </td></tr>
+    <tr><td class="paramname">globalDomainOffset</td><td>Logical offset of the global domain. </td></tr>
+    <tr><td class="paramname">globalDomainSIze</td><td>Logical size of the global domain. </td></tr>
+    <tr><td class="paramname">buf</td><td>Buffer with data. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#ae23dd88ff6d526a6dfe873d5c41c2e94">DCollector::ParallelDomainCollector</a>, and <a class="el" href="class_d_collector_1_1_domain_collector.html#a957fe5d9af058f1eac898953b8fbbf8c">DCollector::DomainCollector</a>.</p>
+<p>Implemented in <a class="el" href="class_d_collector_1_1_domain_collector.html#ace0b7090c3213ce7bf8d6b6e66718be4">DCollector::DomainCollector</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a3fa2cd9495718ee4d56e277b08c8cf02"></a>
+<a class="anchor" id="a1cedde239611d76895a7b130b2009434"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -289,7 +312,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="class_d_collector_1_1_domain.html">Domain</a> DCollector::IDomainCollector::getTotalDomain </td>
+          <td class="memname">virtual <a class="el" href="class_d_collector_1_1_domain.html">Domain</a> DCollector::IDomainCollector::getGlobalDomain </td>
           <td>(</td>
           <td class="paramtype">int32_t&#160;</td>
           <td class="paramname"><em>id</em>, </td>
@@ -312,21 +335,21 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the total domain that is spanned by all datasets (subdomains). The user is responsible to guarantee that the actual subdomains form a line/rectangle/cuboid that starts at (0, 0, 0)</p>
+<p>Returns the global domain that is spanned by all local datasets (subdomains) of the currently accessed files. The user is responsible to guarantee that the actual subdomains form a line/rectangle/cuboid.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>ID of iteration. </td></tr>
-    <tr><td class="paramname">name</td><td>name of the dataset </td></tr>
+    <tr><td class="paramname">name</td><td>Name of the dataset. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>total domain size and offset spanned of all subdomains </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Global domain spanned by all subdomains. </dd></dl>
 
-<p>Implemented in <a class="el" href="class_d_collector_1_1_domain_collector.html#a9943876f01c45a4f321b8d3c2f2d0122">DCollector::DomainCollector</a>, and <a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a24a6e4fb42341fc5fbb90f2efcc54138">DCollector::ParallelDomainCollector</a>.</p>
+<p>Implemented in <a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#abece5f4eb2bddb1aa8b85adc3e12ffc8">DCollector::ParallelDomainCollector</a>, and <a class="el" href="class_d_collector_1_1_domain_collector.html#ae061fa6224e2e198131c562b1cc1f4e8">DCollector::DomainCollector</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a87b84995d6e987cea27851db2fdc5b23"></a>
+<a class="anchor" id="ae20dcd9c4dc147dab8316a1610794362"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -334,7 +357,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual size_t DCollector::IDomainCollector::getTotalElements </td>
+          <td class="memname">virtual <a class="el" href="class_d_collector_1_1_domain.html">Domain</a> DCollector::IDomainCollector::getLocalDomain </td>
           <td>(</td>
           <td class="paramtype">int32_t&#160;</td>
           <td class="paramname"><em>id</em>, </td>
@@ -357,17 +380,17 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the total number of domain elements for a dataset, which is the sum of all subdomain elements. This function does not check that domain classes match.</p>
+<p>Returns the local domain for a dataset in currently accessed file.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>ID of iteration. </td></tr>
-    <tr><td class="paramname">name</td><td>name of the dataset </td></tr>
+    <tr><td class="paramname">name</td><td>Name of the dataset. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>total domain elements </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Local sudomain. </dd></dl>
 
-<p>Implemented in <a class="el" href="class_d_collector_1_1_domain_collector.html#a11326f01b03d7ae27a9d64ef23853a8c">DCollector::DomainCollector</a>, and <a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a6fef7ec3b67159ea14952b671a386d78">DCollector::ParallelDomainCollector</a>.</p>
+<p>Implemented in <a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#ac88e818aebb80d4297e26dbba8c9c9ef">DCollector::ParallelDomainCollector</a>, and <a class="el" href="class_d_collector_1_1_domain_collector.html#afaf7171593ee831a22920b13e9e0c62d">DCollector::DomainCollector</a>.</p>
 
 </div>
 </div>
@@ -427,26 +450,20 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Efficiently reads domain-annotated data. In comparison to the standard read method, only data required for the requested partition is read. It passes back a <a class="el" href="class_d_collector_1_1_data_container.html">DataContainer</a> holding all subdomains or subdomain portions, respectively, which make up the requested partition. Data from the files is immediately copied to the <a class="el" href="class_d_collector_1_1_domain_data.html">DomainData</a> objects in the container and <a class="el" href="class_d_collector_1_1_domain_data.html">DomainData</a> buffers are dealloated when the <a class="el" href="class_d_collector_1_1_domain_data.html">DomainData</a> object is deleted, which must be done by the user.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">DomDataType</td><td>data type of the data to be read (e.g. int, float, ...) </td></tr>
-  </table>
-  </dd>
-</dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">id</td><td>ID of the iteration for reading. </td></tr>
-    <tr><td class="paramname">name</td><td>name of the dataset </td></tr>
-    <tr><td class="paramname">domainOffset</td><td>domain offset for reading (logical start of the requested partition) </td></tr>
-    <tr><td class="paramname">domainSize</td><td>domain size for reading (logical size of the requested partition) </td></tr>
-    <tr><td class="paramname">dataClass</td><td>optional domain type annotation (can be NULL) </td></tr>
-    <tr><td class="paramname">lazyLoad</td><td>set to load only size information for each subdomain, data must be loaded later using readDomainLazy </td></tr>
+    <tr><td class="paramname">id</td><td>ID of the iteration. </td></tr>
+    <tr><td class="paramname">name</td><td>Name of the dataset. </td></tr>
+    <tr><td class="paramname">domainOffset</td><td><a class="el" href="class_d_collector_1_1_domain.html">Domain</a> offset for reading (logical start of the requested partition). </td></tr>
+    <tr><td class="paramname">domainSize</td><td><a class="el" href="class_d_collector_1_1_domain.html">Domain</a> size for reading (logical size of the requested partition). </td></tr>
+    <tr><td class="paramname">dataClass</td><td>Optional domain type annotation, can be NULL. </td></tr>
+    <tr><td class="paramname">lazyLoad</td><td>Set to load only size information for each subdomain, data must be loaded later using DataContainer::readDomainLazy. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>returns a pointer to a newly allocated <a class="el" href="class_d_collector_1_1_data_container.html">DataContainer</a> holding all subdomains </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns a pointer to a newly allocated <a class="el" href="class_d_collector_1_1_data_container.html">DataContainer</a> holding all subdomains. </dd></dl>
 
-<p>Implemented in <a class="el" href="class_d_collector_1_1_domain_collector.html#a2932e7074320dace7b786f93d0a6a8b3">DCollector::DomainCollector</a>, and <a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a422d68b8e2673d10f9abf37c3d346a04">DCollector::ParallelDomainCollector</a>.</p>
+<p>Implemented in <a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a422d68b8e2673d10f9abf37c3d346a04">DCollector::ParallelDomainCollector</a>, and <a class="el" href="class_d_collector_1_1_domain_collector.html#a2932e7074320dace7b786f93d0a6a8b3">DCollector::DomainCollector</a>.</p>
 
 </div>
 </div>
@@ -474,70 +491,16 @@ Static Public Member Functions</h2></td></tr>
 <p>Reads a subdomain which has been loaded using readDomain with lazyLoad activated. The <a class="el" href="class_d_collector_1_1_domain_collector.html">DomainCollector</a> instance must not have been closed in between. Currently only supported for domain annotated data of type DomDataClass::PolyType.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">domainData</td><td>pointer to subdomain loaded using lazyLoad == true </td></tr>
+    <tr><td class="paramname">domainData</td><td>Pointer to subdomain loaded using lazyLoad == true. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="class_d_collector_1_1_domain_collector.html#a93b985b0a77def205e775006ee06ab64">DCollector::DomainCollector</a>, and <a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a971e342ec0d9225aa0208666a69cc971">DCollector::ParallelDomainCollector</a>.</p>
+<p>Implemented in <a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a971e342ec0d9225aa0208666a69cc971">DCollector::ParallelDomainCollector</a>, and <a class="el" href="class_d_collector_1_1_domain_collector.html#a93b985b0a77def205e775006ee06ab64">DCollector::DomainCollector</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ae05cc3289e3f9485ed4c690f0e55d362"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static bool DCollector::IDomainCollector::testIntersection </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_domain.html">Domain</a> &amp;&#160;</td>
-          <td class="paramname"><em>d1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_domain.html">Domain</a> &amp;&#160;</td>
-          <td class="paramname"><em>d2</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Tests if two domains intersect. Both domains must be of the same dimensionality.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">d1</td><td>First domain. </td></tr>
-    <tr><td class="paramname">d2</td><td>Decond domain. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>True if domains overlap, false otherwise. </dd></dl>
-
-<p>Definition at line <a class="el" href="_i_domain_collector_8hpp_source.html#l00062">62</a> of file <a class="el" href="_i_domain_collector_8hpp_source.html">IDomainCollector.hpp</a>.</p>
-
-<p><div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="class_d_collector_1_1_i_domain_collector_ae05cc3289e3f9485ed4c690f0e55d362_cgraph.png" border="0" usemap="#class_d_collector_1_1_i_domain_collector_ae05cc3289e3f9485ed4c690f0e55d362_cgraph" alt=""/></div>
-<map name="class_d_collector_1_1_i_domain_collector_ae05cc3289e3f9485ed4c690f0e55d362_cgraph" id="class_d_collector_1_1_i_domain_collector_ae05cc3289e3f9485ed4c690f0e55d362_cgraph">
-<area shape="rect" id="node3" href="class_d_collector_1_1_domain.html#a760a7aff32f3b35eea114a3a2460cdb0" title="DCollector::Domain\l::getStart" alt="" coords="241,5,372,49"/><area shape="rect" id="node5" href="class_d_collector_1_1_domain.html#a7e29b19765053e0a84f612b1e7f05e15" title="DCollector::Domain\l::getEnd" alt="" coords="241,71,372,115"/></map>
-</div>
-</p>
-
-</div>
-</div>
-<a class="anchor" id="a764847537ff54a4724726515f7b6d6bf"></a>
+<a class="anchor" id="ae73fbb88acaa8cec40f534cb5ab782e9"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -560,7 +523,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>rank</em>, </td>
+          <td class="paramname"><em>ndims</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -589,6 +552,18 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalDomainOffset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalDomainSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a>&#160;</td>
           <td class="paramname"><em>dataClass</em>, </td>
         </tr>
@@ -596,7 +571,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
+          <td class="paramname"><em>buf</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -614,23 +589,25 @@ Here is the call graph for this function:</div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>ID of the iteration for writing. </td></tr>
-    <tr><td class="paramname">type</td><td>type information for data </td></tr>
-    <tr><td class="paramname">rank</td><td>number of dimensions (1-3) of the data </td></tr>
+    <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
+    <tr><td class="paramname">ndims</td><td>Number of dimensions (1-3). </td></tr>
     <tr><td class="paramname">srcData</td><td>dimensions of the data in the buffer </td></tr>
-    <tr><td class="paramname">name</td><td>name of the dataset </td></tr>
-    <tr><td class="paramname">domainOffset</td><td>offset of this subdomain in the domain </td></tr>
-    <tr><td class="paramname">domainSize</td><td>size of this subdomain in the domain </td></tr>
-    <tr><td class="paramname">dataClass</td><td>subdomain type annotation </td></tr>
-    <tr><td class="paramname">data</td><td>buffer with data </td></tr>
+    <tr><td class="paramname">name</td><td>Name for the dataset to create/append. </td></tr>
+    <tr><td class="paramname">domainOffset</td><td>Local offset of this subdomain. </td></tr>
+    <tr><td class="paramname">domainSize</td><td>Local size of this subdomain. </td></tr>
+    <tr><td class="paramname">globalDomainOffset</td><td>Logical offset of the global domain. </td></tr>
+    <tr><td class="paramname">globalDomainSIze</td><td>Logical size of the global domain. </td></tr>
+    <tr><td class="paramname">dataClass</td><td>Subdomain type annotation. </td></tr>
+    <tr><td class="paramname">buf</td><td>Buffer with data. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="class_d_collector_1_1_domain_collector.html#affee2702a2ae6808b1a0e24e6639f0f6">DCollector::DomainCollector</a>, <a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#ac1b0ea9337421556369edd8f771993df">DCollector::ParallelDomainCollector</a>, and <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#a8687cb40ee5e0fd376ef941accca7595">DCollector::IParallelDomainCollector</a>.</p>
+<p>Implemented in <a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#ab74497318d0a18ef985f50d020d180f0">DCollector::ParallelDomainCollector</a>, <a class="el" href="class_d_collector_1_1_domain_collector.html#a4e6f8bd423b4a89353dc7b1bfa2f7387">DCollector::DomainCollector</a>, and <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#ab6bb3dd740b4e79a1358a6264b4ba66f">DCollector::IParallelDomainCollector</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a790a17d5e57a7011a307d660aaa65811"></a>
+<a class="anchor" id="ad9855a49c5959ab31ef6c6ff5101501f"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -653,7 +630,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>rank</em>, </td>
+          <td class="paramname"><em>ndims</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -694,6 +671,18 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalDomainOffset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalDomainSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a>&#160;</td>
           <td class="paramname"><em>dataClass</em>, </td>
         </tr>
@@ -701,7 +690,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
+          <td class="paramname"><em>buf</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -719,25 +708,27 @@ Here is the call graph for this function:</div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>ID of the iteration for writing. </td></tr>
-    <tr><td class="paramname">type</td><td>type information for data </td></tr>
-    <tr><td class="paramname">rank</td><td>number of dimensions (1-3) of the data </td></tr>
-    <tr><td class="paramname">srcBuffer</td><td>dimensions of the buffer to read from </td></tr>
+    <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
+    <tr><td class="paramname">ndims</td><td>Number of dimensions (1-3). </td></tr>
+    <tr><td class="paramname">srcBuffer</td><td>Size of the buffer to read from. </td></tr>
     <tr><td class="paramname">srcData</td><td>dimensions of the data in the buffer </td></tr>
-    <tr><td class="paramname">srcOffset</td><td>offset of srcData in srcBuffer </td></tr>
-    <tr><td class="paramname">name</td><td>name of the dataset </td></tr>
-    <tr><td class="paramname">domainOffset</td><td>offset of this subdomain in the domain </td></tr>
-    <tr><td class="paramname">domainSize</td><td>size of this subdomain in the domain </td></tr>
-    <tr><td class="paramname">dataClass</td><td>subdomain type annotation </td></tr>
-    <tr><td class="paramname">data</td><td>buffer with data </td></tr>
+    <tr><td class="paramname">srcOffset</td><td>Offset of <code>srcData</code> in <code>srcBuffer</code>. </td></tr>
+    <tr><td class="paramname">name</td><td>Name for the dataset to create/append. </td></tr>
+    <tr><td class="paramname">domainOffset</td><td>Local offset of this subdomain. </td></tr>
+    <tr><td class="paramname">domainSize</td><td>Local size of this subdomain. </td></tr>
+    <tr><td class="paramname">globalDomainOffset</td><td>Logical offset of the global domain. </td></tr>
+    <tr><td class="paramname">globalDomainSIze</td><td>Logical size of the global domain. </td></tr>
+    <tr><td class="paramname">dataClass</td><td>Subdomain type annotation. </td></tr>
+    <tr><td class="paramname">buf</td><td>Buffer with data. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="class_d_collector_1_1_domain_collector.html#adca27a0daddeecb8dcdc4a45c327508a">DCollector::DomainCollector</a>, <a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a3fb95228da0cc31518fe60f43f9f2b60">DCollector::ParallelDomainCollector</a>, and <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#a5ca061cba976069fec96d4f17211e3fa">DCollector::IParallelDomainCollector</a>.</p>
+<p>Implemented in <a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#adb3f975e185a6e95ced00931eb9d0117">DCollector::ParallelDomainCollector</a>, <a class="el" href="class_d_collector_1_1_domain_collector.html#ab0691c836bc50229f80c904e2258ed23">DCollector::DomainCollector</a>, and <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#a61f387e1bb43b28e2f700c2d6696bb50">DCollector::IParallelDomainCollector</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a8f206e67632c9414dd627bc681169195"></a>
+<a class="anchor" id="aa07a66ac70676dafeb38f9fc8afa3ed6"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -760,7 +751,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>rank</em>, </td>
+          <td class="paramname"><em>ndims</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -807,6 +798,18 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalDomainOffset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td>
+          <td class="paramname"><em>globalDomainSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype"><a class="el" href="class_d_collector_1_1_i_domain_collector.html#a440f900fd20fcecfd890170db0d52afb">DomDataClass</a>&#160;</td>
           <td class="paramname"><em>dataClass</em>, </td>
         </tr>
@@ -814,7 +817,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
+          <td class="paramname"><em>buf</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -832,32 +835,34 @@ Here is the call graph for this function:</div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>ID of the iteration for writing. </td></tr>
-    <tr><td class="paramname">type</td><td>type information for data </td></tr>
-    <tr><td class="paramname">rank</td><td>number of dimensions (1-3) of the data </td></tr>
-    <tr><td class="paramname">srcBuffer</td><td>dimensions of the buffer to read from </td></tr>
-    <tr><td class="paramname">srcStride</td><td>sizeof striding in each dimension. 1 means 'no stride' </td></tr>
-    <tr><td class="paramname">srcData</td><td>dimensions of the data in the buffer </td></tr>
-    <tr><td class="paramname">srcOffset</td><td>offset of srcData in srcBuffer </td></tr>
-    <tr><td class="paramname">name</td><td>name of the dataset </td></tr>
-    <tr><td class="paramname">domainOffset</td><td>offset of this subdomain in the domain </td></tr>
-    <tr><td class="paramname">domainSize</td><td>size of this subdomain in the domain </td></tr>
-    <tr><td class="paramname">dataClass</td><td>subdomain type annotation </td></tr>
-    <tr><td class="paramname">data</td><td>buffer with data </td></tr>
+    <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
+    <tr><td class="paramname">ndims</td><td>Number of dimensions (1-3). </td></tr>
+    <tr><td class="paramname">srcBuffer</td><td>Size of the buffer to read from. </td></tr>
+    <tr><td class="paramname">srcStride</td><td>Size of striding in each dimension. 1 means 'no stride'. </td></tr>
+    <tr><td class="paramname">srcData</td><td>Size of the data in the buffer. </td></tr>
+    <tr><td class="paramname">srcOffset</td><td>Offset of <code>srcData</code> in <code>srcBuffer</code>. </td></tr>
+    <tr><td class="paramname">name</td><td>Name for the dataset to create/append. </td></tr>
+    <tr><td class="paramname">domainOffset</td><td>Local offset of this subdomain. </td></tr>
+    <tr><td class="paramname">domainSize</td><td>Local size of this subdomain. </td></tr>
+    <tr><td class="paramname">globalDomainOffset</td><td>Logical offset of the global domain. </td></tr>
+    <tr><td class="paramname">globalDomainSIze</td><td>Logical size of the global domain. </td></tr>
+    <tr><td class="paramname">dataClass</td><td>Subdomain type annotation. </td></tr>
+    <tr><td class="paramname">buf</td><td>Buffer with data. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="class_d_collector_1_1_domain_collector.html#a2255b644f673076ea1625abbf4de70c7">DCollector::DomainCollector</a>, <a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#a85ca7a23c48dfb2e0679783151bd5402">DCollector::ParallelDomainCollector</a>, and <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#af4609db0f5233ae55f8ccec5a4ca9eec">DCollector::IParallelDomainCollector</a>.</p>
+<p>Implemented in <a class="el" href="class_d_collector_1_1_parallel_domain_collector.html#aed1abf15e5c0ee05ce30240518760881">DCollector::ParallelDomainCollector</a>, <a class="el" href="class_d_collector_1_1_domain_collector.html#aaa61bcef3acfdf766ac4c6a7cae24106">DCollector::DomainCollector</a>, and <a class="el" href="class_d_collector_1_1_i_parallel_domain_collector.html#a638172944ea0af97ed0120e2ac6b6cd6">DCollector::IParallelDomainCollector</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/tmp/tmp.3rqnQsFfwK/libSplash/src/include/domains/<a class="el" href="_i_domain_collector_8hpp_source.html">IDomainCollector.hpp</a></li>
+<li>libSplash/src/include/domains/<a class="el" href="_i_domain_collector_8hpp_source.html">IDomainCollector.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Sep 20 2013 13:25:32 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Sep 27 2013 10:40:33 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

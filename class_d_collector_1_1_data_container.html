@@ -60,11 +60,12 @@
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac403162dfea2100d2205d022a1a6b781"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_container.html#ac403162dfea2100d2205d022a1a6b781">DataContainer</a> ()</td></tr>
 <tr class="memitem:adf1896bb982df94deae6d0afd6afa3c0"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_container.html#adf1896bb982df94deae6d0afd6afa3c0">~DataContainer</a> ()</td></tr>
-<tr class="memitem:a9910dcc6ce041058001642d8b3457dad"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9910dcc6ce041058001642d8b3457dad"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (<a class="el" href="class_d_collector_1_1_domain_data.html">DomainData</a> *entry)</td></tr>
+<tr class="memitem:a9910dcc6ce041058001642d8b3457dad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_container.html#a9910dcc6ce041058001642d8b3457dad">add</a> (<a class="el" href="class_d_collector_1_1_domain_data.html">DomainData</a> *entry)</td></tr>
 <tr class="memitem:adb8db9aeb3752d0103747d1ec8a70d48"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_container.html#adb8db9aeb3752d0103747d1ec8a70d48">getNumSubdomains</a> ()</td></tr>
 <tr class="memitem:aa81ea0cf98a2d8c2e837fae7846eb219"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_container.html#aa81ea0cf98a2d8c2e837fae7846eb219">getNumElements</a> ()</td></tr>
-<tr class="memitem:adffa578d806609a8fd17ebad8d111e04"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_container.html#adffa578d806609a8fd17ebad8d111e04">getSize</a> ()</td></tr>
+<tr class="memitem:a999f4ae5cdf7d255b9d3a35f5a4a053e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_container.html#a999f4ae5cdf7d255b9d3a35f5a4a053e">getSize</a> () const </td></tr>
+<tr class="memitem:a81268f8471a316a131cee601be14cce3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_container.html#a81268f8471a316a131cee601be14cce3">getOffset</a> () const </td></tr>
+<tr class="memitem:ac94f1d1559d12be8b4e5abb964414584"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_container.html#ac94f1d1559d12be8b4e5abb964414584">getEnd</a> () const </td></tr>
 <tr class="memitem:a1bcfdc04c68c1819450d980ee78e8d37"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_d_collector_1_1_domain_data.html">DomainData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_container.html#a1bcfdc04c68c1819450d980ee78e8d37">getIndex</a> (size_t index)</td></tr>
 <tr class="memitem:abf177de5322d09c927e2ce0137371ee6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_d_collector_1_1_domain_data.html">DomainData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_container.html#abf177de5322d09c927e2ce0137371ee6">get</a> (size_t x)</td></tr>
 <tr class="memitem:a28fdf6f36892aa092f715d9b703365ad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_d_collector_1_1_domain_data.html">DomainData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_container.html#a28fdf6f36892aa092f715d9b703365ad">get</a> (size_t x, size_t y)</td></tr>
@@ -72,9 +73,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (<a class="el
 <tr class="memitem:a99e4204c761882beeb5d009128de6e0a"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_collector_1_1_data_container.html#a99e4204c761882beeb5d009128de6e0a">getElement</a> (size_t index)</td></tr>
 </table>
 <a name="details" id="details"></a><h2>Detailed Description</h2>
-<div class="textblock"><p>Container for storing domain-annotated data representing a specific subdomain. This should regularly not be constructed by a user but internally, only. </p>
+<div class="textblock"><p>Container for storing domain-annotated data representing a specific subdomain. The container contains information on the specific subdomain and its global domain. This should regularly not be constructed by a user but internally, only. </p>
 
-<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00040">40</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00041">41</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
 </div><h2>Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ac403162dfea2100d2205d022a1a6b781"></a>
 <div class="memitem">
@@ -98,16 +99,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (<a class="el
 </div><div class="memdoc">
 <p>Constructor. </p>
 
-<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00047">47</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
-
-<p><div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="class_d_collector_1_1_data_container_ac403162dfea2100d2205d022a1a6b781_cgraph.png" border="0" usemap="#class_d_collector_1_1_data_container_ac403162dfea2100d2205d022a1a6b781_cgraph" alt=""/></div>
-<map name="class_d_collector_1_1_data_container_ac403162dfea2100d2205d022a1a6b781_cgraph" id="class_d_collector_1_1_data_container_ac403162dfea2100d2205d022a1a6b781_cgraph">
-<area shape="rect" id="node3" href="class_d_collector_1_1_dimensions.html#a433fe01b173c1e8537c83db50a4453de" title="DCollector::Dimensions::set" alt="" coords="225,13,401,41"/></map>
-</div>
-</p>
+<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00048">48</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
 
 </div>
 </div>
@@ -131,13 +123,50 @@ Here is the call graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Destructor. </p>
+<p>Destructor.</p>
+<p>Deletes all subdomains it contains. </p>
 
-<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00055">55</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00059">59</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
 
 </div>
 </div>
 <h2>Member Function Documentation</h2>
+<a class="anchor" id="a9910dcc6ce041058001642d8b3457dad"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCollector::DataContainer::add </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_d_collector_1_1_domain_data.html">DomainData</a> *&#160;</td>
+          <td class="paramname"><em>entry</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Internal use only! </p>
+
+<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00074">74</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_d_collector_1_1_data_container_a9910dcc6ce041058001642d8b3457dad_cgraph.png" border="0" usemap="#class_d_collector_1_1_data_container_a9910dcc6ce041058001642d8b3457dad_cgraph" alt=""/></div>
+<map name="class_d_collector_1_1_data_container_a9910dcc6ce041058001642d8b3457dad_cgraph" id="class_d_collector_1_1_data_container_a9910dcc6ce041058001642d8b3457dad_cgraph">
+<area shape="rect" id="node3" href="class_d_collector_1_1_domain_data.html#a940f2c2d46f07a2b042488ef690884c1" title="DCollector::DomainData\l::getData" alt="" coords="252,5,409,49"/><area shape="rect" id="node5" href="class_d_collector_1_1_domain.html#a6704a685c7861f383c958b4c922c4f1f" title="DCollector::Domain\l::getOffset" alt="" coords="265,71,396,115"/><area shape="rect" id="node7" href="class_d_collector_1_1_domain.html#a97209972b90d9bae78dc33f4cd1e4340" title="DCollector::Domain\l::getEnd" alt="" coords="265,138,396,182"/></map>
+</div>
+</p>
+
+</div>
+</div>
 <a class="anchor" id="abf177de5322d09c927e2ce0137371ee6"></a>
 <div class="memitem">
 <div class="memproto">
@@ -168,7 +197,7 @@ Here is the call graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Subdomain partition. </dd></dl>
 
-<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00136">136</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00173">173</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
 
 </div>
 </div>
@@ -213,7 +242,7 @@ Here is the call graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Subdomain partition. </dd></dl>
 
-<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00151">151</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00188">188</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
 
 </div>
 </div>
@@ -265,7 +294,7 @@ Here is the call graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Subdomain partition. </dd></dl>
 
-<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00167">167</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00204">204</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
 
 </div>
 </div>
@@ -299,16 +328,43 @@ Here is the call graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Pointer to element. </dd></dl>
 
-<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00182">182</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00219">219</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_d_collector_1_1_data_container_a99e4204c761882beeb5d009128de6e0a_cgraph.png" border="0" usemap="#class_d_collector_1_1_data_container_a99e4204c761882beeb5d009128de6e0a_cgraph" alt=""/></div>
 <map name="class_d_collector_1_1_data_container_a99e4204c761882beeb5d009128de6e0a_cgraph" id="class_d_collector_1_1_data_container_a99e4204c761882beeb5d009128de6e0a_cgraph">
-<area shape="rect" id="node3" href="class_d_collector_1_1_domain_data.html#a7964a315b57c7e5bc56f0702e05029e6" title="DCollector::DomainData\l::getElements" alt="" coords="225,5,383,49"/><area shape="rect" id="node5" href="class_d_collector_1_1_dimensions.html#a3b5040267a22c4d773e17882442cef8f" title="DCollector::Dimensions\l::getDimSize" alt="" coords="227,71,381,115"/><area shape="rect" id="node7" href="class_d_collector_1_1_domain_data.html#a24085aa3fc8350e2256485c9f3417513" title="DCollector::DomainData\l::getTypeSize" alt="" coords="225,138,383,182"/><area shape="rect" id="node9" href="class_d_collector_1_1_domain_data.html#a940f2c2d46f07a2b042488ef690884c1" title="DCollector::DomainData\l::getData" alt="" coords="225,205,383,249"/></map>
+<area shape="rect" id="node3" href="class_d_collector_1_1_domain_data.html#a7964a315b57c7e5bc56f0702e05029e6" title="DCollector::DomainData\l::getElements" alt="" coords="225,5,383,49"/><area shape="rect" id="node5" href="class_d_collector_1_1_dimensions.html#ab050c0c38fbf57023e354fc633b5145e" title="DCollector::Dimensions\l::getScalarSize" alt="" coords="227,71,381,115"/><area shape="rect" id="node7" href="class_d_collector_1_1_domain_data.html#a24085aa3fc8350e2256485c9f3417513" title="DCollector::DomainData\l::getTypeSize" alt="" coords="225,138,383,182"/><area shape="rect" id="node9" href="class_d_collector_1_1_domain_data.html#a940f2c2d46f07a2b042488ef690884c1" title="DCollector::DomainData\l::getData" alt="" coords="225,205,383,249"/></map>
 </div>
 </p>
+
+</div>
+</div>
+<a class="anchor" id="ac94f1d1559d12be8b4e5abb964414584"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> DCollector::DataContainer::getEnd </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the end of the partition represented by this container which is the combination of its offset and size.</p>
+<dl class="section return"><dt>Returns</dt><dd>End of total domain partition in this container. </dd></dl>
+
+<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00148">148</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
 
 </div>
 </div>
@@ -342,7 +398,7 @@ Here is the call graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Subdomain partition. </dd></dl>
 
-<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00122">122</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00159">159</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
 
 </div>
 </div>
@@ -369,7 +425,7 @@ Here is the call graph for this function:</div>
 <p>Returns the total number of elements in all subdomains of this container.</p>
 <dl class="section return"><dt>Returns</dt><dd>Total number of elements in this container. </dd></dl>
 
-<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00095">95</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00109">109</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
 
 </div>
 </div>
@@ -394,13 +450,40 @@ Here is the call graph for this function:</div>
 </table>
 </div><div class="memdoc">
 <p>Returns the number of subdomain partitions in the container.</p>
-<dl class="section return"><dt>Returns</dt><dd>number of subdomain partitions </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of subdomain partitions. </dd></dl>
 
-<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00085">85</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00099">99</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="adffa578d806609a8fd17ebad8d111e04"></a>
+<a class="anchor" id="a81268f8471a316a131cee601be14cce3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> DCollector::DataContainer::getOffset </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the offset of the partition represented by this container.</p>
+<dl class="section return"><dt>Returns</dt><dd>Offset of total domain partition in this container. </dd></dl>
+
+<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00137">137</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a999f4ae5cdf7d255b9d3a35f5a4a053e"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -411,7 +494,7 @@ Here is the call graph for this function:</div>
           <td class="memname"><a class="el" href="class_d_collector_1_1_dimensions.html">Dimensions</a> DCollector::DataContainer::getSize </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -423,17 +506,17 @@ Here is the call graph for this function:</div>
 <p>Returns the size of the partition represented by this container.</p>
 <dl class="section return"><dt>Returns</dt><dd>Size of total domain partition in this container. </dd></dl>
 
-<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00111">111</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_data_container_8hpp_source.html#l00127">127</a> of file <a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/tmp/tmp.3rqnQsFfwK/libSplash/src/include/domains/<a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a></li>
+<li>libSplash/src/include/domains/<a class="el" href="_data_container_8hpp_source.html">DataContainer.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Sep 20 2013 13:25:32 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Sep 27 2013 10:40:33 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

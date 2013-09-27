@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<title>libDataCollector: /tmp/tmp.3rqnQsFfwK/libSplash/src/include/DataCollector.hpp Source File</title>
+<title>libDataCollector: libSplash/src/include/DataCollector.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -40,7 +40,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_ceb577a46ca9bf0c8d8d9bcb7e4708f6.html">tmp</a></li><li class="navelem"><a class="el" href="dir_9c8849e78f24b4ace0a4ce42734de518.html">tmp.3rqnQsFfwK</a></li><li class="navelem"><a class="el" href="dir_f81985b0bdb6bfa4267e7992a42388d2.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_9a5e0006dfc9e046dcd0b35b30aeaf26.html">src</a></li><li class="navelem"><a class="el" href="dir_fc97a9ed3fce65c8fe71368900fa9c8c.html">include</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_2df5cb589f55848dc7276a9229679695.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_2cb13436273091bd0bcac22b3ec45c27.html">src</a></li><li class="navelem"><a class="el" href="dir_f2c41c9b5e6ee568db0fa97dfdb8a6cf.html">include</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -121,25 +121,25 @@
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;</div>
 <div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_d_collector_1_1_data_collector.html#ac9d8b475173609dd9e2af579ad030ddd">getEntriesForID</a>(int32_t <span class="keywordtype">id</span>, <a class="code" href="class_d_collector_1_1_data_collector.html#a4400afb1a8b6133db19330dec0a94952">DCEntry</a> *entries, <span class="keywordtype">size_t</span> *count) = 0;</div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_d_collector_1_1_data_collector.html#a9a828b91566e27be866b4c189ffd759e">write</a>(int32_t <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_d_collector_1_1_data_collector.html#a433aab6850aad5449b3f4f1542cf34d5">write</a>(int32_t <span class="keywordtype">id</span>,</div>
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                <span class="keyword">const</span> <a class="code" href="class_d_collector_1_1_collection_type.html">CollectionType</a>&amp; type,</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                uint32_t rank,</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                uint32_t ndims,</div>
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;                <span class="keyword">const</span> <a class="code" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData,</div>
 <div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;                <span class="keyword">const</span> <span class="keywordtype">char</span>* name,</div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                <span class="keyword">const</span> <span class="keywordtype">void</span>* buf) = 0;</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_d_collector_1_1_data_collector.html#a9a828b91566e27be866b4c189ffd759e">write</a>(int32_t <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_d_collector_1_1_data_collector.html#a433aab6850aad5449b3f4f1542cf34d5">write</a>(int32_t <span class="keywordtype">id</span>,</div>
 <div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;                <span class="keyword">const</span> <a class="code" href="class_d_collector_1_1_collection_type.html">CollectionType</a>&amp; type,</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;                uint32_t rank,</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;                uint32_t ndims,</div>
 <div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;                <span class="keyword">const</span> <a class="code" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer,</div>
 <div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;                <span class="keyword">const</span> <a class="code" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData,</div>
 <div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                <span class="keyword">const</span> <a class="code" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcOffset,</div>
 <div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;                <span class="keyword">const</span> <span class="keywordtype">char</span>* name,</div>
 <div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;                <span class="keyword">const</span> <span class="keywordtype">void</span>* buf) = 0;</div>
 <div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_d_collector_1_1_data_collector.html#a9a828b91566e27be866b4c189ffd759e">write</a>(int32_t <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_d_collector_1_1_data_collector.html#a433aab6850aad5449b3f4f1542cf34d5">write</a>(int32_t <span class="keywordtype">id</span>,</div>
 <div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;                <span class="keyword">const</span> <a class="code" href="class_d_collector_1_1_collection_type.html">CollectionType</a>&amp; type,</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;                uint32_t rank,</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;                uint32_t ndims,</div>
 <div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;                <span class="keyword">const</span> <a class="code" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcBuffer,</div>
 <div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;                <span class="keyword">const</span> <a class="code" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcStride,</div>
 <div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;                <span class="keyword">const</span> <a class="code" href="class_d_collector_1_1_dimensions.html">Dimensions</a> srcData,</div>
@@ -200,29 +200,27 @@
 <div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;                <span class="keyword">const</span> <span class="keywordtype">char</span> *attrName,</div>
 <div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;                <span class="keyword">const</span> <span class="keywordtype">void</span> *buf) = 0;</div>
 <div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;        </div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_d_collector_1_1_data_collector.html#a3398deae560d98743366144f007b3d94">read</a>(int32_t <span class="keywordtype">id</span>,</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;                <span class="keyword">const</span> <a class="code" href="class_d_collector_1_1_collection_type.html">CollectionType</a>&amp; type,</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;                <span class="keyword">const</span> <span class="keywordtype">char</span>* name,</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;                <a class="code" href="class_d_collector_1_1_dimensions.html">Dimensions</a> &amp;sizeRead,</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;                <span class="keywordtype">void</span>* buf) = 0;</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_d_collector_1_1_data_collector.html#a3398deae560d98743366144f007b3d94">read</a>(int32_t <span class="keywordtype">id</span>,</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;                <span class="keyword">const</span> <a class="code" href="class_d_collector_1_1_collection_type.html">CollectionType</a>&amp; type,</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;                <span class="keyword">const</span> <span class="keywordtype">char</span>* name,</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;                <span class="keyword">const</span> <a class="code" href="class_d_collector_1_1_dimensions.html">Dimensions</a> dstBuffer,</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;                <span class="keyword">const</span> <a class="code" href="class_d_collector_1_1_dimensions.html">Dimensions</a> dstOffset,</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;                <a class="code" href="class_d_collector_1_1_dimensions.html">Dimensions</a> &amp;sizeRead,</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;                <span class="keywordtype">void</span>* buf) = 0;</div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    };</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;</div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;} <span class="comment">// namespace DCollector</span></div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">/* _DATACOLLECTOR_H */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_d_collector_1_1_data_collector.html#a4921db66b5690132bea0a06247d795b9">read</a>(int32_t <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;                <span class="keyword">const</span> <span class="keywordtype">char</span>* name,</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;                <a class="code" href="class_d_collector_1_1_dimensions.html">Dimensions</a> &amp;sizeRead,</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;                <span class="keywordtype">void</span>* buf) = 0;</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_d_collector_1_1_data_collector.html#a4921db66b5690132bea0a06247d795b9">read</a>(int32_t <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;                <span class="keyword">const</span> <span class="keywordtype">char</span>* name,</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;                <span class="keyword">const</span> <a class="code" href="class_d_collector_1_1_dimensions.html">Dimensions</a> dstBuffer,</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;                <span class="keyword">const</span> <a class="code" href="class_d_collector_1_1_dimensions.html">Dimensions</a> dstOffset,</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;                <a class="code" href="class_d_collector_1_1_dimensions.html">Dimensions</a> &amp;sizeRead,</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;                <span class="keywordtype">void</span>* buf) = 0;</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    };</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;} <span class="comment">// namespace DCollector</span></div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">/* _DATACOLLECTOR_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;<span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Sep 20 2013 13:25:32 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Sep 27 2013 10:40:33 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>
