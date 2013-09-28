@@ -53,14 +53,9 @@ namespace DCollector
             H5Pclose(dsetReadProperties);
         }
         
-        void setWriteCollective()
-        {
-            H5Pset_dxpl_mpio(dsetWriteProperties, H5FD_MPIO_COLLECTIVE);
-        }
-        
         void setWriteIndependent()
         {
-            H5Pset_dxpl_mpio(dsetWriteProperties, H5FD_MPIO_INDEPENDENT);
+            H5Pset_dxpl_mpio_collective_opt(dsetWriteProperties, H5FD_MPIO_INDIVIDUAL_IO);
         }
     };
     /**

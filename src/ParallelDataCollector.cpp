@@ -145,10 +145,12 @@ fileStatus(FST_CLOSED)
         throw DCException(getExceptionString("ParallelDataCollector",
             "failed to initialize/open HDF5 library"));
 
+#ifndef SDC_DEBUG_OUTPUT
     // surpress automatic output of HDF5 exception messages
     if (H5Eset_auto2(H5E_DEFAULT, NULL, NULL) < 0)
         throw DCException(getExceptionString("ParallelDataCollector",
             "failed to disable error printing"));
+#endif
 
     // set some default file access parameters
     setFileAccessParams(fileAccProperties);
@@ -285,6 +287,7 @@ throw (DCException)
         DCAttribute::readAttribute(name, group_custom.getHandle(), data);
     } catch (DCException e)
     {
+        std::cerr << e.what() << std::endl;
         throw DCException(getExceptionString("readGlobalAttribute", "failed to open attribute", name));
     }
 }
@@ -523,14 +526,8 @@ void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
     group.openCreate(handles.get(id), group_path);
 
     // write data to the group
-    try
-    {
-        writeDataSet(group.getHandle(), globalSize, globalOffset, type, ndims,
-                srcBuffer, srcStride, srcData, srcOffset, dset_name.c_str(), buf);
-    } catch (DCException)
-    {
-        throw;
-    }
+    writeDataSet(group.getHandle(), globalSize, globalOffset, type, ndims,
+            srcBuffer, srcStride, srcData, srcOffset, dset_name.c_str(), buf);
 }
 
 void ParallelDataCollector::reserve(int32_t id,
@@ -604,23 +601,17 @@ void ParallelDataCollector::append(int32_t id,
     group.openCreate(handles.get(id), group_path);
 
     // write data to the dataset
-    try
-    {
-        DCParallelDataSet dataset(dset_name.c_str());
-        dataset.setWriteIndependent();
+    DCParallelDataSet dataset(dset_name.c_str());
+    dataset.setWriteIndependent();
 
-        if (!dataset.open(group.getHandle()))
-        {
-            throw DCException(getExceptionString("append",
-                    "Cannot open dataset (missing reserve?)", dset_name.c_str()));
-        } else
-            dataset.write(size, Dimensions(1, 1, 1), Dimensions(0, 0, 0), size, globalOffset, buf);
-
-        dataset.close();
-    } catch (DCException)
+    if (!dataset.open(group.getHandle()))
     {
-        throw;
-    }
+        throw DCException(getExceptionString("append",
+                "Cannot open dataset (missing reserve?)", dset_name.c_str()));
+    } else
+        dataset.write(size, Dimensions(1, 1, 1), Dimensions(0, 0, 0), size, globalOffset, buf);
+
+    dataset.close();
 }
 
 void ParallelDataCollector::remove(int32_t id)
@@ -696,23 +687,16 @@ throw (DCException)
     src_group.open(handles.get(srcID), src_group_path);
 
     // open source dataset
-    try
-    {
-        DCParallelDataSet src_dataset(src_dset_name.c_str());
-        src_dataset.open(src_group.getHandle());
+    DCParallelDataSet src_dataset(src_dset_name.c_str());
+    src_dataset.open(src_group.getHandle());
 
-        DCParallelDataSet dst_dataset(dst_dset_name.c_str());
-        // create the actual reference as a new dataset
-        // identical src and dst groups
-        dst_dataset.createReference(src_group.getHandle(), src_group.getHandle(), src_dataset);
+    DCParallelDataSet dst_dataset(dst_dset_name.c_str());
+    // create the actual reference as a new dataset
+    // identical src and dst groups
+    dst_dataset.createReference(src_group.getHandle(), src_group.getHandle(), src_dataset);
 
-        dst_dataset.close();
-        src_dataset.close();
-
-    } catch (DCException e)
-    {
-        throw e;
-    }
+    dst_dataset.close();
+    src_dataset.close();
 }
 
 void ParallelDataCollector::createReference(int32_t srcID,
@@ -779,29 +763,20 @@ throw (DCException)
     DCParallelGroup group;
     group.create(fHandle, SDC_GROUP_HEADER);
 
-    try
-    {
-        ColTypeDim dim_t;
+    ColTypeDim dim_t;
 
-        int32_t index = id;
-        bool compression = enableCompression;
+    int32_t index = id;
+    bool compression = enableCompression;
 
-        // create master specific header attributes
-        DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, H5T_NATIVE_INT32,
-                group.getHandle(), &index);
+    // create master specific header attributes
+    DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, H5T_NATIVE_INT32,
+            group.getHandle(), &index);
 
-        DCAttribute::writeAttribute(SDC_ATTR_COMPRESSION, H5T_NATIVE_HBOOL,
-                group.getHandle(), &compression);
+    DCAttribute::writeAttribute(SDC_ATTR_COMPRESSION, H5T_NATIVE_HBOOL,
+            group.getHandle(), &compression);
 
-        DCAttribute::writeAttribute(SDC_ATTR_MPI_SIZE, dim_t.getDataType(),
-                group.getHandle(), mpiTopology.getPointer());
-
-    } catch (DCException attr_error)
-    {
-        throw DCException(getExceptionString("writeHeader",
-                "Failed to write header attribute.",
-                attr_error.what()));
-    }
+    DCAttribute::writeAttribute(SDC_ATTR_MPI_SIZE, dim_t.getDataType(),
+            group.getHandle(), mpiTopology.getPointer());
 }
 
 void ParallelDataCollector::openCreate(const char *filename,
@@ -875,23 +850,17 @@ throw (DCException)
     Dimensions src_size(srcSize);
     Dimensions src_offset(srcOffset);
 
-    try
+    DCParallelDataSet dataset(dset_name.c_str());
+    dataset.open(group.getHandle());
+    if (!parallelRead && (src_size.getScalarSize() == 0))
     {
-        DCParallelDataSet dataset(dset_name.c_str());
-        dataset.open(group.getHandle());
-        if (!parallelRead && (src_size.getScalarSize() == 0))
-        {
-            dataset.read(dstBuffer, dstOffset, src_size, src_offset, sizeRead, srcRank, NULL);
-            src_size.set(sizeRead);
-            src_offset.set(0, 0, 0);
-        }
-
-        dataset.read(dstBuffer, dstOffset, src_size, src_offset, sizeRead, srcRank, dst);
-        dataset.close();
-    } catch (DCException e)
-    {
-        throw e;
+        dataset.read(dstBuffer, dstOffset, src_size, src_offset, sizeRead, srcRank, NULL);
+        src_size.set(sizeRead);
+        src_offset.set(0, 0, 0);
     }
+
+    dataset.read(dstBuffer, dstOffset, src_size, src_offset, sizeRead, srcRank, dst);
+    dataset.close();
 }
 
 void ParallelDataCollector::writeDataSet(H5Handle group, const Dimensions globalSize,
@@ -984,18 +953,12 @@ size_t ParallelDataCollector::getNDims(H5Handle h5File,
 
     size_t ndims = 0;
 
-    try
-    {
-        DCParallelDataSet dataset(dset_name.c_str());
-        dataset.open(group.getHandle());
+    DCParallelDataSet dataset(dset_name.c_str());
+    dataset.open(group.getHandle());
 
-        ndims = dataset.getNDims();
+    ndims = dataset.getNDims();
 
-        dataset.close();
-    } catch (DCException e)
-    {
-        throw e;
-    }
+    dataset.close();
 
     return ndims;
 }

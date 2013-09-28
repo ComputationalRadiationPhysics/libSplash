@@ -110,10 +110,12 @@ namespace DCollector
             throw DCException(getExceptionString("SerialDataCollector",
                 "failed to initialize/open HDF5 library"));
 
+#ifndef SDC_DEBUG_OUTPUT
         // surpress automatic output of HDF5 exception messages
         if (H5Eset_auto2(H5E_DEFAULT, NULL, NULL) < 0)
             throw DCException(getExceptionString("SerialDataCollector",
                 "failed to disable error printing"));
+#endif
 
         // set some default file access parameters
         setFileAccessParams(fileAccProperties);
@@ -837,7 +839,7 @@ namespace DCollector
             throw e;
         }
     }
-    
+
     void SerialDataCollector::readSizeInternal(H5Handle h5File,
             int32_t id,
             const char* name,
