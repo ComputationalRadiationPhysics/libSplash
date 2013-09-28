@@ -60,14 +60,6 @@ namespace DCollector
             set(x, y, z);
         }
 
-        /**
-         * Destructor
-         */
-        ~Dimensions()
-        {
-
-        }
-
         hsize_t & operator[](const hsize_t t)
         {
             return s[t];
