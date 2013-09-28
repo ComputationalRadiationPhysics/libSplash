@@ -161,11 +161,11 @@ namespace DCollector
                 Dimensions& sizeRead,
                 uint32_t& srcDims,
                 void* dst) throw (DCException);
-        
+
         void readSizeInternal(H5Handle h5File,
-            int32_t id,
-            const char* name,
-            Dimensions &sizeRead) throw (DCException);
+                int32_t id,
+                const char* name,
+                Dimensions &sizeRead) throw (DCException);
 
         /**
          * Basic method for writing to a single DataSet.
@@ -194,6 +194,12 @@ namespace DCollector
                 size_t stride,
                 const char *name,
                 const void *data) throw (DCException);
+
+        hid_t openDatasetHandle(int32_t id,
+                const char *dsetName,
+                Dimensions *mpiPosition = NULL) throw (DCException);
+        
+        void closeDatasetHandle(hid_t handle) throw (DCException);
     public:
 
         /**

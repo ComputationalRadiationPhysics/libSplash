@@ -610,6 +610,72 @@ namespace DCollector
             throw e;
         }
     }
+    
+    int32_t SerialDataCollector::getMaxID()
+    {
+        return maxID;
+    }
+
+    void SerialDataCollector::getMPISize(Dimensions& mpiSize)
+    {
+        mpiSize.set(this->mpiTopology);
+    }
+
+    void SerialDataCollector::getEntryIDs(int32_t* ids, size_t* count)
+    throw (DCException)
+    {
+        DCGroup group;
+        group.open(handles.get(0), SDC_GROUP_DATA);
+
+        hsize_t data_entries = 0;
+        if (H5Gget_num_objs(group.getHandle(), &data_entries) < 0)
+        {
+            throw DCException(getExceptionString("getEntryIDs",
+                    "Failed to get entries in data group", SDC_GROUP_DATA));
+        }
+
+        if (count != NULL)
+            *count = data_entries;
+
+        if (ids != NULL)
+        {
+            for (size_t i = 0; i < data_entries; i++)
+            {
+                char *group_id_name = NULL;
+                ssize_t group_id_name_len = H5Gget_objname_by_idx(group.getHandle(), i, NULL, 0);
+                if (group_id_name_len < 0)
+                {
+                    throw DCException(getExceptionString("getEntryIDs",
+                            "Failed to get object name in group", group_id_name));
+                }
+
+                group_id_name = new char[group_id_name_len + 1];
+                H5Gget_objname_by_idx(group.getHandle(), i, group_id_name, group_id_name_len + 1);
+                ids[i] = atoi(group_id_name);
+                delete[] group_id_name;
+            }
+        }
+    }
+
+    void SerialDataCollector::getEntriesForID(int32_t id, DCEntry *entries, size_t *count)
+    throw (DCException)
+    {
+        std::stringstream group_id_name;
+        group_id_name << SDC_GROUP_DATA << "/" << id;
+
+        // open data group for id
+        DCGroup group;
+        group.open(handles.get(0), group_id_name.str());
+
+        DCGroup::VisitObjCBType param;
+        param.count = 0;
+        param.entries = entries;
+
+        DCGroup::getEntriesInternal(group.getHandle(), group_id_name.str(), "", &param);
+
+        if (count)
+            *count = param.count;
+    }
 
     /*******************************************************************************
      * PROTECTED FUNCTIONS
@@ -870,70 +936,40 @@ namespace DCollector
         }
     }
 
-    int32_t SerialDataCollector::getMaxID()
+    hid_t SerialDataCollector::openDatasetHandle(int32_t id,
+                const char *dsetName,
+                Dimensions *mpiPosition)
+                throw (DCException)
     {
-        return maxID;
-    }
+        std::string group_path, dset_name;
+        DCDataSet::getFullDataPath(dsetName, SDC_GROUP_DATA, id, group_path, dset_name);
 
-    void SerialDataCollector::getMPISize(Dimensions& mpiSize)
-    {
-        mpiSize.set(this->mpiTopology);
-    }
-
-    void SerialDataCollector::getEntryIDs(int32_t* ids, size_t* count)
-    throw (DCException)
-    {
-        DCGroup group;
-        group.open(handles.get(0), SDC_GROUP_DATA);
-
-        hsize_t data_entries = 0;
-        if (H5Gget_num_objs(group.getHandle(), &data_entries) < 0)
+        Dimensions mpi_pos(0, 0, 0);
+        if ((fileStatus == FST_MERGING) && (mpiPosition != NULL))
         {
-            throw DCException(getExceptionString("getEntryIDs",
-                    "Failed to get entries in data group", SDC_GROUP_DATA));
+            mpi_pos.set(*mpiPosition);
         }
 
-        if (count != NULL)
-            *count = data_entries;
+        DCGroup group;
+        group.open(handles.get(mpi_pos), group_path);
 
-        if (ids != NULL)
+        hid_t dataset_handle = -1;
+        if (H5Lexists(group.getHandle(), dset_name.c_str(), H5P_LINK_ACCESS_DEFAULT))
         {
-            for (size_t i = 0; i < data_entries; i++)
-            {
-                char *group_id_name = NULL;
-                ssize_t group_id_name_len = H5Gget_objname_by_idx(group.getHandle(), i, NULL, 0);
-                if (group_id_name_len < 0)
-                {
-                    throw DCException(getExceptionString("getEntryIDs",
-                            "Failed to get object name in group", group_id_name));
-                }
-
-                group_id_name = new char[group_id_name_len + 1];
-                H5Gget_objname_by_idx(group.getHandle(), i, group_id_name, group_id_name_len + 1);
-                ids[i] = atoi(group_id_name);
-                delete[] group_id_name;
-            }
+            dataset_handle = H5Dopen(group.getHandle(), dset_name.c_str(), H5P_DEFAULT);
+        } else
+        {
+            throw DCException(getExceptionString("openDatasetInternal",
+                    "dataset not found", dset_name.c_str()));
         }
+        
+        return dataset_handle;
     }
-
-    void SerialDataCollector::getEntriesForID(int32_t id, DCEntry *entries, size_t *count)
+    
+    void SerialDataCollector::closeDatasetHandle(hid_t handle)
     throw (DCException)
     {
-        std::stringstream group_id_name;
-        group_id_name << SDC_GROUP_DATA << "/" << id;
-
-        // open data group for id
-        DCGroup group;
-        group.open(handles.get(0), group_id_name.str());
-
-        DCGroup::VisitObjCBType param;
-        param.count = 0;
-        param.entries = entries;
-
-        DCGroup::getEntriesInternal(group.getHandle(), group_id_name.str(), "", &param);
-
-        if (count)
-            *count = param.count;
+        H5Dclose(handle);
     }
 
 } // namespace DataCollector
