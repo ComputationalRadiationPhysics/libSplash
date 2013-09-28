@@ -30,6 +30,7 @@
 #include "DomainCollector.hpp"
 #include "core/DCDataSet.hpp"
 #include "include/core/DCGroup.hpp"
+#include "include/core/DCAttribute.hpp"
 
 namespace DCollector
 {
@@ -96,11 +97,17 @@ namespace DCollector
             Domain &fileDomain)
     throw (DCException)
     {
-        readAttribute(id, name, DOMCOL_ATTR_OFFSET,
-                fileDomain.getOffset().getPointer(), &mpiPosition);
+        {
+            hid_t dset_handle = openDatasetHandle(id, name, &mpiPosition);
 
-        readAttribute(id, name, DOMCOL_ATTR_SIZE,
-                fileDomain.getSize().getPointer(), &mpiPosition);
+            DCAttribute::readAttribute(DOMCOL_ATTR_OFFSET, dset_handle,
+                    fileDomain.getOffset().getPointer());
+
+            DCAttribute::readAttribute(DOMCOL_ATTR_SIZE, dset_handle,
+                    fileDomain.getSize().getPointer());
+
+            closeDatasetHandle(dset_handle);
+        }
 
         Domain request_domain(requestOffset, requestSize);
 
@@ -341,15 +348,22 @@ namespace DCollector
         Dimensions data_size;
         DomDataClass tmp_data_class = UndefinedType;
 
-        readAttribute(id, name, DOMCOL_ATTR_OFFSET,
-                client_domain.getOffset().getPointer(), &mpiPosition);
+        {
+            hid_t dset_handle = openDatasetHandle(id, name, &mpiPosition);
 
-        readAttribute(id, name, DOMCOL_ATTR_SIZE,
-                client_domain.getSize().getPointer(), &mpiPosition);
+            DCAttribute::readAttribute(DOMCOL_ATTR_OFFSET, dset_handle,
+                    client_domain.getOffset().getPointer());
+
+            DCAttribute::readAttribute(DOMCOL_ATTR_SIZE, dset_handle,
+                    client_domain.getSize().getPointer());
+
+            DCAttribute::readAttribute(DOMCOL_ATTR_CLASS, dset_handle,
+                    &tmp_data_class);
+
+            closeDatasetHandle(dset_handle);
+        }
 
         readSizeInternal(handles.get(mpiPosition), id, name, data_size);
-
-        readAttribute(id, name, DOMCOL_ATTR_CLASS, &tmp_data_class, &mpiPosition);
 
         if (tmp_data_class == GridType && data_size != client_domain.getSize())
         {
@@ -582,7 +596,7 @@ namespace DCollector
 
     void DomainCollector::writeDomain(int32_t id,
             const CollectionType& type,
-            uint32_t rank,
+            uint32_t ndims,
             const Dimensions srcData,
             const char* name,
             const Dimensions domainOffset,
@@ -594,14 +608,14 @@ namespace DCollector
     throw (DCException)
     {
 
-        writeDomain(id, type, rank, srcData, Dimensions(1, 1, 1), srcData,
+        writeDomain(id, type, ndims, srcData, Dimensions(1, 1, 1), srcData,
                 Dimensions(0, 0, 0), name, domainOffset, domainSize,
                 globalDomainOffset, globalDomainSize, dataClass, buf);
     }
 
     void DomainCollector::writeDomain(int32_t id,
             const CollectionType& type,
-            uint32_t rank,
+            uint32_t ndims,
             const Dimensions srcBuffer,
             const Dimensions srcData,
             const Dimensions srcOffset,
@@ -615,14 +629,14 @@ namespace DCollector
     throw (DCException)
     {
 
-        writeDomain(id, type, rank, srcBuffer, Dimensions(1, 1, 1), srcData, srcOffset,
+        writeDomain(id, type, ndims, srcBuffer, Dimensions(1, 1, 1), srcData, srcOffset,
                 name, domainOffset, domainSize, globalDomainOffset, globalDomainSize,
                 dataClass, buf);
     }
 
     void DomainCollector::writeDomain(int32_t id,
             const CollectionType& type,
-            uint32_t rank,
+            uint32_t ndims,
             const Dimensions srcBuffer,
             const Dimensions srcStride,
             const Dimensions srcData,
@@ -639,13 +653,24 @@ namespace DCollector
         ColTypeDim dim_t;
         ColTypeInt int_t;
 
-        write(id, type, rank, srcBuffer, srcStride, srcData, srcOffset, name, buf);
+        write(id, type, ndims, srcBuffer, srcStride, srcData, srcOffset, name, buf);
 
-        writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, domainSize.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_OFFSET, domainOffset.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_SIZE, globalDomainSize.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_OFFSET, globalDomainOffset.getPointer());
+        {
+            hid_t dset_handle = openDatasetHandle(id, name, NULL);
+
+            DCAttribute::writeAttribute(DOMCOL_ATTR_CLASS, int_t.getDataType(),
+                    dset_handle, &dataClass);
+            DCAttribute::writeAttribute(DOMCOL_ATTR_SIZE, dim_t.getDataType(),
+                    dset_handle, domainSize.getPointer());
+            DCAttribute::writeAttribute(DOMCOL_ATTR_OFFSET, dim_t.getDataType(),
+                    dset_handle, domainOffset.getPointer());
+            DCAttribute::writeAttribute(DOMCOL_ATTR_GLOBAL_SIZE, dim_t.getDataType(),
+                    dset_handle, globalDomainSize.getPointer());
+            DCAttribute::writeAttribute(DOMCOL_ATTR_GLOBAL_OFFSET, dim_t.getDataType(),
+                    dset_handle, globalDomainOffset.getPointer());
+
+            closeDatasetHandle(dset_handle);
+        }
     }
 
     void DomainCollector::appendDomain(int32_t id,
@@ -701,11 +726,22 @@ namespace DCollector
 
         append(id, type, count, offset, striding, name, buf);
 
-        writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &data_class);
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, domainSize.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_OFFSET, domainOffset.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_SIZE, globalDomainSize.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_OFFSET, globalDomainOffset.getPointer());
+        {
+            hid_t dset_handle = openDatasetHandle(id, name, NULL);
+
+            DCAttribute::writeAttribute(DOMCOL_ATTR_CLASS, int_t.getDataType(),
+                    dset_handle, &data_class);
+            DCAttribute::writeAttribute(DOMCOL_ATTR_SIZE, dim_t.getDataType(),
+                    dset_handle, domainSize.getPointer());
+            DCAttribute::writeAttribute(DOMCOL_ATTR_OFFSET, dim_t.getDataType(),
+                    dset_handle, domainOffset.getPointer());
+            DCAttribute::writeAttribute(DOMCOL_ATTR_GLOBAL_SIZE, dim_t.getDataType(),
+                    dset_handle, globalDomainSize.getPointer());
+            DCAttribute::writeAttribute(DOMCOL_ATTR_GLOBAL_OFFSET, dim_t.getDataType(),
+                    dset_handle, globalDomainOffset.getPointer());
+
+            closeDatasetHandle(dset_handle);
+        }
     }
 
     void DomainCollector::readGlobalSizeFallback(int32_t id,
