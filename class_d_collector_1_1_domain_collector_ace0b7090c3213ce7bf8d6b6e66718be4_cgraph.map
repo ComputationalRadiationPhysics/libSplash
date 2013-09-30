@@ -1,3 +1,4 @@
 <map id="DCollector::DomainCollector::appendDomain" name="DCollector::DomainCollector::appendDomain">
-<area shape="rect" id="node3" href="$class_d_collector_1_1_dimensions.html#a433fe01b173c1e8537c83db50a4453de" title="DCollector::Dimensions::set" alt="" coords="239,13,415,41"/>
+<area shape="rect" id="node3" href="$class_d_collector_1_1_dimensions.html#a433fe01b173c1e8537c83db50a4453de" title="DCollector::Dimensions::set" alt="" coords="239,5,415,33"/>
+<area shape="rect" id="node5" href="$class_d_collector_1_1_collection_type.html#af8fcd32ddc85c7ed32fc2cda5ab3853b" title="DCollector::CollectionType\l::getDataType" alt="" coords="240,55,413,99"/>
 </map>

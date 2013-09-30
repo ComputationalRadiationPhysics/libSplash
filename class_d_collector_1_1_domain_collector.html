@@ -132,9 +132,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="class_d_collector_1_1_domain_collector.html">DomainCollector</a> extends <a class="el" href="class_d_collector_1_1_serial_data_collector.html">SerialDataCollector</a> with domain management features. A domain is a logical view to data in memory in or files, in contrast to the physical/memory view. <a class="el" href="class_d_collector_1_1_domain_collector.html">DomainCollector</a> allows to efficiently read subdomains (sub-partitions) from multi-process HDF5 files with entries annotated with domain information.</p>
-<p>The following concept is used: Each process (of the MPI topology) annotates its local data with local and global domain information when writing. When reading from these files, data from all files can be accessed transparently as if in one single file. This global view uses the global domain information, created from all local subdomains. </p>
-
-<p>Definition at line <a class="el" href="_domain_collector_8hpp_source.html#l00049">49</a> of file <a class="el" href="_domain_collector_8hpp_source.html">DomainCollector.hpp</a>.</p>
+<p>The following concept is used: Each process (of the MPI topology) annotates its local data with local and global domain information when writing. When reading from these files, data from all files can be accessed transparently as if in one single file. This global view uses the global domain information, created from all local subdomains.</p>
+<div class="image">
+<img src="domains_serial.jpg" alt="domains_serial.jpg"/>
+</div>
+ 
+<p>Definition at line <a class="el" href="_domain_collector_8hpp_source.html#l00051">51</a> of file <a class="el" href="_domain_collector_8hpp_source.html">DomainCollector.hpp</a>.</p>
 </div><h2>Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a17f5f7d18d75b3991dbabf43016e4418"></a>
 <div class="memitem">
@@ -157,7 +160,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00037">37</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00038">38</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -183,7 +186,7 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 <p>Destructor </p>
 
-<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00042">42</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00043">43</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -279,7 +282,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a3778340a556bfa886a5950869725d08a">DCollector::IDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00651">651</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00676">676</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -388,14 +391,14 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#aaef28a64fe690c73d66ff3591e12c3a5">DCollector::IDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00666">666</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00691">691</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_d_collector_1_1_domain_collector_ace0b7090c3213ce7bf8d6b6e66718be4_cgraph.png" border="0" usemap="#class_d_collector_1_1_domain_collector_ace0b7090c3213ce7bf8d6b6e66718be4_cgraph" alt=""/></div>
 <map name="class_d_collector_1_1_domain_collector_ace0b7090c3213ce7bf8d6b6e66718be4_cgraph" id="class_d_collector_1_1_domain_collector_ace0b7090c3213ce7bf8d6b6e66718be4_cgraph">
-<area shape="rect" id="node3" href="class_d_collector_1_1_dimensions.html#a433fe01b173c1e8537c83db50a4453de" title="DCollector::Dimensions::set" alt="" coords="239,13,415,41"/></map>
+<area shape="rect" id="node3" href="class_d_collector_1_1_dimensions.html#a433fe01b173c1e8537c83db50a4453de" title="DCollector::Dimensions::set" alt="" coords="239,5,415,33"/><area shape="rect" id="node5" href="class_d_collector_1_1_collection_type.html#af8fcd32ddc85c7ed32fc2cda5ab3853b" title="DCollector::CollectionType\l::getDataType" alt="" coords="240,55,413,99"/></map>
 </div>
 </p>
 
@@ -444,7 +447,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a1cedde239611d76895a7b130b2009434">DCollector::IDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00046">46</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00047">47</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -500,7 +503,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#ae20dcd9c4dc147dab8316a1610794362">DCollector::IDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00072">72</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00073">73</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -584,7 +587,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#ab603048ff15cbbd13c33af22e9f534b5">DCollector::IDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00407">407</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00421">421</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -628,7 +631,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#a9a0221555685693b67b0584df5e6cd84">DCollector::IDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00536">536</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00550">550</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -737,7 +740,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#ae73fbb88acaa8cec40f534cb5ab782e9">DCollector::IDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00583">583</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00597">597</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -860,7 +863,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#ad9855a49c5959ab31ef6c6ff5101501f">DCollector::IDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00602">602</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00616">616</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -990,7 +993,16 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="class_d_collector_1_1_i_domain_collector.html#aa07a66ac70676dafeb38f9fc8afa3ed6">DCollector::IDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00623">623</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_domain_collector_8cpp_source.html#l00637">637</a> of file <a class="el" href="_domain_collector_8cpp_source.html">DomainCollector.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_d_collector_1_1_domain_collector_aaa61bcef3acfdf766ac4c6a7cae24106_cgraph.png" border="0" usemap="#class_d_collector_1_1_domain_collector_aaa61bcef3acfdf766ac4c6a7cae24106_cgraph" alt=""/></div>
+<map name="class_d_collector_1_1_domain_collector_aaa61bcef3acfdf766ac4c6a7cae24106_cgraph" id="class_d_collector_1_1_domain_collector_aaa61bcef3acfdf766ac4c6a7cae24106_cgraph">
+<area shape="rect" id="node3" href="class_d_collector_1_1_collection_type.html#af8fcd32ddc85c7ed32fc2cda5ab3853b" title="DCollector::CollectionType\l::getDataType" alt="" coords="237,5,411,49"/></map>
+</div>
+</p>
 
 </div>
 </div>
@@ -1001,7 +1013,7 @@ Here is the call graph for this function:</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Sep 27 2013 10:40:33 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Sep 30 2013 10:30:43 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

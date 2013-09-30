@@ -40,7 +40,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_2df5cb589f55848dc7276a9229679695.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_2cb13436273091bd0bcac22b3ec45c27.html">src</a></li><li class="navelem"><a class="el" href="dir_f2c41c9b5e6ee568db0fa97dfdb8a6cf.html">include</a></li><li class="navelem"><a class="el" href="dir_51765dedf0368081e1a04fe83228005b.html">core</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_86b17f0c9dcb15b20c899aa7caa18b57.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_32f5155d1fb282209fb0bfd994206910.html">src</a></li><li class="navelem"><a class="el" href="dir_0a10e140e702edc8a83bd806d34675cd.html">include</a></li><li class="navelem"><a class="el" href="dir_d07f2a69a0a9894535992b7066ee47e4.html">core</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -80,24 +80,19 @@
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            H5Pclose(dsetReadProperties);</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        }</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordtype">void</span> setWriteCollective()</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordtype">void</span> setWriteIndependent()</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            H5Pset_dxpl_mpio(dsetWriteProperties, H5FD_MPIO_COLLECTIVE);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            H5Pset_dxpl_mpio_collective_opt(dsetWriteProperties, H5FD_MPIO_INDIVIDUAL_IO);</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        }</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordtype">void</span> setWriteIndependent()</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        {</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            H5Pset_dxpl_mpio(dsetWriteProperties, H5FD_MPIO_INDEPENDENT);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        }</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    };</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">/* DCPARALLELDATASET_HPP */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    };</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">/* DCPARALLELDATASET_HPP */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Sep 27 2013 10:40:33 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Sep 30 2013 10:30:43 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>
