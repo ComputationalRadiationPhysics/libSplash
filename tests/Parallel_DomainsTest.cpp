@@ -31,6 +31,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(Parallel_DomainsTest);
 
 const char* hdf5_file_grid = "h5/testDomainsGridParallel";
 const char* hdf5_file_poly = "h5/testDomainsPolyParallel";
+const char* hdf5_file_append = "h5/testDomainsAppendParallel";
 
 #define MPI_CHECK(cmd) \
         { \
@@ -53,7 +54,7 @@ parallelDomainCollector(NULL)
     char** argv;
     int initialized;
     MPI_Initialized(&initialized);
-    if( !initialized )
+    if (!initialized)
         MPI_Init(&argc, &argv);
 
     MPI_Comm_size(MPI_COMM_WORLD, &totalMpiSize);
@@ -87,7 +88,7 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
 
     for (size_t i = 0; i < gridSize.getScalarSize(); ++i)
         data_write[i] = currentMpiRank + 1;
-    
+
     const Dimensions domain_size = gridSize;
     const Dimensions global_domain_offset(17, 32, 5);
     const Dimensions domain_offset = (mpiPos * gridSize) + global_domain_offset;
@@ -99,7 +100,7 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
     fattr.enableCompression = true;
     parallelDomainCollector->open(hdf5_file_grid, fattr);
 
-    
+
 
 #if defined TESTS_DEBUG
     std::cout << "writing..." << std::endl;
@@ -108,7 +109,7 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
 
     // initial part of the test: data is written to the file
     parallelDomainCollector->writeDomain(iteration, ctInt, 3, gridSize, "grid_data",
-            domain_offset, domain_size, 
+            domain_offset, domain_size,
             global_domain_offset, global_domain_size,
             IDomainCollector::GridType, data_write);
     parallelDomainCollector->close();
@@ -120,7 +121,7 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
 
     // test written data using all processes
     fattr.fileAccType = DataCollector::FAT_READ;
-    
+
 
     // now read again
     parallelDomainCollector->open(hdf5_file_grid, fattr);
@@ -137,7 +138,7 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
                 rand() % global_domain_size[2]);
 
         Dimensions partition_size = global_domain_size - offset;
-        
+
         offset = offset + global_domain_offset;
 
 #if defined TESTS_DEBUG
@@ -319,7 +320,7 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
 {
     Dimensions domain_size(20, 10, 5);
     Dimensions global_domain_size = domain_size * mpiSize;
-    
+
     const Dimensions global_domain_offset(2, 4, 8);
 
     size_t mpi_elements = numElements * (currentMpiRank + 1);
@@ -345,7 +346,7 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
 #endif
 
     parallelDomainCollector->writeDomain(iteration, ctFloat, 1, poly_size,
-            "poly_data", domain_offset, domain_size, 
+            "poly_data", domain_offset, domain_size,
             global_domain_offset, global_domain_size,
             IDomainCollector::PolyType, data_write);
 
@@ -380,7 +381,7 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
                 rand() % global_domain_size[2]);
 
         Dimensions partition_size = global_domain_size - offset;
-        
+
         offset = offset + global_domain_offset;
 
 #if defined TESTS_DEBUG
@@ -529,3 +530,66 @@ void Parallel_DomainsTest::testPolyDomains()
 
 }
 
+void Parallel_DomainsTest::testAppendDomains()
+{
+    const ColTypeInt ctInt;
+    const Dimensions mpi_size(totalMpiSize, 1, 1);
+    const Dimensions local_grid_size(10, 5, 3);
+    const Dimensions global_grid_size = mpi_size * local_grid_size;
+    Dimensions mpi_position;
+    indexToPos(myMpiRank, mpi_size, mpi_position);
+
+    ParallelDomainCollector *pdc =
+            new ParallelDomainCollector(MPI_COMM_WORLD, MPI_INFO_NULL, mpi_size, 1);
+    DomainCollector::FileCreationAttr fAttr;
+    fAttr.fileAccType = DataCollector::FAT_CREATE;
+
+    pdc->open(hdf5_file_append, fAttr);
+
+    pdc->reserveDomain(10, global_grid_size, 3, ctInt, "append/data",
+            Dimensions(0, 0, 0), global_grid_size, DomainCollector::GridType);
+    
+    MPI_CHECK(MPI_Barrier(MPI_COMM_WORLD));
+
+    if (mpi_position[0] % 2 == 0)
+    {
+        int buffer[local_grid_size.getScalarSize()];
+
+        for (int m = 0; m < 2; ++m)
+        {
+            for (size_t i = 0; i < local_grid_size.getScalarSize(); ++i)
+                buffer[i] = mpi_position[0] + m;
+
+            Dimensions write_offset = Dimensions(mpi_position[0] + m,
+                    mpi_position[1], mpi_position[2]) * local_grid_size;
+            
+            pdc->append(10, local_grid_size, 3, write_offset, "append/data", buffer);
+        }
+    }
+
+    pdc->close();
+
+    // test data
+    fAttr.fileAccType = DataCollector::FAT_READ;
+    pdc->open(hdf5_file_append, fAttr);
+            
+    DataContainer *container = pdc->readDomain(10, "append/data",
+            mpi_position * local_grid_size,
+            local_grid_size, NULL, false);
+    
+    CPPUNIT_ASSERT(container);
+    CPPUNIT_ASSERT(container->getNumSubdomains() == 1);
+    
+    int *data = (int*)(container->getIndex(0)->getData());
+    for (size_t i = 0; i < container->getIndex(0)->getSize().getScalarSize(); ++i)
+        CPPUNIT_ASSERT(data[i] == mpi_position[0]);
+    
+    delete container;
+    
+    pdc->close();
+    
+    delete pdc;
+    pdc = NULL;
+
+    MPI_CHECK(MPI_Barrier(MPI_COMM_WORLD));
+}
