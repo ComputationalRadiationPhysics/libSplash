@@ -28,6 +28,9 @@
 namespace DCollector
 {
 
+    /**
+     * \image html domains_parallel.jpg
+     */
     class ParallelDomainCollector : public IParallelDomainCollector, public ParallelDataCollector
     {
     private:

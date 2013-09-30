@@ -45,6 +45,8 @@ namespace DCollector
      * When reading from these files, data from all files can be accessed transparently
      * as if in one single file. This global view uses the global domain information,
      * created from all local subdomains.
+     *
+     * \image html domains_serial.jpg
      */
     class DomainCollector : public IDomainCollector, public SerialDataCollector
     {
