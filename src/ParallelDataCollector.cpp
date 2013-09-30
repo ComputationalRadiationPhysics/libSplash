@@ -38,7 +38,7 @@ using namespace DCollector;
 void ParallelDataCollector::setFileAccessParams(hid_t& fileAccProperties)
 {
     fileAccProperties = H5Pcreate(H5P_FILE_ACCESS);
-    H5Pset_fapl_mpio(fileAccProperties, options.mpiComm, options.mpiInfo);
+    H5Pset_fapl_mpiposix(fileAccProperties, options.mpiComm, 0); //options.mpiInfo);
 
     int metaCacheElements = 0;
     size_t rawCacheElements = 0;
@@ -201,10 +201,10 @@ void ParallelDataCollector::close()
 #if defined SDC_DEBUG_OUTPUT
     std::cerr << "closing parallel data collector..." << std::endl;
 #endif   
-
+    
     // close opened hdf5 file handles
     handles.close();
-
+    
     options.maxID = -1;
 
     fileStatus = FST_CLOSED;

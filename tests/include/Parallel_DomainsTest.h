@@ -36,6 +36,7 @@ class Parallel_DomainsTest : public CPPUNIT_NS::TestFixture
 
     CPPUNIT_TEST(testGridDomains);
     CPPUNIT_TEST(testPolyDomains);
+    CPPUNIT_TEST(testAppendDomains);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -47,6 +48,7 @@ public:
 private:
     void testGridDomains();
     void testPolyDomains();
+    void testAppendDomains();
     
     void subTestGridDomains(int32_t iteration,
             int currentMpiRank,
