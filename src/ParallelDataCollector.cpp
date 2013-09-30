@@ -38,7 +38,7 @@ using namespace DCollector;
 void ParallelDataCollector::setFileAccessParams(hid_t& fileAccProperties)
 {
     fileAccProperties = H5Pcreate(H5P_FILE_ACCESS);
-    H5Pset_fapl_mpiposix(fileAccProperties, options.mpiComm, 0); //options.mpiInfo);
+    H5Pset_fapl_mpio(fileAccProperties, options.mpiComm, options.mpiInfo);
 
     int metaCacheElements = 0;
     size_t rawCacheElements = 0;
@@ -598,7 +598,7 @@ void ParallelDataCollector::append(int32_t id,
     DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
 
     DCParallelGroup group;
-    group.openCreate(handles.get(id), group_path);
+    group.open(handles.get(id), group_path);
 
     // write data to the dataset
     DCParallelDataSet dataset(dset_name.c_str());

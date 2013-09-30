@@ -589,17 +589,6 @@ namespace DCollector
             if (H5Dwrite(dataset, this->datatype, dsp_src, dataspace, dsetWriteProperties, data) < 0)
                 throw DCException(getExceptionString("write: Failed to write dataset"));
 
-            if (ndims > 1)
-            {
-                // write (client) size of this dataset
-                DCAttribute::writeAttribute(SDC_ATTR_SIZE, dimType.getDataType(),
-                        dataset, getLogicalSize().getPointer());
-
-                // mark this dataset as not combined
-                DCAttribute::writeAttribute(SDC_ATTR_MPI_SIZE, dimType.getDataType(),
-                        dataset, Dimensions(1, 1, 1).getPointer());
-            }
-
             H5Sclose(dsp_src);
         }
     }
