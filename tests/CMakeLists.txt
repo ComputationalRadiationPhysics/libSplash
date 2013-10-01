@@ -68,6 +68,12 @@ ENDIF(WITH_MPI)
 
 OPTION(PARALLEL "enable tests for parallel libSplash" @HDF5_IS_PARALLEL@)
 IF(PARALLEL)
+    IF(NOT WITH_MPI)
+        # MPI is required package
+        FIND_PACKAGE(MPI REQUIRED)
+        INCLUDE_DIRECTORIES(${MPI_C_INCLUDE_PATH} ${MPI_CXX_INCLUDE_PATH})
+    ENDIF(NOT WITH_MPI)
+
     SET(TESTS ${TESTS} Parallel_Attributes Parallel_Domains Parallel_References Parallel_Remove Parallel_SimpleData)
 ELSE(PARALLEL)
     SET(TESTS ${TESTS})
