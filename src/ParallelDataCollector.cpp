@@ -23,6 +23,7 @@
 #include <set>
 #include <dirent.h>
 #include <stdlib.h>
+#include <cstring>
 
 #include "ParallelDataCollector.hpp"
 #include "core/DCParallelDataSet.hpp"
