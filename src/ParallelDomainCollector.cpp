@@ -23,6 +23,7 @@
 
 #include "ParallelDomainCollector.hpp"
 #include "core/DCParallelDataSet.hpp"
+#include "core/logging.hpp"
 
 using namespace DCollector;
 
@@ -109,10 +110,8 @@ throw (DCException)
                 "Data classes in files are inconsistent!", NULL));
     }
 
-#if (DC_DEBUG == 1)
-    std::cerr << "clientdom. = " << client_domain.toString() << std::endl;
-    std::cerr << "requestdom. = " << request_domain.toString() << std::endl;
-#endif
+    log_msg(3, "clientdom. = %s", client_domain.toString().c_str());
+    log_msg(3, "requestdom. = %s", request_domain.toString().c_str());
 
     // test on intersection and add new DomainData to the container if necessary
     if (!Domain::testIntersection(request_domain, client_domain))
@@ -122,9 +121,7 @@ throw (DCException)
     // so the whole chunk has to be read and is added to the DataContainer.
     if (*dataClass == PolyType)
     {
-#if (DC_DEBUG == 1)
-        std::cerr << "dataclass = Poly" << std::endl;
-#endif
+        log_msg(3, "dataclass = Poly");
         if (data_elements.getScalarSize() > 0)
         {
             std::stringstream group_id_name;
@@ -181,11 +178,6 @@ throw (DCException)
                         src_rank,
                         client_data->getData());
 
-#if (DC_DEBUG == 1)
-                std::cerr << elements_read.toString() << std::endl;
-                std::cerr << data_elements.toString() << std::endl;
-#endif
-
                 if (!(elements_read == data_elements))
                     throw DCException(getExceptionString("readDomainDataForRank",
                         "Sizes are not equal but should be (1).", NULL));
@@ -194,18 +186,14 @@ throw (DCException)
             dataContainer->add(client_data);
         } else
         {
-#if (DC_DEBUG == 1)
-            std::cerr << "skipping entry with 0 elements" << std::endl;
-#endif
+            log_msg(3, "skipping entry with 0 elements");
         }
     } else
         // For Grid data, only the subchunk is read into its target position
         // in the destination buffer.
         if (*dataClass == GridType)
     {
-#if (DC_DEBUG == 1)
-        std::cerr << "dataclass = Grid" << std::endl;
-#endif
+        log_msg(3, "dataclass = Grid");
 
         // When the first intersection is found, the whole destination 
         // buffer is allocated and added to the container.
@@ -283,19 +271,21 @@ throw (DCException)
             }
         }
 
-#if (DC_DEBUG == 1)
-        std::cerr << "client_domain.getSize() = " <<
-                client_domain.getSize().toString() << std::endl;
-        std::cerr << "data_elements = " <<
-                data_elements.toString() << std::endl;
-        std::cerr << "dst_offset = " << dst_offset.toString() << std::endl;
-        std::cerr << "src_size = " << src_size.toString() << std::endl;
-        std::cerr << "src_offset = " << src_offset.toString() << std::endl;
+        log_msg(3,
+                "client_domain.getSize() = %s\n"
+                "data_elements = %s\n"
+                "dst_offset = %s\n"
+                "src_size = %s\n"
+                "src_offset = %s",
+                client_domain.getSize().toString().c_str(),
+                data_elements.toString().c_str(),
+                dst_offset.toString().c_str(),
+                src_size.toString().c_str(),
+                src_offset.toString().c_str());
 
         assert(src_size[0] <= request_domain.getSize()[0]);
         assert(src_size[1] <= request_domain.getSize()[1]);
         assert(src_size[2] <= request_domain.getSize()[2]);
-#endif
 
         // read intersecting partition into destination buffer
         Dimensions elements_read(0, 0, 0);
@@ -312,9 +302,7 @@ throw (DCException)
                     dataContainer->getIndex(0)->getData());
         }
 
-#if (DC_DEBUG == 1)
-        std::cerr << "elements_read = " << elements_read.toString() << std::endl;
-#endif
+        log_msg(3, "elements_read = %s", elements_read.toString().c_str());
 
         if (!(elements_read == src_size))
             throw DCException(getExceptionString("readDomainDataForRank",
@@ -338,10 +326,8 @@ throw (DCException)
 
     DataContainer * data_container = new DataContainer();
 
-#if (DC_DEBUG == 1)
-    std::cerr << "requestOffset = " << requestOffset.toString() << std::endl;
-    std::cerr << "requestSize = " << requestSize.toString() << std::endl;
-#endif
+    log_msg(3, "requestOffset = %s", requestOffset.toString().c_str());
+    log_msg(3, "requestSize = %s", requestSize.toString().c_str());
 
     DomDataClass data_class = UndefinedType;
 
@@ -397,10 +383,6 @@ throw (DCException)
                 src_rank,
                 domainData->getData());
 
-#if (DC_DEBUG == 1)
-        std::cerr << elements_read.toString() << std::endl;
-#endif
-
         if (!(elements_read == loadingRef->dstBuffer))
             throw DCException(getExceptionString("readDomainLazy",
                 "Sizes are not equal but should be (1).", NULL));
@@ -431,7 +413,7 @@ throw (DCException)
 
     writeDomain(id, globalSize, globalOffset,
             type, ndims, srcData, Dimensions(1, 1, 1), srcData,
-            Dimensions(0, 0, 0), name, 
+            Dimensions(0, 0, 0), name,
             globalDomainOffset, globalDomainSize, dataClass, buf);
 }
 
@@ -607,7 +589,7 @@ void ParallelDomainCollector::appendDomain(int32_t id,
         const void *buf)
 throw (DCException)
 {
-    appendDomain(id, type, count, 0, 1, name, domainOffset, domainSize, 
+    appendDomain(id, type, count, 0, 1, name, domainOffset, domainSize,
             globalDomainOffset, globalDomainSize, buf);
 }
 

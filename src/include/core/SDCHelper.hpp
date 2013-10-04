@@ -27,6 +27,7 @@
 #include "basetypes/ColTypeDim.hpp"
 #include "sdc_defines.hpp"
 #include "core/DCAttribute.hpp"
+#include "core/logging.hpp"
 #include "DCException.hpp"
 
 namespace DCollector
@@ -57,10 +58,7 @@ namespace DCollector
         static void getReferenceData(const char* filename, int32_t* maxID, Dimensions *mpiSize)
         throw (DCException)
         {
-
-#if defined SDC_DEBUG_OUTPUT
-            std::cerr << "loading reference data from " << filename << std::endl;
-#endif
+            log_msg(1, "loading reference data from %s", filename);
 
             // open the file to get reference data from
             hid_t reference_file = H5Fopen(filename, H5F_ACC_RDONLY, H5P_FILE_ACCESS_DEFAULT);

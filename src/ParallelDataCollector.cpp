@@ -29,6 +29,7 @@
 #include "core/DCParallelDataSet.hpp"
 #include "core/DCAttribute.hpp"
 #include "core/DCParallelGroup.hpp"
+#include "core/logging.hpp"
 
 using namespace DCollector;
 
@@ -51,11 +52,7 @@ void ParallelDataCollector::setFileAccessParams(hid_t& fileAccProperties)
     rawCacheSize = 64 * 1024 * 1024;
     H5Pset_cache(fileAccProperties, metaCacheElements, rawCacheElements, rawCacheSize, policy);
 
-    //H5Pset_chunk_cache(0, H5D_CHUNK_CACHE_NSLOTS_DEFAULT, H5D_CHUNK_CACHE_NBYTES_DEFAULT, H5D_CHUNK_CACHE_W0_DEFAULT);
-
-#if defined SDC_DEBUG_OUTPUT
-    std::cerr << "Raw Data Cache = " << rawCacheSize / 1024 << " KiB" << std::endl;
-#endif
+    log_msg(3, "Raw Data Cache = %llu KiB", (long long unsigned)(rawCacheSize / 1024));
 }
 
 std::string ParallelDataCollector::getFullFilename(uint32_t id, std::string baseFilename)
@@ -133,6 +130,8 @@ ParallelDataCollector::ParallelDataCollector(MPI_Comm comm, MPI_Info info,
 handles(maxFileHandles, HandleMgr::FNS_ITERATIONS),
 fileStatus(FST_CLOSED)
 {
+    parseEnvVars();
+    
     MPI_Comm_rank(comm, &(options.mpiRank));
 
     options.enableCompression = false;
@@ -146,7 +145,7 @@ fileStatus(FST_CLOSED)
         throw DCException(getExceptionString("ParallelDataCollector",
             "failed to initialize/open HDF5 library"));
 
-#ifndef SDC_DEBUG_OUTPUT
+#ifndef SPLASH_VERBOSE_HDF5
     // surpress automatic output of HDF5 exception messages
     if (H5Eset_auto2(H5E_DEFAULT, NULL, NULL) < 0)
         throw DCException(getExceptionString("ParallelDataCollector",
@@ -170,9 +169,7 @@ ParallelDataCollector::~ParallelDataCollector()
 void ParallelDataCollector::open(const char* filename, FileCreationAttr &attr)
 throw (DCException)
 {
-#if defined SDC_DEBUG_OUTPUT
-    std::cerr << "opening parallel data collector..." << std::endl;
-#endif
+    log_msg(1, "opening parallel data collector");
 
     if (filename == NULL)
         throw DCException(getExceptionString("open", "filename must not be null"));
@@ -199,9 +196,7 @@ throw (DCException)
 
 void ParallelDataCollector::close()
 {
-#if defined SDC_DEBUG_OUTPUT
-    std::cerr << "closing parallel data collector..." << std::endl;
-#endif   
+    log_msg(1, "closing parallel data collector");
     
     // close opened hdf5 file handles
     handles.close();
@@ -288,7 +283,7 @@ throw (DCException)
         DCAttribute::readAttribute(name, group_custom.getHandle(), data);
     } catch (DCException e)
     {
-        std::cerr << e.what() << std::endl;
+        log_msg(0, "Exception: %s", e.what());
         throw DCException(getExceptionString("readGlobalAttribute", "failed to open attribute", name));
     }
 }
@@ -313,7 +308,7 @@ throw (DCException)
         DCAttribute::writeAttribute(name, type.getDataType(), group_custom.getHandle(), data);
     } catch (DCException e)
     {
-        std::cerr << e.what() << std::endl;
+        log_msg(0, "Exception: %s", e.what());
         throw DCException(getExceptionString("writeGlobalAttribute", "failed to write attribute", name));
     }
 }
@@ -618,9 +613,7 @@ void ParallelDataCollector::append(int32_t id,
 void ParallelDataCollector::remove(int32_t id)
 throw (DCException)
 {
-#if defined SDC_DEBUG_OUTPUT
-    std::cerr << "removing group " << id << std::endl;
-#endif
+    log_msg(1, "removing group %d", id);
 
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
         throw DCException(getExceptionString("remove", "this access is not permitted"));
@@ -637,9 +630,7 @@ throw (DCException)
 void ParallelDataCollector::remove(int32_t id, const char* name)
 throw (DCException)
 {
-#if defined SDC_DEBUG_OUTPUT
-    std::cerr << "removing dataset " << name << " from group " << id << std::endl;
-#endif
+    log_msg(1, "removing dataset %s from group %d", name, id);
 
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
         throw DCException(getExceptionString("remove", "this access is not permitted"));
@@ -789,9 +780,7 @@ throw (DCException)
     // filters are currently not supported by parallel HDF5
     //this->options.enableCompression = attr.enableCompression;
 
-#if defined SDC_DEBUG_OUTPUT
-    std::cerr << "compression is OFF" << std::endl;
-#endif
+    log_msg(1, "compression = 0");
 
     options.maxID = -1;
 
@@ -835,9 +824,7 @@ void ParallelDataCollector::readDataSet(H5Handle h5File,
         void* dst)
 throw (DCException)
 {
-#if defined SDC_DEBUG_OUTPUT
-    std::cerr << "# ParallelDataCollector::readInternal #" << std::endl;
-#endif
+    log_msg(2, "readInternal");
 
     if (h5File < 0 || name == NULL)
         throw DCException(getExceptionString("readInternal", "invalid parameters"));
@@ -871,9 +858,8 @@ void ParallelDataCollector::writeDataSet(H5Handle group, const Dimensions global
         const Dimensions srcData, const Dimensions srcOffset,
         const char* name, const void* data) throw (DCException)
 {
-#if defined SDC_DEBUG_OUTPUT
-    std::cerr << "# ParallelDataCollector::writeDataSet #" << std::endl;
-#endif
+    log_msg(2, "writeDataSet");
+
     DCParallelDataSet dataset(name);
     // always create dataset but write data only if all dimensions > 0
     dataset.create(datatype, group, globalSize, ndims, this->options.enableCompression);
@@ -939,10 +925,6 @@ throw (DCException)
 size_t ParallelDataCollector::getNDims(H5Handle h5File,
         int32_t id, const char* name)
 {
-#if defined SDC_DEBUG_OUTPUT
-    std::cerr << "# ParallelDataCollector::getNDims #" << std::endl;
-#endif
-
     if (h5File < 0 || name == NULL)
         throw DCException(getExceptionString("getNDims", "invalid parameters"));
 
@@ -971,6 +953,8 @@ void ParallelDataCollector::reserveInternal(int32_t id,
         const char* name)
 throw (DCException)
 {
+    log_msg(2, "reserveInternal");
+    
     // create group for this id/iteration
     std::string group_path, dset_name;
     DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
