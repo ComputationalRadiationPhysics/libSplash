@@ -30,6 +30,7 @@
 #include "core/DCDataSet.hpp"
 #include "core/DCAttribute.hpp"
 #include "core/DCHelper.hpp"
+#include "core/logging.hpp"
 #include "DCException.hpp"
 #include "basetypes/ColTypeDim.hpp"
 
@@ -164,10 +165,6 @@ namespace DCollector
 
             if (H5Pset_chunk(this->dsetProperties, ndims, chunk_dims) < 0)
                 throw DCException(getExceptionString("setChunking: Failed to set chunking"));
-
-#if defined SDC_DEBUG_OUTPUT
-            DCHelper::printhsizet("chunk_dims", chunk_dims, ndims);
-#endif
         }
     }
 
@@ -188,10 +185,8 @@ namespace DCollector
             hid_t group, const Dimensions size, uint32_t ndims, bool compression)
     throw (DCException)
     {
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "# DCDataSet::create #" << std::endl;
-        std::cerr << std::endl << "creating: " << name << " with size " << size.toString() << std::endl;
-#endif
+        log_msg(2, "DCDataSet::create (%s, size %s)", name.c_str(), size.toString().c_str());
+
         if (opened)
             throw DCException(getExceptionString("create: dataset is already open"));
 
@@ -429,10 +424,8 @@ namespace DCollector
             void* dst)
     throw (DCException)
     {
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "# DCDataSet::read #" << std::endl;
-        std::cerr << " reading: " << name << std::endl;
-#endif
+        log_msg(2, "DCDataSet::read (%s)", name.c_str());
+
         if (!opened)
             throw DCException(getExceptionString("read: Dataset has not been opened/created"));
 
@@ -447,27 +440,26 @@ namespace DCollector
         // if the dataset is empty, return just its size as there is nothing to read
         if ((dst != NULL) && (getNDims() > 0))
         {
-#if defined SDC_DEBUG_OUTPUT
-            std::cerr << " ndims = " << ndims << std::endl;
-            std::cerr << " logical_size = " << getLogicalSize().toString() << std::endl;
-            std::cerr << " physical_size = " << getPhysicalSize().toString() << std::endl;
-            std::cerr << " [1] dstBuffer = " << dstBuffer.toString() << std::endl;
-            std::cerr << " [1] dstOffset = " << dstOffset.toString() << std::endl;
-            std::cerr << " [1] srcSize = " << srcSize.toString() << std::endl;
-            std::cerr << " [1] srcOffset = " << srcOffset.toString() << std::endl;
-#endif
+            log_msg(3,
+                    " ndims = %llu\n"
+                    " logical_size = %s\n"
+                    " physical_size = %s\n"
+                    " dstBuffer = %s\n"
+                    " dstOffset = %s\n"
+                    " srcSize = %s\n"
+                    " srcOffset = %s\n",
+                    (long long unsigned) ndims,
+                    getLogicalSize().toString().c_str(),
+                    getPhysicalSize().toString().c_str(),
+                    dstBuffer.toString().c_str(),
+                    dstOffset.toString().c_str(),
+                    srcSize.toString().c_str(),
+                    srcOffset.toString().c_str());
 
             dstBuffer.swapDims(ndims);
             dstOffset.swapDims(ndims);
             srcSize.swapDims(ndims);
             srcOffset.swapDims(ndims);
-
-#if defined SDC_DEBUG_OUTPUT
-            std::cerr << " [2] dstBuffer = " << dstBuffer.toString() << std::endl;
-            std::cerr << " [2] dstOffset = " << dstOffset.toString() << std::endl;
-            std::cerr << " [2] srcSize = " << srcSize.toString() << std::endl;
-            std::cerr << " [2] srcOffset = " << srcOffset.toString() << std::endl;
-#endif
 
             hid_t dst_dataspace = H5Screate_simple(ndims, dstBuffer.getPointer(), NULL);
             if (dst_dataspace < 0)
@@ -495,10 +487,8 @@ namespace DCollector
         sizeRead.set(srcSize);
         srcNDims = this->ndims;
 
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << " returns ndims = " << ndims << std::endl;
-        std::cerr << " returns sizeRead = " << sizeRead.toString() << std::endl;
-#endif
+        log_msg(3, " returns ndims = %llu", (long long unsigned) ndims);
+        log_msg(3, " returns sizeRead = %s", sizeRead.toString().c_str());
     }
 
     void DCDataSet::write(Dimensions dim, const void* data)
@@ -519,10 +509,7 @@ namespace DCollector
             Dimensions dstOffset, const void* data)
     throw (DCException)
     {
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "# DCDataSet::write #" << std::endl;
-        std::cerr << " writing: " << name << std::endl;
-#endif
+        log_msg(2, "DCDataSet::write (%s)", name.c_str());
 
         if (!opened)
             throw DCException(getExceptionString("write: Dataset has not been opened/created"));
@@ -530,31 +517,30 @@ namespace DCollector
         if (data == NULL)
             throw DCException(getExceptionString("write: Cannot write NULL data"));
 
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << " ndims = " << ndims << std::endl;
-        std::cerr << " logical_size = " << getLogicalSize().toString() << std::endl;
-        std::cerr << " physical_size = " << getPhysicalSize().toString() << std::endl;
+        log_msg(3,
+                " ndims = %llu\n"
+                " logical_size = %s\n"
+                " physical_size = %s\n"
+                " src_buffer = %s\n"
+                " src_stride = %s\n"
+                " src_data = %s\n"
+                " src_offset = %s\n"
+                " dst_offset = %s\n",
+                (long long unsigned) ndims,
+                getLogicalSize().toString().c_str(),
+                getPhysicalSize().toString().c_str(),
+                srcBuffer.toString().c_str(),
+                srcStride.toString().c_str(),
+                srcData.toString().c_str(),
+                srcOffset.toString().c_str(),
+                dstOffset.toString().c_str());
 
-        std::cerr << " [1] src_buffer = " << srcBuffer.toString() << std::endl;
-        std::cerr << " [1] src_stride = " << srcStride.toString() << std::endl;
-        std::cerr << " [1] src_data = " << srcData.toString() << std::endl;
-        std::cerr << " [1] src_offset = " << srcOffset.toString() << std::endl;
-        std::cerr << " [1] dst_offset = " << dstOffset.toString() << std::endl;
-#endif
         // swap dimensions if necessary
         srcBuffer.swapDims(ndims);
         srcStride.swapDims(ndims);
         srcData.swapDims(ndims);
         srcOffset.swapDims(ndims);
         dstOffset.swapDims(ndims);
-
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << " [2] src_buffer = " << srcBuffer.toString() << std::endl;
-        std::cerr << " [2] src_stride = " << srcStride.toString() << std::endl;
-        std::cerr << " [2] src_data = " << srcData.toString() << std::endl;
-        std::cerr << " [2] src_offset = " << srcOffset.toString() << std::endl;
-        std::cerr << " [2] dst_offset = " << dstOffset.toString() << std::endl;
-#endif
 
         // dataspace to read from
         hid_t dsp_src;
@@ -586,6 +572,7 @@ namespace DCollector
             }
 
             // write data to the dataset
+
             if (H5Dwrite(dataset, this->datatype, dsp_src, dataspace, dsetWriteProperties, data) < 0)
                 throw DCException(getExceptionString("write: Failed to write dataset"));
 
@@ -596,22 +583,18 @@ namespace DCollector
     void DCDataSet::append(size_t count, size_t offset, size_t stride, const void* data)
     throw (DCException)
     {
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "# DCDataSet::append #" << std::endl;
-#endif
+        log_msg(2, "DCDataSet::append");
 
         if (!opened)
             throw DCException(getExceptionString("append: Dataset has not been opened/created."));
 
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << " logical_size = " << getLogicalSize().toString() << std::endl;
-#endif
+        log_msg(3, "logical_size = %s", getLogicalSize().toString().c_str());
 
         Dimensions target_offset(getLogicalSize());
         // extend size (dataspace) of existing dataset with count elements
         getLogicalSize()[0] += count;
 
-        hsize_t *max_dims = new hsize_t[ndims];
+        hsize_t * max_dims = new hsize_t[ndims];
         for (size_t i = 0; i < ndims; ++i)
             max_dims[i] = H5F_UNLIMITED;
 
@@ -621,9 +604,7 @@ namespace DCollector
         delete[] max_dims;
         max_dims = NULL;
 
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << " logical_size = " << getLogicalSize().toString() << std::endl;
-#endif
+        log_msg(3, "logical_size = %s", getLogicalSize().toString().c_str());
 
         if (H5Dset_extent(dataset, getLogicalSize().getPointer()) < 0)
             throw DCException(getExceptionString("append: Failed to extend dataset"));

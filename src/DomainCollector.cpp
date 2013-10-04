@@ -29,8 +29,9 @@
 #include "basetypes/ColTypeInt.hpp"
 #include "DomainCollector.hpp"
 #include "core/DCDataSet.hpp"
-#include "include/core/DCGroup.hpp"
-#include "include/core/DCAttribute.hpp"
+#include "core/DCGroup.hpp"
+#include "core/DCAttribute.hpp"
+#include "core/logging.hpp"
 
 namespace DCollector
 {
@@ -124,9 +125,7 @@ namespace DCollector
             )
     throw (DCException)
     {
-#if (DC_DEBUG == 1)
-        std::cerr << "dataclass = Grid" << std::endl;
-#endif
+        log_msg(3, "dataclass = Grid");
 
         // When the first intersection is found, the whole destination 
         // buffer is allocated and added to the container.
@@ -211,17 +210,19 @@ namespace DCollector
             }
         }
 
-#if (DC_DEBUG == 1)
-        std::cerr << "clientDomain.getSize() = " <<
-                clientDomain.getSize().toString() << std::endl;
-        std::cerr << "dst_offset = " << dst_offset.toString() << std::endl;
-        std::cerr << "src_size = " << src_size.toString() << std::endl;
-        std::cerr << "src_offset = " << src_offset.toString() << std::endl;
+        log_msg(3,
+                "clientDomain.getSize() = %s\n"
+                "dst_offset = %s"
+                "src_size = %s"
+                "src_offset = %s",
+                clientDomain.getSize().toString().c_str(),
+                dst_offset.toString().c_str(),
+                src_size.toString().c_str(),
+                src_offset.toString().c_str());
 
         assert(src_size[0] <= request_size[0]);
         assert(src_size[1] <= request_size[1]);
         assert(src_size[2] <= request_size[2]);
-#endif
 
         // read intersecting partition into destination buffer
         Dimensions elements_read(0, 0, 0);
@@ -234,10 +235,6 @@ namespace DCollector
                 elements_read,
                 src_dims,
                 dataContainer->getIndex(0)->getData());
-
-#if (DC_DEBUG == 1)
-        std::cerr << "elements_read = " << elements_read.toString() << std::endl;
-#endif
 
         if (!(elements_read == src_size))
             throw DCException("DomainCollector::readGridInternal: Sizes are not equal but should be (2).");
@@ -254,9 +251,8 @@ namespace DCollector
             )
     throw (DCException)
     {
-#if (DC_DEBUG == 1)
-        std::cerr << "dataclass = Poly" << std::endl;
-#endif
+        log_msg(3, "dataclass = Poly");
+
         if (dataSize.getScalarSize() > 0)
         {
             std::stringstream group_id_name;
@@ -309,11 +305,6 @@ namespace DCollector
                         src_ndims,
                         client_data->getData());
 
-#if (DC_DEBUG == 1)
-                std::cerr << size_read.toString() << std::endl;
-                std::cerr << dataSize.toString() << std::endl;
-#endif
-
                 if (!(size_read == dataSize))
                     throw DCException("DomainCollector::readPolyInternal: Sizes are not equal but should be (1).");
             }
@@ -321,9 +312,7 @@ namespace DCollector
             dataContainer->add(client_data);
         } else
         {
-#if (DC_DEBUG == 1)
-            std::cerr << "skipping entry with 0 elements" << std::endl;
-#endif
+            log_msg(3, "skipping entry with 0 elements");
         }
     }
 
@@ -338,9 +327,7 @@ namespace DCollector
             bool lazyLoad)
     throw (DCException)
     {
-#if (DC_DEBUG == 1)
-        std::cerr << "\nloading from mpi_position " << mpiPosition.toString() << std::endl;
-#endif
+        log_msg(3, "loading from mpi_position %s", mpiPosition.toString().c_str());
 
         bool readResult = false;
         Domain client_domain;
@@ -380,11 +367,13 @@ namespace DCollector
             throw DCException("DomainCollector::readDomain: Data classes in files are inconsistent!");
         }
 
-#if (DC_DEBUG == 1)
-        std::cerr << "clientdom. = " << client_domain.toString() << std::endl;
-        std::cerr << "requestdom.= " << request_domain.toString() << std::endl;
-        std::cerr << "data size  = " << data_size.toString() << std::endl;
-#endif
+        log_msg(3,
+                "clientdom. = %s"
+                "requestdom.= %s"
+                "data size  = %s",
+                client_domain.toString().c_str(),
+                request_domain.toString().c_str(),
+                data_size.toString().c_str());
 
         // test on intersection and add new DomainData to the container if necessary
         if (Domain::testIntersection(request_domain, client_domain))
@@ -410,9 +399,7 @@ namespace DCollector
             }
         } else
         {
-#if (DC_DEBUG == 1)
-            std::cerr << "no loading from this MPI position required" << std::endl;
-#endif
+            log_msg(3, "no loading from this MPI position required");
         }
 
         return readResult;
@@ -431,10 +418,11 @@ namespace DCollector
 
         DataContainer *data_container = new DataContainer();
 
-#if (DC_DEBUG == 1)
-        std::cerr << "requestOffset = " << requestOffset.toString() << std::endl;
-        std::cerr << "requestSize = " << requestSize.toString() << std::endl;
-#endif
+        log_msg(3,
+                "requestOffset = %s"
+                "requestSize = %s",
+                requestOffset.toString().c_str(),
+                requestSize.toString().c_str());
 
         DomDataClass data_class = UndefinedType;
         Dimensions mpi_size;
@@ -581,15 +569,12 @@ namespace DCollector
                     src_dims,
                     domainData->getData());
 
-#if (DC_DEBUG == 1)
-            std::cerr << elements_read.toString() << std::endl;
-#endif
-
             if (!(elements_read == loadingRef->dstBuffer))
                 throw DCException("DomainCollector::readDomainLazy: Sizes are not equal but should be (1).");
 
         } else
         {
+
             throw DCException("DomainCollector::readDomainLazy: data class not supported");
         }
     }
@@ -656,6 +641,7 @@ namespace DCollector
         write(id, type, ndims, srcBuffer, srcStride, srcData, srcOffset, name, buf);
 
         {
+
             hid_t dset_handle = openDatasetHandle(id, name, NULL);
 
             DCAttribute::writeAttribute(DOMCOL_ATTR_CLASS, int_t.getDataType(),
@@ -684,6 +670,7 @@ namespace DCollector
             const void* buf)
     throw (DCException)
     {
+
         appendDomain(id, type, count, 0, 1, name, domainOffset, domainSize,
                 globalDomainOffset, globalDomainSize, buf);
     }
@@ -727,6 +714,7 @@ namespace DCollector
         append(id, type, count, offset, striding, name, buf);
 
         {
+
             hid_t dset_handle = openDatasetHandle(id, name, NULL);
 
             DCAttribute::writeAttribute(DOMCOL_ATTR_CLASS, int_t.getDataType(),
