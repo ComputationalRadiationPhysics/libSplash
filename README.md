@@ -55,6 +55,7 @@ Usage
 See [UserManual.pdf](doc/manual/UserManual.pdf?raw=true) for more information.
 You can find detailed information on all interfaces in our
 [Online Documentation](http://ComputationalRadiationPhysics.github.io/libSplash/).
+Enable verbose status messages by setting the `SPLASH_VERBOSE` environment variable.
 
 
 Active Team
