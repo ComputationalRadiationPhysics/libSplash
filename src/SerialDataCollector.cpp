@@ -34,6 +34,7 @@
 #include "core/DCGroup.hpp"
 #include "core/DCHelper.hpp"
 #include "core/SDCHelper.hpp"
+#include "core/logging.hpp"
 
 namespace DCollector
 {
@@ -59,9 +60,7 @@ namespace DCollector
         //H5Pset_chunk_cache(0, H5D_CHUNK_CACHE_NSLOTS_DEFAULT,
         //  H5D_CHUNK_CACHE_NBYTES_DEFAULT, H5D_CHUNK_CACHE_W0_DEFAULT);
 
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "Raw Data Cache = " << rawCacheSize / 1024 << " KiB" << std::endl;
-#endif
+        log_msg(3, "Raw Data Cache = %llu KiB", (long long unsigned)(rawCacheSize / 1024));
     }
 
     bool SerialDataCollector::fileExists(std::string filename)
@@ -105,12 +104,14 @@ namespace DCollector
 #ifdef COL_TYPE_CPP
         throw DCException("Check your defines !");
 #endif
+        
+        parseEnvVars();
 
         if (H5open() < 0)
             throw DCException(getExceptionString("SerialDataCollector",
                 "failed to initialize/open HDF5 library"));
 
-#ifndef SDC_DEBUG_OUTPUT
+#ifndef SPLASH_VERBOSE_HDF5
         // surpress automatic output of HDF5 exception messages
         if (H5Eset_auto2(H5E_DEFAULT, NULL, NULL) < 0)
             throw DCException(getExceptionString("SerialDataCollector",
@@ -128,9 +129,7 @@ namespace DCollector
     void SerialDataCollector::open(const char* filename, FileCreationAttr &attr)
     throw (DCException)
     {
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "opening serial data collector..." << std::endl;
-#endif
+        log_msg(1, "opening serial data collector");
 
         if (filename == NULL)
             throw DCException(getExceptionString("open", "filename must not be null"));
@@ -157,9 +156,7 @@ namespace DCollector
 
     void SerialDataCollector::close()
     {
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "closing serial data collector..." << std::endl;
-#endif
+        log_msg(1, "closing serial data collector");
 
         if (fileStatus == FST_CREATING || fileStatus == FST_WRITING)
         {
@@ -173,8 +170,8 @@ namespace DCollector
                         group.getHandle(), &maxID);
             } catch (DCException e)
             {
-                std::cerr << e.what() << std::endl;
-                std::cerr << "continuing..." << std::endl;
+                log_msg(0, "Exception: %s", e.what());
+                log_msg(1, "continuing...");
             }
         }
 
@@ -454,9 +451,7 @@ namespace DCollector
     void SerialDataCollector::remove(int32_t id)
     throw (DCException)
     {
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "removing group " << id << std::endl;
-#endif
+        log_msg(1, "removing group %d", id);
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
             throw DCException(getExceptionString("remove", "this access is not permitted"));
@@ -485,9 +480,7 @@ namespace DCollector
     void SerialDataCollector::remove(int32_t id, const char* name)
     throw (DCException)
     {
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "removing dataset " << name << " from group " << id << std::endl;
-#endif
+       log_msg(1, "removing dataset %s from group %d", name, id);
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
             throw DCException(getExceptionString("remove", "this access is not permitted"));
@@ -693,12 +686,7 @@ namespace DCollector
 
         this->enableCompression = attr.enableCompression;
 
-#if defined SDC_DEBUG_OUTPUT
-        if (attr.enableCompression)
-            std::cerr << "compression is ON" << std::endl;
-        else
-            std::cerr << "compression is OFF" << std::endl;
-#endif
+        log_msg(1, "compression = %d", attr.enableCompression);
 
         // open file
         handles.open(full_filename, fileAccProperties, H5F_ACC_TRUNC);
@@ -799,9 +787,8 @@ namespace DCollector
             const Dimensions srcData, const Dimensions srcOffset,
             const char* name, const void* data) throw (DCException)
     {
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "# SerialDataCollector::writeDataSet #" << std::endl;
-#endif
+        log_msg(2, "writeDataSet");
+        
         DCDataSet dataset(name);
         // always create dataset but write data only if all dimensions > 0
         dataset.create(datatype, group, srcData, ndims, this->enableCompression);
@@ -814,9 +801,8 @@ namespace DCollector
             size_t count, size_t offset, size_t stride, const char* name, const void* data)
     throw (DCException)
     {
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "# SerialDataCollector::appendDataSet #" << std::endl;
-#endif
+        log_msg(2, "appendDataSet");
+        
         DCDataSet dataset(name);
 
         if (!dataset.open(group))
@@ -841,10 +827,6 @@ namespace DCollector
             int32_t id,
             const char* name)
     {
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "# SerialDataCollector::getNDims #" << std::endl;
-#endif
-
         if (h5File < 0 || name == NULL)
             throw DCException(getExceptionString("getNDims", "invalid parameters"));
 
@@ -884,9 +866,7 @@ namespace DCollector
             void* dst)
     throw (DCException)
     {
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "# SerialDataCollector::readInternal #" << std::endl;
-#endif
+        log_msg(2, "readInternal");
 
         std::string group_path, dset_name;
         DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
@@ -912,9 +892,7 @@ namespace DCollector
             Dimensions &sizeRead)
     throw (DCException)
     {
-#if defined SDC_DEBUG_OUTPUT
-        std::cerr << "# SerialDataCollector::readSizeInternal #" << std::endl;
-#endif
+        log_msg(2, "readSizeInternal");
 
         std::string group_path, dset_name;
         DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);

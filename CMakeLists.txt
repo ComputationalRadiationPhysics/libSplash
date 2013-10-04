@@ -53,17 +53,17 @@ INCLUDE_DIRECTORIES(SYSTEM ${HDF5_INCLUDE_DIR})
 #-------------------------------------------------------------------------------
 
 SET(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -Woverloaded-virtual")
+
 # options
-OPTION(DEBUG_VERBOSE "enable verbose debug output" OFF)
-OPTION(SPLASH_RELEASE "optimize, disable all debug asserts" ON)
+OPTION(DEBUG_VERBOSE "Enable verbose HDF5 debug output" OFF)
+IF(DEBUG_VERBOSE)
+    ADD_DEFINITIONS(-DSPLASH_VERBOSE_HDF5)
+ENDIF(DEBUG_VERBOSE)
+
+OPTION(SPLASH_RELEASE "Release version, disable all debug asserts" ON)
 IF(NOT SPLASH_RELEASE)
     SET(CMAKE_CXX_FLAGS_DEBUG "-g")
     SET(CMAKE_BUILD_TYPE Debug)
-
-    IF(DEBUG_VERBOSE)
-        ADD_DEFINITIONS(-DSDC_DEBUG_OUTPUT)
-        ADD_DEFINITIONS(-DDC_DEBUG=1)
-    ENDIF(DEBUG_VERBOSE)
 
     MESSAGE(STATUS "Building DEBUG version")
 ELSE(NOT SPLASH_RELEASE)
@@ -76,7 +76,7 @@ ENDIF(NOT SPLASH_RELEASE)
 SET(SPLASH_LIBS z ${HDF5_LIBRARIES})
 
 # serial or parallel version of libSplash
-SET(SPLASH_CLASSES DCAttribute DCDataSet DCGroup HandleMgr SerialDataCollector DomainCollector)
+SET(SPLASH_CLASSES logging DCAttribute DCDataSet DCGroup HandleMgr SerialDataCollector DomainCollector)
 IF(HDF5_IS_PARALLEL)
     #parallel version 
     MESSAGE(STATUS "Parallel HDF5 found. Building parallel version")
