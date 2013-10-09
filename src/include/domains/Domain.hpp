@@ -123,12 +123,12 @@ namespace DCollector
         }
 
         /**
-         * Returns the end of this domain which is the combination
-         * of its offset and size.
-         * 
-         * @return End of domain.
+         * Returns the last index of this domain which is the combination
+         * of its offset and size - 1
+         *
+         * @return Last index of domain.
          */
-        Dimensions getEnd() const
+        Dimensions getBack() const
         {
             return offset + size - Dimensions(1, 1, 1);
         }
@@ -154,7 +154,7 @@ namespace DCollector
             stream << "(offset: " << offset.toString() << ", size: " << size.toString() << ")";
             return stream.str();
         }
-        
+
         /**
          * Tests if two domains intersect.
          * 
@@ -166,8 +166,8 @@ namespace DCollector
         {
             Dimensions d1_offset = d1.getOffset();
             Dimensions d2_offset = d2.getOffset();
-            Dimensions d1_end = d1.getEnd();
-            Dimensions d2_end = d2.getEnd();
+            Dimensions d1_end = d1.getBack();
+            Dimensions d2_end = d2.getBack();
 
             return (d1_offset[0] <= d2_end[0] && d1_end[0] >= d2_offset[0] &&
                     d1_offset[1] <= d2_end[1] && d1_end[1] >= d2_offset[1] &&
