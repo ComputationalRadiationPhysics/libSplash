@@ -80,12 +80,12 @@ namespace DCollector
                 throw DCException("Data in entry in DataContainer must not be NULL.");
 
             const Dimensions &entryOffset = entry->getOffset();
-            const Dimensions entryEnd = entry->getEnd();
-            
+            const Dimensions entryBack = entry->getBack(); // last index INSIDE
+
             for (uint32_t i = 0; i < 3; ++i)
             {
                 offset[i] = std::min(entryOffset[i], offset[i]);
-                size[i] = std::max(entryEnd[i] - offset[i], size[i]);
+                size[i] = std::max(entryBack[i] + 1 - offset[i], size[i]);
             }
 
             subdomains.push_back(entry);
@@ -141,13 +141,13 @@ namespace DCollector
         
         /**
          * Returns the end of the partition represented by this container
-         * which is the combination of its offset and size.
+         * which is the combination of its offset and size - 1.
          * 
-         * @return End of total domain partition in this container.
+         * @return Last index of the total domain partition in this container.
          */
-        Dimensions getEnd() const
+        Dimensions getBack() const
         {
-            return offset + size;
+            return offset + size - Dimensions(1, 1, 1);
         }
 
         /**
