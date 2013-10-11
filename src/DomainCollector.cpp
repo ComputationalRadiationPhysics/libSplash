@@ -212,8 +212,8 @@ namespace DCollector
 
         log_msg(3,
                 "clientDomain.getSize() = %s\n"
-                "dst_offset = %s"
-                "src_size = %s"
+                "dst_offset = %s "
+                "src_size = %s "
                 "src_offset = %s",
                 clientDomain.getSize().toString().c_str(),
                 dst_offset.toString().c_str(),
@@ -352,7 +352,19 @@ namespace DCollector
 
         readSizeInternal(handles.get(mpiPosition), id, name, data_size);
 
-        if (tmp_data_class == GridType && data_size != client_domain.getSize())
+        log_msg(3,
+                "clientdom. = %s "
+                "requestdom.= %s "
+                "data size  = %s",
+                client_domain.toString().c_str(),
+                request_domain.toString().c_str(),
+                data_size.toString().c_str());
+
+        const bool emptyRequest = ( data_size.getScalarSize() == 1 &&
+                                    client_domain.getSize().getScalarSize() == 0 );
+
+        if (tmp_data_class == GridType && data_size != client_domain.getSize() &&
+            !emptyRequest )
         {
             std::cout << data_size.toString() << ", " << client_domain.getSize().toString() << std::endl;
             throw DCException("DomainCollector::readDomain: Size of data must match domain size for Grid data.");
@@ -366,14 +378,6 @@ namespace DCollector
         {
             throw DCException("DomainCollector::readDomain: Data classes in files are inconsistent!");
         }
-
-        log_msg(3,
-                "clientdom. = %s"
-                "requestdom.= %s"
-                "data size  = %s",
-                client_domain.toString().c_str(),
-                request_domain.toString().c_str(),
-                data_size.toString().c_str());
 
         // test on intersection and add new DomainData to the container if necessary
         if (Domain::testIntersection(request_domain, client_domain))
