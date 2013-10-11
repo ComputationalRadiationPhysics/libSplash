@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -18,7 +18,6 @@
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
  */
-
 
 
 #include <algorithm>
@@ -109,6 +108,10 @@ namespace DCollector
 
             closeDatasetHandle(dset_handle);
         }
+
+        // zero request sizes will not intersect with anything
+        if (requestSize == Dimensions(0,0,0))
+            return false;
 
         Domain request_domain(requestOffset, requestSize);
 
@@ -423,7 +426,7 @@ namespace DCollector
         DataContainer *data_container = new DataContainer();
 
         log_msg(3,
-                "requestOffset = %s"
+                "requestOffset = %s "
                 "requestSize = %s",
                 requestOffset.toString().c_str(),
                 requestSize.toString().c_str());
@@ -440,7 +443,76 @@ namespace DCollector
         Dimensions min_dims(0, 0, 0);
         Dimensions max_dims(mpi_size);
         max_dims = max_dims - Dimensions(1, 1, 1);
-        Dimensions current_mpi_pos(0, 0, 0);
+
+        // try to find the lowest corner (probably the file with the
+        // domain offset == globalOffset) of the full domain
+        // for periodically moving (e.g. moving window) simulations
+        // this happens to be _not_ at mpi_pos(0,0,0)
+        {
+            Dimensions delta(0,0,0);
+            Dimensions belowZero(min_dims);
+            Dimensions aboveZero(max_dims);
+            Domain minDom;
+            Domain globalDomain = getGlobalDomain(id, name);
+            do
+            {
+                log_msg(4, "find zero: belowZero = %s, aboveZero = %s",
+                        belowZero.toString().c_str(),
+                        aboveZero.toString().c_str());
+
+                Domain maxDom;
+                readDomainInfoForRank( belowZero, id, name,
+                                       Dimensions(0,0,0), Dimensions(0,0,0), minDom);
+                readDomainInfoForRank( aboveZero, id, name,
+                                       Dimensions(0,0,0), Dimensions(0,0,0), maxDom);
+
+                log_msg(4, "find zero: minDom.getOffset() = %s, maxDom.getOffset() = %s",
+                        minDom.getOffset().toString().c_str(),
+                        maxDom.getOffset().toString().c_str());
+
+                for (size_t i = 0; i < 3; ++i)
+                {
+                    // zero still between min and max?
+                    if (minDom.getOffset()[i] > maxDom.getOffset()[i])
+                    {
+                        delta[i] = ceil(((double) aboveZero[i] - (double) belowZero[i]) / 2.0);
+                        belowZero[i] += delta[i];
+                    }
+                    // found zero point for this i
+                    else if (minDom.getOffset()[i] == globalDomain.getOffset()[i])
+                        delta[i] = 0;
+                    // jumped over the zero position during last +-=delta[i]
+                    else
+                    {
+                        belowZero[i] -= delta[i];
+                        aboveZero[i] -= delta[i];
+                    }
+                }
+
+            } while (delta != Dimensions(0,0,0));
+
+            // search above or below zero point?
+            Domain lastDom; // the last file, but not necessarily the file with
+                            // the highest domain data
+            readDomainInfoForRank( mpi_size - Dimensions(1, 1, 1), id, name,
+                                   Dimensions(0,0,0), Dimensions(0,0,0), lastDom);
+            for (size_t i = 0; i < 3; ++i)
+            {
+                if (requestOffset[i] <= lastDom.getBack()[i])
+                {
+                    min_dims[i] = belowZero[i];
+                    max_dims[i] = mpi_size[i] - 1;
+                }
+                else
+                {
+                    min_dims[i] = 0;
+                    belowZero[i] > 1 ? max_dims[i] = belowZero[i] - 1
+                                     : max_dims[i] = 0;
+                }
+            }
+        }
+
+        Dimensions current_mpi_pos(min_dims);
         Dimensions point_dim(1, 1, 1);
 
         // try to find top-left corner of requested domain
@@ -450,6 +522,10 @@ namespace DCollector
         bool found_start = false;
         do
         {
+            log_msg(4, "find top-left: min_dims = %s, max_dims = %s",
+                    min_dims.toString().c_str(),
+                    max_dims.toString().c_str());
+
             Domain file_domain;
             last_mpi_pos = current_mpi_pos;
 
@@ -478,24 +554,40 @@ namespace DCollector
         } while (last_mpi_pos != current_mpi_pos);
 
         if (!found_start)
+        {
+            log_msg(2, "readDomain: no data found");
             return data_container;
+        }
 
         // found top-left corner of requested domain
         // In every file, domain attributes are read and evaluated.
         // If the file domain and the requested domain intersect,
         // the file domain is added to the DataContainer.
 
-        // set new min_dims to top-left corner 
-        max_dims = (mpi_size - Dimensions(1, 1, 1));
+        // set new min_dims to top-left corner
+        for (size_t i = 0; i < 3; ++i )
+            max_dims[i] = (current_mpi_pos[i] + mpi_size[i] - 1) % mpi_size[i];
         min_dims = current_mpi_pos;
 
+        log_msg(3, "readDomain: Looking for matching domain data in range "
+                "min_dims = %s "
+                "max_dims = %s",
+                min_dims.toString().c_str(),
+                max_dims.toString().c_str());
+
         bool found_last_entry = false;
-        for (size_t z = min_dims[2]; z <= max_dims[2]; z++)
+        size_t z, z_lin = min_dims[2];
+        do
         {
-            for (size_t y = min_dims[1]; y <= max_dims[1]; y++)
+            z = z_lin % mpi_size[2];
+            size_t y, y_lin = min_dims[1];
+            do
             {
-                for (size_t x = min_dims[0]; x <= max_dims[0]; x++)
+                y = y_lin % mpi_size[1];
+                size_t x, x_lin = min_dims[0];
+                do
                 {
+                    x = x_lin % mpi_size[0];
                     Dimensions mpi_position(x, y, z);
 
                     if (!readDomainDataForRank(data_container,
@@ -514,24 +606,30 @@ namespace DCollector
                         if (z == min_dims[2])
                         {
                             if (y == min_dims[1])
-                                max_dims[0] = x - 1;
+                                max_dims[0] = (x + mpi_size[0] - 1) % mpi_size[0];
                             else
-                                max_dims[1] = y - 1;
+                                max_dims[1] = (y + mpi_size[1] - 1) % mpi_size[1];
                         } else
                         {
                             found_last_entry = true;
                             break;
                         }
                     }
-                }
+
+                    x_lin++;
+                } while (x != max_dims[0]);
 
                 if (found_last_entry)
                     break;
-            }
+
+                y_lin++;
+            } while (y != max_dims[1]);
 
             if (found_last_entry)
                 break;
-        }
+
+            z_lin++;
+        } while (z != max_dims[2]);
 
         if (dataClass != NULL)
             *dataClass = data_class;
