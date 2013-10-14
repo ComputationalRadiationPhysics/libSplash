@@ -25,7 +25,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <cassert>
-#include <sys/stat.h> 
+#include <sys/stat.h>
 
 #include "SerialDataCollector.hpp"
 

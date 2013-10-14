@@ -64,37 +64,49 @@ namespace DCollector
         {
             return s[t];
         }
-        
+
         const hsize_t & operator[](const hsize_t t) const
         {
             return s[t];
         }
-        
+
         Dimensions operator+(Dimensions const& other) const
         {
             return Dimensions(s[0] + other[0], s[1] + other[1], s[2] + other[2]);
         }
-        
+
         Dimensions operator-(Dimensions const& other) const
         {
             return Dimensions(s[0] - other[0], s[1] - other[1], s[2] - other[2]);
         }
-        
+
         Dimensions operator*(Dimensions const& other) const
         {
             return Dimensions(s[0] * other[0], s[1] * other[1], s[2] * other[2]);
         }
-        
+
         Dimensions operator/(Dimensions const& other) const
         {
             return Dimensions(s[0] / other[0], s[1] / other[1], s[2] / other[2]);
         }
-        
+
+        Dimensions operator+=(Dimensions const& rhs)
+        {
+            *this = *this + rhs;
+            return *this;
+        }
+
+        Dimensions operator-=(Dimensions const& rhs)
+        {
+            *this = *this - rhs;
+            return *this;
+        }
+
         bool operator==(Dimensions const& other) const
         {
             return s[0] == other[0] && s[1] == other[1] && s[2] == other[2];
         }
-        
+
         bool operator!=(Dimensions const& other) const
         {
             return !(*this == other);
