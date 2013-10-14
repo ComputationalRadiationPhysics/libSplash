@@ -492,8 +492,10 @@ namespace DCollector
             } while (delta != Dimensions(0,0,0));
 
             // search above or below zero point?
-            Domain lastDom; // the last file, but not necessarily the file with
-                            // the highest domain data
+            //
+            // the file with the largest mpi position, but not necessarily
+            // the one with the largest local domain offset
+            Domain lastDom;
             readDomainInfoForRank( mpi_size - Dimensions(1, 1, 1), id, name,
                                    Dimensions(0,0,0), Dimensions(0,0,0), lastDom);
             for (size_t i = 0; i < 3; ++i)
@@ -576,6 +578,8 @@ namespace DCollector
                 max_dims.toString().c_str());
 
         bool found_last_entry = false;
+        // ..._lin indexes can range >= mpi_size since they are helper to
+        // calculate the next index (x,y,z) in the periodic modulo system
         size_t z, z_lin = min_dims[2];
         do
         {
