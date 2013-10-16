@@ -505,7 +505,7 @@ void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
         const Dimensions srcStride, const Dimensions srcData,
         const Dimensions srcOffset, const char* name, const void* buf)
 {
-    if (name == NULL || buf == NULL)
+    if (name == NULL)
         throw DCException(getExceptionString("write", "a parameter was NULL"));
 
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
@@ -863,7 +863,7 @@ void ParallelDataCollector::writeDataSet(H5Handle group, const Dimensions global
     DCParallelDataSet dataset(name);
     // always create dataset but write data only if all dimensions > 0
     dataset.create(datatype, group, globalSize, ndims, this->options.enableCompression);
-    if (srcData.getScalarSize() > 0)
+    if (data && (srcData.getScalarSize() > 0))
         dataset.write(srcBuffer, srcStride, srcOffset, srcData, globalOffset, data);
     dataset.close();
 }

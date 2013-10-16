@@ -382,7 +382,7 @@ namespace DCollector
             const Dimensions srcOffset, const char* name, const void* data)
     throw (DCException)
     {
-        if (name == NULL || data == NULL)
+        if (name == NULL)
             throw DCException(getExceptionString("write", "a parameter was NULL"));
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
@@ -790,9 +790,9 @@ namespace DCollector
         log_msg(2, "writeDataSet");
         
         DCDataSet dataset(name);
-        // always create dataset but write data only if all dimensions > 0
+        // always create dataset but write data only if all dimensions > 0 and data available
         dataset.create(datatype, group, srcData, ndims, this->enableCompression);
-        if (srcData.getScalarSize() > 0)
+        if (data && (srcData.getScalarSize() > 0))
             dataset.write(srcBuffer, srcStride, srcOffset, srcData, data);
         dataset.close();
     }

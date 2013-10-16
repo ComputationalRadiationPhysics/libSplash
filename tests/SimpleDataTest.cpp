@@ -240,3 +240,37 @@ void SimpleDataTest::testWriteRead()
             }
 
 }
+
+void SimpleDataTest::testNullWrite()
+{
+    DataCollector::FileCreationAttr fileCAttr;
+    DataCollector::initFileCreationAttr(fileCAttr);
+    dataCollector->open(HDF5_FILE, fileCAttr);
+
+    Dimensions size(100, 20, 17);
+
+    dataCollector->write(10, ctInt, 3, size, "deep/folders/null", NULL);
+
+    dataCollector->close();
+
+    // first part of the test: read data with borders to a cleared
+    // array (-1) and test results
+
+    // read data from file
+    fileCAttr.fileAccType = DataCollector::FAT_READ;
+    dataCollector->open(HDF5_FILE, fileCAttr);
+    
+    int *buffer = new int[size.getScalarSize()];
+    
+    Dimensions size_read(0, 0, 0);
+    dataCollector->read(10, "deep/folders/null", size_read, NULL);
+    
+    CPPUNIT_ASSERT(size_read == size);
+    
+    dataCollector->read(10, "deep/folders/null", size_read, buffer);
+    
+    dataCollector->close();
+    
+    delete[] buffer;
+}
+
