@@ -506,7 +506,7 @@ void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
         const Dimensions srcOffset, const char* name, const void* buf)
 {
     if (name == NULL)
-        throw DCException(getExceptionString("write", "a parameter was NULL"));
+        throw DCException(getExceptionString("write", "parameter name is NULL"));
 
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
         throw DCException(getExceptionString("write", "this access is not permitted"));
@@ -581,7 +581,7 @@ void ParallelDataCollector::append(int32_t id,
         const void *buf)
 {
     if (name == NULL)
-        throw DCException(getExceptionString("append", "a parameter was NULL"));
+        throw DCException(getExceptionString("append", "parameter name is NULL"));
 
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
         throw DCException(getExceptionString("append", "this access is not permitted"));
