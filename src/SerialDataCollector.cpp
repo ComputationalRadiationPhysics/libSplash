@@ -422,7 +422,7 @@ namespace DCollector
             size_t count, size_t offset, size_t stride, const char* name, const void* data)
     throw (DCException)
     {
-        if (name == NULL || data == NULL)
+        if (name == NULL)
             throw DCException(getExceptionString("append", "a parameter was NULL"));
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)

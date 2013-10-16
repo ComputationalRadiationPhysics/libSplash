@@ -580,7 +580,7 @@ void ParallelDataCollector::append(int32_t id,
         const char *name,
         const void *buf)
 {
-    if (name == NULL || buf == NULL)
+    if (name == NULL)
         throw DCException(getExceptionString("append", "a parameter was NULL"));
 
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
