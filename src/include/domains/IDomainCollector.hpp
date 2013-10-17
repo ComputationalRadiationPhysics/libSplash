@@ -34,7 +34,7 @@
 #define DOMCOL_ATTR_GLOBAL_OFFSET "_global_start"
 #define DOMCOL_ATTR_ELEMENTS "_elements"
 
-namespace DCollector
+namespace splash
 {
 
     /**

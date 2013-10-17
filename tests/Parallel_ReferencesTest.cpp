@@ -30,7 +30,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(Parallel_ReferencesTest);
 
 #define HDF5_FILE "h5/testReferencesParallel"
 
-using namespace DCollector;
+using namespace splash;
 
 Parallel_ReferencesTest::Parallel_ReferencesTest() :
 ctInt()

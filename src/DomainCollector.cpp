@@ -32,7 +32,7 @@
 #include "core/DCAttribute.hpp"
 #include "core/logging.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     DomainCollector::DomainCollector(uint32_t maxFileHandles) :

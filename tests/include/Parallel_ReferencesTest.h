@@ -28,7 +28,7 @@
 
 #include "splash.h"
 
-using namespace DCollector;
+using namespace splash;
 
 class Parallel_ReferencesTest : public CPPUNIT_NS::TestFixture
 {

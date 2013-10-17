@@ -34,7 +34,7 @@
 #include "core/HandleMgr.hpp"
 #include "sdc_defines.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     /**

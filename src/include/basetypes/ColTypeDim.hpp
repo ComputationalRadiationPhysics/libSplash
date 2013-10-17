@@ -27,7 +27,7 @@
 #include "CollectionType.hpp"
 #include "Dimensions.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     class ColTypeDim : public CollectionType

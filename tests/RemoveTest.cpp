@@ -30,7 +30,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(RemoveTest);
 
 #define HDF5_FILE "h5/testRemove"
 
-using namespace DCollector;
+using namespace splash;
 
 RemoveTest::RemoveTest() :
 ctInt()

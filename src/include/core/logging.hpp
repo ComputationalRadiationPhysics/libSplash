@@ -28,7 +28,7 @@
 # define EXTERN extern
 #endif
 
-namespace DCollector
+namespace splash
 {
     EXTERN void parseEnvVars(void);
 

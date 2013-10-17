@@ -25,7 +25,7 @@
 #include "core/DCDataSet.hpp"
 
 
-namespace DCollector
+namespace splash
 {
 
     /**
