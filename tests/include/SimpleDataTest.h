@@ -35,6 +35,7 @@ class SimpleDataTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST_SUITE(SimpleDataTest);
 
     CPPUNIT_TEST(testWriteRead);
+    CPPUNIT_TEST(testNullWrite);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -49,6 +50,11 @@ private:
      * read data on conformacy.
      */
     void testWriteRead();
+    
+    /**
+     * Writes NULL data and tests that datasets are created.
+     */
+    void testNullWrite();
 
     /**
      * sub function for testWriteRead to allow several data/border sizes to be tested.

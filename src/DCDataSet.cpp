@@ -514,9 +514,6 @@ namespace DCollector
         if (!opened)
             throw DCException(getExceptionString("write: Dataset has not been opened/created"));
 
-        if (data == NULL)
-            throw DCException(getExceptionString("write: Cannot write NULL data"));
-
         log_msg(3,
                 " ndims = %llu\n"
                 " logical_size = %s\n"
@@ -565,7 +562,7 @@ namespace DCollector
                     H5Sselect_valid(dataspace) <= 0)
                 throw DCException(getExceptionString("write: Invalid target hyperslap selection"));
 
-            if (srcData.getScalarSize() == 0)
+            if (!data || (srcData.getScalarSize() == 0))
             {
                 H5Sselect_none(dataspace);
                 data = NULL;
@@ -628,6 +625,11 @@ namespace DCollector
                 H5Sselect_valid(dsp_src) < 0)
             throw DCException(getExceptionString("append: Invalid source hyperslap selection"));
 
+        if (!data || (count == 0))
+        {
+            H5Sselect_none(dataspace);
+            data = NULL;
+        }
 
         if (H5Dwrite(dataset, this->datatype, dsp_src, dataspace, dsetWriteProperties, data) < 0)
             throw DCException(getExceptionString("append: Failed to append dataset"));

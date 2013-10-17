@@ -382,8 +382,8 @@ namespace DCollector
             const Dimensions srcOffset, const char* name, const void* data)
     throw (DCException)
     {
-        if (name == NULL || data == NULL)
-            throw DCException(getExceptionString("write", "a parameter was NULL"));
+        if (name == NULL)
+            throw DCException(getExceptionString("write", "parameter name is NULL"));
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
             throw DCException(getExceptionString("write", "this access is not permitted"));
@@ -422,8 +422,8 @@ namespace DCollector
             size_t count, size_t offset, size_t stride, const char* name, const void* data)
     throw (DCException)
     {
-        if (name == NULL || data == NULL)
-            throw DCException(getExceptionString("append", "a parameter was NULL"));
+        if (name == NULL)
+            throw DCException(getExceptionString("append", "parameter name is NULL"));
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
             throw DCException(getExceptionString("append", "this access is not permitted"));
@@ -486,7 +486,7 @@ namespace DCollector
             throw DCException(getExceptionString("remove", "this access is not permitted"));
 
         if (name == NULL)
-            throw DCException(getExceptionString("remove", "a parameter was NULL"));
+            throw DCException(getExceptionString("remove", "parameter name is NULL"));
 
         std::string group_path, dset_name;
         DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
@@ -790,9 +790,9 @@ namespace DCollector
         log_msg(2, "writeDataSet");
         
         DCDataSet dataset(name);
-        // always create dataset but write data only if all dimensions > 0
+        // always create dataset but write data only if all dimensions > 0 and data available
         dataset.create(datatype, group, srcData, ndims, this->enableCompression);
-        if (srcData.getScalarSize() > 0)
+        if (data && (srcData.getScalarSize() > 0))
             dataset.write(srcBuffer, srcStride, srcOffset, srcData, data);
         dataset.close();
     }
