@@ -505,8 +505,8 @@ void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
         const Dimensions srcStride, const Dimensions srcData,
         const Dimensions srcOffset, const char* name, const void* buf)
 {
-    if (name == NULL || buf == NULL)
-        throw DCException(getExceptionString("write", "a parameter was NULL"));
+    if (name == NULL)
+        throw DCException(getExceptionString("write", "parameter name is NULL"));
 
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
         throw DCException(getExceptionString("write", "this access is not permitted"));
@@ -580,8 +580,8 @@ void ParallelDataCollector::append(int32_t id,
         const char *name,
         const void *buf)
 {
-    if (name == NULL || buf == NULL)
-        throw DCException(getExceptionString("append", "a parameter was NULL"));
+    if (name == NULL)
+        throw DCException(getExceptionString("append", "parameter name is NULL"));
 
     if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
         throw DCException(getExceptionString("append", "this access is not permitted"));
@@ -863,7 +863,7 @@ void ParallelDataCollector::writeDataSet(H5Handle group, const Dimensions global
     DCParallelDataSet dataset(name);
     // always create dataset but write data only if all dimensions > 0
     dataset.create(datatype, group, globalSize, ndims, this->options.enableCompression);
-    if (srcData.getScalarSize() > 0)
+    if (data && (srcData.getScalarSize() > 0))
         dataset.write(srcBuffer, srcStride, srcOffset, srcData, globalOffset, data);
     dataset.close();
 }
