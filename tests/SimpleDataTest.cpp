@@ -250,6 +250,8 @@ void SimpleDataTest::testNullWrite()
     Dimensions size(100, 20, 17);
 
     dataCollector->write(10, ctInt, 3, size, "deep/folders/null", NULL);
+    
+    dataCollector->write(10, ctInt, 3, Dimensions(0, 0, 0), "deep/folders/null_2", NULL);
 
     dataCollector->close();
 
@@ -268,6 +270,11 @@ void SimpleDataTest::testNullWrite()
     CPPUNIT_ASSERT(size_read == size);
     
     dataCollector->read(10, "deep/folders/null", size_read, buffer);
+    
+    dataCollector->read(10, "deep/folders/null_2", size_read, NULL);
+    
+    // empty datasets have size 1 in HDF5
+    CPPUNIT_ASSERT(size_read == Dimensions(1, 1, 1));
     
     dataCollector->close();
     
