@@ -25,7 +25,7 @@
 
 #include "core/DCAttribute.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     DCAttribute::DCAttribute()

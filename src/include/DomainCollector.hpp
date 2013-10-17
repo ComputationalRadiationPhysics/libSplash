@@ -29,7 +29,7 @@
 #include "Dimensions.hpp"
 #include "DCException.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     /**

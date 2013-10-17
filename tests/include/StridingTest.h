@@ -30,7 +30,7 @@
 #include "splash.h"
 
 
-using namespace DCollector;
+using namespace splash;
 
 class StridingTest : public CPPUNIT_NS::TestFixture
 {

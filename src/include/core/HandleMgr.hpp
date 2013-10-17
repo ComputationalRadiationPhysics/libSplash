@@ -31,7 +31,7 @@
 #include "DCException.hpp"
 #include "Dimensions.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     /**

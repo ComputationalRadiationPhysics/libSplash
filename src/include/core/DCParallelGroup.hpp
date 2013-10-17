@@ -26,7 +26,7 @@
 
 #include "core/DCGroup.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     /**

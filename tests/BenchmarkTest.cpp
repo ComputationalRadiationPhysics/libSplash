@@ -29,7 +29,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BenchmarkTest);
 
-using namespace DCollector;
+using namespace splash;
 
 BenchmarkTest::BenchmarkTest()
 {

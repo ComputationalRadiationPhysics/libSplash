@@ -28,7 +28,7 @@
 
 #include "DCException.hpp"
 
-namespace DCollector
+namespace splash
 {
     /**
      * Class for static convenience attribute operations.

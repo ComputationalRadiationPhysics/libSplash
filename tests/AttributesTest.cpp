@@ -30,7 +30,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(AttributesTest);
 
-using namespace DCollector;
+using namespace splash;
 
 #define BUF_SIZE 32
 #define TEST_FILE "h5/attributes"

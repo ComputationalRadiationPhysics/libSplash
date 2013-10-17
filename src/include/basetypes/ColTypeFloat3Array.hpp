@@ -26,7 +26,7 @@
 
 #include "CollectionType.hpp"
 
-namespace DCollector
+namespace splash
 {
     class ColTypeFloat3Array : public CollectionType
     {

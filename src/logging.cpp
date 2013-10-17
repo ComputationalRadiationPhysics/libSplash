@@ -24,7 +24,7 @@
 #include <cstdarg>
 #include "core/logging.hpp"
 
-namespace DCollector
+namespace splash
 {
     static int verbosity_level = 0;
 
