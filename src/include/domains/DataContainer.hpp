@@ -30,7 +30,7 @@
 #include "Dimensions.hpp"
 #include "domains/DomainData.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     /**

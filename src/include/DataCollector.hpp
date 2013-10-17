@@ -51,7 +51,7 @@
 #include "CollectionType.hpp"
 #include "Dimensions.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     class DataCollector
@@ -429,7 +429,7 @@ namespace DCollector
                 void* buf) = 0;
     };
 
-} // namespace DCollector
+}
 
 #endif	/* _DATACOLLECTOR_H */
 

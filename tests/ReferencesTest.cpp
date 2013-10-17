@@ -30,7 +30,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(ReferencesTest);
 
 #define HDF5_FILE "h5/testReferences"
 
-using namespace DCollector;
+using namespace splash;
 
 ReferencesTest::ReferencesTest() :
 ctInt()

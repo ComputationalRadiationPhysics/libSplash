@@ -42,7 +42,7 @@ const char* hdf5_file_append = "h5/testDomainsAppendParallel";
                 } \
         }
 
-using namespace DCollector;
+using namespace splash;
 
 Parallel_DomainsTest::Parallel_DomainsTest() :
 ctInt(),

@@ -32,7 +32,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(SimpleDataTest);
 
 //#define TESTS_DEBUG
 
-using namespace DCollector;
+using namespace splash;
 
 SimpleDataTest::SimpleDataTest() :
 ctInt()

@@ -24,7 +24,7 @@
 
 #include "DataCollector.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     /**

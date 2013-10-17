@@ -34,7 +34,7 @@ const char* hdf5_file_grid = "h5/testDomainsGrid";
 const char* hdf5_file_poly = "h5/testDomainsPoly";
 const char* hdf5_file_append = "h5/testDomainsAppend";
 
-using namespace DCollector;
+using namespace splash;
 
 DomainsTest::DomainsTest() :
 ctInt()

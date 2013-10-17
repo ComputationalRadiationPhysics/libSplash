@@ -33,7 +33,7 @@
 #include "CollectionType.hpp"
 #include "basetypes/ColTypeDim.hpp"
 
-namespace DCollector
+namespace splash
 {
     /**
      * Possible data types.

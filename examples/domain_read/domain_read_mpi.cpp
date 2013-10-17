@@ -27,7 +27,7 @@
 #include <stdint.h>
 #include "splash.h"
 
-using namespace DCollector;
+using namespace splash;
 
 /**
  * This libSplash example demonstrates on how to use the DomainCollector class

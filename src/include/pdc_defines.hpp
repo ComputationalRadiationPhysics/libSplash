@@ -22,7 +22,7 @@
 #ifndef PDC_DEFINES_HPP
 #define	PDC_DEFINES_HPP
 
-namespace DCollector
+namespace splash
 {
 #define PDC_ATTR_APPEND "pdc_fillsize"
 }

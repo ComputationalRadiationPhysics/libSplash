@@ -28,7 +28,7 @@
 #include <iostream>
 #include <hdf5.h>
 
-namespace DCollector
+namespace splash
 {
 
     /**

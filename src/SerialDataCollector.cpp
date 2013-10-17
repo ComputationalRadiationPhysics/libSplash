@@ -36,7 +36,7 @@
 #include "core/SDCHelper.hpp"
 #include "core/logging.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     /*******************************************************************************

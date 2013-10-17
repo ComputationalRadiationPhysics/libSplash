@@ -24,7 +24,7 @@
 
 #include "IDomainCollector.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     class IParallelDomainCollector : public IDomainCollector

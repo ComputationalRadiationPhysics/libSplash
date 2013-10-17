@@ -30,7 +30,7 @@
 #include "core/logging.hpp"
 #include "DCException.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     /**

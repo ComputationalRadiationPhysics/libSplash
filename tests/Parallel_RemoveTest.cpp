@@ -32,7 +32,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(Parallel_RemoveTest);
 
 #define MPI_SIZE_X 2
 
-using namespace DCollector;
+using namespace splash;
 
 Parallel_RemoveTest::Parallel_RemoveTest() :
 ctInt()

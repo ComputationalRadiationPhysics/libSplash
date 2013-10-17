@@ -26,7 +26,7 @@
 
 #include <stdexcept>
 
-namespace DCollector
+namespace splash
 {
     /**
      * DataCollector Exception.
