@@ -19,17 +19,13 @@
  * If not, see <http://www.gnu.org/licenses/>. 
  */
 
-#ifndef SPLASH_H
-#define	SPLASH_H
+#ifndef VERSION_HPP
+#define	VERSION_HPP
 
-#define SPLASH_SUPPORTED_SERIAL 1
+// AA.BB.CC
+// Major.Minor (Release).Patch
 
-#include "version.hpp"
+#define SPLASH_VERSION 100000
 
-#include "SerialDataCollector.hpp"
-#include "DomainCollector.hpp"
-
-#include "basetypes/basetypes.hpp"
-
-#endif	/* SPLASH_H */
+#endif	/* VERSION_HPP */
 
