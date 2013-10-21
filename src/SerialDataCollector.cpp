@@ -60,7 +60,7 @@ namespace splash
         //H5Pset_chunk_cache(0, H5D_CHUNK_CACHE_NSLOTS_DEFAULT,
         //  H5D_CHUNK_CACHE_NBYTES_DEFAULT, H5D_CHUNK_CACHE_W0_DEFAULT);
 
-        log_msg(3, "Raw Data Cache = %llu KiB", (long long unsigned)(rawCacheSize / 1024));
+        log_msg(3, "Raw Data Cache = %llu KiB", (long long unsigned) (rawCacheSize / 1024));
     }
 
     bool SerialDataCollector::fileExists(std::string filename)
@@ -104,7 +104,7 @@ namespace splash
 #ifdef COL_TYPE_CPP
         throw DCException("Check your defines !");
 #endif
-        
+
         parseEnvVars();
 
         if (H5open() < 0)
@@ -260,14 +260,17 @@ namespace splash
     throw (DCException)
     {
         // mpiPosition is allowed to be NULL here
-        if (attrName == NULL || dataName == NULL || data == NULL)
+        if (attrName == NULL || data == NULL)
             throw DCException(getExceptionString("readAttribute", "a parameter was null"));
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_CREATING)
             throw DCException(getExceptionString("readAttribute", "this access is not permitted"));
 
         std::string group_path, dset_name;
-        DCDataSet::getFullDataPath(dataName, SDC_GROUP_DATA, id, group_path, dset_name);
+        std::string dataNameInternal = "";
+        if (dataName)
+            dataNameInternal.assign(dataName);
+        DCDataSet::getFullDataPath(dataNameInternal, SDC_GROUP_DATA, id, group_path, dset_name);
 
         Dimensions mpi_pos(0, 0, 0);
         if ((fileStatus == FST_MERGING) && (mpiPosition != NULL))
@@ -278,23 +281,31 @@ namespace splash
         DCGroup group;
         group.open(handles.get(mpi_pos), group_path);
 
-        hid_t dataset_id = -1;
-        if (H5Lexists(group.getHandle(), dset_name.c_str(), H5P_LINK_ACCESS_DEFAULT))
+        if (dataName)
         {
-            dataset_id = H5Dopen(group.getHandle(), dset_name.c_str(), H5P_DEFAULT);
-            try
+            // read attribute from the dataset
+            hid_t dataset_id = -1;
+            if (H5Lexists(group.getHandle(), dset_name.c_str(), H5P_LINK_ACCESS_DEFAULT))
             {
-                DCAttribute::readAttribute(attrName, dataset_id, data);
-            } catch (DCException)
-            {
+                dataset_id = H5Dopen(group.getHandle(), dset_name.c_str(), H5P_DEFAULT);
+                try
+                {
+                    DCAttribute::readAttribute(attrName, dataset_id, data);
+                } catch (DCException)
+                {
+                    H5Dclose(dataset_id);
+                    throw;
+                }
                 H5Dclose(dataset_id);
-                throw;
+            } else
+            {
+                throw DCException(getExceptionString("readAttribute",
+                        "dataset not found", dset_name.c_str()));
             }
-            H5Dclose(dataset_id);
         } else
         {
-            throw DCException(getExceptionString("readAttribute",
-                    "dataset not found", dset_name.c_str()));
+            // read attribute from the iteration group
+            DCAttribute::readAttribute(attrName, group.getHandle(), data);
         }
     }
 
@@ -305,35 +316,47 @@ namespace splash
             const void* data)
     throw (DCException)
     {
-        if (attrName == NULL || dataName == NULL || data == NULL)
+        if (attrName == NULL || data == NULL)
             throw DCException(getExceptionString("writeAttribute", "a parameter was null"));
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
             throw DCException(getExceptionString("writeAttribute", "this access is not permitted"));
 
         std::string group_path, dset_name;
-        DCDataSet::getFullDataPath(dataName, SDC_GROUP_DATA, id, group_path, dset_name);
+        std::string dataNameInternal = "";
+        if (dataName)
+            dataNameInternal.assign(dataName);
+        DCDataSet::getFullDataPath(dataNameInternal, SDC_GROUP_DATA, id, group_path, dset_name);
 
         DCGroup group;
-        group.open(handles.get(0), group_path);
-
-        hid_t dataset_id = -1;
-        if (H5Lexists(group.getHandle(), dset_name.c_str(), H5P_LINK_ACCESS_DEFAULT))
+        if (dataName)
         {
-            dataset_id = H5Dopen(group.getHandle(), dset_name.c_str(), H5P_DEFAULT);
-            try
+            // attach attribute to the dataset
+            group.open(handles.get(0), group_path);
+            
+            hid_t dataset_id = -1;
+            if (H5Lexists(group.getHandle(), dset_name.c_str(), H5P_LINK_ACCESS_DEFAULT))
             {
-                DCAttribute::writeAttribute(attrName, type.getDataType(), dataset_id, data);
-            } catch (DCException)
-            {
+                dataset_id = H5Dopen(group.getHandle(), dset_name.c_str(), H5P_DEFAULT);
+                try
+                {
+                    DCAttribute::writeAttribute(attrName, type.getDataType(), dataset_id, data);
+                } catch (DCException)
+                {
+                    H5Dclose(dataset_id);
+                    throw;
+                }
                 H5Dclose(dataset_id);
-                throw;
+            } else
+            {
+                throw DCException(getExceptionString("writeAttribute",
+                        "dataset not found", dset_name.c_str()));
             }
-            H5Dclose(dataset_id);
         } else
         {
-            throw DCException(getExceptionString("writeAttribute",
-                    "dataset not found", dset_name.c_str()));
+            // attach attribute to the iteration group
+            group.openCreate(handles.get(0), group_path);
+            DCAttribute::writeAttribute(attrName, type.getDataType(), group.getHandle(), data);
         }
     }
 
@@ -480,7 +503,7 @@ namespace splash
     void SerialDataCollector::remove(int32_t id, const char* name)
     throw (DCException)
     {
-       log_msg(1, "removing dataset %s from group %d", name, id);
+        log_msg(1, "removing dataset %s from group %d", name, id);
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
             throw DCException(getExceptionString("remove", "this access is not permitted"));
@@ -603,7 +626,7 @@ namespace splash
             throw e;
         }
     }
-    
+
     int32_t SerialDataCollector::getMaxID()
     {
         return maxID;
@@ -788,7 +811,7 @@ namespace splash
             const char* name, const void* data) throw (DCException)
     {
         log_msg(2, "writeDataSet");
-        
+
         DCDataSet dataset(name);
         // always create dataset but write data only if all dimensions > 0 and data available
         dataset.create(datatype, group, srcData, ndims, this->enableCompression);
@@ -802,7 +825,7 @@ namespace splash
     throw (DCException)
     {
         log_msg(2, "appendDataSet");
-        
+
         DCDataSet dataset(name);
 
         if (!dataset.open(group))
@@ -915,9 +938,9 @@ namespace splash
     }
 
     hid_t SerialDataCollector::openDatasetHandle(int32_t id,
-                const char *dsetName,
-                Dimensions *mpiPosition)
-                throw (DCException)
+            const char *dsetName,
+            Dimensions *mpiPosition)
+    throw (DCException)
     {
         std::string group_path, dset_name;
         DCDataSet::getFullDataPath(dsetName, SDC_GROUP_DATA, id, group_path, dset_name);
@@ -940,10 +963,10 @@ namespace splash
             throw DCException(getExceptionString("openDatasetInternal",
                     "dataset not found", dset_name.c_str()));
         }
-        
+
         return dataset_handle;
     }
-    
+
     void SerialDataCollector::closeDatasetHandle(hid_t handle)
     throw (DCException)
     {
