@@ -322,7 +322,7 @@ namespace splash
     throw (DCException)
     {
         // mpiPosition is ignored
-        if (attrName == NULL || dataName == NULL || data == NULL)
+        if (attrName == NULL || data == NULL)
             throw DCException(getExceptionString("readAttribute", "a parameter was null"));
 
         if (fileStatus == FST_CLOSED)
@@ -371,7 +371,7 @@ namespace splash
             const void* data)
     throw (DCException)
     {
-        if (attrName == NULL || dataName == NULL || data == NULL)
+        if (attrName == NULL || data == NULL)
             throw DCException(getExceptionString("writeAttribute", "a parameter was null"));
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
