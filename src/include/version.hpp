@@ -22,10 +22,8 @@
 #ifndef VERSION_HPP
 #define	VERSION_HPP
 
-// AA.BB.CC
-// Major.Minor (Release).Patch
-
-#define SPLASH_VERSION 100000
+#define SPLASH_VERSION_MAJOR 1
+#define SPLASH_VERSION_MINOR 0
 
 #endif	/* VERSION_HPP */
 
