@@ -262,6 +262,12 @@ namespace splash
         // mpiPosition is allowed to be NULL here
         if (attrName == NULL || data == NULL)
             throw DCException(getExceptionString("readAttribute", "a parameter was null"));
+        
+        if (dataName && strlen(dataName) == 0)
+            throw DCException(getExceptionString("readAttribute", "empty dataset name"));
+        
+        if (attrName && strlen(attrName) == 0)
+            throw DCException(getExceptionString("readAttribute", "empty attribute name"));
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_CREATING)
             throw DCException(getExceptionString("readAttribute", "this access is not permitted"));
@@ -318,6 +324,12 @@ namespace splash
     {
         if (attrName == NULL || data == NULL)
             throw DCException(getExceptionString("writeAttribute", "a parameter was null"));
+        
+        if (dataName && strlen(dataName) == 0)
+            throw DCException(getExceptionString("writeAttribute", "empty dataset name"));
+        
+        if (attrName && strlen(attrName) == 0)
+            throw DCException(getExceptionString("writeAttribute", "empty attribute name"));
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
             throw DCException(getExceptionString("writeAttribute", "this access is not permitted"));
