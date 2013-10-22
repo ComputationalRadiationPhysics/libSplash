@@ -322,35 +322,52 @@ namespace splash
     throw (DCException)
     {
         // mpiPosition is ignored
-        if (attrName == NULL || dataName == NULL || data == NULL)
+        if (attrName == NULL || data == NULL)
             throw DCException(getExceptionString("readAttribute", "a parameter was null"));
+        
+        if (dataName && strlen(dataName) == 0)
+            throw DCException(getExceptionString("readAttribute", "empty dataset name"));
+        
+        if (attrName && strlen(attrName) == 0)
+            throw DCException(getExceptionString("readAttribute", "empty attribute name"));
 
         if (fileStatus == FST_CLOSED)
             throw DCException(getExceptionString("readAttribute", "this access is not permitted"));
 
         std::string group_path, dset_name;
-        DCDataSet::getFullDataPath(dataName, SDC_GROUP_DATA, id, group_path, dset_name);
+        std::string dataNameInternal = "";
+        if (dataName)
+            dataNameInternal.assign(dataName);
+        DCDataSet::getFullDataPath(dataNameInternal, SDC_GROUP_DATA, id, group_path, dset_name);
 
         DCParallelGroup group;
         group.open(handles.get(id), group_path);
 
-        hid_t dataset_id = -1;
-        dataset_id = H5Dopen(group.getHandle(), dset_name.c_str(), H5P_DEFAULT);
-        if (dataset_id < 0)
+        if (dataName)
         {
-            throw DCException(getExceptionString("readAttribute",
-                    "dataset not found", dset_name.c_str()));
-        }
+            // read attribute from the dataset
+            hid_t dataset_id = -1;
+            dataset_id = H5Dopen(group.getHandle(), dset_name.c_str(), H5P_DEFAULT);
+            if (dataset_id < 0)
+            {
+                throw DCException(getExceptionString("readAttribute",
+                        "dataset not found", dset_name.c_str()));
+            }
 
-        try
-        {
-            DCAttribute::readAttribute(attrName, dataset_id, data);
-        } catch (DCException)
-        {
+            try
+            {
+                DCAttribute::readAttribute(attrName, dataset_id, data);
+            } catch (DCException)
+            {
+                H5Dclose(dataset_id);
+                throw;
+            }
             H5Dclose(dataset_id);
-            throw;
+        } else
+        {
+            // read attribute from the iteration
+            DCAttribute::readAttribute(attrName, group.getHandle(), data);
         }
-        H5Dclose(dataset_id);
     }
 
     void ParallelDataCollector::writeAttribute(int32_t id,
@@ -360,34 +377,51 @@ namespace splash
             const void* data)
     throw (DCException)
     {
-        if (attrName == NULL || dataName == NULL || data == NULL)
+        if (attrName == NULL || data == NULL)
             throw DCException(getExceptionString("writeAttribute", "a parameter was null"));
+        
+        if (dataName && strlen(dataName) == 0)
+            throw DCException(getExceptionString("writeAttribute", "empty dataset name"));
+        
+        if (attrName && strlen(attrName) == 0)
+            throw DCException(getExceptionString("writeAttribute", "empty attribute name"));
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
             throw DCException(getExceptionString("writeAttribute", "this access is not permitted"));
 
         std::string group_path, dset_name;
-        DCDataSet::getFullDataPath(dataName, SDC_GROUP_DATA, id, group_path, dset_name);
+        std::string dataNameInternal = "";
+        if (dataName)
+            dataNameInternal.assign(dataName);
+        DCDataSet::getFullDataPath(dataNameInternal, SDC_GROUP_DATA, id, group_path, dset_name);
 
         DCParallelGroup group;
-        group.open(handles.get(id), group_path);
+        if (dataName)
+        {
+            // attach attribute to the dataset
+            group.open(handles.get(id), group_path);
+            hid_t dataset_id = H5Dopen(group.getHandle(), dset_name.c_str(), H5P_DEFAULT);
+            if (dataset_id < 0)
+            {
+                throw DCException(getExceptionString("writeAttribute",
+                        "dataset not found", dset_name.c_str()));
+            }
 
-        hid_t dataset_id = H5Dopen(group.getHandle(), dset_name.c_str(), H5P_DEFAULT);
-        if (dataset_id < 0)
-        {
-            throw DCException(getExceptionString("writeAttribute",
-                    "dataset not found", dset_name.c_str()));
-        }
-
-        try
-        {
-            DCAttribute::writeAttribute(attrName, type.getDataType(), dataset_id, data);
-        } catch (DCException)
-        {
+            try
+            {
+                DCAttribute::writeAttribute(attrName, type.getDataType(), dataset_id, data);
+            } catch (DCException)
+            {
+                H5Dclose(dataset_id);
+                throw;
+            }
             H5Dclose(dataset_id);
-            throw;
+        } else
+        {
+            // attach attribute to the iteration
+            group.openCreate(handles.get(id), group_path);
+            DCAttribute::writeAttribute(attrName, type.getDataType(), group.getHandle(), data);
         }
-        H5Dclose(dataset_id);
     }
 
     void ParallelDataCollector::read(int32_t id,

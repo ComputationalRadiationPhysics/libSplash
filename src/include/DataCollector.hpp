@@ -367,6 +367,7 @@ namespace splash
          * 
          * @param id ID for iteration.
          * @param dataName Name of the dataset in group \p id to read attribute from.
+         * If dataName is NULL, the attribute is read from the iteration group.
          * @param attrName Name of the attribute.
          * @param buf Buffer to read attribute to.
          * @param mpiPosition Pointer to Dimensions class.
@@ -385,6 +386,7 @@ namespace splash
          * @param id ID for iteration.
          * @param type Type information for data.
          * @param dataName Name of the dataset in group \p id to write attribute to.
+         * If dataName is NULL, the attribute is written for the iteration group.
          * @param attrName Name of the attribute.
          * @param buf Buffer to be written as attribute.
          */
