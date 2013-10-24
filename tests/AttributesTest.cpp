@@ -76,6 +76,13 @@ void AttributesTest::testDataAttributes()
     
     dataCollector->writeAttribute(10, ctInt, NULL, "timestep", &sum2);
     
+    CPPUNIT_ASSERT_THROW(dataCollector->writeAttribute(10, ctInt, NULL, NULL, &sum2),
+            DCException);
+    CPPUNIT_ASSERT_THROW(dataCollector->writeAttribute(10, ctInt, NULL, "", &sum2),
+            DCException);
+    CPPUNIT_ASSERT_THROW(dataCollector->writeAttribute(10, ctInt, "", "", &sum2),
+            DCException);
+    
     dataCollector->write(0, ctInt2, 1, Dimensions(BUF_SIZE, 1, 1), 
             Dimensions(BUF_SIZE, 1, 1), Dimensions(0, 0, 0), "datasets/my_dataset", dummy_data);
     
