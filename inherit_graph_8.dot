@@ -1,0 +1,22 @@
+digraph "Graphical Class Hierarchy"
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="splash::DataCollector",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsplash_1_1_data_collector.html"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="splash::IParallelDataCollector",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsplash_1_1_i_parallel_data_collector.html"];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node3 [label="splash::ParallelDataCollector",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsplash_1_1_parallel_data_collector.html"];
+  Node3 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node4 [label="splash::ParallelDomainCollector",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsplash_1_1_parallel_domain_collector.html"];
+  Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node5 [label="splash::SerialDataCollector",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsplash_1_1_serial_data_collector.html"];
+  Node5 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node6 [label="splash::DomainCollector",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsplash_1_1_domain_collector.html"];
+  Node7 [label="splash::IDomainCollector",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsplash_1_1_i_domain_collector.html"];
+  Node7 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node7 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node8 [label="splash::IParallelDomainCollector",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classsplash_1_1_i_parallel_domain_collector.html"];
+  Node8 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+}

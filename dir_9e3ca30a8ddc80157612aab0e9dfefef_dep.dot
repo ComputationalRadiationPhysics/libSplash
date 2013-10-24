@@ -1,0 +1,10 @@
+digraph "libSplash" {
+  compound=true
+  node [ fontsize="10", fontname="FreeSans"];
+  edge [ labelfontsize="10", labelfontname="FreeSans"];
+  subgraph clusterdir_9e3ca30a8ddc80157612aab0e9dfefef {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_9e3ca30a8ddc80157612aab0e9dfefef.html"];
+    dir_9e3ca30a8ddc80157612aab0e9dfefef [shape=plaintext label="libSplash"];
+    dir_3b2ee41e3766330d11f51bd163da0310 [shape=box label="src" color="red" fillcolor="white" style="filled" URL="dir_3b2ee41e3766330d11f51bd163da0310.html"];
+  }
+}

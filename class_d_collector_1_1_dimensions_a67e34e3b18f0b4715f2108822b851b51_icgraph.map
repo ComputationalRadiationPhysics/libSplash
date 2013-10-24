@@ -1,5 +1,0 @@
-<map id="DCollector::Dimensions::getPointer" name="DCollector::Dimensions::getPointer">
-<area shape="rect" id="node3" href="$class_d_collector_1_1_domain_collector.html#ae061fa6224e2e198131c562b1cc1f4e8" title="DCollector::DomainCollector\l::getGlobalDomain" alt="" coords="209,5,391,49"/>
-<area shape="rect" id="node5" href="$class_d_collector_1_1_domain_collector.html#afaf7171593ee831a22920b13e9e0c62d" title="DCollector::DomainCollector\l::getLocalDomain" alt="" coords="209,71,391,115"/>
-<area shape="rect" id="node7" href="$class_d_collector_1_1_parallel_domain_collector.html#ac88e818aebb80d4297e26dbba8c9c9ef" title="DCollector::ParallelDomain\lCollector::getLocalDomain" alt="" coords="213,138,387,182"/>
-</map>

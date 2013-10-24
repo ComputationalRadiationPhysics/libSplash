@@ -1,0 +1,15 @@
+digraph "libSplash/src/include" {
+  compound=true
+  node [ fontsize="10", fontname="FreeSans"];
+  edge [ labelfontsize="10", labelfontname="FreeSans"];
+  subgraph clusterdir_3b2ee41e3766330d11f51bd163da0310 {
+    graph [ bgcolor="#ddddee", pencolor="black", label="src" fontname="FreeSans", fontsize="10", URL="dir_3b2ee41e3766330d11f51bd163da0310.html"]
+  subgraph clusterdir_999b28456fad692c596eb58d2c5fcb4e {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_999b28456fad692c596eb58d2c5fcb4e.html"];
+    dir_999b28456fad692c596eb58d2c5fcb4e [shape=plaintext label="include"];
+    dir_89ccd6182940591553bbc15817761448 [shape=box label="basetypes" color="black" fillcolor="white" style="filled" URL="dir_89ccd6182940591553bbc15817761448.html"];
+    dir_edf0a76c1462aa7f3b5bfa15b09535a1 [shape=box label="core" color="black" fillcolor="white" style="filled" URL="dir_edf0a76c1462aa7f3b5bfa15b09535a1.html"];
+    dir_78f73357dacee1cac33ed44aa4c58dc8 [shape=box label="domains" color="black" fillcolor="white" style="filled" URL="dir_78f73357dacee1cac33ed44aa4c58dc8.html"];
+  }
+  }
+}
