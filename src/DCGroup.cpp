@@ -31,7 +31,7 @@
 #define H5_TRUE 1
 #define H5_FALSE 0
 
-namespace DCollector
+namespace splash
 {
 
     std::string DCGroup::getExceptionString(std::string msg, std::string name)

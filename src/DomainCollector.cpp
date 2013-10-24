@@ -32,7 +32,7 @@
 #include "core/DCAttribute.hpp"
 #include "core/logging.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     DomainCollector::DomainCollector(uint32_t maxFileHandles) :
@@ -610,9 +610,15 @@ namespace DCollector
                         if (z == min_dims[2])
                         {
                             if (y == min_dims[1])
+                            {
                                 max_dims[0] = (x + mpi_size[0] - 1) % mpi_size[0];
+                                x = max_dims[0];
+                            }
                             else
+                            {
                                 max_dims[1] = (y + mpi_size[1] - 1) % mpi_size[1];
+                                y = max_dims[1];
+                            }
                         } else
                         {
                             found_last_entry = true;

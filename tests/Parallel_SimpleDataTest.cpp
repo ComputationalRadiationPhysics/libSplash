@@ -40,7 +40,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(Parallel_SimpleDataTest);
                 } \
         }
 
-using namespace DCollector;
+using namespace splash;
 
 Parallel_SimpleDataTest::Parallel_SimpleDataTest() :
 ctInt(),

@@ -25,7 +25,7 @@
 #include "domains/IParallelDomainCollector.hpp"
 #include "ParallelDataCollector.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     /**

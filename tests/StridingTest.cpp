@@ -33,7 +33,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(StridingTest);
 
 //#define TESTS_DEBUG
 
-using namespace DCollector;
+using namespace splash;
 
 StridingTest::StridingTest() :
 ctInt()

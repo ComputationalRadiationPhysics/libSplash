@@ -24,7 +24,7 @@
 #ifndef SDC_DEFINES_H
 #define	SDC_DEFINES_H
 
-namespace DCollector
+namespace splash
 {
 #define SDC_GROUP_HEADER "/header"
 #define SDC_GROUP_DATA "/data"

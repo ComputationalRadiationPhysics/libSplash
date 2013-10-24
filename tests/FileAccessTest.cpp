@@ -27,7 +27,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(FileAccessTest);
 
 #define HDF5_FILE "h5/testWriteAfterCreate"
 
-using namespace DCollector;
+using namespace splash;
 
 FileAccessTest::FileAccessTest() :
 ctInt()

@@ -30,7 +30,7 @@
 
 #include "Dimensions.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     /**

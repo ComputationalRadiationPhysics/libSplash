@@ -29,7 +29,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(AppendTest);
 
-using namespace DCollector;
+using namespace splash;
 
 #define MAX_VALUE 10000
 #define TEST_FILE "h5/append"

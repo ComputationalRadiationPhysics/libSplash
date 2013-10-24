@@ -24,6 +24,8 @@
 
 #define SPLASH_SUPPORTED_SERIAL 1
 
+#include "version.hpp"
+
 #include "SerialDataCollector.hpp"
 #include "DomainCollector.hpp"
 

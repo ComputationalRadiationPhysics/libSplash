@@ -30,7 +30,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(AttributesTest);
 
-using namespace DCollector;
+using namespace splash;
 
 #define BUF_SIZE 32
 #define TEST_FILE "h5/attributes"
@@ -61,7 +61,7 @@ void AttributesTest::testDataAttributes()
     dataCollector->open(TEST_FILE, attr);
     
     int *dummy_data = new int[BUF_SIZE * 2];
-    int sum = 0;
+    int sum = 0, sum2 = 0;
     for (int i = 0; i < BUF_SIZE; i++)
     {
         int val_x = rand() % 10;
@@ -72,6 +72,16 @@ void AttributesTest::testDataAttributes()
         dummy_data[2 * i] = val_x;
         dummy_data[2 * i + 1] = val_y;
     }
+    sum2 = sum;
+    
+    dataCollector->writeAttribute(10, ctInt, NULL, "timestep", &sum2);
+    
+    CPPUNIT_ASSERT_THROW(dataCollector->writeAttribute(10, ctInt, NULL, NULL, &sum2),
+            DCException);
+    CPPUNIT_ASSERT_THROW(dataCollector->writeAttribute(10, ctInt, NULL, "", &sum2),
+            DCException);
+    CPPUNIT_ASSERT_THROW(dataCollector->writeAttribute(10, ctInt, "", "", &sum2),
+            DCException);
     
     dataCollector->write(0, ctInt2, 1, Dimensions(BUF_SIZE, 1, 1), 
             Dimensions(BUF_SIZE, 1, 1), Dimensions(0, 0, 0), "datasets/my_dataset", dummy_data);
@@ -88,12 +98,15 @@ void AttributesTest::testDataAttributes()
     dummy_data = new int[BUF_SIZE * 2];
     int old_sum = sum;
     sum = 0;
+    sum2 = 0;
     for (int i = 0; i < BUF_SIZE * 2; i++)
         dummy_data[i] = 0;
     
     attr.fileAccType = DataCollector::FAT_READ;
     
     dataCollector->open(TEST_FILE, attr);
+    
+    dataCollector->readAttribute(10, NULL, "timestep", &sum2);
     
     Dimensions src_data;
     dataCollector->read(0, "datasets/my_dataset", src_data, dummy_data);
@@ -107,6 +120,7 @@ void AttributesTest::testDataAttributes()
     dummy_data = NULL;
     
     CPPUNIT_ASSERT(sum == old_sum);
+    CPPUNIT_ASSERT(sum == sum2);
     
     sum = 0;
     neg_sum = 0;

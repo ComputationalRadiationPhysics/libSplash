@@ -33,7 +33,7 @@
 #include "DCException.hpp"
 #include "core/HandleMgr.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     /**

@@ -28,7 +28,7 @@
 
 #define H5DataType hid_t
 
-namespace DCollector
+namespace splash
 {
 
     /**

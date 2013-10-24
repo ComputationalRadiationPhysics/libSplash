@@ -34,7 +34,7 @@
 #include "DCException.hpp"
 #include "basetypes/ColTypeDim.hpp"
 
-namespace DCollector
+namespace splash
 {
 
     std::string DCDataSet::getExceptionString(std::string msg)
