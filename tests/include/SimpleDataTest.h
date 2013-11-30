@@ -1,4 +1,4 @@
-/**
+
  * Copyright 2013 Felix Schmitt
  *
  * This file is part of libSplash. 
@@ -61,7 +61,8 @@ private:
      */
     bool subtestWriteRead(Dimensions gridSize, Dimensions borderSize, uint32_t dimensions);
 
-    ColTypeInt ctInt;
+    ColTypeUInt32 ctUInt32;
+    ColTypeUInt64 ctUInt64;
     DataCollector *dataCollector;
 };
 

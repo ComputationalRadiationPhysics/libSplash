@@ -23,6 +23,7 @@
 
 #include <time.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #include "SimpleDataTest.h"
 
@@ -67,14 +68,14 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
 
     // initial part of the test: data is written to the file, once with and once
     // without borders
-    int *dataWrite = new int[bufferSize];
+    uint64_t *dataWrite = new uint64_t[bufferSize];
 
-    for (uint32_t i = 0; i < bufferSize; i++)
+    for (uint64_t i = 0; i < bufferSize; i++)
         dataWrite[i] = i;
 
-    dataCollector->write(10, ctInt, dimensions, gridSize, "deep/folders/data", dataWrite);
+    dataCollector->write(10, ctUInt64, dimensions, gridSize, "deep/folders/data", dataWrite);
 
-    dataCollector->write(20, ctInt, dimensions, gridSize, smallGridSize,
+    dataCollector->write(20, ctUInt64, dimensions, gridSize, smallGridSize,
             borderSize, "deep/folders/data_without_borders", dataWrite);
 
     dataCollector->close();
@@ -116,9 +117,9 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
 
     delete[] ids;
 
-    int *dataRead = new int[bufferSize];
-    for (uint32_t i = 0; i < bufferSize; i++)
-        dataRead[i] = -1;
+    uint64_t *dataRead = new uint64_t[bufferSize];
+    for (uint64_t i = 0; i < bufferSize; i++)
+        dataRead[i] = UINT64_MAX;
 
     Dimensions resultSize;
     dataCollector->read(10, "deep/folders/data", resultSize, dataRead);
@@ -126,7 +127,7 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
     for (uint32_t i = 0; i < 3; i++)
         CPPUNIT_ASSERT(resultSize[i] == gridSize[i]);
 
-    for (uint32_t i = 0; i < bufferSize; i++)
+    for (uint64_t i = 0; i < bufferSize; i++)
         if (dataRead[i] != dataWrite[i])
         {
 #if defined TESTS_DEBUG
@@ -144,9 +145,9 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
     // second part of this test: data without borders is read to its original
     // locations in a cleared array (-1)
 
-    dataRead = new int[bufferSize];
-    for (uint32_t i = 0; i < bufferSize; i++)
-        dataRead[i] = -1;
+    dataRead = new uint64_t[bufferSize];
+    for (uint64_t i = 0; i < bufferSize; i++)
+        dataRead[i] = UINT64_MAX;
 
     dataCollector->read(20, "deep/folders/data_without_borders", gridSize, borderSize,
             resultSize, NULL);
@@ -196,8 +197,8 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
             {
                 uint32_t index = k * (gridSize[0] * gridSize[1]) + j * gridSize[0] + i;
 
-                int value = dataRead[index];
-                int check_value = -1;
+                uint64_t value = dataRead[index];
+                uint64_t check_value = UINT64_MAX;
 
                 if ((i >= borderSize[0] && i < gridSize[0] - borderSize[0]) &&
                         (j >= borderSize[1] && j < gridSize[1] - borderSize[1]) &&
@@ -249,9 +250,9 @@ void SimpleDataTest::testNullWrite()
 
     Dimensions size(100, 20, 17);
 
-    dataCollector->write(10, ctInt, 3, size, "deep/folders/null", NULL);
+    dataCollector->write(10, ctUInt32, 3, size, "deep/folders/null", NULL);
     
-    dataCollector->write(10, ctInt, 3, Dimensions(0, 0, 0), "deep/folders/null_2", NULL);
+    dataCollector->write(10, ctUInt64, 3, Dimensions(0, 0, 0), "deep/folders/null_2", NULL);
 
     dataCollector->close();
 
