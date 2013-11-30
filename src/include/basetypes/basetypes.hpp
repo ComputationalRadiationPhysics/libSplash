@@ -36,6 +36,8 @@
 #include "ColTypeInt2.hpp"
 #include "ColTypeInt3.hpp"
 #include "ColTypeInt3Array.hpp"
+#include "ColTypeUInt32.hpp"
+#include "ColTypeUInt64.hpp"
 
 #endif	/* BASETYPES_HPP */
 

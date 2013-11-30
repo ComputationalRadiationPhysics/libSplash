@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
+
 
 
 #ifndef DCHELPER_H
@@ -86,11 +86,11 @@ namespace splash
 
         /**
          * @param dims dimensions to get chunk dims for
-         * @param rank rank of dims and chunkDims
+         * @param ndims number of dimensions for dims and chunkDims
          * @param typeSize size of each element in bytes
          * @param chunkDims pointer to array for resulting chunk dimensions
          */
-        static void getOptimalChunkDims(const hsize_t *dims, uint32_t rank,
+        static void getOptimalChunkDims(const hsize_t *dims, uint32_t ndims,
                 size_t typeSize, hsize_t *chunkDims)
         {
             // some magic numbers at the moment
@@ -106,7 +106,7 @@ namespace splash
                     max_threshold_index < num_thresholds;
                     ++max_threshold_index)
             {
-                for (uint32_t i = 0; i < rank; i++)
+                for (uint32_t i = 0; i < ndims; i++)
                 {
                     // dim_size is in bytes
                     size_t dim_size = dims[i] * typeSize;
@@ -114,18 +114,24 @@ namespace splash
                     if (dim_size == 0)
                         chunkDims[i] = 1;
                     else
+                    {
                         chunkDims[i] = threshold_sizes[num_thresholds - 1] / typeSize;
+                        if (!chunkDims[i])
+                            chunkDims[i] = 1;
+                    }
 
                     for (uint32_t t = max_threshold_index; t < num_thresholds; ++t)
                         if (dim_size >= threshold_sizes[t])
                         {
                             chunkDims[i] = threshold_sizes[t] / typeSize;
+                            if (!chunkDims[i])
+                                chunkDims[i] = 1;
                             break;
                         }
                 }
 
                 size_t total_size = 1;
-                for (uint32_t i = 0; i < rank; i++)
+                for (uint32_t i = 0; i < ndims; i++)
                     total_size *= chunkDims[i] * typeSize;
 
                 if (total_size < 1024 * 1024 * 1024)

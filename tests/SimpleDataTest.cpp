@@ -19,11 +19,12 @@
  * If not, see <http://www.gnu.org/licenses/>. 
  */
 
-
+#define __STDC_LIMIT_MACROS
 
 #include <time.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <limits.h>
 
 #include "SimpleDataTest.h"
 
@@ -36,7 +37,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(SimpleDataTest);
 using namespace splash;
 
 SimpleDataTest::SimpleDataTest() :
-ctInt()
+ctUInt32(),
+ctUInt64()
 {
     dataCollector = new SerialDataCollector(10);
     srand(time(NULL));
@@ -251,7 +253,7 @@ void SimpleDataTest::testNullWrite()
     Dimensions size(100, 20, 17);
 
     dataCollector->write(10, ctUInt32, 3, size, "deep/folders/null", NULL);
-    
+
     dataCollector->write(10, ctUInt64, 3, Dimensions(0, 0, 0), "deep/folders/null_2", NULL);
 
     dataCollector->close();
@@ -262,23 +264,23 @@ void SimpleDataTest::testNullWrite()
     // read data from file
     fileCAttr.fileAccType = DataCollector::FAT_READ;
     dataCollector->open(HDF5_FILE, fileCAttr);
-    
+
     int *buffer = new int[size.getScalarSize()];
-    
+
     Dimensions size_read(0, 0, 0);
     dataCollector->read(10, "deep/folders/null", size_read, NULL);
-    
+
     CPPUNIT_ASSERT(size_read == size);
-    
+
     dataCollector->read(10, "deep/folders/null", size_read, buffer);
-    
+
     dataCollector->read(10, "deep/folders/null_2", size_read, NULL);
-    
+
     // empty datasets have size 1 in HDF5
     CPPUNIT_ASSERT(size_read == Dimensions(1, 1, 1));
-    
+
     dataCollector->close();
-    
+
     delete[] buffer;
 }
 
