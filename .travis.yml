@@ -36,7 +36,6 @@ before_script:
   - sudo apt-get update -qq
   - if [ "$SPLASHMPI" == "ON" ]; then export APTMPI="libopenmpi-dev openmpi-bin"; fi
   - if [ "$SPLASHPARALLEL" == "ON" ]; then export APTHDF5="libhdf5-openmpi-dev"; else export APTHDF5="libhdf5-serial-dev"; fi
-  - sudo apt-get update
   - sudo apt-get install -qq libcppunit-dev libboost-program-options-dev $APTMPI $APTHDF5
   - export SRC=`pwd`
   - export BUILD=~/buildTmp
