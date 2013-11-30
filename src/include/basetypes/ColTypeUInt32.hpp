@@ -17,27 +17,33 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */
+ */ 
+ 
 
-#ifndef BASETYPES_HPP
-#define	BASETYPES_HPP
 
-#include "ColTypeBool.hpp"
-#include "ColTypeDim.hpp"
-#include "ColTypeDimArray.hpp"
-#include "ColTypeDouble.hpp"
-#include "ColTypeFloat.hpp"
-#include "ColTypeFloat2.hpp"
-#include "ColTypeFloat2Array.hpp"
-#include "ColTypeFloat3.hpp"
-#include "ColTypeFloat3Array.hpp"
-#include "ColTypeFloat4.hpp"
-#include "ColTypeInt.hpp"
-#include "ColTypeInt2.hpp"
-#include "ColTypeInt3.hpp"
-#include "ColTypeInt3Array.hpp"
-#include "ColTypeUInt32.hpp"
-#include "ColTypeUInt64.hpp"
+#ifndef COLTYPEUINT32_H
+#define	COLTYPEUINT32_H
 
-#endif	/* BASETYPES_HPP */
+#include "CollectionType.hpp"
+
+namespace splash
+{
+    class ColTypeUInt32 : public CollectionType
+    {
+    public:
+
+        ColTypeUInt32()
+        {
+            type = H5T_NATIVE_UINT32;
+        }
+
+        size_t getSize() const
+        {
+            return sizeof (uint32_t);
+        }
+    };
+
+}
+
+#endif	/* COLTYPEUINT32_H */
 

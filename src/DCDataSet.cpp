@@ -164,7 +164,14 @@ namespace splash
                     typeSize, chunk_dims);
 
             if (H5Pset_chunk(this->dsetProperties, ndims, chunk_dims) < 0)
+            {
+                for (size_t i = 0; i < ndims; ++i)
+                {
+                    log_msg(1, "chunk_dims[%llu] = %llu",
+                            (long long unsigned) i, (long long unsigned) (chunk_dims[i]));
+                }
                 throw DCException(getExceptionString("setChunking: Failed to set chunking"));
+            }
         }
     }
 
