@@ -39,7 +39,7 @@ namespace splash
 
         size_t getSize() const
         {
-            return sizeof (uint64_t);
+            return sizeof (uint32_t);
         }
     };
 
