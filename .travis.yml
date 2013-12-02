@@ -32,11 +32,16 @@ after_script:
   - $SRC/tests/run_parallel_tests $BUILD
 
 before_script:
+  - uname -r
+  - lsb_release -a
   - echo "yes" | sudo add-apt-repository ppa:jsm-8/lofar-deps
   - sudo apt-get update -qq
   - if [ "$SPLASHMPI" == "ON" ]; then export APTMPI="libopenmpi-dev openmpi-bin"; fi
-  - if [ "$SPLASHPARALLEL" == "ON" ]; then export APTHDF5="libhdf5-openmpi-dev"; else export APTHDF5="libhdf5-serial-dev"; fi
-  - sudo apt-get install -qq libcppunit-dev libboost-program-options-dev $APTMPI $APTHDF5
+  - if [ "$SPLASHPARALLEL" == "ON" ]; then export APTHDF5="libhdf5-openmpi-7 libhdf5-openmpi-dev"; else export APTHDF5="libhdf5-7 libhdf5-dev libhdf5-serial-dev"; fi
+  - sudo dpkg --get-selections
+  - sudo apt-get install -qq -f libcppunit-dev
+  - sudo apt-get install -qq -f libboost-program-options-dev
+  - sudo apt-get install -y -f $APTMPI $APTHDF5
   - export SRC=`pwd`
   - export BUILD=~/buildTmp
   - mkdir -p $BUILD ~/lib
