@@ -22,22 +22,13 @@
 #ifndef BASETYPES_HPP
 #define	BASETYPES_HPP
 
+#include "basetypes_array.hpp"
+#include "basetypes_atomic.hpp"
+#include "basetypes_compound.hpp"
+
 #include "ColTypeBool.hpp"
 #include "ColTypeDim.hpp"
 #include "ColTypeDimArray.hpp"
-#include "ColTypeDouble.hpp"
-#include "ColTypeFloat.hpp"
-#include "ColTypeFloat2.hpp"
-#include "ColTypeFloat2Array.hpp"
-#include "ColTypeFloat3.hpp"
-#include "ColTypeFloat3Array.hpp"
-#include "ColTypeFloat4.hpp"
-#include "ColTypeInt.hpp"
-#include "ColTypeInt2.hpp"
-#include "ColTypeInt3.hpp"
-#include "ColTypeInt3Array.hpp"
-#include "ColTypeUInt32.hpp"
-#include "ColTypeUInt64.hpp"
 
 #endif	/* BASETYPES_HPP */
 

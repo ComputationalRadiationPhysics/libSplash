@@ -19,7 +19,7 @@
  * If not, see <http://www.gnu.org/licenses/>. 
  */
 
-#include "basetypes/ColTypeInt.hpp"
+#include "basetypes/basetypes.hpp"
 
 #include "ParallelDomainCollector.hpp"
 #include "core/DCParallelDataSet.hpp"

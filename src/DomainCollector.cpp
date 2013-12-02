@@ -24,8 +24,7 @@
 #include <cassert>
 #include <math.h>
 
-#include "basetypes/ColTypeDim.hpp"
-#include "basetypes/ColTypeInt.hpp"
+#include "basetypes/basetypes.hpp"
 #include "DomainCollector.hpp"
 #include "core/DCDataSet.hpp"
 #include "core/DCGroup.hpp"
