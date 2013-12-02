@@ -132,11 +132,13 @@ namespace splash
     fileStatus(FST_CLOSED)
     {
         parseEnvVars();
+        
+        if (MPI_Comm_dup(comm, &(options.mpiComm)) != MPI_SUCCESS)
+            throw DCException(getExceptionString("ParallelDataCollector",
+                "failed to duplicate MPI communicator"));
 
-        MPI_Comm_rank(comm, &(options.mpiRank));
-
+        MPI_Comm_rank(options.mpiComm, &(options.mpiRank));
         options.enableCompression = false;
-        options.mpiComm = comm;
         options.mpiInfo = info;
         options.mpiSize = topology.getScalarSize();
         options.mpiTopology.set(topology);
