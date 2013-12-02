@@ -29,7 +29,7 @@
 namespace splash
 {
 
-    const char* COMPOUND_ELEMENTS[] = {"x", "y", "z", "u", "v", "w"};
+    static const char* COMPOUND_ELEMENTS[] = {"x", "y", "z", "u", "v", "w"};
 
 #define TYPE_COMPOUND(_name, _h5_type, _real_type, _size) \
     class ColType##_name : public CollectionType \
