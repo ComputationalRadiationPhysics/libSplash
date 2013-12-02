@@ -29,16 +29,16 @@
 namespace splash
 {
     
-#define TYPE_ATOMIC(_name, _h5_type, _real_type) \
-    class ColType##_name : public CollectionType \
-    { \
-    public: \
- \
-        ColType##_name() \
-        { type = _h5_type; } \
- \
-        size_t getSize() const \
-        { return sizeof (_real_type); } \
+#define TYPE_ATOMIC(_name, _h5_type, _real_type)                               \
+    class ColType##_name : public CollectionType                               \
+    {                                                                          \
+    public:                                                                    \
+                                                                               \
+        ColType##_name()                                                       \
+        { type = _h5_type; }                                                   \
+                                                                               \
+        size_t getSize() const                                                 \
+        { return sizeof (_real_type); }                                        \
     };
     
 TYPE_ATOMIC(Float, H5T_NATIVE_FLOAT, float);

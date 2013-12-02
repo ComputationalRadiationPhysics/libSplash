@@ -31,23 +31,25 @@ namespace splash
 
     static const char* COMPOUND_ELEMENTS[] = {"x", "y", "z", "u", "v", "w"};
 
-#define TYPE_COMPOUND(_name, _h5_type, _real_type, _size) \
-    class ColType##_name : public CollectionType \
-    { \
-    public: \
- \
-        ColType##_name() \
-        { \
+#define TYPE_COMPOUND(_name, _h5_type, _real_type, _size)                      \
+    class ColType##_name : public CollectionType                               \
+    {                                                                          \
+    public:                                                                    \
+                                                                               \
+        ColType##_name()                                                       \
+        {                                                                      \
             this->type = H5Tcreate(H5T_COMPOUND, sizeof (_real_type) * _size); \
-            for (size_t i = 0; i < _size; ++i) \
-                H5Tinsert(this->type, COMPOUND_ELEMENTS[i], i * sizeof(_real_type), _h5_type); \
-        } \
- \
-        ~ColType##_name() \
-        { H5Tclose(this->type); } \
- \
-        size_t getSize() const \
-        { return _size * sizeof (_real_type); } \
+            for (size_t i = 0; i < _size; ++i) {                               \
+                H5Tinsert(this->type, COMPOUND_ELEMENTS[i],                    \
+                    i * sizeof(_real_type), _h5_type);                         \
+            }                                                                  \
+        }                                                                      \
+                                                                               \
+        ~ColType##_name()                                                      \
+        { H5Tclose(this->type); }                                              \
+                                                                               \
+        size_t getSize() const                                                 \
+        { return _size * sizeof (_real_type); }                                \
     };
 
 TYPE_COMPOUND(Float2, H5T_NATIVE_FLOAT, float, 2);

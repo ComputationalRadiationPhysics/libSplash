@@ -29,22 +29,22 @@
 namespace splash
 {
     
-#define TYPE_ARRAY(_name, _h5_type, _real_type, _size) \
-    class ColType##_name##Array : public CollectionType \
-    { \
-    public: \
- \
-        ColType##_name##Array() \
-        { \
-            const hsize_t dim[] = {_size}; \
-            this->type = H5Tarray_create(_h5_type, 1, dim); \
-        } \
- \
-        ~ColType##_name##Array() \
-        { H5Tclose(this->type); } \
- \
-        size_t getSize() const \
-        { return sizeof (_real_type) * _size; } \
+#define TYPE_ARRAY(_name, _h5_type, _real_type, _size)                         \
+    class ColType##_name##Array : public CollectionType                        \
+    {                                                                          \
+    public:                                                                    \
+                                                                               \
+        ColType##_name##Array()                                                \
+        {                                                                      \
+            const hsize_t dim[] = {_size};                                     \
+            this->type = H5Tarray_create(_h5_type, 1, dim);                    \
+        }                                                                      \
+                                                                               \
+        ~ColType##_name##Array()                                               \
+        { H5Tclose(this->type); }                                              \
+                                                                               \
+        size_t getSize() const                                                 \
+        { return sizeof (_real_type) * _size; }                                \
     };
     
 TYPE_ARRAY(Float2, H5T_NATIVE_FLOAT, float, 2);
