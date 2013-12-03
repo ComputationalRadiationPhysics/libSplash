@@ -5,7 +5,7 @@ libSplash - Simple Parallel file output Library for Accumulating Simulation data
 
 [![Build Status Master](https://travis-ci.org/ComputationalRadiationPhysics/libSplash.png?branch=master)]
 (https://travis-ci.org/ComputationalRadiationPhysics/libSplash)
-[![Build Status Parallel](https://travis-ci.org/ComputationalRadiationPhysics/libSplash.png?branch=parallel)]
+[![Build Status Development](https://travis-ci.org/ComputationalRadiationPhysics/libSplash.png?branch=dev)]
 (https://travis-ci.org/ComputationalRadiationPhysics/libSplash)
 
 Introduction
