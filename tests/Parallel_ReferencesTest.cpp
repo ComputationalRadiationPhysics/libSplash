@@ -37,12 +37,10 @@ ctInt()
 {
     srand(time(NULL));
 
-    int argc;
-    char** argv;
     int initialized;
     MPI_Initialized(&initialized);
     if( !initialized )
-        MPI_Init(&argc, &argv);
+        MPI_Init(NULL, NULL);
 
     MPI_Comm_rank(MPI_COMM_WORLD, &mpiRank);
     MPI_Comm_size(MPI_COMM_WORLD, &mpiSize);
