@@ -92,7 +92,7 @@ INCLUDE_DIRECTORIES("${CMAKE_CURRENT_BINARY_DIR}/build_libsplash")
 
 #-------------------------------------------------------------------------------
 
-SET(LIBS splash m cppunit ${MPI_C_LIBRARIES} ${MPI_CXX_LIBRARIES} ${HDF5_LIBRARIES})
+SET(LIBS splash_static m cppunit ${MPI_C_LIBRARIES} ${MPI_CXX_LIBRARIES} ${HDF5_LIBRARIES})
 IF(${vampir})
     SET(LIBS vt-hyb ${LIBS})
 ENDIF(${vampir})
@@ -104,6 +104,7 @@ FOREACH(TEST_FILE ${TEST_FILES})
         ${TEST_FILE}
         ${SRCFILESOTHER}
     )
+    ADD_DEPENDENCIES(${FILE}.out splash_static)
 
     TARGET_LINK_LIBRARIES(${FILE}.out ${LIBS})
 ENDFOREACH()
