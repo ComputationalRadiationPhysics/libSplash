@@ -46,6 +46,13 @@ Linking
 To use libSplash in your project, you must link against the created shared object library
 libsplash.so or against the statically linked archive libsplash.a.
 
+Because we are linking to HDF5, the following **external dependencies** must be linked:
+- `-lhdf5` (for libsplash.so)
+- `-lpthread`
+- `-lz`
+- `-lrt`
+- `-ldl`
+- `-lm`
 
 Tests
 -----
