@@ -35,13 +35,15 @@ PROJECT(libSplash)
 #set helper pathes to find libraries and packages
 #- you need the multiarch dir x86_64-linux-gnu on 64bit Ubuntu's with
 #  self-compiled compilers
-SET(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}" "$ENV{HDF5_ROOT}")
+SET(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}"
+                      "$ENV{HDF5_ROOT}")
 
 #-------------------------------------------------------------------------------
 
 # install prefix
 IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    SET(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}" CACHE PATH "install prefix" FORCE)
+    SET(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}" CACHE PATH "install prefix"
+        FORCE)
 ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT) 
 
 #-------------------------------------------------------------------------------
@@ -50,9 +52,16 @@ ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 FIND_PACKAGE(HDF5 REQUIRED)
 INCLUDE_DIRECTORIES(SYSTEM ${HDF5_INCLUDE_DIR})
 
+# check if static version of HDF5 is used
+#   CMake prefers .so/shared libraries                 
+#   if we find a static HDF5 lib in the ${HDF5_LIBRARIES}
+#   it means there is only a static version installed
+SET(HDF5_IS_STATIC 0)
+STRING(FIND "${HDF5_LIBRARIES}" "hdf5.a" HDF5_IS_STATIC)
+
 #-------------------------------------------------------------------------------
 
-SET(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -Woverloaded-virtual")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -Woverloaded-virtual")
 
 # options
 OPTION(DEBUG_VERBOSE "Enable verbose HDF5 debug output" OFF)
@@ -110,17 +119,24 @@ AUX_SOURCE_DIRECTORY("${CMAKE_CURRENT_SOURCE_DIR}/tools" TOOLS_SOURCES)
 
 #-------------------------------------------------------------------------------
 
-# build libsplash shared
-ADD_LIBRARY(splash SHARED ${LIBRARY_SOURCES})
-TARGET_LINK_LIBRARIES (splash ${SPLASH_LIBS})
+# build libsplash shared (if shared HDF5 is used)
+IF(HDF5_IS_STATIC)
+    MESSAGE(WARNING "Skipping dynamic libSplash because HDF5 library is static")
+ELSE(HDF5_IS_STATIC)
+    ADD_LIBRARY(splash SHARED ${LIBRARY_SOURCES})
+    TARGET_LINK_LIBRARIES(splash ${SPLASH_LIBS})
+ENDIF(HDF5_IS_STATIC)
 
-#build libsplash static
+# build libsplash static
 ADD_LIBRARY(splash_static STATIC ${LIBRARY_SOURCES})
 SET_TARGET_PROPERTIES(splash_static PROPERTIES OUTPUT_NAME splash)
 TARGET_LINK_LIBRARIES (splash_static ${SPLASH_LIBS})
 
 # install libs
-INSTALL(TARGETS splash LIBRARY DESTINATION lib)
+IF(NOT HDF5_IS_STATIC)
+    INSTALL(TARGETS splash LIBRARY DESTINATION lib)
+ENDIF(NOT HDF5_IS_STATIC)
+
 INSTALL(TARGETS splash_static ARCHIVE DESTINATION lib)
 
 # copy include folder to install folder
@@ -136,7 +152,7 @@ INSTALL(SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/PostInstall.cmake")
 IF(HDF5_IS_PARALLEL)
     SET(splash_inc_file "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_parallel.h")
 
-    ADD_CUSTOM_COMMAND(TARGET splash POST_BUILD
+    ADD_CUSTOM_COMMAND(TARGET splash_static POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E create_symlink
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_parallel.h"
                 "${CMAKE_CURRENT_BINARY_DIR}/splash.h"
@@ -144,7 +160,7 @@ IF(HDF5_IS_PARALLEL)
 ELSE(HDF5_IS_PARALLEL)
     SET(splash_inc_file "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_serial.h")
 
-    ADD_CUSTOM_COMMAND(TARGET splash POST_BUILD
+    ADD_CUSTOM_COMMAND(TARGET splash_static POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E create_symlink
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_serial.h"
                 "${CMAKE_CURRENT_BINARY_DIR}/splash.h"
@@ -190,7 +206,7 @@ IF(WITH_TOOLS)
     ENDIF(HDF5_IS_PARALLEL)
 
     ADD_EXECUTABLE(splashtools ${TOOLS_SOURCES})
-    ADD_DEPENDENCIES(splashtools splash splash_static)
+    ADD_DEPENDENCIES(splashtools splash_static)
     TARGET_LINK_LIBRARIES(splashtools ${TOOLS_LIBS})
 
     #install tools
