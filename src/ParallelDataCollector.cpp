@@ -902,8 +902,7 @@ namespace splash
         DCParallelDataSet dataset(name);
         // always create dataset but write data only if all dimensions > 0
         dataset.create(datatype, group, globalSize, ndims, this->options.enableCompression);
-        if (data && (srcData.getScalarSize() > 0))
-            dataset.write(srcBuffer, srcStride, srcOffset, srcData, globalOffset, data);
+        dataset.write(srcBuffer, srcStride, srcOffset, srcData, globalOffset, data);
         dataset.close();
     }
 
