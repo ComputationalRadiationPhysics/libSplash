@@ -955,15 +955,13 @@ namespace splash
         DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
 
         DCGroup group;
-        Dimensions tmpDim(0, 0, 0);
         group.open(h5File, group_path);
 
         try
         {
-            uint32_t src_dims;
             DCDataSet dataset(dset_name.c_str());
             dataset.open(group.getHandle());
-            dataset.read(tmpDim, tmpDim, tmpDim, tmpDim, sizeRead, src_dims, NULL);
+            sizeRead.set(dataset.getSize());
             dataset.close();
         } catch (DCException e)
         {
