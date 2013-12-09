@@ -169,10 +169,8 @@ namespace splash
                 {
                     Dimensions elements_read;
                     uint32_t src_rank = 0;
-                    readDataSet(handles.get(id), id, name,
-                            false,
+                    readCompleteDataSet(handles.get(id), id, name,
                             data_elements,
-                            Dimensions(0, 0, 0),
                             Dimensions(0, 0, 0),
                             Dimensions(0, 0, 0),
                             elements_read,
@@ -293,7 +291,7 @@ namespace splash
             uint32_t src_rank = 0;
             if (src_size.getScalarSize() > 0)
             {
-                readDataSet(handles.get(id), id, name, false,
+                readDataSet(handles.get(id), id, name,
                         dataContainer->getIndex(0)->getSize(),
                         dst_offset,
                         src_size,
@@ -375,7 +373,6 @@ namespace splash
             readDataSet(loadingRef->handle,
                     loadingRef->id,
                     loadingRef->name.c_str(),
-                    false,
                     loadingRef->dstBuffer,
                     loadingRef->dstOffset,
                     loadingRef->srcSize,

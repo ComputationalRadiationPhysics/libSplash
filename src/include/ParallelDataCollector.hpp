@@ -75,7 +75,8 @@ namespace splash
 
         static void indexToPos(int index, Dimensions mpiSize, Dimensions &mpiPos);
 
-        static void listFilesInDir(const std::string baseFilename, std::set<int32_t> &ids);
+        static void listFilesInDir(const std::string baseFilename, std::set<int32_t> &ids)
+        throw (DCException);
     protected:
 
         typedef struct
@@ -133,10 +134,19 @@ namespace splash
         void openWrite(const char *filename,
                 FileCreationAttr &attr) throw (DCException);
 
+        void readCompleteDataSet(H5Handle h5File,
+                int32_t id,
+                const char* name,
+                const Dimensions dstBuffer,
+                const Dimensions dstOffset,
+                const Dimensions srcOffset,
+                Dimensions &sizeRead,
+                uint32_t& srcRank,
+                void* dst) throw (DCException);
+
         void readDataSet(H5Handle h5File,
                 int32_t id,
                 const char* name,
-                bool parallelRead,
                 const Dimensions dstBuffer,
                 const Dimensions dstOffset,
                 const Dimensions srcSize,
@@ -266,7 +276,7 @@ namespace splash
                 const Dimensions srcOffset,
                 const char* name,
                 const void* buf);
-        
+
         void reserve(int32_t id,
                 const Dimensions globalSize,
                 uint32_t rank,

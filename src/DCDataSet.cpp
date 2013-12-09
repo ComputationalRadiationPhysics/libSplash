@@ -92,6 +92,11 @@ namespace splash
     {
         H5Pclose(dsetProperties);
     }
+    
+    Dimensions DCDataSet::getSize() const
+    {
+        return logicalSize;
+    }
 
     Dimensions& DCDataSet::getLogicalSize()
     {
@@ -418,7 +423,7 @@ namespace splash
             void* dst)
     throw (DCException)
     {
-        read(dstBuffer, dstOffset, Dimensions(0, 0, 0), Dimensions(0, 0, 0),
+        read(dstBuffer, dstOffset, getLogicalSize(), Dimensions(0, 0, 0),
                 sizeRead, srcNDims, dst);
     }
 
@@ -438,9 +443,6 @@ namespace splash
 
         if (dstBuffer.getScalarSize() == 0)
             dstBuffer.set(getLogicalSize());
-
-        if (srcSize.getScalarSize() == 0)
-            srcSize.set(getLogicalSize() - srcOffset);
 
         // dst buffer is allowed to be NULL
         // in this case, only the size of the dataset is returned
@@ -482,6 +484,9 @@ namespace splash
                     H5Sselect_valid(dataspace) <= 0)
                 throw DCException(getExceptionString("read: Source dataspace hyperslab selection is not valid!"));
 
+            if (srcSize.getScalarSize() == 0)
+                H5Sselect_none(dataspace);
+            
             if (H5Dread(dataset, this->datatype, dst_dataspace, dataspace, dsetReadProperties, dst) < 0)
                 throw DCException(getExceptionString("read: Failed to read dataset"));
 
