@@ -212,6 +212,13 @@ namespace splash
          * @return the DataSpace
          */
         hid_t getDataSpace() throw (DCException);
+        
+        /**
+         * Returns the size of the dataset.
+         * 
+         * @return size of the dataset
+         */
+        Dimensions getSize() const;
 
         /**
          * Returns the \p DCDataType associated with this DataSet.

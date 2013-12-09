@@ -151,7 +151,21 @@ namespace splash
         /**
          * Internal reading method.
          */
-        void readInternal(H5Handle h5File,
+        void readCompleteDataSet(H5Handle h5File,
+                int32_t id,
+                const char* name,
+                const Dimensions dstBuffer,
+                const Dimensions dstOffset,
+                const Dimensions srcOffset,
+                Dimensions &sizeRead,
+                uint32_t& srcDims,
+                void* dst)
+        throw (DCException);
+
+        /**
+         * Internal reading method.
+         */
+        void readDataSet(H5Handle h5File,
                 int32_t id,
                 const char* name,
                 const Dimensions dstBuffer,
@@ -198,7 +212,7 @@ namespace splash
         hid_t openDatasetHandle(int32_t id,
                 const char *dsetName,
                 Dimensions *mpiPosition = NULL) throw (DCException);
-        
+
         void closeDatasetHandle(hid_t handle) throw (DCException);
     public:
 

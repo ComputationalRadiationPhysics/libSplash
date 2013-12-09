@@ -229,7 +229,7 @@ namespace splash
         // read intersecting partition into destination buffer
         Dimensions elements_read(0, 0, 0);
         uint32_t src_dims = 0;
-        readInternal(handles.get(mpiPosition), id, name,
+        readDataSet(handles.get(mpiPosition), id, name,
                 dataContainer->getIndex(0)->getSize(),
                 dst_offset,
                 src_size,
@@ -298,9 +298,8 @@ namespace splash
             {
                 Dimensions size_read;
                 uint32_t src_ndims = 0;
-                readInternal(handles.get(mpiPosition), id, name,
+                readCompleteDataSet(handles.get(mpiPosition), id, name,
                         dataSize,
-                        Dimensions(0, 0, 0),
                         Dimensions(0, 0, 0),
                         Dimensions(0, 0, 0),
                         size_read,
@@ -669,7 +668,7 @@ namespace splash
         {
             Dimensions elements_read;
             uint32_t src_dims = 0;
-            readInternal(loadingRef->handle,
+            readDataSet(loadingRef->handle,
                     loadingRef->id,
                     loadingRef->name.c_str(),
                     loadingRef->dstBuffer,
