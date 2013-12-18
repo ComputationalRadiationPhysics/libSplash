@@ -17,18 +17,39 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */
+ */ 
+ 
 
-#ifndef BASETYPES_HPP
-#define	BASETYPES_HPP
 
-#include "basetypes_array.hpp"
-#include "basetypes_atomic.hpp"
-#include "basetypes_compound.hpp"
+#ifndef COLTYPEDIMARRAY_H
+#define	COLTYPEDIMARRAY_H
 
-#include "ColTypeBool.hpp"
-#include "ColTypeDim.hpp"
-#include "ColTypeDimArray.hpp"
+#include "splash/CollectionType.hpp"
 
-#endif	/* BASETYPES_HPP */
+namespace splash
+{
+    class ColTypeDimArray : public CollectionType
+    {
+    public:
+
+        ColTypeDimArray()
+        {
+            const hsize_t dim[] = {3};
+            this->type = H5Tarray_create(H5T_NATIVE_HSIZE, 1, dim);
+        }
+
+        ~ColTypeDimArray()
+        {
+            H5Tclose(this->type);
+        }
+
+        size_t getSize() const
+        {
+            return sizeof (hsize_t) * 3;
+        }
+    };
+
+}
+
+#endif	/* COLTYPEDIMARRAY_H */
 

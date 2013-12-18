@@ -22,7 +22,8 @@
 #include <stdio.h>
 #include <cstdlib>
 #include <cstdarg>
-#include "core/logging.hpp"
+
+#include "splash/core/logging.hpp"
 
 namespace splash
 {

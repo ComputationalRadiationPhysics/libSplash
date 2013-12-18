@@ -19,21 +19,16 @@
  * If not, see <http://www.gnu.org/licenses/>. 
  */
 
-#ifndef SPLASH_H
-#define	SPLASH_H
+#ifndef BASETYPES_HPP
+#define	BASETYPES_HPP
 
-#define SPLASH_SUPPORTED_SERIAL 1
-#define SPLASH_SUPPORTED_PARALLEL 1
+#include "splash/basetypes/basetypes_array.hpp"
+#include "splash/basetypes/basetypes_atomic.hpp"
+#include "splash/basetypes/basetypes_compound.hpp"
 
-#include "version.hpp"
+#include "splash/basetypes/ColTypeBool.hpp"
+#include "splash/basetypes/ColTypeDim.hpp"
+#include "splash/basetypes/ColTypeDimArray.hpp"
 
-#include "SerialDataCollector.hpp"
-#include "DomainCollector.hpp"
-
-#include "ParallelDataCollector.hpp"
-#include "ParallelDomainCollector.hpp"
-
-#include "basetypes/basetypes.hpp"
-
-#endif	/* SPLASH_H */
+#endif	/* BASETYPES_HPP */
 

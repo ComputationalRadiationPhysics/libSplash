@@ -26,7 +26,7 @@
 
 #include <hdf5.h>
 
-#include "DCException.hpp"
+#include "splash/DCException.hpp"
 
 namespace splash
 {

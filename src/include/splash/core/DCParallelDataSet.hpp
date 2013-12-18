@@ -19,12 +19,11 @@
  * If not, see <http://www.gnu.org/licenses/>. 
  */
 
+#ifndef DCPARALLELDATASET_HPP
+#define	DCPARALLELDATASET_HPP
 
+#include "splash/core/DCDataSet.hpp"
 
-#ifndef DCPARALLELGROUP_HPP
-#define	DCPARALLELGROUP_HPP
-
-#include "core/DCGroup.hpp"
 
 namespace splash
 {
@@ -32,26 +31,38 @@ namespace splash
     /**
      * \cond HIDDEN_SYMBOLS
      */
-    class DCParallelGroup : public DCGroup
-    {    
-
+    class DCParallelDataSet : public DCDataSet
+    {
     public:
-        DCParallelGroup() :
-        DCGroup()
+
+        DCParallelDataSet(const std::string name) :
+        DCDataSet(name)
         {
-            this->checkExistence = false;
+            dsetWriteProperties = H5Pcreate(H5P_DATASET_XFER);
+            H5Pset_dxpl_mpio(dsetWriteProperties, H5FD_MPIO_COLLECTIVE);
+
+            dsetReadProperties = H5Pcreate(H5P_DATASET_XFER);
+            H5Pset_dxpl_mpio(dsetReadProperties, H5FD_MPIO_COLLECTIVE);
+
+            checkExistence = false;
+        }
+
+        virtual ~DCParallelDataSet()
+        {
+            H5Pclose(dsetWriteProperties);
+            H5Pclose(dsetReadProperties);
         }
         
-        virtual ~DCParallelGroup()
+        void setWriteIndependent()
         {
-            
+            H5Pset_dxpl_mpio(dsetWriteProperties, H5FD_MPIO_INDEPENDENT);
+            //H5Pset_dxpl_mpio_collective_opt(dsetWriteProperties, H5FD_MPIO_INDIVIDUAL_IO);
         }
     };
     /**
      * \endcond
      */
-
 }
 
-#endif	/* DCPARALLELGROUP_HPP */
+#endif	/* DCPARALLELDATASET_HPP */
 

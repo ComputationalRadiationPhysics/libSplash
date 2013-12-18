@@ -24,7 +24,7 @@
 
 #include <stdint.h>
 
-#include "CollectionType.hpp"
+#include "splash/CollectionType.hpp"
 
 namespace splash
 {

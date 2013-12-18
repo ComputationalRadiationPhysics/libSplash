@@ -153,21 +153,27 @@ INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/include/."
 
 # install correct splash header file
 INSTALL(SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/PostInstall.cmake")
+
+ADD_CUSTOM_COMMAND(TARGET splash_static POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory
+                "${CMAKE_CURRENT_BINARY_DIR}/splash"
+)
+
 IF(HDF5_IS_PARALLEL)
-    SET(splash_inc_file "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_parallel.h")
+    SET(splash_inc_file "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/splash_parallel.h")
 
     ADD_CUSTOM_COMMAND(TARGET splash_static POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E create_symlink
-                "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_parallel.h"
-                "${CMAKE_CURRENT_BINARY_DIR}/splash.h"
+                "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/splash_parallel.h"
+                "${CMAKE_CURRENT_BINARY_DIR}/splash/splash.h"
         )
 ELSE(HDF5_IS_PARALLEL)
-    SET(splash_inc_file "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_serial.h")
+    SET(splash_inc_file "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/splash_serial.h")
 
     ADD_CUSTOM_COMMAND(TARGET splash_static POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E create_symlink
-                "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash_serial.h"
-                "${CMAKE_CURRENT_BINARY_DIR}/splash.h"
+                "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/splash_serial.h"
+                "${CMAKE_CURRENT_BINARY_DIR}/splash/splash.h"
         )
 ENDIF(HDF5_IS_PARALLEL)
 

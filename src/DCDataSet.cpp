@@ -25,14 +25,14 @@
 #include <sstream>
 #include <cassert>
 
-#include "sdc_defines.hpp"
+#include "splash/sdc_defines.hpp"
 
-#include "core/DCDataSet.hpp"
-#include "core/DCAttribute.hpp"
-#include "core/DCHelper.hpp"
-#include "core/logging.hpp"
-#include "DCException.hpp"
-#include "basetypes/ColTypeDim.hpp"
+#include "splash/core/DCDataSet.hpp"
+#include "splash/core/DCAttribute.hpp"
+#include "splash/core/DCHelper.hpp"
+#include "splash/core/logging.hpp"
+#include "splash/DCException.hpp"
+#include "splash/basetypes/ColTypeDim.hpp"
 
 namespace splash
 {

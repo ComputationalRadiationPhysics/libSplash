@@ -24,12 +24,12 @@
 
 #define SPLASH_SUPPORTED_SERIAL 1
 
-#include "version.hpp"
+#include "splash/version.hpp"
 
-#include "SerialDataCollector.hpp"
-#include "DomainCollector.hpp"
+#include "splash/SerialDataCollector.hpp"
+#include "splash/DomainCollector.hpp"
 
-#include "basetypes/basetypes.hpp"
+#include "splash/basetypes/basetypes.hpp"
 
 #endif	/* SPLASH_H */
 

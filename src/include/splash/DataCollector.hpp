@@ -48,8 +48,8 @@
 
 #include <stdint.h>
 
-#include "CollectionType.hpp"
-#include "Dimensions.hpp"
+#include "splash/CollectionType.hpp"
+#include "splash/Dimensions.hpp"
 
 namespace splash
 {

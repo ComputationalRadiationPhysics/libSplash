@@ -24,12 +24,12 @@
 #include <cassert>
 #include <math.h>
 
-#include "basetypes/basetypes.hpp"
-#include "DomainCollector.hpp"
-#include "core/DCDataSet.hpp"
-#include "core/DCGroup.hpp"
-#include "core/DCAttribute.hpp"
-#include "core/logging.hpp"
+#include "splash/basetypes/basetypes.hpp"
+#include "splash/DomainCollector.hpp"
+#include "splash/core/DCDataSet.hpp"
+#include "splash/core/DCGroup.hpp"
+#include "splash/core/DCAttribute.hpp"
+#include "splash/core/logging.hpp"
 
 namespace splash
 {

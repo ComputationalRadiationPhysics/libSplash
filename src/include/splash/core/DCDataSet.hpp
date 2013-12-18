@@ -28,10 +28,10 @@
 #include <string>
 #include <hdf5.h>
 
-#include "DCException.hpp"
-#include "Dimensions.hpp"
-#include "CollectionType.hpp"
-#include "basetypes/ColTypeDim.hpp"
+#include "splash/DCException.hpp"
+#include "splash/Dimensions.hpp"
+#include "splash/CollectionType.hpp"
+#include "splash/basetypes/ColTypeDim.hpp"
 
 namespace splash
 {

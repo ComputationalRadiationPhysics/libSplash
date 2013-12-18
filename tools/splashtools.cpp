@@ -33,7 +33,7 @@
 #include <mpi.h>
 #endif
 
-#include "splash.h"
+#include "splash/splash.h"
 
 using namespace splash;
 
