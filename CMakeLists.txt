@@ -1,5 +1,5 @@
  #
- # Copyright 2013 Felix Schmitt
+ # Copyright 2013 Felix Schmitt, Axel Huebl
  #
  # This file is part of libSplash. 
  # 
@@ -162,7 +162,7 @@ INSTALL(TARGETS splash_static ARCHIVE DESTINATION lib)
 
 # copy include folder to install folder
 INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/include/."
-  DESTINATION "${CMAKE_INSTALL_PREFIX}/include"
+  DESTINATION include
   PATTERN ".svn" EXCLUDE
   PATTERN ".git" EXCLUDE
   PATTERN "splash_*.h" EXCLUDE
@@ -170,7 +170,7 @@ INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/include/."
 
 # install correct splash header file
 # (will be executed after the POST_BUILD copies of splash.h)
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/splash.h
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/splash/splash.h
         DESTINATION include/splash)
 
 ADD_CUSTOM_COMMAND(TARGET splash_static POST_BUILD
