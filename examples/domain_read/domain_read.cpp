@@ -21,7 +21,7 @@
 
 #include <iostream>
 #include <string>
-#include "splash.h"
+#include "splash/splash.h"
 
 using namespace splash;
 
