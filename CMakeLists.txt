@@ -56,11 +56,11 @@ INCLUDE_DIRECTORIES(SYSTEM ${HDF5_INCLUDE_DIR})
 #   CMake prefers .so/shared libraries                 
 #   if we find a static HDF5 lib in the ${HDF5_LIBRARIES}
 #   it means there is only a static version installed
-STRING(FIND "${HDF5_LIBRARIES}" "hdf5\\.a" HDF5_IS_STATIC_POS)
+STRING(FIND "${HDF5_LIBRARIES}" "hdf5.a" HDF5_IS_STATIC_POS)
 IF(${HDF5_IS_STATIC_POS} EQUAL -1)
-    SET(HDF_IS_STATIC OFF)
+    SET(HDF5_IS_STATIC OFF)
 ELSE(${HDF5_IS_STATIC_POS} EQUAL -1)
-    SET(HDF_IS_STATIC ON)
+    SET(HDF5_IS_STATIC ON)
 ENDIF(${HDF5_IS_STATIC_POS} EQUAL -1)
 
 #-------------------------------------------------------------------------------
