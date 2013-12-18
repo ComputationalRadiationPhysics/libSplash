@@ -39,8 +39,8 @@ pass `-DSPLASH_RELEASE=OFF` to your cmake command.
 To see verbose internal (!) HDF5 debug output, pass `-DDEBUG_VERBOSE=ON`
 to your cmake command line.
 
-Afterwards, please add `<INSTALL PATH>/bin` to your `$PATH` environment variable and
-`<INSTALL PATH>/lib` to your `$LD_LIBRARY_PATH`.
+Afterwards, please add `<INSTALL PATH>/bin` to your `PATH` environment variable and
+`<INSTALL PATH>/lib` to your `LD_LIBRARY_PATH`.
 Setting an additional environment variable `export $SPLASH_ROOT=<INSTALL PATH>` will
 help finding the installed libraries with CMake scripts.
 
