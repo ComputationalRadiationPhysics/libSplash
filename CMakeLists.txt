@@ -49,10 +49,10 @@ ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 #-------------------------------------------------------------------------------
 
 # whats my version?
-file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/src/include/version.hpp"
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/version.hpp"
      SPLASH_VERSION_MAJOR_HPP REGEX "#define SPLASH_VERSION_MAJOR ")
 
-file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/src/include/version.hpp"
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/version.hpp"
      SPLASH_VERSION_MINOR_HPP REGEX "#define SPLASH_VERSION_MINOR ")
 
 string(REGEX MATCH "([0-9]+)" SPLASH_VERSION_MAJOR
