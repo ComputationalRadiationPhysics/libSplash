@@ -22,10 +22,10 @@
 #ifndef IDOMAINCOLLECTOR_HPP
 #define	IDOMAINCOLLECTOR_HPP
 
-#include "Dimensions.hpp"
-#include "domains/DataContainer.hpp"
-#include "domains/DomainData.hpp"
-#include "domains/Domain.hpp"
+#include "splash/Dimensions.hpp"
+#include "splash/domains/DataContainer.hpp"
+#include "splash/domains/DomainData.hpp"
+#include "splash/domains/Domain.hpp"
 
 #define DOMCOL_ATTR_CLASS "_class"
 #define DOMCOL_ATTR_SIZE "_size"

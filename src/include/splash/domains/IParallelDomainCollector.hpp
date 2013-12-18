@@ -22,7 +22,7 @@
 #ifndef IPARALLELDOMAINCOLLECTOR_HPP
 #define	IPARALLELDOMAINCOLLECTOR_HPP
 
-#include "IDomainCollector.hpp"
+#include "splash/domains/IDomainCollector.hpp"
 
 namespace splash
 {

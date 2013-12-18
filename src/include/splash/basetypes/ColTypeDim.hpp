@@ -17,52 +17,42 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */
+ */ 
+ 
 
-#ifndef DCPARALLELDATASET_HPP
-#define	DCPARALLELDATASET_HPP
 
-#include "core/DCDataSet.hpp"
+#ifndef COLTYPEDIM_H
+#define	COLTYPEDIM_H
 
+#include "splash/CollectionType.hpp"
+#include "splash/Dimensions.hpp"
 
 namespace splash
 {
 
-    /**
-     * \cond HIDDEN_SYMBOLS
-     */
-    class DCParallelDataSet : public DCDataSet
+    class ColTypeDim : public CollectionType
     {
     public:
 
-        DCParallelDataSet(const std::string name) :
-        DCDataSet(name)
+        ColTypeDim()
         {
-            dsetWriteProperties = H5Pcreate(H5P_DATASET_XFER);
-            H5Pset_dxpl_mpio(dsetWriteProperties, H5FD_MPIO_COLLECTIVE);
-
-            dsetReadProperties = H5Pcreate(H5P_DATASET_XFER);
-            H5Pset_dxpl_mpio(dsetReadProperties, H5FD_MPIO_COLLECTIVE);
-
-            checkExistence = false;
+            this->type = H5Tcreate(H5T_COMPOUND, Dimensions::getSize());
+            H5Tinsert(this->type, "x", 0, H5T_NATIVE_HSIZE);
+            H5Tinsert(this->type, "y", sizeof (hsize_t), H5T_NATIVE_HSIZE);
+            H5Tinsert(this->type, "z", sizeof (hsize_t) * 2, H5T_NATIVE_HSIZE);
         }
 
-        virtual ~DCParallelDataSet()
+        ~ColTypeDim()
         {
-            H5Pclose(dsetWriteProperties);
-            H5Pclose(dsetReadProperties);
+            H5Tclose(this->type);
         }
-        
-        void setWriteIndependent()
+
+        size_t getSize() const
         {
-            H5Pset_dxpl_mpio(dsetWriteProperties, H5FD_MPIO_INDEPENDENT);
-            //H5Pset_dxpl_mpio_collective_opt(dsetWriteProperties, H5FD_MPIO_INDIVIDUAL_IO);
+            return Dimensions::getSize();
         }
     };
-    /**
-     * \endcond
-     */
 }
 
-#endif	/* DCPARALLELDATASET_HPP */
+#endif	/* COLTYPEDIM_H */
 

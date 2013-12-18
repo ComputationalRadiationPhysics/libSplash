@@ -28,7 +28,7 @@
 #include <sstream>
 #include <stdint.h>
 
-#include "Dimensions.hpp"
+#include "splash/Dimensions.hpp"
 
 namespace splash
 {

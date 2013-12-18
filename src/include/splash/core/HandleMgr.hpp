@@ -28,8 +28,8 @@
 #include <set>
 #include <string>
 
-#include "DCException.hpp"
-#include "Dimensions.hpp"
+#include "splash/DCException.hpp"
+#include "splash/Dimensions.hpp"
 
 namespace splash
 {

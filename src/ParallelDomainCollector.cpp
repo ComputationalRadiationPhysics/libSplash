@@ -19,11 +19,11 @@
  * If not, see <http://www.gnu.org/licenses/>. 
  */
 
-#include "basetypes/basetypes.hpp"
+#include "splash/basetypes/basetypes.hpp"
 
-#include "ParallelDomainCollector.hpp"
-#include "core/DCParallelDataSet.hpp"
-#include "core/logging.hpp"
+#include "splash/ParallelDomainCollector.hpp"
+#include "splash/core/DCParallelDataSet.hpp"
+#include "splash/core/logging.hpp"
 
 namespace splash
 {

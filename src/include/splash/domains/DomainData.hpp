@@ -29,9 +29,9 @@
 #include <string>
 #include <hdf5.h>
 
-#include "Dimensions.hpp"
-#include "domains/Domain.hpp"
-#include "core/DCDataSet.hpp"
+#include "splash/Dimensions.hpp"
+#include "splash/domains/Domain.hpp"
+#include "splash/core/DCDataSet.hpp"
 
 namespace splash
 {

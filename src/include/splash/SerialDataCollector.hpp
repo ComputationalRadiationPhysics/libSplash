@@ -28,11 +28,10 @@
 #include <sstream>
 #include <iostream>
 
-#include "DataCollector.hpp"
-
-#include "DCException.hpp"
-#include "core/HandleMgr.hpp"
-#include "sdc_defines.hpp"
+#include "splash/DataCollector.hpp"
+#include "splash/DCException.hpp"
+#include "splash/core/HandleMgr.hpp"
+#include "splash/sdc_defines.hpp"
 
 namespace splash
 {

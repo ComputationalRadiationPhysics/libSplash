@@ -26,9 +26,9 @@
 
 #include <vector>
 
-#include "DCException.hpp"
-#include "Dimensions.hpp"
-#include "domains/DomainData.hpp"
+#include "splash/DCException.hpp"
+#include "splash/Dimensions.hpp"
+#include "splash/domains/DomainData.hpp"
 
 namespace splash
 {

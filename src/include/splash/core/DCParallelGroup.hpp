@@ -17,39 +17,41 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
 
 
-#ifndef COLTYPEDIMARRAY_H
-#define	COLTYPEDIMARRAY_H
 
-#include "CollectionType.hpp"
+#ifndef DCPARALLELGROUP_HPP
+#define	DCPARALLELGROUP_HPP
+
+#include "splash/core/DCGroup.hpp"
 
 namespace splash
 {
-    class ColTypeDimArray : public CollectionType
-    {
+
+    /**
+     * \cond HIDDEN_SYMBOLS
+     */
+    class DCParallelGroup : public DCGroup
+    {    
+
     public:
-
-        ColTypeDimArray()
+        DCParallelGroup() :
+        DCGroup()
         {
-            const hsize_t dim[] = {3};
-            this->type = H5Tarray_create(H5T_NATIVE_HSIZE, 1, dim);
+            this->checkExistence = false;
         }
-
-        ~ColTypeDimArray()
+        
+        virtual ~DCParallelGroup()
         {
-            H5Tclose(this->type);
-        }
-
-        size_t getSize() const
-        {
-            return sizeof (hsize_t) * 3;
+            
         }
     };
+    /**
+     * \endcond
+     */
 
 }
 
-#endif	/* COLTYPEDIMARRAY_H */
+#endif	/* DCPARALLELGROUP_HPP */
 

@@ -22,8 +22,8 @@
 #ifndef PARALLELDOMAINCOLLECTOR_HPP
 #define	PARALLELDOMAINCOLLECTOR_HPP
 
-#include "domains/IParallelDomainCollector.hpp"
-#include "ParallelDataCollector.hpp"
+#include "splash/domains/IParallelDomainCollector.hpp"
+#include "splash/ParallelDataCollector.hpp"
 
 namespace splash
 {

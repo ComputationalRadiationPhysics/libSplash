@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt, René Widera
+ * Copyright 2013 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -17,40 +17,23 @@
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
- */ 
- 
+ */
 
+#ifndef SPLASH_H
+#define	SPLASH_H
 
-#ifndef COLTYPEBOOL_H
-#define	COLTYPEBOOL_H
+#define SPLASH_SUPPORTED_SERIAL 1
+#define SPLASH_SUPPORTED_PARALLEL 1
 
-#include "CollectionType.hpp"
+#include "splash/version.hpp"
 
-namespace splash
-{
+#include "splash/SerialDataCollector.hpp"
+#include "splash/DomainCollector.hpp"
 
-class ColTypeBool : public CollectionType
-{
-public:
+#include "splash/ParallelDataCollector.hpp"
+#include "splash/ParallelDomainCollector.hpp"
 
-    ColTypeBool()
-    {
-        const hsize_t dim[] = {sizeof (bool)};
-        this->type = H5Tarray_create(H5T_NATIVE_B8, 1, dim);
-    }
+#include "splash/basetypes/basetypes.hpp"
 
-    ~ColTypeBool()
-    {
-        H5Tclose(this->type);
-    }
-
-    size_t getSize() const
-    {
-        return sizeof (bool);
-    }
-};
-
-}
-
-#endif	/* COLTYPEBOOL_H */
+#endif	/* SPLASH_H */
 

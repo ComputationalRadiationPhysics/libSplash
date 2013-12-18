@@ -22,7 +22,7 @@
 #ifndef IPARALLELDATACOLLECTOR_HPP
 #define	IPARALLELDATACOLLECTOR_HPP
 
-#include "DataCollector.hpp"
+#include "splash/DataCollector.hpp"
 
 namespace splash
 {

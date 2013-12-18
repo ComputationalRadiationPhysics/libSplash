@@ -27,7 +27,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <stdint.h>
 
-#include "splash.h"
+#include "splash/splash.h"
 
 
 using namespace splash;

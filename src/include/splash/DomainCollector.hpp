@@ -24,10 +24,10 @@
 #ifndef DOMAINCOLLECTOR_HPP
 #define	DOMAINCOLLECTOR_HPP
 
-#include "domains/IDomainCollector.hpp"
-#include "SerialDataCollector.hpp"
-#include "Dimensions.hpp"
-#include "DCException.hpp"
+#include "splash/domains/IDomainCollector.hpp"
+#include "splash/SerialDataCollector.hpp"
+#include "splash/Dimensions.hpp"
+#include "splash/DCException.hpp"
 
 namespace splash
 {

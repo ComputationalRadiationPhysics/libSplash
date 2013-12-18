@@ -27,14 +27,14 @@
 #include <cassert>
 #include <sys/stat.h>
 
-#include "SerialDataCollector.hpp"
+#include "splash/SerialDataCollector.hpp"
 
-#include "core/DCAttribute.hpp"
-#include "core/DCDataSet.hpp"
-#include "core/DCGroup.hpp"
-#include "core/DCHelper.hpp"
-#include "core/SDCHelper.hpp"
-#include "core/logging.hpp"
+#include "splash/core/DCAttribute.hpp"
+#include "splash/core/DCDataSet.hpp"
+#include "splash/core/DCGroup.hpp"
+#include "splash/core/DCHelper.hpp"
+#include "splash/core/SDCHelper.hpp"
+#include "splash/core/logging.hpp"
 
 namespace splash
 {

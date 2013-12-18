@@ -25,11 +25,11 @@
 #include <stdlib.h>
 #include <cstring>
 
-#include "ParallelDataCollector.hpp"
-#include "core/DCParallelDataSet.hpp"
-#include "core/DCAttribute.hpp"
-#include "core/DCParallelGroup.hpp"
-#include "core/logging.hpp"
+#include "splash/ParallelDataCollector.hpp"
+#include "splash/core/DCParallelDataSet.hpp"
+#include "splash/core/DCAttribute.hpp"
+#include "splash/core/DCParallelGroup.hpp"
+#include "splash/core/logging.hpp"
 
 namespace splash
 {

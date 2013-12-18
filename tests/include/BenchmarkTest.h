@@ -28,7 +28,7 @@
 
 #include <mpi.h>
 
-#include "splash.h"
+#include "splash/splash.h"
 
 using namespace splash;
 

@@ -23,7 +23,7 @@
 
 #include <sstream>
 
-#include "core/DCAttribute.hpp"
+#include "splash/core/DCAttribute.hpp"
 
 namespace splash
 {

@@ -29,11 +29,11 @@
 #include <set>
 #include <hdf5.h>
 
-#include "IParallelDataCollector.hpp"
+#include "splash/IParallelDataCollector.hpp"
 
-#include "DCException.hpp"
-#include "sdc_defines.hpp"
-#include "core/HandleMgr.hpp"
+#include "splash/DCException.hpp"
+#include "splash/sdc_defines.hpp"
+#include "splash/core/HandleMgr.hpp"
 
 namespace splash
 {

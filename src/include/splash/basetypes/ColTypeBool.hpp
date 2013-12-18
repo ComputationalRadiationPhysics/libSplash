@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013 Felix Schmitt, René Widera
  *
  * This file is part of libSplash. 
  * 
@@ -21,38 +21,36 @@
  
 
 
-#ifndef COLTYPEDIM_H
-#define	COLTYPEDIM_H
+#ifndef COLTYPEBOOL_H
+#define	COLTYPEBOOL_H
 
-#include "CollectionType.hpp"
-#include "Dimensions.hpp"
+#include "splash/CollectionType.hpp"
 
 namespace splash
 {
 
-    class ColTypeDim : public CollectionType
+class ColTypeBool : public CollectionType
+{
+public:
+
+    ColTypeBool()
     {
-    public:
+        const hsize_t dim[] = {sizeof (bool)};
+        this->type = H5Tarray_create(H5T_NATIVE_B8, 1, dim);
+    }
 
-        ColTypeDim()
-        {
-            this->type = H5Tcreate(H5T_COMPOUND, Dimensions::getSize());
-            H5Tinsert(this->type, "x", 0, H5T_NATIVE_HSIZE);
-            H5Tinsert(this->type, "y", sizeof (hsize_t), H5T_NATIVE_HSIZE);
-            H5Tinsert(this->type, "z", sizeof (hsize_t) * 2, H5T_NATIVE_HSIZE);
-        }
+    ~ColTypeBool()
+    {
+        H5Tclose(this->type);
+    }
 
-        ~ColTypeDim()
-        {
-            H5Tclose(this->type);
-        }
+    size_t getSize() const
+    {
+        return sizeof (bool);
+    }
+};
 
-        size_t getSize() const
-        {
-            return Dimensions::getSize();
-        }
-    };
 }
 
-#endif	/* COLTYPEDIM_H */
+#endif	/* COLTYPEBOOL_H */
 
