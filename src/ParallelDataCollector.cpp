@@ -468,7 +468,8 @@ namespace splash
             const Dimensions globalOffset,
             const char* name,
             Dimensions &sizeRead,
-            void* buf) throw (DCException)
+            void* buf)
+    throw (DCException)
     {
         this->read(id, localSize, globalOffset, name, localSize,
                 Dimensions(0, 0, 0), sizeRead, buf);
@@ -481,7 +482,8 @@ namespace splash
             const Dimensions dstBuffer,
             const Dimensions dstOffset,
             Dimensions &sizeRead,
-            void* buf) throw (DCException)
+            void* buf)
+    throw (DCException)
     {
         if (fileStatus != FST_READING && fileStatus != FST_WRITING)
             throw DCException(getExceptionString("read", "this access is not permitted"));
