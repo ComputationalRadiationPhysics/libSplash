@@ -1,5 +1,5 @@
  #
- # Copyright 2013 Felix Schmitt
+ # Copyright 2013 Felix Schmitt, Axel Huebl
  #
  # This file is part of libSplash. 
  # 
@@ -48,6 +48,24 @@ ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 #-------------------------------------------------------------------------------
 
+# whats my version?
+FILE(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/version.hpp"
+     SPLASH_VERSION_MAJOR_HPP REGEX "#define SPLASH_VERSION_MAJOR ")
+
+FILE(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/version.hpp"
+     SPLASH_VERSION_MINOR_HPP REGEX "#define SPLASH_VERSION_MINOR ")
+
+STRING(REGEX MATCH "([0-9]+)" SPLASH_VERSION_MAJOR
+                            ${SPLASH_VERSION_MAJOR_HPP})
+STRING(REGEX MATCH "([0-9]+)" SPLASH_VERSION_MINOR
+                            ${SPLASH_VERSION_MINOR_HPP})
+SET(SPLASH_VERSION_PATCH 0)
+
+SET(SPLASH_VERSION "${SPLASH_VERSION_MAJOR}.${SPLASH_VERSION_MINOR}.${SPLASH_VERSION_PATCH}")
+MESSAGE(STATUS "Building libSplash version ${SPLASH_VERSION}")
+
+#-------------------------------------------------------------------------------
+
 # HDF5 is required package
 FIND_PACKAGE(HDF5 REQUIRED)
 INCLUDE_DIRECTORIES(SYSTEM ${HDF5_INCLUDE_DIR})
@@ -56,11 +74,10 @@ INCLUDE_DIRECTORIES(SYSTEM ${HDF5_INCLUDE_DIR})
 #   CMake prefers .so/shared libraries                 
 #   if we find a static HDF5 lib in the ${HDF5_LIBRARIES}
 #   it means there is only a static version installed
+SET(HDF5_IS_STATIC ON)
 STRING(FIND "${HDF5_LIBRARIES}" "hdf5.a" HDF5_IS_STATIC_POS)
 IF(${HDF5_IS_STATIC_POS} EQUAL -1)
     SET(HDF5_IS_STATIC OFF)
-ELSE(${HDF5_IS_STATIC_POS} EQUAL -1)
-    SET(HDF5_IS_STATIC ON)
 ENDIF(${HDF5_IS_STATIC_POS} EQUAL -1)
 
 #-------------------------------------------------------------------------------
@@ -145,14 +162,16 @@ INSTALL(TARGETS splash_static ARCHIVE DESTINATION lib)
 
 # copy include folder to install folder
 INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/include/."
-  DESTINATION "${CMAKE_INSTALL_PREFIX}/include"
+  DESTINATION include
   PATTERN ".svn" EXCLUDE
   PATTERN ".git" EXCLUDE
   PATTERN "splash_*.h" EXCLUDE
 )
 
 # install correct splash header file
-INSTALL(SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/PostInstall.cmake")
+# (will be executed after the POST_BUILD copies of splash.h)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/splash/splash.h
+        DESTINATION include/splash)
 
 ADD_CUSTOM_COMMAND(TARGET splash_static POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory
@@ -163,7 +182,7 @@ IF(HDF5_IS_PARALLEL)
     SET(splash_inc_file "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/splash_parallel.h")
 
     ADD_CUSTOM_COMMAND(TARGET splash_static POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E create_symlink
+            COMMAND ${CMAKE_COMMAND} -E copy
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/splash_parallel.h"
                 "${CMAKE_CURRENT_BINARY_DIR}/splash/splash.h"
         )
@@ -171,14 +190,11 @@ ELSE(HDF5_IS_PARALLEL)
     SET(splash_inc_file "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/splash_serial.h")
 
     ADD_CUSTOM_COMMAND(TARGET splash_static POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E create_symlink
+            COMMAND ${CMAKE_COMMAND} -E copy
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/splash_serial.h"
                 "${CMAKE_CURRENT_BINARY_DIR}/splash/splash.h"
         )
 ENDIF(HDF5_IS_PARALLEL)
-
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/PostInstall.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/PostInstall.cmake @ONLY)
 
 #-------------------------------------------------------------------------------
 
