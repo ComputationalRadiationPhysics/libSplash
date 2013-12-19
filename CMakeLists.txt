@@ -49,20 +49,20 @@ ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 #-------------------------------------------------------------------------------
 
 # whats my version?
-file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/version.hpp"
+FILE(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/version.hpp"
      SPLASH_VERSION_MAJOR_HPP REGEX "#define SPLASH_VERSION_MAJOR ")
 
-file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/version.hpp"
+FILE(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/version.hpp"
      SPLASH_VERSION_MINOR_HPP REGEX "#define SPLASH_VERSION_MINOR ")
 
-string(REGEX MATCH "([0-9]+)" SPLASH_VERSION_MAJOR
+STRING(REGEX MATCH "([0-9]+)" SPLASH_VERSION_MAJOR
                             ${SPLASH_VERSION_MAJOR_HPP})
-string(REGEX MATCH "([0-9]+)" SPLASH_VERSION_MINOR
+STRING(REGEX MATCH "([0-9]+)" SPLASH_VERSION_MINOR
                             ${SPLASH_VERSION_MINOR_HPP})
-set(SPLASH_VERSION_PATCH 0)
+SET(SPLASH_VERSION_PATCH 0)
 
-set(SPLASH_VERSION "${SPLASH_VERSION_MAJOR}.${SPLASH_VERSION_MINOR}.${SPLASH_VERSION_PATCH}")
-message(STATUS "Building libSplash version ${SPLASH_VERSION}")
+SET(SPLASH_VERSION "${SPLASH_VERSION_MAJOR}.${SPLASH_VERSION_MINOR}.${SPLASH_VERSION_PATCH}")
+MESSAGE(STATUS "Building libSplash version ${SPLASH_VERSION}")
 
 #-------------------------------------------------------------------------------
 
