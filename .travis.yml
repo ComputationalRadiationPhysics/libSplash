@@ -9,9 +9,14 @@ compiler:
   - clang
 
 env:
-  - SPLASHPARALLEL=ON  SPLASHMPI=ON
-  - SPLASHPARALLEL=OFF SPLASHMPI=ON
-  - SPLASHPARALLEL=OFF SPLASHMPI=OFF
+  global:
+    - SPLASH_ROOT=~/lib/splash
+    - BUILD=~/buildTmp
+    - SRC=$TRAVIS_BUILD_DIR
+  matrix:
+    - SPLASHPARALLEL=ON  SPLASHMPI=ON
+    - SPLASHPARALLEL=OFF SPLASHMPI=ON
+    - SPLASHPARALLEL=OFF SPLASHMPI=OFF
 
 script:
   - cd $BUILD
@@ -34,15 +39,19 @@ after_script:
 before_script:
   - uname -r
   - lsb_release -a
+  - echo "$SRC"
+  - ls -hal $SRC
+# PPA providing hdf5 >= 1.8.6 libraries; remove legacy hdf5 packages/deps from travis
+  - sudo apt-get remove -qq libhdf5*
   - echo "yes" | sudo add-apt-repository ppa:jsm-8/lofar-deps
   - sudo apt-get update -qq
+  - sudo apt-cache policy
+  - sudo apt-cache policy libhdf5-serial-dev
   - if [ "$SPLASHMPI" == "ON" ]; then export APTMPI="libopenmpi-dev openmpi-bin"; fi
-  - if [ "$SPLASHPARALLEL" == "ON" ]; then export APTHDF5="libhdf5-openmpi-7 libhdf5-openmpi-dev"; else export APTHDF5="libhdf5-7 libhdf5-dev libhdf5-serial-dev"; fi
+  - if [ "$SPLASHPARALLEL" == "ON" ]; then export APTHDF5="libhdf5-openmpi-7 libhdf5-openmpi-dev"; else export APTHDF5="libhdf5-serial-dev"; fi
   - sudo dpkg --get-selections
   - sudo apt-get install -qq -f libcppunit-dev
   - sudo apt-get install -qq -f libboost-program-options-dev
-  - sudo apt-get install -y -f $APTMPI $APTHDF5
-  - export SRC=`pwd`
-  - export BUILD=~/buildTmp
+  - sudo apt-get install -y -f $APTMPI
+  - sudo apt-get -t o=LP-PPA-jsm-8-lofar-deps install -q -f $APTHDF5
   - mkdir -p $BUILD ~/lib
-  - export SPLASH_ROOT=~/lib/splash
