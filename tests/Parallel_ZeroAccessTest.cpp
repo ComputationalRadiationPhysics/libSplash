@@ -145,9 +145,15 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         for (size_t i = 0; i < dataSize; ++i)
         {
             if (i < readElements)
+            {
+                printf("%lld == %lld\n", (long long)(data[i]),
+                        (long long)(dataSize * myMpiRank + i));
                 CPPUNIT_ASSERT(data[i] == dataSize * myMpiRank + i);
+            }
             else
+            {
                 CPPUNIT_ASSERT(data[i] == -1);
+            }
         }
         
         pdc->close();
