@@ -41,6 +41,12 @@ function testMPI()
 
 testMPI ./Parallel_ZeroAccessTest.cpp.out 7 "Testing zero accesses 7 (parallel)..."
 
+testMPI ./Parallel_ZeroAccessTest.cpp.out 2 "Testing zero accesses 2 (parallel)..."
+
+testMPI ./Parallel_ZeroAccessTest.cpp.out 4 "Testing zero accesses 4 (parallel)..."
+
+testMPI ./Parallel_ZeroAccessTest.cpp.out 7 "Testing zero accesses 7 (parallel)..."
+
 cd ..
 
 exit $OK
