@@ -94,8 +94,6 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         if (!zeroAccess)
          elements = (rand() % dataSize) + 1;
         
-        printf("rank %d writes %llu elements\n", myMpiRank, elements);
-        
         size_t readElements = 100000;
         for (size_t i = 0; i < elements; ++i)
             data[i] = dataSize * myMpiRank + i;
@@ -110,6 +108,8 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         pdc->write(10, ctUInt64, 1, Dimensions(1, 1, 1), "elements", &elements);
         
         pdc->close();
+        
+        MPI_Barrier(MPI_COMM_WORLD);
         
         /* clear data buffer */
         for (size_t i = 0; i < dataSize; ++i)
@@ -142,8 +142,6 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         pdc->read(10, Dimensions(readElements, 1, 1), Dimensions(myOffset, 0, 0),
                 "data", sizeRead, data);
         
-        printf("rank %d reading %llu elements\n", myMpiRank, readElements);
-        
         CPPUNIT_ASSERT(sizeRead == Dimensions(elements, 1, 1));
         
         for (size_t i = 0; i < dataSize; ++i)
@@ -152,6 +150,9 @@ void Parallel_ZeroAccessTest::testZeroAccess()
             {
                 if (data[i] != dataSize * myMpiRank + i)
                 {
+                    printf("rank %d writes %llu elements\n", myMpiRank, (long long unsigned)elements);
+                    printf("rank %d reading %llu elements\n", myMpiRank, (long long unsigned)readElements);
+                    printf("rank %d offset = %llu\n", myMpiRank, (long long unsigned)myOffset);
                     printf("%lld == %lld, rank = %d, i = %llu\n",
                             (long long)(data[i]),
                             (long long)(dataSize * myMpiRank + i),
