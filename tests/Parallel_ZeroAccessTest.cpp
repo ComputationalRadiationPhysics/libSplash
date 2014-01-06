@@ -94,6 +94,8 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         if (!zeroAccess)
          elements = (rand() % dataSize) + 1;
         
+        printf("rank %d writes %llu elements\n", myMpiRank, elements);
+        
         size_t readElements = 100000;
         for (size_t i = 0; i < elements; ++i)
             data[i] = dataSize * myMpiRank + i;
@@ -140,6 +142,8 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         pdc->read(10, Dimensions(readElements, 1, 1), Dimensions(myOffset, 0, 0),
                 "data", sizeRead, data);
         
+        printf("rank %d reading %llu elements\n", myMpiRank, readElements);
+        
         CPPUNIT_ASSERT(sizeRead == Dimensions(elements, 1, 1));
         
         for (size_t i = 0; i < dataSize; ++i)
@@ -148,9 +152,10 @@ void Parallel_ZeroAccessTest::testZeroAccess()
             {
                 if (data[i] != dataSize * myMpiRank + i)
                 {
-                printf("%lld == %lld, rank = %d, i = %llu\n", (long long)(data[i]),
-                        (long long)(dataSize * myMpiRank + i),
-                        myMpiRank, (long long unsigned)i);
+                    printf("%lld == %lld, rank = %d, i = %llu\n",
+                            (long long)(data[i]),
+                            (long long)(dataSize * myMpiRank + i),
+                            myMpiRank, (long long unsigned)i);
                 }
                 CPPUNIT_ASSERT(data[i] == dataSize * myMpiRank + i);
             }
