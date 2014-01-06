@@ -27,17 +27,17 @@ function testMPI()
 
 #testMPI ./Parallel_SimpleDataTest.cpp.out 8 "Testing simple data read/write (parallel)..."
 
-testMPI ./Parallel_DomainsTest.cpp.out 8 "Testing domains (parallel)..."
+#testMPI ./Parallel_DomainsTest.cpp.out 8 "Testing domains (parallel)..."
 
-testMPI ./Parallel_AttributesTest.cpp.out 4 "Testing reading/writing attributes (parallel)..."
+#testMPI ./Parallel_AttributesTest.cpp.out 4 "Testing reading/writing attributes (parallel)..."
 
-testMPI ./Parallel_RemoveTest.cpp.out 2 "Testing removing datasets (parallel)..."
+#testMPI ./Parallel_RemoveTest.cpp.out 2 "Testing removing datasets (parallel)..."
 
-testMPI ./Parallel_ReferencesTest.cpp.out 2 "Testing references (parallel)..."
+#testMPI ./Parallel_ReferencesTest.cpp.out 2 "Testing references (parallel)..."
 
-testMPI ./Parallel_ZeroAccessTest.cpp.out 2 "Testing zero accesses 2 (parallel)..."
+#testMPI ./Parallel_ZeroAccessTest.cpp.out 2 "Testing zero accesses 2 (parallel)..."
 
-testMPI ./Parallel_ZeroAccessTest.cpp.out 4 "Testing zero accesses 4 (parallel)..."
+#testMPI ./Parallel_ZeroAccessTest.cpp.out 4 "Testing zero accesses 4 (parallel)..."
 
 testMPI ./Parallel_ZeroAccessTest.cpp.out 7 "Testing zero accesses 7 (parallel)..."
 
