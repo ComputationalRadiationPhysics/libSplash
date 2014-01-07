@@ -138,6 +138,12 @@ namespace splash
                     fileCloseCallback(rmHandle->second.handle,
                             leastAccIndex.index, fileCloseUserData);
                 }
+                
+                if (H5Fflush(rmHandle->second.handle, H5F_SCOPE_GLOBAL) < 0)
+                {
+                    throw DCException(getExceptionString("close", "Failed to flush file prior to close",
+                            mpiPos.toString().c_str()));
+                }
 
                 if (H5Fclose(rmHandle->second.handle) < 0)
                 {
@@ -233,6 +239,12 @@ namespace splash
             if (fileCloseCallback)
                 fileCloseCallback(iter->second.handle, iter->first, fileCloseUserData);
 
+            if (H5Fflush(iter->second.handle, H5F_SCOPE_GLOBAL) < 0)
+            {
+                throw DCException(getExceptionString("close", "Failed to flush file prior to close",
+                        posFromIndex(iter->first).toString().c_str()));
+            }
+            
             if (H5Fclose(iter->second.handle) < 0)
             {
                 throw DCException(getExceptionString("close", "Failed to close file handle",
