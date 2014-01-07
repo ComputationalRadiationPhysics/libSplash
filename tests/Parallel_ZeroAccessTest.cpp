@@ -45,7 +45,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(Parallel_ZeroAccessTest);
 
 using namespace splash;
 
-#define NUM_TEST_LOOPS 100
+#define NUM_TEST_LOOPS 10
 
 Parallel_ZeroAccessTest::Parallel_ZeroAccessTest()
 {
@@ -208,6 +208,8 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         
         if (myMpiRank == 0)
             std::cout << "." << std::flush;
+        
+        MPI_Barrier(MPI_COMM_WORLD);
     }
     
     delete pdc;

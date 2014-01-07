@@ -955,7 +955,7 @@ namespace splash
         Dimensions tmp_mpi_pos(options.mpiPos);
         if (ndims == 1)
         {
-            tmp_mpi_topology.set(options.mpiTopology.getScalarSize(), 1, 1);
+            tmp_mpi_topology.set(options.mpiSize, 1, 1);
             tmp_mpi_pos.set(options.mpiRank, 0, 0);
         }
 
@@ -988,6 +988,8 @@ namespace splash
                     globalOffset[i] += write_sizes[index * 3 + i];
             }
         }
+        
+        std::cout << options.mpiRank << ": globalSize = " << globalSize.toString() << std::endl;
     }
 
     size_t ParallelDataCollector::getNDims(H5Handle h5File,
