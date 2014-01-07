@@ -153,14 +153,26 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         
         /* compute offset for reading */
         size_t myOffset = 0;
+        size_t totalElements = 0;
         for (size_t i = 0; i < myMpiRank; ++i)
             myOffset += allNumElements[i];
+        
+        for (size_t i = 0; i < totalMpiSize; ++i)
+            totalElements += allNumElements[i];
+        
+        int64_t allData[dataSize*totalMpiSize];
+        pdc->read(10, Dimensions(totalElements, 1, 1), Dimensions(0, 0, 0),
+                strname.str().c_str(), sizeRead, allData);
         
         if (myMpiRank == 0)
         {
             std::cout << "elem table file" << std::endl;
             for (int i = 0; i < totalMpiSize; ++i)
                 std::cout << "rank " << i << ": " << allNumElements[i] << ", ";
+            std::cout << std::endl;
+            
+            for (int i = 0; i < totalElements; ++i)
+                std::cout << allData[i] << " ";
             std::cout << std::endl;
         }
         
