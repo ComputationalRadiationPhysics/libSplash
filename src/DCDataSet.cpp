@@ -442,7 +442,7 @@ namespace splash
             throw DCException(getExceptionString("read: Dataset has not been opened/created"));
 
         if (dstBuffer.getScalarSize() == 0)
-            dstBuffer.set(getLogicalSize());
+            dstBuffer.set(srcSize);
 
         // dst buffer is allowed to be NULL
         // in this case, only the size of the dataset is returned
