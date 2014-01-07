@@ -25,6 +25,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <cppunit/TestAssert.h>
+#include <iosfwd>
+#include <bits/basic_string.h>
 
 #include "Parallel_ZeroAccessTest.h"
 
@@ -84,6 +86,9 @@ void Parallel_ZeroAccessTest::testZeroAccess()
     /* test loops */
     for (size_t loop = 0; loop < NUM_TEST_LOOPS; ++loop)
     {
+        std::stringstream strname;
+        strname << "data_" << loop;
+        
         /* clear data buffer */
         for (size_t i = 0; i < dataSize; ++i)
             data[i] = -1;
@@ -115,10 +120,10 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         attr.fileAccType = DataCollector::FAT_CREATE;
         pdc->open(HDF5_FILE, attr);
         
-        pdc->write(loop, ctInt64, 1, Dimensions(dataSize, 1, 1),
-                Dimensions(elements, 1, 1), Dimensions(0, 0, 0), "data", data);
+        pdc->write(10, ctInt64, 1, Dimensions(dataSize, 1, 1),
+                Dimensions(elements, 1, 1), Dimensions(0, 0, 0), strname.str().c_str(), data);
         
-        pdc->write(loop, ctUInt64, 1, Dimensions(1, 1, 1), "elements", &elements);
+        pdc->write(10, ctUInt64, 1, Dimensions(1, 1, 1), "elements", &elements);
         
         pdc->close();
         
@@ -134,7 +139,7 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         
         /* read number of own elements (just for testing) */
         Dimensions sizeRead(0, 0, 0);
-        pdc->read(loop, Dimensions(1, 1, 1), Dimensions(myMpiRank, 0, 0),
+        pdc->read(10, Dimensions(1, 1, 1), Dimensions(myMpiRank, 0, 0),
                 "elements", sizeRead, &readElements);
         
         CPPUNIT_ASSERT(sizeRead == Dimensions(1, 1, 1));
@@ -142,7 +147,7 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         
         /* read complete elements index table */
         size_t allNumElements[totalMpiSize];
-        pdc->read(loop, "elements", sizeRead, allNumElements);
+        pdc->read(10, "elements", sizeRead, allNumElements);
         
         CPPUNIT_ASSERT(sizeRead == Dimensions(totalMpiSize, 1, 1));
         
@@ -160,8 +165,8 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         }
         
         /* read data for comparison */
-        pdc->read(loop, Dimensions(readElements, 1, 1), Dimensions(myOffset, 0, 0),
-                "data", sizeRead, data);
+        pdc->read(10, Dimensions(readElements, 1, 1), Dimensions(myOffset, 0, 0),
+                strname.str().c_str(), sizeRead, data);
         
         CPPUNIT_ASSERT(sizeRead == Dimensions(elements, 1, 1));
         
