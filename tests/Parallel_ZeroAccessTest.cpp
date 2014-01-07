@@ -94,6 +94,19 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         if (!zeroAccess)
          elements = (rand() % dataSize) + 1;
         
+        size_t allElements[totalMpiSize];
+        
+        MPI_Gather(&elements, 1, MPI_INTEGER8, allElements, 1,
+                MPI_INTEGER8, 0, MPI_COMM_WORLD);
+        
+        if (myMpiRank == 0)
+        {
+            std::cout << "elem table original" << std::endl;
+            for (int i = 0; i < totalMpiSize; ++i)
+                std::cout << "rank " << i << ": " << allElements[i] << ", ";
+            std::cout << std::endl;
+        }
+        
         size_t readElements = 100000;
         for (size_t i = 0; i < elements; ++i)
             data[i] = dataSize * myMpiRank + i;
@@ -137,6 +150,14 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         size_t myOffset = 0;
         for (size_t i = 0; i < myMpiRank; ++i)
             myOffset += allNumElements[i];
+        
+        if (myMpiRank == 0)
+        {
+            std::cout << "elem table file" << std::endl;
+            for (int i = 0; i < totalMpiSize; ++i)
+                std::cout << "rank " << i << ": " << allNumElements[i] << ", ";
+            std::cout << std::endl;
+        }
         
         /* read data for comparison */
         pdc->read(10, Dimensions(readElements, 1, 1), Dimensions(myOffset, 0, 0),
