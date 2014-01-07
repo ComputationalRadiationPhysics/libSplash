@@ -45,13 +45,13 @@ namespace splash
         
         if (level <= verbosity_level)
         {
-            fprintf(stderr, "[SPLASH_LOG] ");
+            fprintf(stdout, "[SPLASH_LOG] ");
             
             va_start(argp, fmt);
-            vfprintf(stderr, fmt, argp);
+            vfprintf(stdout, fmt, argp);
             va_end(argp);
 
-            fprintf(stderr, "\n");
+            fprintf(stdout, "\n");
         }
     }
 
