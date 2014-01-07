@@ -20,7 +20,7 @@ function testMPI()
 {
     if [ -e "$1" ]; then
         echo -e "\n$3\n"
-        mpirun -n $2 $1
+        mpirun -n $2 $1 -x SPLASH_VERBOSE=100
         OK=$(( OK + $? ))
     fi
 }

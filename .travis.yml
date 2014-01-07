@@ -21,7 +21,7 @@ env:
 script:
   - cd $BUILD
 # compile libSplash and install
-  - cmake -DTOOLS_MPI=$SPLASHMPI -DCMAKE_INSTALL_PREFIX=~/lib/splash $SRC
+  - cmake -DDEBUG_VERBOSE=ON -DSPLASH_RELEASE=OFF -DTOOLS_MPI=$SPLASHMPI -DCMAKE_INSTALL_PREFIX=~/lib/splash $SRC
   - make install
   - rm -rf $BUILD/*
 # compile examples/
