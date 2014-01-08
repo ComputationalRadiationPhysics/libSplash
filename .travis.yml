@@ -53,6 +53,7 @@ before_script:
   - sudo dpkg --get-selections
   - sudo apt-get install -qq -f libcppunit-dev
   - sudo apt-get install -qq -f libboost-program-options-dev
+  - sudo apt-get install -qq -f valgrind
   - sudo apt-get install -y -f $APTMPI
   - sudo apt-get -t o=LP-PPA-jsm-8-lofar-deps install -q -f $APTHDF5
   - mkdir -p $BUILD ~/lib
