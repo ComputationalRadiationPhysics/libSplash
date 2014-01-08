@@ -942,6 +942,11 @@ namespace splash
     {
         uint64_t write_sizes[options.mpiSize * 3];
         uint64_t local_write_size[3] = {localSize[0], localSize[1], localSize[2]};
+        
+        std::cout << options.mpiRank << ": localWriteSize" << std::endl;
+        for (int i = 0; i < 3; ++i)
+            std::cout << local_write_size[i] << "+";
+        std::cout << std::endl;
 
         globalSize.set(1, 1, 1);
         globalOffset.set(0, 0, 0);
@@ -990,8 +995,8 @@ namespace splash
         }
         
         std::cout << options.mpiRank << ": globalSize = " << globalSize.toString() << std::endl;
-        for (int i = 0; i < options.mpiSize * 3; ++i)
-            std::cout << options.mpiRank << ": " << write_sizes[i] << "+";
+        for (int i = 0; i < options.mpiSize; i += 3)
+            std::cout << write_sizes[i] << "+";
         std::cout << std::endl;
     }
 
