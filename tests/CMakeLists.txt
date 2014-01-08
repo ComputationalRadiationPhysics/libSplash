@@ -74,7 +74,7 @@ IF(PARALLEL)
         INCLUDE_DIRECTORIES(${MPI_C_INCLUDE_PATH} ${MPI_CXX_INCLUDE_PATH})
     ENDIF(NOT WITH_MPI)
 
-    SET(TESTS ${TESTS} Parallel_Attributes Parallel_Domains Parallel_References Parallel_Remove Parallel_SimpleData)
+    SET(TESTS ${TESTS} Parallel_Attributes Parallel_Domains Parallel_References Parallel_Remove Parallel_SimpleData Parallel_ZeroAccess)
 ELSE(PARALLEL)
     SET(TESTS ${TESTS})
 ENDIF(PARALLEL)

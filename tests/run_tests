@@ -25,21 +25,21 @@ function testMPI()
     fi
 }
 
-testSerial ./SimpleDataTest.cpp.out "Testing simple data read/write..."
+#testSerial ./SimpleDataTest.cpp.out "Testing simple data read/write..."
 
-testSerial ./AttributesTest.cpp.out "Testing reading/writing attributes..."
+#testSerial ./AttributesTest.cpp.out "Testing reading/writing attributes..."
 
-testSerial ./AppendTest.cpp.out "Testing append data..."
+#testSerial ./AppendTest.cpp.out "Testing append data..."
 
-testSerial ./FileAccessTest.cpp.out "Testing file accesses..."
+#testSerial ./FileAccessTest.cpp.out "Testing file accesses..."
 
-testSerial ./StridingTest.cpp.out "Testing striding access..."
+#testSerial ./StridingTest.cpp.out "Testing striding access..."
 
-testSerial ./RemoveTest.cpp.out "Testing removing datasets..."
+#testSerial ./RemoveTest.cpp.out "Testing removing datasets..."
 
-testSerial ./ReferencesTest.cpp.out "Testing references..."
+#testSerial ./ReferencesTest.cpp.out "Testing references..."
 
-testMPI ./DomainsTest.cpp.out 8 "Testing domains..."
+#testMPI ./DomainsTest.cpp.out 8 "Testing domains..."
 
 cd ..
 

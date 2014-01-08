@@ -19,40 +19,34 @@
  * If not, see <http://www.gnu.org/licenses/>. 
  */
 
-#include <stdio.h>
-#include <cstdlib>
-#include <cstdarg>
 
-#include "splash/core/logging.hpp"
 
-namespace splash
+#ifndef PARALLEL_ZEROACCESSTEST_H
+#define	PARALLEL_ZEROACCESSTEST_H
+
+#include <cppunit/extensions/HelperMacros.h>
+
+#include "splash/splash.h"
+
+class Parallel_ZeroAccessTest : public CPPUNIT_NS::TestFixture
 {
-    static int verbosity_level = 0;
+    CPPUNIT_TEST_SUITE(Parallel_ZeroAccessTest);
 
-    void parseEnvVars(void)
-    {
-        char *verbosity = getenv("SPLASH_VERBOSE");
-        if (verbosity != NULL)
-        {
-            verbosity_level = atoi(verbosity);
-            log_msg(1, "Setting verbosity level to %d\n", verbosity_level);
-        }
-    }
+    CPPUNIT_TEST(testZeroAccess);
 
-    void log_msg(int level, const char *fmt, ...)
-    {
-        va_list argp;
-        
-        if (level <= verbosity_level)
-        {
-            fprintf(stdout, "[SPLASH_LOG] ");
-            
-            va_start(argp, fmt);
-            vfprintf(stdout, fmt, argp);
-            va_end(argp);
+    CPPUNIT_TEST_SUITE_END();
 
-            fprintf(stdout, "\n");
-        }
-    }
+public:
 
-}
+    Parallel_ZeroAccessTest();
+    virtual ~Parallel_ZeroAccessTest();
+
+private:
+    void testZeroAccess();
+
+    int totalMpiSize;
+    int myMpiRank;
+};
+
+#endif	/* PARALLEL_ZEROACCESSTEST_H */
+

@@ -942,12 +942,17 @@ namespace splash
     {
         uint64_t write_sizes[options.mpiSize * 3];
         uint64_t local_write_size[3] = {localSize[0], localSize[1], localSize[2]};
+        
+        std::cout << options.mpiRank << ": localWriteSize" << std::endl;
+        for (int i = 0; i < 3; ++i)
+            std::cout << local_write_size[i] << "+";
+        std::cout << std::endl;
 
         globalSize.set(1, 1, 1);
         globalOffset.set(0, 0, 0);
 
-        if (MPI_Allgather(local_write_size, 3, MPI_INTEGER8,
-                write_sizes, 3, MPI_INTEGER8, options.mpiComm) != MPI_SUCCESS)
+        if (MPI_Allgather(local_write_size, 3, MPI_UNSIGNED_LONG_LONG,
+                write_sizes, 3, MPI_UNSIGNED_LONG_LONG, options.mpiComm) != MPI_SUCCESS)
             throw DCException(getExceptionString("gatherMPIWrites",
                 "MPI_Allgather failed", NULL));
 
@@ -955,7 +960,7 @@ namespace splash
         Dimensions tmp_mpi_pos(options.mpiPos);
         if (ndims == 1)
         {
-            tmp_mpi_topology.set(options.mpiTopology.getScalarSize(), 1, 1);
+            tmp_mpi_topology.set(options.mpiSize, 1, 1);
             tmp_mpi_pos.set(options.mpiRank, 0, 0);
         }
 
@@ -988,6 +993,11 @@ namespace splash
                     globalOffset[i] += write_sizes[index * 3 + i];
             }
         }
+        
+        std::cout << options.mpiRank << ": globalSize = " << globalSize.toString() << std::endl;
+        for (int i = 0; i < options.mpiSize * 3; i += 3)
+            std::cout << write_sizes[i] << "+";
+        std::cout << std::endl;
     }
 
     size_t ParallelDataCollector::getNDims(H5Handle h5File,
