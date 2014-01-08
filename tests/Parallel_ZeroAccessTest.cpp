@@ -101,8 +101,8 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         
         size_t allElements[totalMpiSize];
         
-        MPI_Gather(&elements, 1, MPI_UINT64_T, allElements, 1,
-                MPI_UINT64_T, 0, MPI_COMM_WORLD);
+        MPI_Gather(&elements, 1, MPI_UNSIGNED_LONG_LONG, allElements, 1,
+                MPI_UNSIGNED_LONG_LONG, 0, MPI_COMM_WORLD);
         
         if (myMpiRank == 0)
         {
