@@ -995,7 +995,7 @@ namespace splash
         }
         
         std::cout << options.mpiRank << ": globalSize = " << globalSize.toString() << std::endl;
-        for (int i = 0; i < options.mpiSize; i += 3)
+        for (int i = 0; i < options.mpiSize * 3; i += 3)
             std::cout << write_sizes[i] << "+";
         std::cout << std::endl;
     }
