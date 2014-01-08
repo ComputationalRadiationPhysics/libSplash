@@ -361,7 +361,7 @@ int executeToolFunction(Options& options,
     } else
     {
         // open master file to detect number of files
-        uint32_t fileMPISizeBuffer[3] = {0, 0, 0};
+        uint64_t fileMPISizeBuffer[3] = {0, 0, 0};
         Dimensions fileMPISizeDim(0, 0, 0);
         int fileMPISize = 0;
 
@@ -374,7 +374,7 @@ int executeToolFunction(Options& options,
         }
 
 #if (ENABLE_MPI==1)
-        MPI_Bcast(fileMPISizeBuffer, 3, MPI_UINT32_T, 0, MPI_COMM_WORLD);
+        MPI_Bcast(fileMPISizeBuffer, 3, MPI_UNSIGNED_LONG_LONG, 0, MPI_COMM_WORLD);
 #endif
 
         if (options.mpiRank != 0)

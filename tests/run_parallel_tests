@@ -20,6 +20,7 @@ function testMPI()
 {
     if [ -e "$1" ]; then
         echo -e "\n$3\n"
+	    mpirun -V
         mpirun -n $2 valgrind $1
         OK=$(( OK + $? ))
     fi
