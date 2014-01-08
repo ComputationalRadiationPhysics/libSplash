@@ -951,8 +951,8 @@ namespace splash
         globalSize.set(1, 1, 1);
         globalOffset.set(0, 0, 0);
 
-        if (MPI_Allgather(local_write_size, 3, MPI_UNSIGNED_LONG_LONG,
-                write_sizes, 3, MPI_UNSIGNED_LONG_LONG, options.mpiComm) != MPI_SUCCESS)
+        if (MPI_Allgather(local_write_size, 3, MPI_UINT64_T,
+                write_sizes, 3, MPI_UINT64_T, options.mpiComm) != MPI_SUCCESS)
             throw DCException(getExceptionString("gatherMPIWrites",
                 "MPI_Allgather failed", NULL));
 
