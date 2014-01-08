@@ -41,17 +41,20 @@ before_script:
   - lsb_release -a
   - echo "$SRC"
   - ls -hal $SRC
-# PPA providing hdf5 >= 1.8.6 libraries; remove legacy hdf5 packages/deps from travis
-  - sudo apt-get remove -qq libhdf5*
-  - echo "yes" | sudo add-apt-repository ppa:jsm-8/lofar-deps
+# PPA providing hdf5 >= 1.8.6 and OpenMPI >= 1.5.1
+# -> remove legacy hdf5 and mpi packages/deps from travis
+  - sudo apt-get remove -qq libhdf5* libopenmpi* openmpi-bin
+  - echo "yes" | sudo add-apt-repository ppa:james-page/openmpi
+  - echo "yes" | sudo add-apt-repository ppa:axel-huebl/libsplash
   - sudo apt-get update -qq
   - sudo apt-cache policy
   - sudo apt-cache policy libhdf5-serial-dev
+  - sudo apt-cache policy libopenmpi-dev
   - if [ "$SPLASHMPI" == "ON" ]; then export APTMPI="libopenmpi-dev openmpi-bin"; fi
   - if [ "$SPLASHPARALLEL" == "ON" ]; then export APTHDF5="libhdf5-openmpi-7 libhdf5-openmpi-dev"; else export APTHDF5="libhdf5-serial-dev"; fi
   - sudo dpkg --get-selections
   - sudo apt-get install -qq -f libcppunit-dev
   - sudo apt-get install -qq -f libboost-program-options-dev
-  - sudo apt-get install -y -f $APTMPI
-  - sudo apt-get -t o=LP-PPA-jsm-8-lofar-deps install -q -f $APTHDF5
+  - sudo apt-get -t o=LP-PPA-james-page-openmpi install -q -f $APTMPI
+  - sudo apt-get -t o=LP-PPA-axel-huebl-libsplash install -q -f $APTHDF5
   - mkdir -p $BUILD ~/lib
