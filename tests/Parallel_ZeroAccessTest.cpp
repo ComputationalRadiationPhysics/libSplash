@@ -103,7 +103,7 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         pdc->open(HDF5_FILE, attr);
         
         pdc->write(10, ctInt64, 1, Dimensions(dataSize, 1, 1),
-                Dimensions(elements, 1, 1), Dimensions(0, 0, 0), "data2", data);
+                Dimensions(elements, 1, 1), Dimensions(0, 0, 0), "data", data);
         
         pdc->write(10, ctUInt64, 1, Dimensions(1, 1, 1), "elements", &elements);
         
@@ -138,7 +138,7 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         
         /* read data for comparison */
         pdc->read(10, Dimensions(readElements, 1, 1), Dimensions(myOffset, 0, 0),
-                "data2", sizeRead, data);
+                "data", sizeRead, data);
         
         CPPUNIT_ASSERT(sizeRead == Dimensions(elements, 1, 1));
         
