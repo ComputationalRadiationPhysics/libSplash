@@ -16,7 +16,7 @@ To use the CMakeLists.txt file which comes with the source code, you must have
 **CMake version 2.8.5** or higher installed.
 
 The splashtools and some tests also require an **MPI 2.2** compatible MPI library,
-e.g. OpenMPI 1.4.3 or higher.
+e.g. **OpenMPI 1.5.1** or higher.
 
 Tests require the development version of the **CppUnit** library.
 
@@ -92,4 +92,3 @@ This builds the *ParallelDataCollector* and *ParallelDomainCollector* classes.
 *Please note that this feature is beta stage and not fully tested!*
 See *IParallelDataCollector* and *IParallelDomainCollector* interfaces for further
 information on how to use the parallel version.
-
