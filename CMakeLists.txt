@@ -250,49 +250,114 @@ ENDIF(WITH_TOOLS)
 SET(CPACK_GENERATOR "DEB;TGZ;TBZ2;ZIP")
 
 SET(CPACK_PACKAGE_NAME "libsplash") # lower case required (debian policy)
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Simple Parallel file output Library for "
-                                      "Accumulating Simulation data using Hdf5")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY
+    "Simple Parallel file output Library for Accumulating Simulation data using Hdf5")
 SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 SET(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
 # a valid email is required - happy spamming :)
 SET(CPACK_PACKAGE_CONTACT "Felix Schmitt <...>")
 SET(CPACK_PACKAGE_VENDOR "ZIH and HZDR")
+# CPACK_PACKAGING_INSTALL_PREFIX : default is "/usr" for deb and rpm
 
 SET(CPACK_PACKAGE_VERSION_MAJOR "${SPLASH_VERSION_MAJOR}")
 SET(CPACK_PACKAGE_VERSION_MINOR "${SPLASH_VERSION_MINOR}")
 SET(CPACK_PACKAGE_VERSION_PATCH "${SPLASH_VERSION_PATCH}")
-SET(CPACK_PACKAGE_VERSION "${SPLASH_VERSION_MAJOR}.${SPLASH_VERSION_MINOR}.${SPLASH_VERSION_PATCH}")
+SET(CPACK_PACKAGE_VERSION
+    "${SPLASH_VERSION_MAJOR}.${SPLASH_VERSION_MINOR}.${SPLASH_VERSION_PATCH}")
 
-# what is that var for?
+# from `dpkg --print-architecture`
+IF(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR
+   CMAKE_SYSTEM_PROCESSOR STREQUAL "amd64")
+  SET(SPLASH_ARCHITECTURE "amd64")
+ELSE()
+  SET(SPLASH_ARCHITECTURE "i386")
+ENDIF()
+
+# probably only required by NSIS
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
 
 # ship (strip) all found executables
 SET(CPACK_STRIP_FILES ON)
 # do not ship source files (packed in a weird absolute dir)
 SET(CPACK_SOURCE_STRIP_FILES OFF)
-#SET(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable") # only required by NSIS ?
+#SET(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable") # only required by NSIS
 
-# DEB specific
+# try to detect used MPI flavor
+SET(MPI_FLAVOR "FLAVOR-NOTFOUND")
+IF(HDF5_IS_PARALLEL OR TOOLS_MPI)
+  SET(MPI_FLAVOR "openmpi")
+  SET(MPI_FLAVOR_BIN "openmpi-bin")
+  SET(MPI_FLAVOR_MINVERSION 1.5.1)
+  STRING(FIND "${MPI_C_LIBRARIES}" "libmpich" MPI_FLAVOR_POS)
+  IF(${MPI_FLAVOR_POS} GREATER -1)
+    SET(MPI_FLAVOR "mpich2")
+    SET(MPI_FLAVOR_BIN "mpich2")
+    SET(MPI_FLAVOR_MINVERSION 1.4.1)
+  ENDIF(${MPI_FLAVOR_POS} GREATER -1)
+ENDIF(HDF5_IS_PARALLEL OR TOOLS_MPI)
+
+# package name containing all necessary information for feature identification
+# inspect .deb meta data (like version) with dpkg --info <package>.deb
+IF(NOT HDF5_IS_PARALLEL)
+  SET(SPLASH_PACKAGE_EXTRA_PREFIX "-serial")
+ENDIF(NOT HDF5_IS_PARALLEL)
+IF(MPI_FLAVOR)
+  SET(SPLASH_PACKAGE_EXTRA_PREFIX
+      "${SPLASH_PACKAGE_EXTRA_PREFIX}-${MPI_FLAVOR}")
+ENDIF(MPI_FLAVOR)
+IF(NOT SPLASH_RELEASE)
+  SET(SPLASH_PACKAGE_DEBUG "-dbg")
+ENDIF(NOT SPLASH_RELEASE)
+
+SET(CPACK_PACKAGE_FILE_NAME
+    "${CPACK_PACKAGE_NAME}${SPLASH_PACKAGE_EXTRA_PREFIX}-${SPLASH_ARCHITECTURE}${SPLASH_PACKAGE_DEBUG}"
+   )
+
+# DEB specific ----------------------------------------------------------------
+#   package relation policy at
+#   http://www.debian.org/doc/debian-policy/ch-relationships.html
+
+# default values that are already set in a fine and noble manner
 # CPACK_DEBIAN_PACKAGE_MAINTAINER <- CPACK_PACKAGE_CONTACT
 # CPACK_DEBIAN_PACKAGE_NAME <- CPACK_PACKAGE_NAME
 # CPACK_DEBIAN_PACKAGE_VERSION <- CPACK_PACKAGE_VERSION
 # CPACK_DEBIAN_PACKAGE_DESCRIPTION <- CPACK_PACKAGE_DESCRIPTION_SUMMARY
 # CPACK_DEBIAN_PACKAGE_SECTION : default is "devel"
 # CPACK_DEBIAN_PACKAGE_PRIORITY : default is "optional"
-# CPACK_DEBIAN_PACKAGE_RECOMMENDS : policy?
-# CPACK_DEBIAN_PACKAGE_SUGGESTS : policy?
 # CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA : pos/pre inst/rm scripts
-# `dpkg --print-architecture
-SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64") # default is i386
+
+# from `dpkg --print-architecture`
+SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "${SPLASH_ARCHITECTURE}") # default is i386
+
 # the dev packages are a little bit too much, but since there is a lack of
 # convenient named meta packages we use them to trigger the dependencies
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS
-    "libhdf5-openmpi-dev (>= 1.8.6) | libhdf5-mpich2-dev (>= 1.8.6) | "
-    "libhdf5-serial-dev (>= 1.8.6)"
-   )
+IF(HDF5_IS_PARALLEL)
+  SET(CPACK_DEBIAN_PACKAGE_DEPENDS
+      "libhdf5-${MPI_FLAVOR}-dev (>= 1.8.6)"
+     )
+  SET(CPACK_DEBIAN_PACKAGE_RECOMMENDS
+      "${MPI_FLAVOR_BIN} (>= ${MPI_FLAVOR_MINVERSION})"
+     )
+ELSE(HDF5_IS_PARALLEL)
+  SET(CPACK_DEBIAN_PACKAGE_DEPENDS
+      "libhdf5-serial-dev (>= 1.8.6)"
+     )
+  IF(TOOLS_MPI)	
+    SET(CPACK_DEBIAN_PACKAGE_DEPENDS
+        "${CPACK_DEBIAN_PACKAGE_DEPENDS}, lib${MPI_FLAVOR}-dev (>= ${MPI_FLAVOR_MINVERSION})"
+       )
+    SET(CPACK_DEBIAN_PACKAGE_RECOMMENDS
+        "${MPI_FLAVOR_BIN} (>= ${MPI_FLAVOR_MINVERSION})"
+       )
+  ENDIF(TOOLS_MPI)
+ENDIF(HDF5_IS_PARALLEL)
+
+# CPACK_DEBIAN_PACKAGE_SUGGESTS
 # deb-src support
 # DEBIAN_PACKAGE_BUILDS_DEPENDS : not implemented by cmake yet?
+
+# END: DEB specific -----------------------------------------------------------
 
 # create or creates specific library names like ???
 #  libsplash.so     -> libsplash.so.1

@@ -10,7 +10,6 @@ compiler:
 
 env:
   global:
-    - SPLASH_ROOT=~/lib/splash
     - BUILD=~/buildTmp
     - SRC=$TRAVIS_BUILD_DIR
   matrix:
@@ -21,8 +20,9 @@ env:
 script:
   - cd $BUILD
 # compile libSplash and install
-  - cmake -DTOOLS_MPI=$SPLASHMPI -DCMAKE_INSTALL_PREFIX=~/lib/splash $SRC
-  - make install
+  - cmake -DTOOLS_MPI=$SPLASHMPI $SRC
+  - make package
+  - sudo dpkg -i libsplash*.deb
   - rm -rf $BUILD/*
 # compile examples/
   - cmake -DWITH_MPI=$SPLASHMPI $SRC/examples
