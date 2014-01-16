@@ -31,6 +31,8 @@
 namespace splash
 {
     EXTERN void parseEnvVars(void);
+    
+    EXTERN void setLogMpiRank(int rank);
 
     EXTERN void log_msg(int level, const char *fmt, ...);
 }

@@ -134,15 +134,17 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         /* compute offset for reading */
         size_t myOffset = 0;
         size_t totalSize = 0;
-        for (size_t i = 0; i < totalSize; ++i)
+        for (size_t i = 0; i < totalMpiSize; ++i)
         {
             totalSize += allNumElements[i];
             if (i < myMpiRank)
                 myOffset += allNumElements[i];
         }
         
-        if (readElements == 0 && (rand() % 2 == 0))
+        if ( (readElements == 0) && (rand() % 2 == 0))
+        {
             myOffset = totalSize;
+        }
         
         /* read data for comparison */
         pdc->read(10, Dimensions(readElements, 1, 1), Dimensions(myOffset, 0, 0),
@@ -153,9 +155,23 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         for (size_t i = 0; i < dataSize; ++i)
         {
             if (i < readElements)
+            {
+                if (data[i] != dataSize * myMpiRank + i)
+                {
+                    std::cerr << myMpiRank << ": " << data[i] <<
+                            " != " << dataSize * myMpiRank + i << std::endl;
+                }
                 CPPUNIT_ASSERT(data[i] == dataSize * myMpiRank + i);
+            }
             else
+            {
+                if (data[i] != -1)
+                {
+                    std::cerr << myMpiRank << ": " << data[i]
+                            << " != " << -1 << std::endl;
+                }
                 CPPUNIT_ASSERT(data[i] == -1);
+            }
         }
         
         pdc->close();

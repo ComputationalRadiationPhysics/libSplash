@@ -153,6 +153,8 @@ namespace splash
         options.mpiSize = topology.getScalarSize();
         options.mpiTopology.set(topology);
         options.maxID = -1;
+        
+        setLogMpiRank(options.mpiRank);
 
         if (H5open() < 0)
             throw DCException(getExceptionString("ParallelDataCollector",
