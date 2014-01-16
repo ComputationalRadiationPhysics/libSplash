@@ -133,8 +133,16 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         
         /* compute offset for reading */
         size_t myOffset = 0;
-        for (size_t i = 0; i < myMpiRank; ++i)
-            myOffset += allNumElements[i];
+        size_t totalSize = 0;
+        for (size_t i = 0; i < totalSize; ++i)
+        {
+            totalSize += allNumElements[i];
+            if (i < myMpiRank)
+                myOffset += allNumElements[i];
+        }
+        
+        if (readElements == 0 && (rand() % 2 == 0))
+            myOffset = totalSize;
         
         /* read data for comparison */
         pdc->read(10, Dimensions(readElements, 1, 1), Dimensions(myOffset, 0, 0),
