@@ -28,6 +28,7 @@
 namespace splash
 {
     static int verbosity_level = 0;
+    static int my_rank = 0;
 
     void parseEnvVars(void)
     {
@@ -38,6 +39,11 @@ namespace splash
             log_msg(1, "Setting verbosity level to %d\n", verbosity_level);
         }
     }
+    
+    void setLogMpiRank(int rank)
+    {
+        my_rank = rank;
+    }
 
     void log_msg(int level, const char *fmt, ...)
     {
@@ -45,7 +51,7 @@ namespace splash
         
         if (level <= verbosity_level)
         {
-            fprintf(stderr, "[SPLASH_LOG] ");
+            fprintf(stderr, "[SPLASH_LOG:%d] ", my_rank);
             
             va_start(argp, fmt);
             vfprintf(stderr, fmt, argp);
