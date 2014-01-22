@@ -156,7 +156,7 @@ namespace splash
          * Reserves a dataset for parallel access. 
          * 
          * @param id ID for iteration.
-         * @param size Size to reserve for global data.
+         * @param globalSize Size to reserve for global data.
          * @param rank Number of dimensions (1-3).
          * @param type Type information for data.
          * @param name Name for the dataset.

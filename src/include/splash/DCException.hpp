@@ -37,10 +37,20 @@ namespace splash
     {
     public:
 
+        /**
+         * Constructor
+         * 
+         * @param message message to be included in the exception
+         */
         DCException(const char* message) : std::runtime_error(message)
         {
         }
         
+        /**
+         * Constructor
+         * 
+         * @param message message to be included in the exception
+         */
         DCException(std::string message) : std::runtime_error(message.c_str())
         {
         }

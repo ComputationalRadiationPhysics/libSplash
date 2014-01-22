@@ -63,12 +63,23 @@ namespace splash
          */
         virtual ~ParallelDomainCollector();
 
-        /*size_t getGlobalElements(int32_t id,
-                const char* name) throw (DCException);*/
-
+        /**
+         * Returns the global domain information for a dataset.
+         * 
+         * @param id dataset iteration
+         * @param name dataset name
+         * @return global domain
+         */
         Domain getGlobalDomain(int32_t id,
                 const char* name) throw (DCException);
 
+        /**
+         * Returns the local domain information for a dataset.
+         * 
+         * @param id dataset iteration
+         * @param name dataset name
+         * @return global domain
+         */
         Domain getLocalDomain(int32_t id,
                 const char* name) throw (DCException);
 

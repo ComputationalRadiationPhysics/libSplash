@@ -27,7 +27,14 @@
 
 namespace splash
 {
+    /**
+     * current verbosity level for log messages
+     */
     static int verbosity_level = 0;
+    
+    /**
+     * current MPI rank for log messages
+     */
     static int my_rank = 0;
 
     void parseEnvVars(void)

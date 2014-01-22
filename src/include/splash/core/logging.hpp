@@ -30,10 +30,25 @@
 
 namespace splash
 {
+    /**
+     * parses environment variables and sets internal configuration
+     */
     EXTERN void parseEnvVars(void);
     
+    /**
+     * sets the MPI rank to be used for log messages
+     * 
+     * @param rank MPI rank
+     */
     EXTERN void setLogMpiRank(int rank);
 
+    /**
+     * writes a log message for a given log level
+     * 
+     * @param level required log level
+     * @param fmt format string (like printf)
+     * @param ... arguments to \p fmt
+     */
     EXTERN void log_msg(int level, const char *fmt, ...);
 }
 

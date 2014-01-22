@@ -380,6 +380,91 @@ queried continuously using \code{DataContainer::getNumElements} as well as
 
 Appending Domain data follows the same restrictions as appending normal Datasets (see \ref{lab:sdc:write}).
 
+
+%-----------------------------------------------------------
+
+\chapter{ParallelDataCollector}
+
+To enable parallel support in libSplash, an HDF5 installation built with \code{--enable-parallel}
+must be available.
+
+
+\section{Files}
+
+ParallelDataCollector stores data in HDF5 files with the extension \emph{.h5}.
+Since only a single (parallel) file is created by all participating MPI processes,
+the filename structure is \emph{(common name)\_(iteration).h5}.
+\emph{common name} is the name chosen by the user for the libSplash files, e.g.
+'simulation\_data'.
+\emph{iteration} is the iteration id (simulation timestep), e.g. 0, 100, 512.
+One file is created for each iteration for the sake of resilience.
+
+Example:
+\begin{itemize}
+	\item If libSplash is used to write two iterations 0 and 100, the files
+	\emph{simulation\_data\_0.h5} and \emph{simulation\_data\_100.h5}, are created.
+\end{itemize}
+
+
+\subsection{File Structure}
+
+Parallel libSplash files use the same internal structure as serial files (with the exception
+that each file contains only a single iteration but the data from all processes).
+
+
+\subsection{Opening Files}
+
+Before data can be stored or read, files must be opened by calling
+\code{ParallelDataCollector::open}. This method requires the common part of the filename
+and an object of type \code{FileCreationAttr}.
+Calls to this function are collective.
+The following file access types are available:
+\begin{itemize}
+	\item \code{FAT\_CREATE}
+	A new file is created. Any existing file with this name if overwritten.
+	\code{FileCreationAttr} is ignored.
+
+	\item \code{FAT\_WRITE}
+	An existing file is opened for reading and writing.
+	\code{FileCreationAttr} is ignored.
+	If the file does not exist, it is created.
+	Otherwise, any write access to existing datasets will overwrite them.
+
+	\item \code{FAT\_READ}
+	An existing file is opened in read-only mode.
+	\code{FileCreationAttr} is ignored.
+	If the file does not exist, an exception is thrown.
+
+	\item \code{FAT\_READ\_MERGED}
+	Equivalent to \code{FAT\_READ}.
+\end{itemize}
+
+
+\subsection{Closing Files}
+
+After all file operations are finished and before opening or creating a new file,
+already opened files must be closed by a call to \code{ParallelDataCollector::close}.
+Otherwise, file information can be inconsistent and required data may not
+be stored properly.
+Calls to this function are collective.
+
+
+\section{Data Access}
+
+Since ParallelDataCollector uses parallel MPI I/O, all accesses to Datasets and Attributes (read/write/create/...)
+must be called collectively by all processes in the MPI communicator passed to ParallelDataCollector.
+The only exception are \code{append} calls which are not collective but must be preceded by a collective \code{reserve} call.
+
+
+\section{Notes}
+
+When using parallel libSplash, the functions \code{getMaxID} and \code{getEntryIDs}
+internally list the files in the directory of the HDF5 filename given at \code{open}
+to obtain the list of available timestamps for this file set.
+Therefore, old files in the same directory with the same common filename part will be recognized as belonging
+to the current file set, too.
+
+
 %-----------------------------------------------------------
 
 \chapter{ParallelDomainCollector}

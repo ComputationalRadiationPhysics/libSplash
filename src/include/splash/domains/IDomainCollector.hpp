@@ -93,7 +93,7 @@ namespace splash
          * @param domainSize Domain size for reading (logical size of the requested partition).
          * @param dataClass Optional domain type annotation, can be NULL.
          * @param lazyLoad Set to load only size information for each subdomain,
-         * data must be loaded later using \ref DataContainer::readDomainLazy.
+         * data must be loaded later using \ref IDomainCollector::readDomainLazy.
          * @return Returns a pointer to a newly allocated DataContainer holding all subdomains.
          */
         virtual DataContainer *readDomain(int32_t id,
@@ -123,7 +123,7 @@ namespace splash
          * @param domainOffset Local offset of this subdomain.
          * @param domainSize Local size of this subdomain.
          * @param globalDomainOffset Logical offset of the global domain.
-         * @param globalDomainSIze Logical size of the global domain.
+         * @param globalDomainSize Logical size of the global domain.
          * @param dataClass Subdomain type annotation.
          * @param buf Buffer with data.
          */
@@ -152,7 +152,7 @@ namespace splash
          * @param domainOffset Local offset of this subdomain.
          * @param domainSize Local size of this subdomain.
          * @param globalDomainOffset Logical offset of the global domain.
-         * @param globalDomainSIze Logical size of the global domain.
+         * @param globalDomainSize Logical size of the global domain.
          * @param dataClass Subdomain type annotation.
          * @param buf Buffer with data.
          */
@@ -184,7 +184,7 @@ namespace splash
          * @param domainOffset Local offset of this subdomain.
          * @param domainSize Local size of this subdomain.
          * @param globalDomainOffset Logical offset of the global domain.
-         * @param globalDomainSIze Logical size of the global domain.
+         * @param globalDomainSize Logical size of the global domain.
          * @param dataClass Subdomain type annotation.
          * @param buf Buffer with data.
          */
@@ -213,7 +213,7 @@ namespace splash
          * @param domainOffset Local offset of this subdomain.
          * @param domainSize Local size of this subdomain.
          * @param globalDomainOffset Logical offset of the global domain.
-         * @param globalDomainSIze Logical size of the global domain.
+         * @param globalDomainSize Logical size of the global domain.
          * @param buf Buffer with data.
          */
         virtual void appendDomain(int32_t id,
@@ -240,7 +240,7 @@ namespace splash
          * @param domainOffset Local offset of this subdomain.
          * @param domainSize Local size of this subdomain.
          * @param globalDomainOffset Logical offset of the global domain.
-         * @param globalDomainSIze Logical size of the global domain.
+         * @param globalDomainSize Logical size of the global domain.
          * @param buf Buffer with data.
          */
         virtual void appendDomain(int32_t id,

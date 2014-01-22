@@ -60,58 +60,123 @@ namespace splash
             set(x, y, z);
         }
 
+        /**
+         * Returns element \p t
+         * 
+         * @param t element index (1-3)
+         * @return element
+         */
         hsize_t & operator[](const hsize_t t)
         {
             return s[t];
         }
 
+        /**
+         * Returns element \p t
+         * 
+         * @param t element index (1-3)
+         * @return element
+         */
         const hsize_t & operator[](const hsize_t t) const
         {
             return s[t];
         }
 
+        /**
+         * Element-wise addition of two Dimensions
+         * 
+         * @param other other Dimensions
+         * @return new added Dimensions
+         */
         Dimensions operator+(Dimensions const& other) const
         {
             return Dimensions(s[0] + other[0], s[1] + other[1], s[2] + other[2]);
         }
 
+        /**
+         * Element-wise substraction of two Dimensions
+         * 
+         * @param other other Dimensions
+         * @return new substracted Dimensions
+         */
         Dimensions operator-(Dimensions const& other) const
         {
             return Dimensions(s[0] - other[0], s[1] - other[1], s[2] - other[2]);
         }
 
+        /**
+         * Element-wise multiplication of two Dimensions
+         * 
+         * @param other other Dimensions
+         * @return new multiplied Dimensions
+         */
         Dimensions operator*(Dimensions const& other) const
         {
             return Dimensions(s[0] * other[0], s[1] * other[1], s[2] * other[2]);
         }
 
+        /**
+         * Element-wise division of two Dimensions
+         * 
+         * @param other other Dimensions
+         * @return new divided Dimensions
+         */
         Dimensions operator/(Dimensions const& other) const
         {
             return Dimensions(s[0] / other[0], s[1] / other[1], s[2] / other[2]);
         }
 
+        /**
+         * Element-wise addition of Dimensions \p rhs to this Dimensions
+         * 
+         * @param rhs other Dimensions
+         * @return this Dimensions
+         */
         Dimensions operator+=(Dimensions const& rhs)
         {
             *this = *this + rhs;
             return *this;
         }
 
+        /**
+         * Element-wise substraction of Dimensions \p rhs from this Dimensions
+         * 
+         * @param rhs other Dimensions
+         * @return this Dimensions
+         */
         Dimensions operator-=(Dimensions const& rhs)
         {
             *this = *this - rhs;
             return *this;
         }
 
+        /**
+         * Element-wise comparison of two Dimensions
+         * 
+         * @param other other Dimensions
+         * @return true if equal, false otherwise
+         */
         bool operator==(Dimensions const& other) const
         {
             return s[0] == other[0] && s[1] == other[1] && s[2] == other[2];
         }
 
+        /**
+         * Element-wise comparison of two Dimensions
+         * 
+         * @param other other Dimensions
+         * @return false if equal, true otherwise
+         */
         bool operator!=(Dimensions const& other) const
         {
             return !(*this == other);
         }
 
+        /**
+         * Returns the string representation of this object
+         * 
+         * @return string representation
+         */
         std::string toString() const
         {
             std::stringstream stream;
