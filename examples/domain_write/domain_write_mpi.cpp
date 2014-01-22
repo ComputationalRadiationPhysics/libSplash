@@ -58,7 +58,7 @@ int main(int argc, char **argv)
     MPI_Comm_rank(MPI_COMM_WORLD, &mpi_rank);
     MPI_Comm_size(MPI_COMM_WORLD, &mpi_size);
 
-    // libSplash filename
+    /* libSplash filename */
     std::string filename;
     filename.assign(argv[1]);
     
@@ -72,7 +72,7 @@ int main(int argc, char **argv)
     
     indexToPos(mpi_rank, mpiTopology, mpiPosition);
 
-    // create DomainCollector
+    /* create DomainCollector */
     DomainCollector dc(100);
     DataCollector::FileCreationAttr fAttr;
     DataCollector::initFileCreationAttr(fAttr);
@@ -82,7 +82,7 @@ int main(int argc, char **argv)
 
     dc.open(filename.c_str(), fAttr);
 
-    // create data for writing
+    /* create data for writing */
     
     Dimensions localGridSize(10, 20, 5);
     
@@ -90,26 +90,28 @@ int main(int argc, char **argv)
     float *data = new float[localGridSize.getScalarSize()];
     memset(data, 1, sizeof(float) * localGridSize.getScalarSize());
     
-    // where our example logically starts 
+    /* where our example logically starts */
     Dimensions origin(100, 100, 100);
-    // where this process logically starts (including origin)
+    /* where this process logically starts (including origin) */
     Dimensions localOffset(origin + mpiPosition * localGridSize);
     
-    // See your local Doxygen documentation or online at
-    // http://computationalradiationphysics.github.io/libSplash/classsplash_1_1_domain_collector.html
-    // for more information on this interface.
-    dc.writeDomain(10, // timestamp/iteration
-            ctFloat, // data type
-            localGridSize.getDims(), // number of dimensions (here 3)
-            localGridSize, // data size of this process
-            "float_data",  // name of dataset
-            localOffset,   // logical offset of the data of this process
-            localGridSize, // logical size of the data of this process,
-                           // must match actual data size for grids
-            origin,        // logical start of the data of all processes
-            localGridSize * mpiTopology, // logical size of the data of all processes
-            DomainCollector::GridType,   // we are writing grid (not poly) data here
-            data);                       // the actual data buffer (pointer)
+    /**
+     * See your local Doxygen documentation or online at
+     * http://computationalradiationphysics.github.io/libSplash/classsplash_1_1_domain_collector.html
+     * for more information on this interface.
+     **/
+    dc.writeDomain(10,               /* timestamp/iteration */
+            ctFloat,                 /* data type */
+            localGridSize.getDims(), /* number of dimensions (here 3) */
+            localGridSize,           /* data size of this process */
+            "float_data",            /* name of dataset */
+            localOffset,             /* logical offset of the data of this process */
+            localGridSize,           /* logical size of the data of this process
+                                      * must match actual data size for grids */
+            origin,                  /* logical start of the data of all processes */
+            localGridSize * mpiTopology, /* logical size of the data of all processes */
+            DomainCollector::GridType,   /* we are writing grid (not poly) data here */
+            data);                       /* the actual data buffer (pointer) */
     
     dc.close();
     
