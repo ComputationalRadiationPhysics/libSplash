@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -92,17 +92,24 @@ int main(int argc, char **argv)
     
     // where our example logically starts 
     Dimensions origin(100, 100, 100);
+    // where this process logically starts (including origin)
     Dimensions localOffset(origin + mpiPosition * localGridSize);
     
-    dc.writeDomain(10, ctFloat,
-            localGridSize.getDims(),
-            localGridSize,
-            "float_data",
-            localOffset,
-            localGridSize,
-            origin,
-            localGridSize * mpiTopology,
-            DomainCollector::GridType, data);
+    // See your local Doxygen documentation or online at
+    // http://computationalradiationphysics.github.io/libSplash/classsplash_1_1_domain_collector.html
+    // for more information on this interface.
+    dc.writeDomain(10, // timestamp/iteration
+            ctFloat, // data type
+            localGridSize.getDims(), // number of dimensions (here 3)
+            localGridSize, // data size of this process
+            "float_data",  // name of dataset
+            localOffset,   // logical offset of the data of this process
+            localGridSize, // logical size of the data of this process,
+                           // must match actual data size for grids
+            origin,        // logical start of the data of all processes
+            localGridSize * mpiTopology, // logical size of the data of all processes
+            DomainCollector::GridType,   // we are writing grid (not poly) data here
+            data);                       // the actual data buffer (pointer)
     
     dc.close();
     
