@@ -1,0 +1,5 @@
+<map id="splash::DataContainer::add" name="splash::DataContainer::add">
+<area shape="rect" id="node3" href="$classsplash_1_1_domain_data.html#a63a2c3e601e2a17ce6b881e7c0d5792a" title="splash::DomainData\l::getData" alt="" coords="243,5,376,49"/>
+<area shape="rect" id="node5" href="$classsplash_1_1_domain.html#afdf3a9d343e35d12e63787cd3d8af9b1" title="splash::Domain::getOffset" alt="" coords="227,71,392,99"/>
+<area shape="rect" id="node7" href="$classsplash_1_1_domain.html#ac138156443cd496ecd2ea760abcaa4eb" title="splash::Domain::getBack" alt="" coords="228,122,391,150"/>
+</map>

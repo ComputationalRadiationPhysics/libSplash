@@ -1,9 +1,0 @@
-digraph "libSplash/src/include/basetypes" {
-  compound=true
-  node [ fontsize="10", fontname="FreeSans"];
-  edge [ labelfontsize="10", labelfontname="FreeSans"];
-  subgraph clusterdir_999b28456fad692c596eb58d2c5fcb4e {
-    graph [ bgcolor="#ddddee", pencolor="black", label="include" fontname="FreeSans", fontsize="10", URL="dir_999b28456fad692c596eb58d2c5fcb4e.html"]
-  dir_89ccd6182940591553bbc15817761448 [shape=box, label="basetypes", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_89ccd6182940591553bbc15817761448.html"];
-  }
-}

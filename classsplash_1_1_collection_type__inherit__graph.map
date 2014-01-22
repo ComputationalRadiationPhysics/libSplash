@@ -1,0 +1,17 @@
+<map id="splash::CollectionType" name="splash::CollectionType">
+<area shape="rect" id="node3" href="$classsplash_1_1_col_type_bool.html" title="splash::ColTypeBool" alt="" coords="224,5,360,33"/>
+<area shape="rect" id="node5" href="$classsplash_1_1_col_type_dim.html" title="splash::ColTypeDim" alt="" coords="225,55,359,83"/>
+<area shape="rect" id="node7" href="$classsplash_1_1_col_type_dim_array.html" title="splash::ColTypeDimArray" alt="" coords="211,106,373,134"/>
+<area shape="rect" id="node9" href="$classsplash_1_1_col_type_double.html" title="splash::ColTypeDouble" alt="" coords="217,157,367,185"/>
+<area shape="rect" id="node11" href="$classsplash_1_1_col_type_float.html" title="splash::ColTypeFloat" alt="" coords="223,207,361,235"/>
+<area shape="rect" id="node13" href="$classsplash_1_1_col_type_float2.html" title="splash::ColTypeFloat2" alt="" coords="219,258,365,286"/>
+<area shape="rect" id="node15" href="$classsplash_1_1_col_type_float2_array.html" title="splash::ColTypeFloat2Array" alt="" coords="204,309,380,337"/>
+<area shape="rect" id="node17" href="$classsplash_1_1_col_type_float3.html" title="splash::ColTypeFloat3" alt="" coords="219,359,365,387"/>
+<area shape="rect" id="node19" href="$classsplash_1_1_col_type_float3_array.html" title="splash::ColTypeFloat3Array" alt="" coords="204,410,380,438"/>
+<area shape="rect" id="node21" href="$classsplash_1_1_col_type_float4.html" title="splash::ColTypeFloat4" alt="" coords="219,461,365,489"/>
+<area shape="rect" id="node23" href="$classsplash_1_1_col_type_int.html" title="splash::ColTypeInt" alt="" coords="229,511,355,539"/>
+<area shape="rect" id="node25" href="$classsplash_1_1_col_type_int2.html" title="splash::ColTypeInt2" alt="" coords="225,562,359,590"/>
+<area shape="rect" id="node27" href="$classsplash_1_1_col_type_int2_array.html" title="splash::ColTypeInt2Array" alt="" coords="211,613,373,641"/>
+<area shape="rect" id="node29" href="$classsplash_1_1_col_type_int3.html" title="splash::ColTypeInt3" alt="" coords="225,663,359,691"/>
+<area shape="rect" id="node31" href="$classsplash_1_1_col_type_int3_array.html" title="splash::ColTypeInt3Array" alt="" coords="211,714,373,742"/>
+</map>

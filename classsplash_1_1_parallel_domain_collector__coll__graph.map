@@ -1,0 +1,7 @@
+<map id="splash::ParallelDomainCollector" name="splash::ParallelDomainCollector">
+<area shape="rect" id="node2" href="$classsplash_1_1_i_parallel_domain_collector.html" title="splash::IParallelDomainCollector" alt="" coords="5,161,211,189"/>
+<area shape="rect" id="node4" href="$classsplash_1_1_i_domain_collector.html" title="splash::IDomainCollector" alt="" coords="27,83,189,111"/>
+<area shape="rect" id="node6" href="$classsplash_1_1_parallel_data_collector.html" title="splash::ParallelDataCollector" alt="" coords="235,161,419,189"/>
+<area shape="rect" id="node8" href="$classsplash_1_1_i_parallel_data_collector.html" title="splash::IParallelDataCollector" alt="" coords="232,83,421,111"/>
+<area shape="rect" id="node10" href="$classsplash_1_1_data_collector.html" title="splash::DataCollector" alt="" coords="256,6,397,34"/>
+</map>
