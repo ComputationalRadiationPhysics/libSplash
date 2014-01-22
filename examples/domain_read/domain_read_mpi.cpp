@@ -19,12 +19,14 @@
  * If not, see <http://www.gnu.org/licenses/>. 
  */
 
+#include <mpi.h>
+
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <mpi.h>
 #include <math.h>
 #include <stdint.h>
+
 #include "splash/splash.h"
 
 using namespace splash;
