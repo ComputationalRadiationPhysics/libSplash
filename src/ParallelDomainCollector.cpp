@@ -115,7 +115,7 @@ namespace splash
         log_msg(3, "requestdom. = %s", request_domain.toString().c_str());
 
         // test on intersection and add new DomainData to the container if necessary
-        if (!Domain::testIntersection(request_domain, client_domain))
+        if ((requestSize.getScalarSize() > 0) && !Domain::testIntersection(request_domain, client_domain))
             return false;
 
         // Poly data has no internal grid structure, 
@@ -289,7 +289,6 @@ namespace splash
             // read intersecting partition into destination buffer
             Dimensions elements_read(0, 0, 0);
             uint32_t src_rank = 0;
-            if (src_size.getScalarSize() > 0)
             {
                 readDataSet(handles.get(id), id, name,
                         dataContainer->getIndex(0)->getSize(),
@@ -302,10 +301,19 @@ namespace splash
             }
 
             log_msg(3, "elements_read = %s", elements_read.toString().c_str());
+            bool read_success = true;
 
-            if (!(elements_read == src_size))
+            if ((requestSize.getScalarSize() == 0) && (elements_read.getScalarSize() != 0))
+                read_success = false;
+
+            if ((requestSize.getScalarSize() != 0) && (elements_read != src_size))
+                read_success = false;
+
+            if (!read_success)
+            {
                 throw DCException(getExceptionString("readDomainDataForRank",
                     "Sizes are not equal but should be (2).", NULL));
+            }
         }
 
         return true;
