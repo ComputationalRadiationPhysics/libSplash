@@ -28,3 +28,6 @@ Release 1.1.0
  - Fix usage of MPI data types.
 
 
+**Misc:**
+
+ - Compiling with OpenMPI now requires version 1.5.1 or higher
