@@ -19,11 +19,11 @@
  * If not, see <http://www.gnu.org/licenses/>. 
  */
 
-#include "basetypes/ColTypeInt.hpp"
+#include "splash/basetypes/basetypes.hpp"
 
-#include "ParallelDomainCollector.hpp"
-#include "core/DCParallelDataSet.hpp"
-#include "core/logging.hpp"
+#include "splash/ParallelDomainCollector.hpp"
+#include "splash/core/DCParallelDataSet.hpp"
+#include "splash/core/logging.hpp"
 
 namespace splash
 {
@@ -115,7 +115,7 @@ namespace splash
         log_msg(3, "requestdom. = %s", request_domain.toString().c_str());
 
         // test on intersection and add new DomainData to the container if necessary
-        if (!Domain::testIntersection(request_domain, client_domain))
+        if ((requestSize.getScalarSize() > 0) && !Domain::testIntersection(request_domain, client_domain))
             return false;
 
         // Poly data has no internal grid structure, 
@@ -169,10 +169,8 @@ namespace splash
                 {
                     Dimensions elements_read;
                     uint32_t src_rank = 0;
-                    readDataSet(handles.get(id), id, name,
-                            false,
+                    readCompleteDataSet(handles.get(id), id, name,
                             data_elements,
-                            Dimensions(0, 0, 0),
                             Dimensions(0, 0, 0),
                             Dimensions(0, 0, 0),
                             elements_read,
@@ -291,9 +289,8 @@ namespace splash
             // read intersecting partition into destination buffer
             Dimensions elements_read(0, 0, 0);
             uint32_t src_rank = 0;
-            if (src_size.getScalarSize() > 0)
             {
-                readDataSet(handles.get(id), id, name, false,
+                readDataSet(handles.get(id), id, name,
                         dataContainer->getIndex(0)->getSize(),
                         dst_offset,
                         src_size,
@@ -304,10 +301,19 @@ namespace splash
             }
 
             log_msg(3, "elements_read = %s", elements_read.toString().c_str());
+            bool read_success = true;
 
-            if (!(elements_read == src_size))
+            if ((requestSize.getScalarSize() == 0) && (elements_read.getScalarSize() != 0))
+                read_success = false;
+
+            if ((requestSize.getScalarSize() != 0) && (elements_read != src_size))
+                read_success = false;
+
+            if (!read_success)
+            {
                 throw DCException(getExceptionString("readDomainDataForRank",
                     "Sizes are not equal but should be (2).", NULL));
+            }
         }
 
         return true;
@@ -375,7 +381,6 @@ namespace splash
             readDataSet(loadingRef->handle,
                     loadingRef->id,
                     loadingRef->name.c_str(),
-                    false,
                     loadingRef->dstBuffer,
                     loadingRef->dstOffset,
                     loadingRef->srcSize,

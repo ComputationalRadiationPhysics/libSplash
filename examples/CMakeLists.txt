@@ -36,10 +36,10 @@ SET(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}" "$ENV{HDF5_R
 
 SET(CMAKE_CXX_FLAGS_DEBUG "-g")
 SET(CMAKE_BUILD_TYPE Debug)
-OPTION(WITH_MPI "use MPI-read tests" OFF)
+OPTION(WITH_MPI "build MPI examples" OFF)
 
 SET(EXAMPLES domain_read/domain_read)
-SET(MPI_EXAMPLES domain_read/domain_read_mpi)
+SET(MPI_EXAMPLES domain_read/domain_read_mpi domain_write/domain_write_mpi)
 
 FOREACH(EXAMPLE_NAME ${EXAMPLES})
     SET(EXAMPLE_FILES "${EXAMPLE_FILES};${EXAMPLE_NAME}.cpp")
@@ -58,7 +58,7 @@ SET(LIBS ${LIBS} ${HDF5_LIBRARIES})
 
 # libSplash installation is required
 find_path(SPLASH_ROOT_DIR
-  NAMES include/splash.h lib/libsplash.a
+  NAMES include/splash/splash.h lib/libsplash.a
   PATHS ENV SPLASH_ROOT
   DOC "libSplash ROOT location"
 )

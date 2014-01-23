@@ -25,7 +25,7 @@
 #include <iostream>
 #include <hdf5.h>
 
-#include "core/HandleMgr.hpp"
+#include "splash/core/HandleMgr.hpp"
 
 namespace splash
 {

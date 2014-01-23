@@ -19,13 +19,15 @@
  * If not, see <http://www.gnu.org/licenses/>. 
  */
 
+#include <mpi.h>
+
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <mpi.h>
 #include <math.h>
 #include <stdint.h>
-#include "splash.h"
+
+#include "splash/splash.h"
 
 using namespace splash;
 
@@ -94,7 +96,7 @@ int main(int argc, char **argv)
     fAttr.fileAccType = DataCollector::FAT_READ;
 
     // broadcast file MPI size from root to all processes
-    uint32_t f_mpi_size[3];
+    uint64_t f_mpi_size[3];
     if (mpi_rank == 0)
     {
         fAttr.mpiPosition.set(0, 0, 0);
@@ -109,7 +111,7 @@ int main(int argc, char **argv)
 
         dc.close();
     }
-    MPI_Bcast(f_mpi_size, 3, MPI_INTEGER4, 0, MPI_COMM_WORLD);
+    MPI_Bcast(f_mpi_size, 3, MPI_UNSIGNED_LONG_LONG, 0, MPI_COMM_WORLD);
     file_mpi_size.set(f_mpi_size[0], f_mpi_size[1], f_mpi_size[2]);
 
     // get number of files for this MPI process

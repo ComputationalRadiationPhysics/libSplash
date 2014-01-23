@@ -25,11 +25,11 @@
 #include <stdlib.h>
 #include <cstring>
 
-#include "ParallelDataCollector.hpp"
-#include "core/DCParallelDataSet.hpp"
-#include "core/DCAttribute.hpp"
-#include "core/DCParallelGroup.hpp"
-#include "core/logging.hpp"
+#include "splash/ParallelDataCollector.hpp"
+#include "splash/core/DCParallelDataSet.hpp"
+#include "splash/core/DCAttribute.hpp"
+#include "splash/core/DCParallelGroup.hpp"
+#include "splash/core/logging.hpp"
 
 namespace splash
 {
@@ -85,7 +85,10 @@ namespace splash
     }
 
     void ParallelDataCollector::listFilesInDir(const std::string baseFilename, std::set<int32_t> &ids)
+    throw (DCException)
     {
+        log_msg(2, "listing files for %s", baseFilename.c_str());
+
         std::string dir_path, name;
         std::string::size_type pos = baseFilename.find_last_of('/');
         if (pos == std::string::npos)
@@ -99,9 +102,16 @@ namespace splash
             name.append("_");
         }
 
-        dirent *dp;
+        dirent *dp = NULL;
+        DIR *dirp = NULL;
 
-        DIR *dirp = opendir(dir_path.c_str());
+        dirp = opendir(dir_path.c_str());
+        if (!dirp)
+        {
+            throw DCException(getExceptionString("listFilesInDir",
+                    "Failed to open directory", dir_path.c_str()));
+        }
+
         while ((dp = readdir(dirp)) != NULL)
         {
             // size matches and starts with name.c_str()
@@ -133,14 +143,18 @@ namespace splash
     {
         parseEnvVars();
 
-        MPI_Comm_rank(comm, &(options.mpiRank));
+        if (MPI_Comm_dup(comm, &(options.mpiComm)) != MPI_SUCCESS)
+            throw DCException(getExceptionString("ParallelDataCollector",
+                "failed to duplicate MPI communicator"));
 
+        MPI_Comm_rank(options.mpiComm, &(options.mpiRank));
         options.enableCompression = false;
-        options.mpiComm = comm;
         options.mpiInfo = info;
         options.mpiSize = topology.getScalarSize();
         options.mpiTopology.set(topology);
         options.maxID = -1;
+        
+        setLogMpiRank(options.mpiRank);
 
         if (H5open() < 0)
             throw DCException(getExceptionString("ParallelDataCollector",
@@ -324,11 +338,11 @@ namespace splash
         // mpiPosition is ignored
         if (attrName == NULL || data == NULL)
             throw DCException(getExceptionString("readAttribute", "a parameter was null"));
-        
+
         // dataName may be NULL, attribute is read from iteration group in that case
         if (dataName && strlen(dataName) == 0)
             throw DCException(getExceptionString("readAttribute", "empty dataset name"));
-        
+
         if (strlen(attrName) == 0)
             throw DCException(getExceptionString("readAttribute", "empty attribute name"));
 
@@ -380,11 +394,11 @@ namespace splash
     {
         if (attrName == NULL || data == NULL)
             throw DCException(getExceptionString("writeAttribute", "a parameter was null"));
-        
+
         // dataName may be NULL, attribute is attached to iteration group in that case
         if (dataName && strlen(dataName) == 0)
             throw DCException(getExceptionString("writeAttribute", "empty dataset name"));
-        
+
         if (strlen(attrName) == 0)
             throw DCException(getExceptionString("writeAttribute", "empty attribute name"));
 
@@ -447,8 +461,8 @@ namespace splash
             throw DCException(getExceptionString("read", "this access is not permitted"));
 
         uint32_t ndims = 0;
-        readDataSet(handles.get(id), id, name, false, dstBuffer, dstOffset,
-                Dimensions(0, 0, 0), Dimensions(0, 0, 0), sizeRead, ndims, buf);
+        readCompleteDataSet(handles.get(id), id, name, dstBuffer, dstOffset,
+                Dimensions(0, 0, 0), sizeRead, ndims, buf);
     }
 
     void ParallelDataCollector::read(int32_t id,
@@ -475,7 +489,7 @@ namespace splash
             throw DCException(getExceptionString("read", "this access is not permitted"));
 
         uint32_t ndims = 0;
-        readDataSet(handles.get(id), id, name, true, dstBuffer, dstOffset,
+        readDataSet(handles.get(id), id, name, dstBuffer, dstOffset,
                 localSize, globalOffset, sizeRead, ndims, buf);
     }
 
@@ -848,10 +862,39 @@ namespace splash
         handles.open(Dimensions(1, 1, 1), filename, fileAccProperties, H5F_ACC_RDWR);
     }
 
+    void ParallelDataCollector::readCompleteDataSet(H5Handle h5File,
+            int32_t id,
+            const char* name,
+            const Dimensions dstBuffer,
+            const Dimensions dstOffset,
+            const Dimensions srcOffset,
+            Dimensions &sizeRead,
+            uint32_t& srcRank,
+            void* dst)
+    throw (DCException)
+    {
+        log_msg(2, "readCompleteDataSet");
+
+        if (h5File < 0 || name == NULL)
+            throw DCException(getExceptionString("readCompleteDataSet", "invalid parameters"));
+
+        std::string group_path, dset_name;
+        DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
+
+        DCParallelGroup group;
+        group.open(h5File, group_path);
+
+        DCParallelDataSet dataset(dset_name.c_str());
+        dataset.open(group.getHandle());
+        const Dimensions src_size(dataset.getSize() - srcOffset);
+
+        dataset.read(dstBuffer, dstOffset, src_size, srcOffset, sizeRead, srcRank, dst);
+        dataset.close();
+    }
+
     void ParallelDataCollector::readDataSet(H5Handle h5File,
             int32_t id,
             const char* name,
-            bool parallelRead,
             const Dimensions dstBuffer,
             const Dimensions dstOffset,
             const Dimensions srcSize,
@@ -861,10 +904,10 @@ namespace splash
             void* dst)
     throw (DCException)
     {
-        log_msg(2, "readInternal");
+        log_msg(2, "readDataSet");
 
         if (h5File < 0 || name == NULL)
-            throw DCException(getExceptionString("readInternal", "invalid parameters"));
+            throw DCException(getExceptionString("readDataSet", "invalid parameters"));
 
         std::string group_path, dset_name;
         DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
@@ -872,19 +915,10 @@ namespace splash
         DCParallelGroup group;
         group.open(h5File, group_path);
 
-        Dimensions src_size(srcSize);
-        Dimensions src_offset(srcOffset);
-
         DCParallelDataSet dataset(dset_name.c_str());
         dataset.open(group.getHandle());
-        if (!parallelRead && (src_size.getScalarSize() == 0))
-        {
-            dataset.read(dstBuffer, dstOffset, src_size, src_offset, sizeRead, srcRank, NULL);
-            src_size.set(sizeRead);
-            src_offset.set(0, 0, 0);
-        }
 
-        dataset.read(dstBuffer, dstOffset, src_size, src_offset, sizeRead, srcRank, dst);
+        dataset.read(dstBuffer, dstOffset, srcSize, srcOffset, sizeRead, srcRank, dst);
         dataset.close();
     }
 
@@ -900,8 +934,7 @@ namespace splash
         DCParallelDataSet dataset(name);
         // always create dataset but write data only if all dimensions > 0
         dataset.create(datatype, group, globalSize, ndims, this->options.enableCompression);
-        if (data && (srcData.getScalarSize() > 0))
-            dataset.write(srcBuffer, srcStride, srcOffset, srcData, globalOffset, data);
+        dataset.write(srcBuffer, srcStride, srcOffset, srcData, globalOffset, data);
         dataset.close();
     }
 
@@ -915,8 +948,8 @@ namespace splash
         globalSize.set(1, 1, 1);
         globalOffset.set(0, 0, 0);
 
-        if (MPI_Allgather(local_write_size, 3, MPI_INTEGER8,
-                write_sizes, 3, MPI_INTEGER8, options.mpiComm) != MPI_SUCCESS)
+        if (MPI_Allgather(local_write_size, 3, MPI_UNSIGNED_LONG_LONG,
+                write_sizes, 3, MPI_UNSIGNED_LONG_LONG, options.mpiComm) != MPI_SUCCESS)
             throw DCException(getExceptionString("gatherMPIWrites",
                 "MPI_Allgather failed", NULL));
 

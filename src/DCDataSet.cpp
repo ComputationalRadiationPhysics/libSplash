@@ -25,14 +25,14 @@
 #include <sstream>
 #include <cassert>
 
-#include "sdc_defines.hpp"
+#include "splash/sdc_defines.hpp"
 
-#include "core/DCDataSet.hpp"
-#include "core/DCAttribute.hpp"
-#include "core/DCHelper.hpp"
-#include "core/logging.hpp"
-#include "DCException.hpp"
-#include "basetypes/ColTypeDim.hpp"
+#include "splash/core/DCDataSet.hpp"
+#include "splash/core/DCAttribute.hpp"
+#include "splash/core/DCHelper.hpp"
+#include "splash/core/logging.hpp"
+#include "splash/DCException.hpp"
+#include "splash/basetypes/ColTypeDim.hpp"
 
 namespace splash
 {
@@ -91,6 +91,11 @@ namespace splash
     DCDataSet::~DCDataSet()
     {
         H5Pclose(dsetProperties);
+    }
+    
+    Dimensions DCDataSet::getSize() const
+    {
+        return logicalSize;
     }
 
     Dimensions& DCDataSet::getLogicalSize()
@@ -164,7 +169,14 @@ namespace splash
                     typeSize, chunk_dims);
 
             if (H5Pset_chunk(this->dsetProperties, ndims, chunk_dims) < 0)
+            {
+                for (size_t i = 0; i < ndims; ++i)
+                {
+                    log_msg(1, "chunk_dims[%llu] = %llu",
+                            (long long unsigned) i, (long long unsigned) (chunk_dims[i]));
+                }
                 throw DCException(getExceptionString("setChunking: Failed to set chunking"));
+            }
         }
     }
 
@@ -411,7 +423,7 @@ namespace splash
             void* dst)
     throw (DCException)
     {
-        read(dstBuffer, dstOffset, Dimensions(0, 0, 0), Dimensions(0, 0, 0),
+        read(dstBuffer, dstOffset, getLogicalSize(), Dimensions(0, 0, 0),
                 sizeRead, srcNDims, dst);
     }
 
@@ -430,10 +442,7 @@ namespace splash
             throw DCException(getExceptionString("read: Dataset has not been opened/created"));
 
         if (dstBuffer.getScalarSize() == 0)
-            dstBuffer.set(getLogicalSize());
-
-        if (srcSize.getScalarSize() == 0)
-            srcSize.set(getLogicalSize() - srcOffset);
+            dstBuffer.set(srcSize);
 
         // dst buffer is allowed to be NULL
         // in this case, only the size of the dataset is returned
@@ -475,6 +484,9 @@ namespace splash
                     H5Sselect_valid(dataspace) <= 0)
                 throw DCException(getExceptionString("read: Source dataspace hyperslab selection is not valid!"));
 
+            if (srcSize.getScalarSize() == 0)
+                H5Sselect_none(dataspace);
+            
             if (H5Dread(dataset, this->datatype, dst_dataspace, dataspace, dsetReadProperties, dst) < 0)
                 throw DCException(getExceptionString("read: Failed to read dataset"));
 

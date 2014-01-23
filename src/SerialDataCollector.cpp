@@ -27,14 +27,14 @@
 #include <cassert>
 #include <sys/stat.h>
 
-#include "SerialDataCollector.hpp"
+#include "splash/SerialDataCollector.hpp"
 
-#include "core/DCAttribute.hpp"
-#include "core/DCDataSet.hpp"
-#include "core/DCGroup.hpp"
-#include "core/DCHelper.hpp"
-#include "core/SDCHelper.hpp"
-#include "core/logging.hpp"
+#include "splash/core/DCAttribute.hpp"
+#include "splash/core/DCDataSet.hpp"
+#include "splash/core/DCGroup.hpp"
+#include "splash/core/DCHelper.hpp"
+#include "splash/core/SDCHelper.hpp"
+#include "splash/core/logging.hpp"
 
 namespace splash
 {
@@ -262,11 +262,11 @@ namespace splash
         // mpiPosition is allowed to be NULL here
         if (attrName == NULL || data == NULL)
             throw DCException(getExceptionString("readAttribute", "a parameter was null"));
-        
+
         // dataName may be NULL, attribute is read to iteration group in that case
         if (dataName && strlen(dataName) == 0)
             throw DCException(getExceptionString("readAttribute", "empty dataset name"));
-        
+
         if (strlen(attrName) == 0)
             throw DCException(getExceptionString("readAttribute", "empty attribute name"));
 
@@ -325,11 +325,11 @@ namespace splash
     {
         if (attrName == NULL || data == NULL)
             throw DCException(getExceptionString("writeAttribute", "a parameter was null"));
-        
+
         // dataName may be NULL, attribute is attached to iteration group in that case
         if (dataName && strlen(dataName) == 0)
             throw DCException(getExceptionString("writeAttribute", "empty dataset name"));
-        
+
         if (strlen(attrName) == 0)
             throw DCException(getExceptionString("writeAttribute", "empty attribute name"));
 
@@ -347,7 +347,7 @@ namespace splash
         {
             // attach attribute to the dataset
             group.open(handles.get(0), group_path);
-            
+
             hid_t dataset_id = -1;
             if (H5Lexists(group.getHandle(), dset_name.c_str(), H5P_LINK_ACCESS_DEFAULT))
             {
@@ -395,8 +395,8 @@ namespace splash
             throw DCException(getExceptionString("read", "this access is not permitted"));
 
         uint32_t ndims = 0;
-        readInternal(handles.get(0), id, name, dstBuffer, dstOffset,
-                Dimensions(0, 0, 0), Dimensions(0, 0, 0), sizeRead, ndims, data);
+        readCompleteDataSet(handles.get(0), id, name, dstBuffer, dstOffset,
+                Dimensions(0, 0, 0), sizeRead, ndims, data);
     }
 
     void SerialDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
@@ -891,7 +891,33 @@ namespace splash
         return ndims;
     }
 
-    void SerialDataCollector::readInternal(H5Handle h5File,
+    void SerialDataCollector::readCompleteDataSet(H5Handle h5File,
+            int32_t id,
+            const char* name,
+            const Dimensions dstBuffer,
+            const Dimensions dstOffset,
+            const Dimensions srcOffset,
+            Dimensions &sizeRead,
+            uint32_t& srcDims,
+            void* dst)
+    throw (DCException)
+    {
+        log_msg(2, "readCompleteDataSet");
+
+        std::string group_path, dset_name;
+        DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
+
+        DCGroup group;
+        group.open(h5File, group_path);
+
+        DCDataSet dataset(dset_name.c_str());
+        dataset.open(group.getHandle());
+        Dimensions src_size(dataset.getSize() - srcOffset);
+        dataset.read(dstBuffer, dstOffset, src_size, srcOffset, sizeRead, srcDims, dst);
+        dataset.close();
+    }
+
+    void SerialDataCollector::readDataSet(H5Handle h5File,
             int32_t id,
             const char* name,
             const Dimensions dstBuffer,
@@ -903,7 +929,7 @@ namespace splash
             void* dst)
     throw (DCException)
     {
-        log_msg(2, "readInternal");
+        log_msg(2, "readDataSet");
 
         std::string group_path, dset_name;
         DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
@@ -911,16 +937,10 @@ namespace splash
         DCGroup group;
         group.open(h5File, group_path);
 
-        try
-        {
-            DCDataSet dataset(dset_name.c_str());
-            dataset.open(group.getHandle());
-            dataset.read(dstBuffer, dstOffset, srcSize, srcOffset, sizeRead, srcDims, dst);
-            dataset.close();
-        } catch (DCException e)
-        {
-            throw e;
-        }
+        DCDataSet dataset(dset_name.c_str());
+        dataset.open(group.getHandle());
+        dataset.read(dstBuffer, dstOffset, srcSize, srcOffset, sizeRead, srcDims, dst);
+        dataset.close();
     }
 
     void SerialDataCollector::readSizeInternal(H5Handle h5File,
@@ -935,15 +955,13 @@ namespace splash
         DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
 
         DCGroup group;
-        Dimensions tmpDim(0, 0, 0);
         group.open(h5File, group_path);
 
         try
         {
-            uint32_t src_dims;
             DCDataSet dataset(dset_name.c_str());
             dataset.open(group.getHandle());
-            dataset.read(tmpDim, tmpDim, tmpDim, tmpDim, sizeRead, src_dims, NULL);
+            sizeRead.set(dataset.getSize());
             dataset.close();
         } catch (DCException e)
         {

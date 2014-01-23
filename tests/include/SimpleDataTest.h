@@ -26,7 +26,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "splash.h"
+#include "splash/splash.h"
 
 using namespace splash;
 
@@ -61,7 +61,8 @@ private:
      */
     bool subtestWriteRead(Dimensions gridSize, Dimensions borderSize, uint32_t dimensions);
 
-    ColTypeInt ctInt;
+    ColTypeUInt32 ctUInt32;
+    ColTypeUInt64 ctUInt64;
     DataCollector *dataCollector;
 };
 

@@ -24,13 +24,12 @@
 #include <cassert>
 #include <math.h>
 
-#include "basetypes/ColTypeDim.hpp"
-#include "basetypes/ColTypeInt.hpp"
-#include "DomainCollector.hpp"
-#include "core/DCDataSet.hpp"
-#include "core/DCGroup.hpp"
-#include "core/DCAttribute.hpp"
-#include "core/logging.hpp"
+#include "splash/basetypes/basetypes.hpp"
+#include "splash/DomainCollector.hpp"
+#include "splash/core/DCDataSet.hpp"
+#include "splash/core/DCGroup.hpp"
+#include "splash/core/DCAttribute.hpp"
+#include "splash/core/logging.hpp"
 
 namespace splash
 {
@@ -230,7 +229,7 @@ namespace splash
         // read intersecting partition into destination buffer
         Dimensions elements_read(0, 0, 0);
         uint32_t src_dims = 0;
-        readInternal(handles.get(mpiPosition), id, name,
+        readDataSet(handles.get(mpiPosition), id, name,
                 dataContainer->getIndex(0)->getSize(),
                 dst_offset,
                 src_size,
@@ -299,9 +298,8 @@ namespace splash
             {
                 Dimensions size_read;
                 uint32_t src_ndims = 0;
-                readInternal(handles.get(mpiPosition), id, name,
+                readCompleteDataSet(handles.get(mpiPosition), id, name,
                         dataSize,
-                        Dimensions(0, 0, 0),
                         Dimensions(0, 0, 0),
                         Dimensions(0, 0, 0),
                         size_read,
@@ -670,7 +668,7 @@ namespace splash
         {
             Dimensions elements_read;
             uint32_t src_dims = 0;
-            readInternal(loadingRef->handle,
+            readDataSet(loadingRef->handle,
                     loadingRef->id,
                     loadingRef->name.c_str(),
                     loadingRef->dstBuffer,

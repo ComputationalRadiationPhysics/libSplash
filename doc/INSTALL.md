@@ -16,7 +16,7 @@ To use the CMakeLists.txt file which comes with the source code, you must have
 **CMake version 2.8.5** or higher installed.
 
 The splashtools and some tests also require an **MPI 2.2** compatible MPI library,
-e.g. OpenMPI 1.4.3 or higher.
+e.g. **OpenMPI 1.5.1** or higher.
 
 Tests require the development version of the **CppUnit** library.
 
@@ -39,6 +39,11 @@ pass `-DSPLASH_RELEASE=OFF` to your cmake command.
 To see verbose internal (!) HDF5 debug output, pass `-DDEBUG_VERBOSE=ON`
 to your cmake command line.
 
+Afterwards, please add `<INSTALL PATH>/bin` to your `$PATH` environment variable and
+`<INSTALL PATH>/lib` to your `$LD_LIBRARY_PATH`.
+Setting an additional environment variable `export SPLASH_ROOT=<INSTALL PATH>` will
+help finding the installed libraries with CMake scripts.
+
 
 Linking
 -------
@@ -46,6 +51,13 @@ Linking
 To use libSplash in your project, you must link against the created shared object library
 libsplash.so or against the statically linked archive libsplash.a.
 
+Because we are linking to HDF5, the following **external dependencies** must be linked:
+- `-lhdf5`
+- `-lpthread`
+- `-lz`
+- `-lrt`
+- `-ldl`
+- `-lm`
 
 Tests
 -----
@@ -80,4 +92,3 @@ This builds the *ParallelDataCollector* and *ParallelDomainCollector* classes.
 *Please note that this feature is beta stage and not fully tested!*
 See *IParallelDataCollector* and *IParallelDomainCollector* interfaces for further
 information on how to use the parallel version.
-
