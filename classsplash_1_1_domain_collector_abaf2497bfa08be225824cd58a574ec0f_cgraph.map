@@ -1,5 +1,7 @@
 <map id="splash::DomainCollector::readDomain" name="splash::DomainCollector::readDomain">
-<area shape="rect" id="node3" href="$classsplash_1_1_dimensions.html#aacded30f48b262936a9f9fa4fa621680" title="splash::Dimensions::set" alt="" coords="220,5,372,33"/>
-<area shape="rect" id="node5" href="$classsplash_1_1_domain.html#afdf3a9d343e35d12e63787cd3d8af9b1" title="splash::Domain::getOffset" alt="" coords="213,55,379,83"/>
-<area shape="rect" id="node7" href="$classsplash_1_1_domain.html#ac138156443cd496ecd2ea760abcaa4eb" title="splash::Domain::getBack" alt="" coords="215,106,377,134"/>
+<area shape="rect" id="node3" href="$namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55" title="splash::log_msg" alt="" coords="240,5,352,33"/>
+<area shape="rect" id="node5" href="$classsplash_1_1_dimensions.html#aacded30f48b262936a9f9fa4fa621680" title="splash::Dimensions::set" alt="" coords="220,55,372,83"/>
+<area shape="rect" id="node7" href="$classsplash_1_1_dimensions.html#aba303b57e129388c823addd21cb1de49" title="splash::Dimensions\l::toString" alt="" coords="231,106,361,150"/>
+<area shape="rect" id="node9" href="$classsplash_1_1_domain.html#afdf3a9d343e35d12e63787cd3d8af9b1" title="splash::Domain::getOffset" alt="" coords="213,173,379,201"/>
+<area shape="rect" id="node11" href="$classsplash_1_1_domain.html#ac138156443cd496ecd2ea760abcaa4eb" title="splash::Domain::getBack" alt="" coords="215,223,377,251"/>
 </map>

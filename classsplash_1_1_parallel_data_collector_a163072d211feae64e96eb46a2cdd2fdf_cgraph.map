@@ -1,3 +1,6 @@
 <map id="splash::ParallelDataCollector::ParallelDataCollector" name="splash::ParallelDataCollector::ParallelDataCollector">
-<area shape="rect" id="node3" href="$classsplash_1_1_dimensions.html#a4fde837baabd0ab13294ed96005be9b6" title="splash::Dimensions\l::getScalarSize" alt="" coords="240,5,371,49"/>
+<area shape="rect" id="node3" href="$namespacesplash.html#a25814150ab7b3bf2777217442cddfe44" title="splash::parseEnvVars" alt="" coords="247,5,388,33"/>
+<area shape="rect" id="node7" href="$classsplash_1_1_dimensions.html#a4fde837baabd0ab13294ed96005be9b6" title="splash::Dimensions\l::getScalarSize" alt="" coords="252,55,383,99"/>
+<area shape="rect" id="node9" href="$namespacesplash.html#a8ab0f59ba81055cb4e12c7dea6e454a6" title="splash::setLogMpiRank" alt="" coords="241,122,393,150"/>
+<area shape="rect" id="node5" href="$namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55" title="splash::log_msg" alt="" coords="443,5,555,33"/>
 </map>

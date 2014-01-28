@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.4"/>
-<title>libDataCollector: libSplash/src/include/DCException.hpp Source File</title>
+<title>libDataCollector: libSplash/src/include/splash/DCException.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -41,7 +41,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_e39b011b507268504f9695a0e48802a7.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_470612c8ece117bf44487f574513c7a0.html">src</a></li><li class="navelem"><a class="el" href="dir_db2d9bc027d7166c61d766770c8b9679.html">include</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_64320cb61aaf6a1e96c1ae3e72b5ab18.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_eeeaa2379158ce0416f3221c6e143e88.html">src</a></li><li class="navelem"><a class="el" href="dir_508d9704fae495c33ca4f0e67550e8ee.html">include</a></li><li class="navelem"><a class="el" href="dir_a59e7ba6b95510d9a8c945f5db8cd5df.html">splash</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -61,22 +61,22 @@
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    {</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* message) : std::runtime_error(message)</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        {</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        }</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>(std::string message) : std::runtime_error(message.c_str())</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        {</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        }</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    };</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;}</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">/* DCEXCEPTION_HPP */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="code" href="classsplash_1_1_d_c_exception.html#a22b363a407655f6fad9a87b8433f238e">   45</a></span>&#160;        <a class="code" href="classsplash_1_1_d_c_exception.html#a22b363a407655f6fad9a87b8433f238e">DCException</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* message) : std::runtime_error(message)</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        }</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        </div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="code" href="classsplash_1_1_d_c_exception.html#ae23e0c5b7d331beac4dbcd6da3c21cc2">   54</a></span>&#160;        <a class="code" href="classsplash_1_1_d_c_exception.html#ae23e0c5b7d331beac4dbcd6da3c21cc2">DCException</a>(std::string message) : std::runtime_error(message.c_str())</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        {</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        }</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    };</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;}</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">/* DCEXCEPTION_HPP */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jan 22 2014 11:14:37 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jan 28 2014 15:38:48 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.4
 </small></address>

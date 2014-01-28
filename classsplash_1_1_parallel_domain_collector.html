@@ -305,15 +305,15 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the global domain that is spanned by all local datasets (subdomains) of the currently accessed files. The user is responsible to guarantee that the actual subdomains form a line/rectangle/cuboid.</p>
+<p>Returns the global domain information for a dataset.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">id</td><td>ID of iteration. </td></tr>
-    <tr><td class="paramname">name</td><td>Name of the dataset. </td></tr>
+    <tr><td class="paramname">id</td><td>dataset iteration </td></tr>
+    <tr><td class="paramname">name</td><td>dataset name </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Global domain spanned by all subdomains. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>global domain </dd></dl>
 
 <p>Implements <a class="el" href="classsplash_1_1_i_domain_collector.html#a20de3fb45f8107222e6591432dc72488">splash::IDomainCollector</a>.</p>
 
@@ -358,15 +358,15 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the local domain for a dataset in currently accessed file.</p>
+<p>Returns the local domain information for a dataset.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">id</td><td>ID of iteration. </td></tr>
-    <tr><td class="paramname">name</td><td>Name of the dataset. </td></tr>
+    <tr><td class="paramname">id</td><td>dataset iteration </td></tr>
+    <tr><td class="paramname">name</td><td>dataset name </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Local sudomain. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>global domain </dd></dl>
 
 <p>Implements <a class="el" href="classsplash_1_1_i_domain_collector.html#a3709f2853d376279e190270597611c5e">splash::IDomainCollector</a>.</p>
 
@@ -452,7 +452,7 @@ Here is the call graph for this function:</div>
     <tr><td class="paramname">domainOffset</td><td><a class="el" href="classsplash_1_1_domain.html">Domain</a> offset for reading (logical start of the requested partition). </td></tr>
     <tr><td class="paramname">domainSize</td><td><a class="el" href="classsplash_1_1_domain.html">Domain</a> size for reading (logical size of the requested partition). </td></tr>
     <tr><td class="paramname">dataClass</td><td>Optional domain type annotation, can be NULL. </td></tr>
-    <tr><td class="paramname">lazyLoad</td><td>Set to load only size information for each subdomain, data must be loaded later using DataContainer::readDomainLazy. </td></tr>
+    <tr><td class="paramname">lazyLoad</td><td>Set to load only size information for each subdomain, data must be loaded later using <a class="el" href="classsplash_1_1_i_domain_collector.html#a4ce54a707718dd7ef285112eeba8e555">IDomainCollector::readDomainLazy</a>. </td></tr>
   </table>
   </dd>
 </dl>
@@ -460,7 +460,16 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_i_domain_collector.html#a1f68830147e32652bf6eac17b67e0185">splash::IDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00316">316</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00322">322</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsplash_1_1_parallel_domain_collector_a91a3f14b84f9b887aa0c01021a7ae01d_cgraph.png" border="0" usemap="#classsplash_1_1_parallel_domain_collector_a91a3f14b84f9b887aa0c01021a7ae01d_cgraph" alt=""/></div>
+<map name="classsplash_1_1_parallel_domain_collector_a91a3f14b84f9b887aa0c01021a7ae01d_cgraph" id="classsplash_1_1_parallel_domain_collector_a91a3f14b84f9b887aa0c01021a7ae01d_cgraph">
+<area shape="rect" id="node3" href="namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55" title="splash::log_msg" alt="" coords="256,13,368,41"/></map>
+</div>
+</p>
 
 </div>
 </div>
@@ -501,7 +510,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_i_domain_collector.html#a4ce54a707718dd7ef285112eeba8e555">splash::IDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00349">349</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00355">355</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -595,7 +604,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_i_parallel_domain_collector.html#a52d4e0284c25286d11aa0e681fb05e43">splash::IParallelDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00536">536</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00541">541</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -704,7 +713,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_i_parallel_domain_collector.html#a0408fdf5a2f9a2c35abf4a60b7434e00">splash::IParallelDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00558">558</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00563">563</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -804,7 +813,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_i_parallel_domain_collector.html#aa70d586e18e7b6dac4443a3a585a5f0c">splash::IParallelDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00399">399</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00404">404</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -916,7 +925,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_i_parallel_domain_collector.html#a33b7ca75bd315d1aca136c24ce7aca04">splash::IParallelDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00421">421</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00426">426</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -1034,7 +1043,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_i_parallel_domain_collector.html#ad899472e5e5795a2c2d3d543565ac037">splash::IParallelDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00444">444</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00449">449</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -1149,7 +1158,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_i_parallel_domain_collector.html#a805e7e831b43e24410a5ef0354f1e853">splash::IParallelDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00468">468</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00473">473</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -1278,7 +1287,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_i_parallel_domain_collector.html#af13512e38cd98400f876d62a3758541a">splash::IParallelDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00487">487</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00492">492</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -1414,18 +1423,18 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_i_parallel_domain_collector.html#a909e3a98cc052a5f241685027e49f11b">splash::IParallelDomainCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00507">507</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_parallel_domain_collector_8cpp_source.html#l00512">512</a> of file <a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>libSplash/src/include/<a class="el" href="_parallel_domain_collector_8hpp_source.html">ParallelDomainCollector.hpp</a></li>
+<li>libSplash/src/include/splash/<a class="el" href="_parallel_domain_collector_8hpp_source.html">ParallelDomainCollector.hpp</a></li>
 <li>libSplash/src/<a class="el" href="_parallel_domain_collector_8cpp_source.html">ParallelDomainCollector.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jan 22 2014 11:14:38 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jan 28 2014 15:38:48 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.4
 </small></address>

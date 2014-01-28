@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.4"/>
-<title>libDataCollector: libSplash/src/include/core/SDCHelper.hpp Source File</title>
+<title>libDataCollector: libSplash/src/include/splash/core/SDCHelper.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -41,7 +41,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_e39b011b507268504f9695a0e48802a7.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_470612c8ece117bf44487f574513c7a0.html">src</a></li><li class="navelem"><a class="el" href="dir_db2d9bc027d7166c61d766770c8b9679.html">include</a></li><li class="navelem"><a class="el" href="dir_50bb68ef45c09743ec488bd15e33bb46.html">core</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_64320cb61aaf6a1e96c1ae3e72b5ab18.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_eeeaa2379158ce0416f3221c6e143e88.html">src</a></li><li class="navelem"><a class="el" href="dir_508d9704fae495c33ca4f0e67550e8ee.html">include</a></li><li class="navelem"><a class="el" href="dir_a59e7ba6b95510d9a8c945f5db8cd5df.html">splash</a></li><li class="navelem"><a class="el" href="dir_f696d680d1452b3db328831208c13e29.html">core</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -53,11 +53,11 @@
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#ifndef SDCHELPER_H</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SDCHELPER_H</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;basetypes/ColTypeDim.hpp&quot;</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &quot;sdc_defines.hpp&quot;</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;core/DCAttribute.hpp&quot;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &quot;core/logging.hpp&quot;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &quot;DCException.hpp&quot;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;splash/basetypes/ColTypeDim.hpp&quot;</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &quot;splash/sdc_defines.hpp&quot;</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;splash/core/DCAttribute.hpp&quot;</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &quot;splash/core/logging.hpp&quot;</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &quot;splash/DCException.hpp&quot;</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">namespace </span>splash</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;{</div>
@@ -77,7 +77,7 @@
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> getReferenceData(<span class="keyword">const</span> <span class="keywordtype">char</span>* filename, int32_t* maxID, Dimensions *mpiSize)</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordflow">throw</span> (DCException)</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        {</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            log_msg(1, <span class="stringliteral">&quot;loading reference data from %s&quot;</span>, filename);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <a class="code" href="namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55">log_msg</a>(1, <span class="stringliteral">&quot;loading reference data from %s&quot;</span>, filename);</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            <span class="comment">// open the file to get reference data from</span></div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            hid_t reference_file = H5Fopen(filename, H5F_ACC_RDONLY, H5P_FILE_ACCESS_DEFAULT);</div>
@@ -163,7 +163,7 @@
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jan 22 2014 11:14:37 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jan 28 2014 15:38:48 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.4
 </small></address>

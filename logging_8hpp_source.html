@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.4"/>
-<title>libDataCollector: libSplash/src/include/core/logging.hpp Source File</title>
+<title>libDataCollector: libSplash/src/include/splash/core/logging.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -41,7 +41,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_e39b011b507268504f9695a0e48802a7.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_470612c8ece117bf44487f574513c7a0.html">src</a></li><li class="navelem"><a class="el" href="dir_db2d9bc027d7166c61d766770c8b9679.html">include</a></li><li class="navelem"><a class="el" href="dir_50bb68ef45c09743ec488bd15e33bb46.html">core</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_64320cb61aaf6a1e96c1ae3e72b5ab18.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_eeeaa2379158ce0416f3221c6e143e88.html">src</a></li><li class="navelem"><a class="el" href="dir_508d9704fae495c33ca4f0e67550e8ee.html">include</a></li><li class="navelem"><a class="el" href="dir_a59e7ba6b95510d9a8c945f5db8cd5df.html">splash</a></li><li class="navelem"><a class="el" href="dir_f696d680d1452b3db328831208c13e29.html">core</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -61,17 +61,19 @@
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">namespace </span>splash</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;{</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    EXTERN <span class="keywordtype">void</span> parseEnvVars(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    EXTERN <span class="keywordtype">void</span> log_msg(<span class="keywordtype">int</span> level, <span class="keyword">const</span> <span class="keywordtype">char</span> *fmt, ...);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;}</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">/* LOGGING_HPP */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    EXTERN <span class="keywordtype">void</span> <a class="code" href="namespacesplash.html#a25814150ab7b3bf2777217442cddfe44">parseEnvVars</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    EXTERN <span class="keywordtype">void</span> <a class="code" href="namespacesplash.html#a8ab0f59ba81055cb4e12c7dea6e454a6">setLogMpiRank</a>(<span class="keywordtype">int</span> rank);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    EXTERN <span class="keywordtype">void</span> <a class="code" href="namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55">log_msg</a>(<span class="keywordtype">int</span> level, <span class="keyword">const</span> <span class="keywordtype">char</span> *fmt, ...);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;}</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">/* LOGGING_HPP */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jan 22 2014 11:14:37 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jan 28 2014 15:38:48 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.4
 </small></address>
