@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 #
 # Copyright 2014 Felix Schmitt
 #
@@ -8,6 +10,7 @@
 # the GNU Lesser General Public License as published by 
 # the Free Software Foundation, either version 3 of the License, or 
 # (at your option) any later version. 
+#
 # libSplash is distributed in the hope that it will be useful, 
 # but WITHOUT ANY WARRANTY; without even the implied warranty of 
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
@@ -22,20 +25,21 @@
 import sys
 import h5py
 import os.path
+import argparse
 from xml.dom.minidom import Document
 
 SPLASH_CLASS_NAME = "_class"
 SPLASH_CLASS_TYPE_POLY = 10
 SPLASH_CLASS_TYPE_GRID = 20
 
-VERBOSITY = 0
+verbosity_level = 0
 
 doc = Document()
 
 # helper functions
 
 def log(msg, linebreak=True, verbLevel=1):
-    if VERBOSITY >= verbLevel:
+    if verbosity_level >= verbLevel:
         if linebreak:
             print msg
         else:
@@ -162,15 +166,30 @@ def print_hdf5_recursive(h5Group, h5filename, xdmf, level):
             print_dataset(h5Group[g], level, h5filename, xdmf)
 
 
+def get_args_parser():
+    parser = argparse.ArgumentParser(description="Create a XDMF meta description file from a libSplash HDF5 file.")
+
+    parser.add_argument("splashfile", metavar="<libSplash file>",
+        help="libSplash HDF5 file with domain information")
+        
+    parser.add_argument("-v", help="Produce verbose output", action="store_true")
+        
+    return parser
+
 # main
 
 def main():
-    # get filename from command line
-    if len(sys.argv) < 2:
-        print "Usage: {} <splash file>".format(sys.argv[0])
-        sys.exit(1)
+    global verbosity_level
 
-    splashFilename = sys.argv[1]
+    # get arguments from command line
+    args_parser = get_args_parser()
+    args = args_parser.parse_args()
+
+    # apply arguments
+    splashFilename = args.splashfile
+    if args.v:
+        verbosity_level = 100
+    
     if not os.path.isfile(splashFilename):
         print "Error: '{}' does not exist.".format(splashFilename)
         sys.exit(1)
@@ -184,13 +203,16 @@ def main():
     if dataGroup == None:
         print "Error: Could not find root data group."
     else:
-        xdmf_file = open("{}.xmf".format(splashFilename), "w")
+        xdmf_filename = "{}.xmf".format(splashFilename)
+        
+        xdmf_file = open(xdmf_filename, "w")
         xdmf_root = doc.createElement("Xdmf")
         grid = print_xdmf_header(xdmf_root)
         print_hdf5_recursive(dataGroup, splashFilename, grid, 1)
         doc.appendChild(xdmf_root)
         xdmf_file.write(doc.toprettyxml())
         xdmf_file.close()
+        log("Created XDMF file '{}'".format(xdmf_filename), True, 0)
 
     # close libSplash file
     h5file.close()
