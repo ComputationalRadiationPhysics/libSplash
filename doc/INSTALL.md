@@ -25,24 +25,33 @@ Compiling
 ---------
 
 To **compile libSplash**, it is recommended to create a new build folder and execute
-`$ cmake -DCMAKE_INSTALL_PREFIX=<INSTALL PATH> <CMakeLists.txt-PATH>`
+```bash
+cmake -DCMAKE_INSTALL_PREFIX=<INSTALL PATH> <CMakeLists.txt-PATH>
+```
 
 Than run `$ make install` to build and install libSplash library and binaries to the chosen
 installation directory. This will build libSplash as an shared object library (libsplash.so)
 as well as all tools.
 
 If you do not want to build splashtools, pass `-DWITH_TOOLS=OFF` to your cmake command.
-To enable MPI parallel splashtools, pass `-DTOOLS_MPI=ON` to your cmake command.
+To disable MPI parallel splashtools, pass `-DTOOLS_MPI=OFF` to your cmake command.
 
 By default, the RELEASE version is built. To create libSplash with DEBUG symbols,
 pass `-DSPLASH_RELEASE=OFF` to your cmake command.
 To see verbose internal (!) HDF5 debug output, pass `-DDEBUG_VERBOSE=ON`
 to your cmake command line.
 
-Afterwards, please add `<INSTALL PATH>/bin` to your `$PATH` environment variable and
-`<INSTALL PATH>/lib` to your `$LD_LIBRARY_PATH`.
-Setting an additional environment variable `export SPLASH_ROOT=<INSTALL PATH>` will
-help finding the installed libraries with CMake scripts.
+Afterwards, configure your environment variables:
+```bash
+# helps finding the installed library, e.g. with CMake scripts
+export SPLASH_ROOT=<INSTALL PATH>
+# provides command line access to our tools
+export PATH=$SPLASH_ROOT/bin:$PATH
+# path for the linker
+export LD_LIBRARY_PATH=$SPLASH_ROOT/lib:$LD_LIBRARY_PATH
+# provides our python modules, e.g. for xdmf creation
+export PYTHONPATH=$SPLASH_ROOT/bin:$PYTHONPATH
+```
 
 
 Linking
