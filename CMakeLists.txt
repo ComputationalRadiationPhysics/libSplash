@@ -239,6 +239,7 @@ IF(WITH_TOOLS)
 
     #install tools
     INSTALL(TARGETS splashtools RUNTIME DESTINATION bin)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/tools/splash2xdmf.py DESTINATION bin)
 ENDIF(WITH_TOOLS)
 
 
