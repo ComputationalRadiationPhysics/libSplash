@@ -276,10 +276,10 @@ def create_xdmf_xml(splash_files_list):
     return xdmf_root
 
 
-def write_xml_to_file(filename):
+def write_xml_to_file(filename, document):
     # write xml to xdmf file
     xdmf_file = open(filename, "w")
-    xdmf_file.write(doc.toprettyxml())
+    xdmf_file.write(document.toprettyxml())
     xdmf_file.close()
     log("Created XDMF file '{}'".format(filename), True, 0)
     
@@ -328,7 +328,7 @@ def main():
     output_filename = "{}.xmf".format(splashFilename)
     if args.o:
         output_filename = args.o
-    write_xml_to_file(output_filename)
+    write_xml_to_file(output_filename, doc)
 
 if __name__ == "__main__":
     main()
