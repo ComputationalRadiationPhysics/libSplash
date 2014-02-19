@@ -41,13 +41,40 @@ grids = dict()
 # String functions
 
 def log(msg, linebreak=True, verbLevel=1):
+    """
+    Print log message if verbosity level is high enough.
+    
+    Parameters:
+    ----------------
+    msg:       string
+               log message
+    linebreak: bool
+               print linebreak after message
+    verbLevel: int
+               required verbosity level
+    """
+
     if verbosity_level >= verbLevel:
         if linebreak:
             print msg
         else:
             print msg,
 
+
 def get_common_filename(filename):
+    """
+    Return common part of HDF5 filename
+    
+    Parameters:
+    ----------------
+    filename: string
+              libSplash HDF5 filename
+    Returns:
+    ----------------
+    return: string
+            common filename part
+    """
+
     index1 = filename.rfind(".h5")
     if index1 == -1:
         return filename
@@ -59,8 +86,20 @@ def get_common_filename(filename):
             return filename[0:index2]
         
 
-# strip /data/<timestep> from dset_name
 def get_attr_name(dset_name):
+    """
+    Return name part of HDF5 dataset without /data/<timestep>
+    
+    Parameters:
+    ----------------
+    dset_name: string
+               fully qualified libSplash HDF5 dataset name 
+    Returns:
+    ----------------
+    return: string
+            dataset name part with /data/<timestep> stripped
+    """
+
     index = dset_name.find("/", len("/data/"))
     if index == -1:
         return dset_name
@@ -70,9 +109,23 @@ def get_attr_name(dset_name):
 
 # XDMF/XML output functions
 
-# return an existing xml grid node for dims or create a new one
-# and insert it into the map of grid nodes
 def get_create_grid_node(dims, ndims):
+    """
+    Return an existing XML grid node for dims or create a new one
+    and insert it into the map of grid nodes.
+    
+    Parameters:
+    ----------------
+    dims:  string
+           space-separated dimensions
+    ndims: int
+           number of dimensions of dims
+    Returns:
+    ----------------
+    return: Element
+            new or existing XML Grid node 
+    """
+
     if dims in grids:
         return grids[dims]
     else:
@@ -117,8 +170,18 @@ def get_create_grid_node(dims, ndims):
         return new_grid
 
 
-# create an xdmf grid attribute for an hdf5 grid-type dataset
-def create_xdmf_grid_attribute(dset, level, h5filename):
+def create_xdmf_grid_attribute(dset, h5filename):
+    """
+    Create a XDMF grid attribute for an HDF5 grid-type dataset
+    
+    Parameters:
+    ----------------
+    dset:  h5py Dataset
+           HDF5 dataset with grid domain information.
+    h5filename: string
+                HDF5 filename 
+    """
+
     log("Creating XDMF entry for {}".format(dset.name), False)
     ndims = get_ndims(dset)
     dims = get_dims(dset)
@@ -143,6 +206,19 @@ def create_xdmf_grid_attribute(dset, level, h5filename):
     
 
 def create_timestep_node(time):
+    """
+    Return XDMF XML Time node 
+    
+    Parameters:
+    ----------------
+    time: int
+          time step
+    Returns:
+    ----------------
+    return: Element
+            h5py XDMF Time node
+    """
+
     time_node = doc.createElement("Time")
     time_node.setAttribute("TimeType", "Single")
     time_node.setAttribute("Value", "{}".format(time))
@@ -155,6 +231,7 @@ def create_timestep_node(time):
 def get_ndims(dset):
     return len(dset.dims)
 
+
 # get dimensions as string for an hdf5 dataset
 def get_dims(dset):
     ndims = get_ndims(dset)
@@ -166,10 +243,11 @@ def get_dims(dset):
 
     return dims
 
+
 def eval_class_type(classType, dset, level, h5filename):
     if classType == SPLASH_CLASS_TYPE_GRID:
         log("GRID", False)
-        create_xdmf_grid_attribute(dset, level, h5filename)
+        create_xdmf_grid_attribute(dset, h5filename)
     if classType == SPLASH_CLASS_TYPE_POLY:
         log("POLY", False)
 
@@ -182,6 +260,20 @@ def print_dataset(dset, level, h5filename):
 
 
 def parse_hdf5_recursive(h5Group, h5filename, level):
+    """
+    Recursively parse HDF5 file and call functions at appropriate
+    groups and datasets
+    
+    Parameters:
+    ----------------
+    h5group:    h5py Group
+                Current HDF5 group object
+    h5filename: string
+                HDF5 filename
+    level:      int
+                Current parse depth level
+    """
+
     groups = h5Group.keys()
     for g in groups:
         log("-" * level, False)
@@ -196,6 +288,19 @@ def parse_hdf5_recursive(h5Group, h5filename, level):
     
 
 def get_timestep_for_group(dataGroup):
+    """
+    Return the time step for an libSplash HDF5 group of type /data/<timestep>
+    
+    Parameters:
+    ----------------
+    dataGroup: h5py Group
+               HDF5 /data group
+    Returns:
+    ----------------
+    return: string
+            <timestep> part as string
+    """
+
     groups = dataGroup.keys()
     if len(groups) != 1:
         print("Error: data group is expected to have a single timestep child group")
@@ -211,6 +316,21 @@ def get_timestep_for_group(dataGroup):
     
 
 def create_xdmf_for_splash_file(base_node, splashFilename):
+    """
+    Insert XDMF XML structure for splashFilename under base_node
+    
+    Parameters:
+    ----------------
+    base_node:      Element
+                    XML base node
+    splashFilename: string
+                    libSplash filename
+    Returns:
+    ----------------
+    return: boolean
+            True if successfully inserted, False otherwise
+    """
+
     if not os.path.isfile(splashFilename):
         print "Error: '{}' does not exist.".format(splashFilename)
         sys.exit(1)
@@ -246,9 +366,21 @@ def create_xdmf_for_splash_file(base_node, splashFilename):
 
 # program functions
 
-# creates the xdmf xml structure in the current document for all libSplash
-# files in splash_files_list
 def create_xdmf_xml(splash_files_list):
+    """
+    Return the single XDMF XML structure in the current document for all libSplash
+    files in splash_files_list
+    
+    Parameters:
+    ----------------
+    splash_files_list: list of strings
+                       list of libSplash filenames to create XDMF for
+    Returns:
+    ----------------
+    return: Element
+            XML XDMF root node
+    """
+
     time_series = (len(splash_files_list) > 1)
     
     # setup xml structure
@@ -277,7 +409,17 @@ def create_xdmf_xml(splash_files_list):
 
 
 def write_xml_to_file(filename, document):
-    # write xml to xdmf file
+    """
+    Write XDMF XML document to file filename
+    
+    Parameters:
+    ----------------
+    filename: string
+              output filename
+    document: Document
+              XML Document object to store in file
+    """
+
     xdmf_file = open(filename, "w")
     xdmf_file.write(document.toprettyxml())
     xdmf_file.close()
