@@ -35,6 +35,7 @@ SPLASH_CLASS_TYPE_GRID = 20
 verbosity_level = 0
 
 doc = Document()
+grids = dict()
 
 # helper functions
 
@@ -48,10 +49,11 @@ def log(msg, linebreak=True, verbLevel=1):
 
 # XDMF output functions
 
+# get the number of dimensions of an hdf5 dataset
 def get_ndims(dset):
     return len(dset.dims)
 
-
+# get dimensions as string for an hdf5 dataset
 def get_dims(dset):
     ndims = get_ndims(dset)
     dims = ""
@@ -62,49 +64,71 @@ def get_dims(dset):
 
     return dims
 
+# return an existing xml grid node for dims or create a new one
+# and insert it into the map of grid nodes
+def get_create_grid_node(dims, ndims):
+    if dims in grids:
+        return grids[dims]
+    else:
+        new_grid = doc.createElement("Grid")
+        new_grid.setAttribute("GridType", "Uniform")
+        
+        topology = doc.createElement("Topology")
+        topology.setAttribute("TopologyType", "3DCoRectMesh")
+        topology.setAttribute("Dimensions", "{}".format(dims))
+        new_grid.appendChild(topology)
+        
+        dims_start = ""
+        dims_end = ""
 
-def print_xdmf_grid(dset, level, h5filename, xdmf):
+        for i in range(ndims):
+            dims_start += "0.0"
+            dims_end += "1.0"
+            if i < ndims - 1:
+                dims_start += " "
+                dims_end += " "
+        
+        geometry = doc.createElement("Geometry")
+        geometry.setAttribute("Type", "ORIGIN_DXDYDZ")
+
+        data_item_origin = doc.createElement("DataItem")
+        data_item_origin.setAttribute("Format", "XML")
+        data_item_origin.setAttribute("Dimensions", "{}".format(ndims))
+        data_item_origin_text = doc.createTextNode(dims_start)
+        data_item_origin.appendChild(data_item_origin_text)
+
+        data_item_d = doc.createElement("DataItem")
+        data_item_d.setAttribute("Format", "XML")
+        data_item_d.setAttribute("Dimensions", "{}".format(ndims))
+        data_item_d_text = doc.createTextNode(dims_end)
+        data_item_d.appendChild(data_item_d_text)
+
+        geometry.appendChild(data_item_origin)
+        geometry.appendChild(data_item_d)
+        new_grid.appendChild(geometry)
+        
+        grids[dims] = new_grid
+        return new_grid
+
+# strip /data/<timestep> from dset_name
+def get_attr_name(dset_name):
+    index = dset_name.find("/", len("/data/"))
+    if index == -1:
+        return dset_name
+    else:
+        return dset_name[(index+1):]
+    
+
+# create an xdmf grid attribute for an hdf5 grid-type dataset
+def create_xdmf_grid_attribute(dset, level, h5filename):
     log("Creating XDMF entry for {}".format(dset.name), False)
     ndims = get_ndims(dset)
     dims = get_dims(dset)
-    dims_start = ""
-    dims_end = ""
     
-    for i in range(ndims):
-        dims_start += "0.0"
-        dims_end += "1.0"
-        if i < ndims - 1:
-            dims_start += " "
-            dims_end += " "
-    
-    grid = doc.createElement("Grid")
-    grid.setAttribute("Name", dset.name)
-    grid.setAttribute("GridType", "Uniform")
-    
-    topology = doc.createElement("Topology")
-    topology.setAttribute("TopologyType", "3DCoRectMesh")
-    topology.setAttribute("Dimensions", "{}".format(dims))
-    
-    geometry = doc.createElement("Geometry")
-    geometry.setAttribute("Type", "ORIGIN_DXDYDZ")
-    
-    data_item_origin = doc.createElement("DataItem")
-    data_item_origin.setAttribute("Format", "XML")
-    data_item_origin.setAttribute("Dimensions", "{}".format(ndims))
-    data_item_origin_text = doc.createTextNode(dims_start)
-    data_item_origin.appendChild(data_item_origin_text)
-    
-    data_item_d = doc.createElement("DataItem")
-    data_item_d.setAttribute("Format", "XML")
-    data_item_d.setAttribute("Dimensions", "{}".format(ndims))
-    data_item_d_text = doc.createTextNode(dims_end)
-    data_item_d.appendChild(data_item_d_text)
-    
-    geometry.appendChild(data_item_origin)
-    geometry.appendChild(data_item_d)
+    grid = get_create_grid_node(dims, ndims)
     
     attribute = doc.createElement("Attribute")
-    attribute.setAttribute("Name", dset.name)
+    attribute.setAttribute("Name", get_attr_name(dset.name))
     
     data_item_attr = doc.createElement("DataItem")
     data_item_attr.setAttribute("Dimensions", "{}".format(dims))
@@ -117,13 +141,10 @@ def print_xdmf_grid(dset, level, h5filename, xdmf):
     
     attribute.appendChild(data_item_attr)
     
-    grid.appendChild(topology)
-    grid.appendChild(geometry)
     grid.appendChild(attribute)
-    xdmf.appendChild(grid)
     
     
-def print_xdmf_header(xdmf):
+def create_xdmf_header(xdmf):
     domain = doc.createElement("Domain")
     grid = doc.createElement("Grid")
     
@@ -135,24 +156,29 @@ def print_xdmf_header(xdmf):
     return grid
 
 
+def finalize_xdmf(xdmf):
+    for grid in grids.values():
+        xdmf.appendChild(grid)
+
+
 # HDF5 parsing functions
 
-def eval_class_type(classType, dset, level, h5filename, xdmf):
+def eval_class_type(classType, dset, level, h5filename):
     if classType == SPLASH_CLASS_TYPE_GRID:
         log("GRID", False)
-        print_xdmf_grid(dset, level, h5filename, xdmf)
+        create_xdmf_grid_attribute(dset, level, h5filename)
     if classType == SPLASH_CLASS_TYPE_POLY:
         log("POLY", False)
 
 
-def print_dataset(dset, level, h5filename, xdmf):
+def print_dataset(dset, level, h5filename):
     for attr in dset.attrs.keys():
         if attr == SPLASH_CLASS_NAME:
-            eval_class_type(dset.attrs.get(attr), dset, level, h5filename, xdmf)
+            eval_class_type(dset.attrs.get(attr), dset, level, h5filename)
     log("")
 
 
-def print_hdf5_recursive(h5Group, h5filename, xdmf, level):
+def parse_hdf5_recursive(h5Group, h5filename, level):
     groups = h5Group.keys()
     for g in groups:
         log("-" * level, False)
@@ -160,10 +186,10 @@ def print_hdf5_recursive(h5Group, h5filename, xdmf, level):
         objClass = h5Group.get(g, None, True)
         if objClass == h5py.Group:
             log("(G)")
-            print_hdf5_recursive(h5Group[g], h5filename, xdmf, level+1)
+            parse_hdf5_recursive(h5Group[g], h5filename, level+1)
         else:
             log("(D):", False)
-            print_dataset(h5Group[g], level, h5filename, xdmf)
+            print_dataset(h5Group[g], level, h5filename)
 
 
 def get_args_parser():
@@ -204,12 +230,16 @@ def main():
         print "Error: Could not find root data group."
     else:
         xdmf_filename = "{}.xmf".format(splashFilename)
-        
         xdmf_file = open(xdmf_filename, "w")
+
         xdmf_root = doc.createElement("Xdmf")
-        grid = print_xdmf_header(xdmf_root)
-        print_hdf5_recursive(dataGroup, splashFilename, grid, 1)
+        
+        grid = create_xdmf_header(xdmf_root)
+        parse_hdf5_recursive(dataGroup, splashFilename, 1)
+        finalize_xdmf(grid)
+        
         doc.appendChild(xdmf_root)
+
         xdmf_file.write(doc.toprettyxml())
         xdmf_file.close()
         log("Created XDMF file '{}'".format(xdmf_filename), True, 0)
@@ -218,4 +248,5 @@ def main():
     h5file.close()
     
 
-main()
+if __name__ == "__main__":
+    main()
