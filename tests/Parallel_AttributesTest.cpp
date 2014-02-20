@@ -90,6 +90,8 @@ void Parallel_AttributesTest::testDataAttributes()
     dataCollector->writeAttribute(0, ctInt, "attr/attr2/attr3/data", "sum", &sum);
     int neg_sum = -sum;
     dataCollector->writeAttribute(0, ctInt, "attr/attr2/attr3/data", "neg_sum", &neg_sum);
+    
+    dataCollector->writeAttribute(0, ctInt, "attr/attr2/attr3", "sum_at_group", &sum);
 
     delete[] dummy_data;
     dummy_data = NULL;
@@ -115,6 +117,10 @@ void Parallel_AttributesTest::testDataAttributes()
 
     CPPUNIT_ASSERT(sum == old_sum);
     CPPUNIT_ASSERT(neg_sum == -old_sum);
+    
+    dataCollector->readAttribute(0, "attr/attr2/attr3", "sum_at_group", &sum);
+    
+    CPPUNIT_ASSERT(sum == old_sum);
 
     dataCollector->close();
     delete dataCollector;

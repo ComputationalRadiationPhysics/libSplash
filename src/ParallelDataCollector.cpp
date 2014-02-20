@@ -349,35 +349,34 @@ namespace splash
         if (fileStatus == FST_CLOSED)
             throw DCException(getExceptionString("readAttribute", "this access is not permitted"));
 
-        std::string group_path, dset_name;
+        std::string group_path, obj_name;
         std::string dataNameInternal = "";
         if (dataName)
             dataNameInternal.assign(dataName);
-        DCDataSet::getFullDataPath(dataNameInternal, SDC_GROUP_DATA, id, group_path, dset_name);
+        DCDataSet::getFullDataPath(dataNameInternal, SDC_GROUP_DATA, id, group_path, obj_name);
 
         DCParallelGroup group;
         group.open(handles.get(id), group_path);
 
         if (dataName)
         {
-            // read attribute from the dataset
-            hid_t dataset_id = -1;
-            dataset_id = H5Dopen(group.getHandle(), dset_name.c_str(), H5P_DEFAULT);
-            if (dataset_id < 0)
+            // read attribute from the dataset or group
+            hid_t obj_id = H5Oopen(group.getHandle(), obj_name.c_str(), H5P_DEFAULT);
+            if (obj_id < 0)
             {
                 throw DCException(getExceptionString("readAttribute",
-                        "dataset not found", dset_name.c_str()));
+                        "dataset not found", obj_name.c_str()));
             }
 
             try
             {
-                DCAttribute::readAttribute(attrName, dataset_id, data);
+                DCAttribute::readAttribute(attrName, obj_id, data);
             } catch (DCException)
             {
-                H5Dclose(dataset_id);
+                H5Oclose(obj_id);
                 throw;
             }
-            H5Dclose(dataset_id);
+            H5Oclose(obj_id);
         } else
         {
             // read attribute from the iteration
@@ -405,33 +404,33 @@ namespace splash
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
             throw DCException(getExceptionString("writeAttribute", "this access is not permitted"));
 
-        std::string group_path, dset_name;
+        std::string group_path, obj_name;
         std::string dataNameInternal = "";
         if (dataName)
             dataNameInternal.assign(dataName);
-        DCDataSet::getFullDataPath(dataNameInternal, SDC_GROUP_DATA, id, group_path, dset_name);
+        DCDataSet::getFullDataPath(dataNameInternal, SDC_GROUP_DATA, id, group_path, obj_name);
 
         DCParallelGroup group;
         if (dataName)
         {
-            // attach attribute to the dataset
+            // attach attribute to the dataset or group
             group.open(handles.get(id), group_path);
-            hid_t dataset_id = H5Dopen(group.getHandle(), dset_name.c_str(), H5P_DEFAULT);
-            if (dataset_id < 0)
+            hid_t obj_id = H5Oopen(group.getHandle(), obj_name.c_str(), H5P_DEFAULT);
+            if (obj_id < 0)
             {
                 throw DCException(getExceptionString("writeAttribute",
-                        "dataset not found", dset_name.c_str()));
+                        "object not found", obj_name.c_str()));
             }
 
             try
             {
-                DCAttribute::writeAttribute(attrName, type.getDataType(), dataset_id, data);
+                DCAttribute::writeAttribute(attrName, type.getDataType(), obj_id, data);
             } catch (DCException)
             {
-                H5Dclose(dataset_id);
+                H5Oclose(obj_id);
                 throw;
             }
-            H5Dclose(dataset_id);
+            H5Oclose(obj_id);
         } else
         {
             // attach attribute to the iteration
