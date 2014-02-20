@@ -22,6 +22,7 @@
 
 
 #include "AttributesTest.h"
+#include "splash/DataCollector.hpp"
 
 #include <time.h>
 #include <iostream>
@@ -90,6 +91,8 @@ void AttributesTest::testDataAttributes()
     int neg_sum = -sum;
     dataCollector->writeAttribute(0, ctInt, "datasets/my_dataset", "neg_sum", &neg_sum);
     
+    dataCollector->writeAttribute(0, ctInt, "datasets", "sum_at_group", &sum);
+    
     delete[] dummy_data;
     dummy_data = NULL;
     
@@ -129,6 +132,10 @@ void AttributesTest::testDataAttributes()
     
     CPPUNIT_ASSERT(sum == old_sum);
     CPPUNIT_ASSERT(neg_sum == -old_sum);
+    
+    dataCollector->readAttribute(0, "datasets", "sum_at_group", &sum);
+    
+    CPPUNIT_ASSERT(sum == old_sum);
     
     dataCollector->close();
 }
