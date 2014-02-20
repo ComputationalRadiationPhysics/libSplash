@@ -1,6 +1,15 @@
 Change Log for libSplash
 ================================================================
 
+Release 1.1.1
+-------------
+**Date:** 2014-02-20
+
+**Bug Fixes**
+
+ - Allow to write/read attributes at groups #99
+
+
 Release 1.1.0
 -------------
 **Date:** 2014-01-23
