@@ -24,6 +24,7 @@
 
 import sys
 import h5py
+import numpy as np
 import os.path
 import glob
 import argparse
@@ -37,6 +38,7 @@ verbosity_level = 0
 
 doc = Document()
 grids = dict()
+polys = dict()
 
 # String functions
 
@@ -139,6 +141,9 @@ def get_create_grid_node(dims, ndims):
         
         dims_start = ""
         dims_end = ""
+        geom_type = "ORIGIN_DXDYDZ"
+        if ndims == 2:
+            geom_type = "ORIGIN_DXDY"
 
         for i in range(ndims):
             dims_start += "0.0"
@@ -148,7 +153,7 @@ def get_create_grid_node(dims, ndims):
                 dims_end += " "
         
         geometry = doc.createElement("Geometry")
-        geometry.setAttribute("Type", "ORIGIN_DXDYDZ")
+        geometry.setAttribute("Type", geom_type)
 
         data_item_origin = doc.createElement("DataItem")
         data_item_origin.setAttribute("Format", "XML")
@@ -185,6 +190,10 @@ def create_xdmf_grid_attribute(dset, h5filename):
     log("Creating XDMF entry for {}".format(dset.name), False)
     ndims = get_ndims(dset)
     dims = get_dims(dset)
+    (dtype, prec) = get_datatype_and_prec(dset)
+    if dtype == None or prec == None:
+        print "Error: Unsupported data type or precision for '{}'".format(dset.name)
+        return
     
     grid = get_create_grid_node(dims, ndims)
     
@@ -193,8 +202,8 @@ def create_xdmf_grid_attribute(dset, h5filename):
     
     data_item_attr = doc.createElement("DataItem")
     data_item_attr.setAttribute("Dimensions", "{}".format(dims))
-    data_item_attr.setAttribute("NumberType", "float")
-    data_item_attr.setAttribute("Precision", "4")
+    data_item_attr.setAttribute("NumberType", dtype)
+    data_item_attr.setAttribute("Precision", prec)
     data_item_attr.setAttribute("Format", "HDF")
     
     data_item_attr_text = doc.createTextNode("{}:{}".format(h5filename, dset.name))
@@ -204,6 +213,76 @@ def create_xdmf_grid_attribute(dset, h5filename):
     
     grid.appendChild(attribute)
     
+    
+def get_create_poly_node(dims):
+    """
+    Return an existing XML grid node for dims or create a new one
+    and insert it into the map of poly nodes.
+    
+    Parameters:
+    ----------------
+    dims:  string
+           space-separated dimensions
+    ndims: int
+           number of dimensions of dims
+    Returns:
+    ----------------
+    return: Element
+            new or existing XML Poly node 
+    """
+
+    if dims in polys:
+        return polys[dims]
+    else:
+        new_poly = doc.createElement("Grid")
+        new_poly.setAttribute("GridType", "Uniform")
+        
+        topology = doc.createElement("Topology")
+        topology.setAttribute("TopologyType", "Polyvertex")
+        topology.setAttribute("NodesPerElement", "{}".format(dims))
+        new_poly.appendChild(topology)
+        
+        polys[dims] = new_poly
+        return new_poly
+
+
+def create_xdmf_poly_attribute(dset, h5filename):
+    """
+    Create a XDMF grid attribute for an HDF5 poly-type dataset
+    
+    Parameters:
+    ----------------
+    dset:  h5py Dataset
+           HDF5 dataset with poly domain information.
+    h5filename: string
+                HDF5 filename 
+    """
+
+    log("Creating XDMF entry for {}".format(dset.name), False)
+    dims = get_dims(dset)
+    (dtype, prec) = get_datatype_and_prec(dset)
+    if dtype == None or prec == None:
+        print "Error: Unsupported data type or precision for '{}'".format(dset.name)
+        return
+    
+    poly = get_create_poly_node(dims)
+    
+    attribute = doc.createElement("Attribute")
+    attribute.setAttribute("Name", get_attr_name(dset.name))
+    
+    data_item_attr = doc.createElement("DataItem")
+    data_item_attr.setAttribute("Dimensions", "{}".format(dims))
+    data_item_attr.setAttribute("NumberType", dtype)
+    data_item_attr.setAttribute("Precision", prec)
+    data_item_attr.setAttribute("Format", "HDF")
+    
+    data_item_attr_text = doc.createTextNode("{}:{}".format(h5filename, dset.name))
+    data_item_attr.appendChild(data_item_attr_text)
+    
+    attribute.appendChild(data_item_attr)
+    
+    poly.appendChild(attribute)
+
 
 def create_timestep_node(time):
     """
@@ -244,12 +323,37 @@ def get_dims(dset):
     return dims
 
 
+def get_datatype_and_prec(dset):
+    type = dset.dtype
+    
+    if type == np.int32:
+        return ("Int", "4")
+        
+    if type == np.int64:
+        return ("Int", "8")
+    
+    if type == np.uint32:
+        return ("UInt", "4")
+    
+    if type == np.uint64:
+        return ("UInt", "8")
+    
+    if type == np.float32:
+        return ("Float", "4")
+    
+    if type == np.float64:
+        return ("Float", "8")
+    
+    return (None, None)
+
+
 def eval_class_type(classType, dset, level, h5filename):
     if classType == SPLASH_CLASS_TYPE_GRID:
         log("GRID", False)
         create_xdmf_grid_attribute(dset, h5filename)
     if classType == SPLASH_CLASS_TYPE_POLY:
         log("POLY", False)
+        create_xdmf_poly_attribute(dset, h5filename)
 
 
 def print_dataset(dset, level, h5filename):
@@ -315,7 +419,7 @@ def get_timestep_for_group(dataGroup):
     return groups[0][(index+1):]
     
 
-def create_xdmf_for_splash_file(base_node, splashFilename):
+def create_xdmf_for_splash_file(base_node_grid, base_node_poly, splashFilename):
     """
     Insert XDMF XML structure for splashFilename under base_node
     
@@ -354,10 +458,18 @@ def create_xdmf_for_splash_file(base_node, splashFilename):
     for grid in grids.values():
         grid.setAttribute("Name", "Grid_{}_{}".format(time_step, index))
         grid.appendChild(create_timestep_node(time_step))
-        base_node.appendChild(grid)
+        base_node_grid.appendChild(grid)
         index += 1
- 
     grids.clear()
+    
+    # append all collected polys to current xml base node
+    index = 0
+    for poly in polys.values():
+        poly.setAttribute("Name", "Poly_{}_{}".format(time_step, index))
+        poly.appendChild(create_timestep_node(time_step))
+        base_node_poly.appendChild(poly)
+        index += 1
+    polys.clear()
     
     # close libSplash file
     h5file.close()
@@ -386,22 +498,30 @@ def create_xdmf_xml(splash_files_list):
     # setup xml structure
     xdmf_root = doc.createElement("Xdmf")
     domain = doc.createElement("Domain")
-    base_node = domain
+    base_node_grid = domain
+    base_node_poly = domain
     
     if time_series:
         main_grid = doc.createElement("Grid")
         main_grid.setAttribute("Name", "Grids")
         main_grid.setAttribute("GridType", "Collection")
         main_grid.setAttribute("CollectionType", "Temporal")
-        base_node = main_grid
+        base_node_grid = main_grid
+        
+        main_poly = doc.createElement("Grid")
+        main_poly.setAttribute("Name", "Polys")
+        main_poly.setAttribute("GridType", "Collection")
+        main_poly.setAttribute("CollectionType", "Temporal")
+        base_node_poly = main_poly
     
     for current_file in splash_files_list:
         # parse this splash file and append to current xml base node
-        create_xdmf_for_splash_file(base_node, current_file)
+        create_xdmf_for_splash_file(base_node_grid, base_node_poly, current_file)
 
     # finalize xml structure
     if time_series:
         domain.appendChild(main_grid)
+        domain.appendChild(main_poly)
 
     xdmf_root.appendChild(domain)
     doc.appendChild(xdmf_root)
