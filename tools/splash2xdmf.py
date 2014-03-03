@@ -199,7 +199,16 @@ def create_xdmf_grid_attribute(dset, h5filename):
     
     attribute = doc.createElement("Attribute")
     attribute.setAttribute("Name", get_attr_name(dset.name))
-    
+
+    for (attr_name, attr_value) in dset.attrs.items():
+	if not attr_name.startswith("_"):
+	    if get_datatype_and_prec(dset.attrs.get(attr_name)) != (None, None):
+		 information = doc.createElement("Information")
+   		 information.setAttribute("Name", attr_name)
+	         information.setAttribute("Value", "{}".format(attr_value))
+   		 attribute.appendChild(information)
+ 
+ 
     data_item_attr = doc.createElement("DataItem")
     data_item_attr.setAttribute("Dimensions", "{}".format(dims))
     data_item_attr.setAttribute("NumberType", dtype)
@@ -269,7 +278,16 @@ def create_xdmf_poly_attribute(dset, h5filename):
     
     attribute = doc.createElement("Attribute")
     attribute.setAttribute("Name", get_attr_name(dset.name))
-    
+
+    for (attr_name, attr_value) in dset.attrs.items():
+	if not attr_name.startswith("_"):
+	    if get_datatype_and_prec(dset.attrs.get(attr_name)) != (None, None):
+		 information = doc.createElement("Information")
+   		 information.setAttribute("Name", attr_name)
+	         information.setAttribute("Value", "{}".format(attr_value))
+   		 attribute.appendChild(information)
+   
+
     data_item_attr = doc.createElement("DataItem")
     data_item_attr.setAttribute("Dimensions", "{}".format(dims))
     data_item_attr.setAttribute("NumberType", dtype)
