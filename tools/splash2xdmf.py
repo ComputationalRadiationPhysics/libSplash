@@ -296,6 +296,7 @@ def create_xdmf_poly_attribute(dset, h5filename):
    
     data_item_attr_text = doc.createTextNode("{}:{}".format(h5filename, dset.name))
     data_item_attr.appendChild(data_item_attr_text)    
+   
     attribute.appendChild(data_item_attr)
     
     poly.appendChild(attribute)
