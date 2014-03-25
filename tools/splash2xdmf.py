@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2014 Felix Schmitt
+# Copyright 2014 Felix Schmitt, Conrad Schumann
 #
 # This file is part of libSplash. 
 # 
@@ -214,7 +214,7 @@ def create_xdmf_grid_attribute(dset, h5filename):
     data_item_attr.setAttribute("NumberType", dtype)
     data_item_attr.setAttribute("Precision", prec)
     data_item_attr.setAttribute("Format", "HDF")
-    
+   
     data_item_attr_text = doc.createTextNode("{}:{}".format(h5filename, dset.name))
     data_item_attr.appendChild(data_item_attr_text)
     
@@ -293,10 +293,10 @@ def create_xdmf_poly_attribute(dset, h5filename):
     data_item_attr.setAttribute("NumberType", dtype)
     data_item_attr.setAttribute("Precision", prec)
     data_item_attr.setAttribute("Format", "HDF")
-    
+   
     data_item_attr_text = doc.createTextNode("{}:{}".format(h5filename, dset.name))
-    data_item_attr.appendChild(data_item_attr_text)
-    
+    data_item_attr.appendChild(data_item_attr_text)    
+   
     attribute.appendChild(data_item_attr)
     
     poly.appendChild(attribute)
@@ -437,7 +437,7 @@ def get_timestep_for_group(dataGroup):
     return groups[0][(index+1):]
     
 
-def create_xdmf_for_splash_file(base_node_grid, base_node_poly, splashFilename):
+def create_xdmf_for_splash_file(base_node_grid, base_node_poly, splashFilename, args):
     """
     Insert XDMF XML structure for splashFilename under base_node
     
@@ -461,6 +461,14 @@ def create_xdmf_for_splash_file(base_node_grid, base_node_poly, splashFilename):
     h5file = h5py.File(splashFilename, "r")
     log("Opened libSplash file '{}'".format(h5file.filename))
     
+    if args.fullpath: 
+    	splashFilenameXmf = splashFilename
+
+    else:
+        filename_list = splashFilename.split("/")
+        splashFilenameXmf = filename_list[len(filename_list) - 1]
+   
+ 
     # find /data group
     dataGroup = h5file.get("data")
     if dataGroup == None:
@@ -470,7 +478,7 @@ def create_xdmf_for_splash_file(base_node_grid, base_node_poly, splashFilename):
     
     time_step = get_timestep_for_group(dataGroup)
     
-    parse_hdf5_recursive(dataGroup, splashFilename, 1)
+    parse_hdf5_recursive(dataGroup, splashFilenameXmf, 1)
     # append all collected grids to current xml base node
     index = 0
     for grid in grids.values():
@@ -496,7 +504,7 @@ def create_xdmf_for_splash_file(base_node_grid, base_node_poly, splashFilename):
 
 # program functions
 
-def create_xdmf_xml(splash_files_list):
+def create_xdmf_xml(splash_files_list, args):
     """
     Return the single XDMF XML structure in the current document for all libSplash
     files in splash_files_list
@@ -534,7 +542,7 @@ def create_xdmf_xml(splash_files_list):
     
     for current_file in splash_files_list:
         # parse this splash file and append to current xml base node
-        create_xdmf_for_splash_file(base_node_grid, base_node_poly, current_file)
+        create_xdmf_for_splash_file(base_node_grid, base_node_poly, current_file, args)
 
     # finalize xml structure
     if time_series:
@@ -575,7 +583,9 @@ def get_args_parser():
     parser.add_argument("-v", "--verbose", help="Produce verbose output", action="store_true")
     
     parser.add_argument("-t", "--time", help="Aggregate information over a time-series of libSplash data", action="store_true")
-        
+  
+    parser.add_argument("--fullpath", help="Disables relative node-paths", action="store_true")
+    
     return parser
 
 
@@ -603,7 +613,7 @@ def main():
     else:
         splash_files.append(splashFilename)
         
-    create_xdmf_xml(splash_files)
+    create_xdmf_xml(splash_files, args)
     
     output_filename = "{}.xmf".format(splashFilename)
     if args.o:
