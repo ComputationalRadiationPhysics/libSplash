@@ -102,6 +102,7 @@ namespace splash
                 1024 * 512, 1024 * 256, 1024 * 128, 1024 * 64, 1024 * 4,
                 1024, 512, 256, 128, 64, 4};
 
+            // test sizes in decreasing order
             for (size_t max_threshold_index = 0;
                     max_threshold_index < num_thresholds;
                     ++max_threshold_index)

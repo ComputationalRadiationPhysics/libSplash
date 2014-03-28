@@ -54,13 +54,10 @@ namespace splash
 
         // set new cache size
         H5Pget_cache(fileAccProperties, &metaCacheElements, &rawCacheElements, &rawCacheSize, &policy);
-        rawCacheSize = 64 * 1024 * 1024;
+        rawCacheSize = 256 * 1024 * 1024;
         H5Pset_cache(fileAccProperties, metaCacheElements, rawCacheElements, rawCacheSize, policy);
 
-        //H5Pset_chunk_cache(0, H5D_CHUNK_CACHE_NSLOTS_DEFAULT,
-        //  H5D_CHUNK_CACHE_NBYTES_DEFAULT, H5D_CHUNK_CACHE_W0_DEFAULT);
-
-        log_msg(3, "Raw Data Cache = %llu KiB", (long long unsigned) (rawCacheSize / 1024));
+        log_msg(3, "Raw Data Cache (File) = %llu KiB", (long long unsigned) (rawCacheSize / 1024));
     }
 
     bool SerialDataCollector::fileExists(std::string filename)
