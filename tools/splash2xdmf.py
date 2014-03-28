@@ -503,7 +503,7 @@ def create_xdmf_for_splash_file(base_node_grid, base_node_poly, splashFilename, 
 
 # program functions
 
-def create_xdmf_xml(splash_files_list, args):
+def create_xdmf_xml(splash_files_list, args): # TODO: Need to add for-loop to build seperate doc for grid and poly
     """
     Return the single XDMF XML structure in the current document for all libSplash
     files in splash_files_list
@@ -570,6 +570,51 @@ def write_xml_to_file(filename, document):
     xdmf_file.close()
     log("Created XDMF file '{}'".format(filename), True, 0)
     
+
+def handle_user_filename(args):
+    """
+    Add function documentation here 
+    """
+    output_filename_list = list()
+    for i in ["grid","poly"]:
+        if args.o:
+            if "." in args.o:
+                tmp_name_list = args.o.split(".")
+                for step in range(0 , len(tmp_name_list)):
+                    if len(tmp_name_list) == 2:
+                        if step == 0:
+                            output_filename = tmp_name_list[step]
+                        else:
+                            if i == "grid":
+                                output_filename = output_filename + "_" + i + "." + tmp_name_list[step]
+                            else:
+                                output_filename = output_filename + "_" + i + "." + tmp_name_list[step]
+                    if len(tmp_name_list) > 2:
+                        if step == 0:
+                            output_filename = tmp_name_list[step]
+                        else:
+                            if step == len(tmp_name_list) - 1:
+                                if i == "grid":
+                                    output_filename = output_filename + "_" + i + "." + tmp_name_list[step]
+                                else:
+                                    output_filename = output_filename + "_" + i + "." + tmp_name_list[step]
+                                break
+                            else:
+                                output_filename = output_filename + "." + tmp_name_list[step]
+	    else:
+                if i == "grid":
+                    output_filename = "{}".format(args.o) + "_" + i
+                else:
+                    output_filename = "{}".format(args.o) + "_" + i
+	else:
+            if i == "grid":
+                output_filename = "{}".format(splashFilename) + "_" + i + ".xmf"
+            else:
+                output_filename = "{}".format(splashFilename) + "_" + i + ".xmf"
+	
+	output_filename_list.append(output_filename)
+    return output_filename_list
+
     
 def get_args_parser():
     parser = argparse.ArgumentParser(description="Create a XDMF meta description file from a libSplash HDF5 file.")
@@ -584,6 +629,8 @@ def get_args_parser():
     parser.add_argument("-t", "--time", help="Aggregate information over a time-series of libSplash data", action="store_true")
   
     parser.add_argument("--fullpath", help="Use absolute paths for HDF5 files", action="store_true")
+    
+    parser.add_argument("--splitgrid", help="Split the XML-tree in grid and poly and make seperate output file for each", action="store_true")
     
     return parser
 
@@ -611,13 +658,18 @@ def main():
             splash_files.append(s_filename)
     else:
         splash_files.append(splashFilename)
-        
-    create_xdmf_xml(splash_files, args)
     
-    output_filename = "{}.xmf".format(splashFilename)
-    if args.o:
-        output_filename = args.o
-    write_xml_to_file(output_filename, doc)
+    create_xdmf_xml(splash_files, args) #TODO: needs to be changed
+    
+    if args.splitgrid:
+ 	output_filename_list = handle_user_filename(args)
+	print output_filename_list #control funktion
+	# TODO: build for-loop with write_xml_to_file(output_filename_list, doc)
+    else: 
+    	output_filename = "{}.xmf".format(splashFilename)
+    	if args.o:
+            output_filename = args.o
+        write_xml_to_file(output_filename, doc)
 
 if __name__ == "__main__":
     main()
