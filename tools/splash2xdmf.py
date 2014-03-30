@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2014 Felix Schmitt, Conrad Schumann
+# Copyright 2014 Felix Schmitt, Conrad Schumann, Axel Huebl
 #
 # This file is part of libSplash. 
 # 
@@ -326,7 +326,7 @@ def create_timestep_node(time):
 
 # get the number of dimensions of an hdf5 dataset
 def get_ndims(dset):
-    return len(dset.dims)
+    return len(dset.shape)
 
 
 # get dimensions as string for an hdf5 dataset
