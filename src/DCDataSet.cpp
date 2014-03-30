@@ -560,19 +560,27 @@ namespace splash
             if (dsp_src < 0)
                 throw DCException(getExceptionString("write: Failed to create source dataspace"));
 
-            if (H5Sselect_hyperslab(dsp_src, H5S_SELECT_SET, srcOffset.getPointer(),
-                    srcStride.getPointer(), srcData.getPointer(), NULL) < 0 ||
-                    H5Sselect_valid(dsp_src) <= 0)
-                throw DCException(getExceptionString("write: Invalid source hyperslap selection"));
+            // select hyperslap only if necessary
+            if ((srcOffset.getScalarSize() != 0) || (srcData != srcBuffer) || (srcStride.getScalarSize() != 1))
+            {
+                if (H5Sselect_hyperslab(dsp_src, H5S_SELECT_SET, srcOffset.getPointer(),
+                        srcStride.getPointer(), srcData.getPointer(), NULL) < 0 ||
+                        H5Sselect_valid(dsp_src) <= 0)
+                    throw DCException(getExceptionString("write: Invalid source hyperslap selection"));
+            }
 
             if (srcData.getScalarSize() == 0)
                 H5Sselect_none(dsp_src);
 
             // dataspace to write to
-            if (H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, dstOffset.getPointer(),
-                    NULL, srcData.getPointer(), NULL) < 0 ||
-                    H5Sselect_valid(dataspace) <= 0)
-                throw DCException(getExceptionString("write: Invalid target hyperslap selection"));
+            // select hyperslap only if necessary
+            if ((dstOffset.getScalarSize() != 0) || (srcData != getPhysicalSize()))
+            {
+                if (H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, dstOffset.getPointer(),
+                        NULL, srcData.getPointer(), NULL) < 0 ||
+                        H5Sselect_valid(dataspace) <= 0)
+                    throw DCException(getExceptionString("write: Invalid target hyperslap selection"));
+            }
 
             if (!data || (srcData.getScalarSize() == 0))
             {

@@ -49,11 +49,18 @@ namespace splash
         double policy = 0.0;
 
         // set new cache size
+        /*
+         * Note from http://www.hdfgroup.org/HDF5/doc/RM/RM_H5P.html#Property-SetCache:
+         * "Raw dataset chunk caching is not currently supported when using the MPI I/O
+         * and MPI POSIX file drivers in read/write mode [..]. When using one of these
+         * file drivers, all calls to H5Dread and H5Dwrite will access the disk directly,
+         * and H5Pset_cache will have no effect on performance."
+         */
         H5Pget_cache(fileAccProperties, &metaCacheElements, &rawCacheElements, &rawCacheSize, &policy);
-        rawCacheSize = 64 * 1024 * 1024;
+        rawCacheSize = 256 * 1024 * 1024;
         H5Pset_cache(fileAccProperties, metaCacheElements, rawCacheElements, rawCacheSize, policy);
 
-        log_msg(3, "Raw Data Cache = %llu KiB", (long long unsigned) (rawCacheSize / 1024));
+        log_msg(3, "Raw Data Cache (File) = %llu KiB", (long long unsigned) (rawCacheSize / 1024));
     }
 
     std::string ParallelDataCollector::getFullFilename(uint32_t id, std::string baseFilename)
