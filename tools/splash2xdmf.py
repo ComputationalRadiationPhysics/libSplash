@@ -503,9 +503,23 @@ def create_xdmf_for_splash_file(base_node_grid, base_node_poly, splashFilename, 
     return True
 
 
+def time_series_split_grids(grid_list):
+    if "grid" in grid_list:	
+        main_grid = grid_doc.createElement("Grid")
+        main_grid.setAttribute("Name", "Grids")
+        main_grid.setAttribute("GridType", "Collection")
+        main_grid.setAttribute("CollectionType", "Temporal")
+        base_node_grid = grid_list[0]
+    if "poly" in grid_list:
+        main_poly = poly_doc.createElement("Grid")
+        main_poly.setAttribute("Name", "Polys")
+        main_poly.setAttribute("GridType", "Collection")
+        main_poly.setAttribute("CollectionType", "Temporal")
+        base_node_poly = grid_list[1]
+
 # program functions
 
-def create_xdmf_xml(splash_files_list, args): # TODO: Need to add for-loop to build seperate doc for grid and poly
+def create_xdmf_xml(splash_files_list, args): 
     """
     Return the single XDMF XML structure in the current document for all libSplash
     files in splash_files_list
@@ -538,21 +552,8 @@ def create_xdmf_xml(splash_files_list, args): # TODO: Need to add for-loop to bu
     
     if time_series:
         if args.splitgrid:
-            for i in ["grid","poly"]:
-                if i == "grid":
-		    main_grid = grid_doc.createElement("Grid")
-                    main_grid.setAttribute("Name", "Grids")
-             	    main_grid.setAttribute("GridType", "Collection")
-             	    main_grid.setAttribute("CollectionType", "Temporal")
-             	    base_node_grid = main_grid
-
-                else:
-		    main_grid = poly_doc.createElement("Grid")
-             	    main_grid.setAttribute("Name", "Polys")
-             	    main_grid.setAttribute("GridType", "Collection")
-             	    main_grid.setAttribute("CollectionType", "Temporal")
-             	    base_node_grid = main_poly
-
+            for i in [main_grid, main_poly]:
+		time_series_split_grids([main_grid, main_poly])
         else:
             main_grid = doc.createElement("Grid")
             main_grid.setAttribute("Name", "Grids")
@@ -588,11 +589,9 @@ def create_xdmf_xml(splash_files_list, args): # TODO: Need to add for-loop to bu
 	        if i == "grid":
 		    grid_xdmf_root.appendChild(grid_domain)
 		    grid_doc.appendChild(grid_xdmf_root)
-		    print "Appended grid data ! :D"
 	        else:
 		    poly_xdmf_root.appendChild(poly_domain)
 		    poly_doc.appendChild(poly_xdmf_root)
-		    print "Appended poly data ! :D"
         else:
     	    xdmf_root.appendChild(domain)
     	    doc.appendChild(xdmf_root)
@@ -623,7 +622,7 @@ def handle_user_filename(args):
     Add function documentation here 
     """
     output_filename_list = list()
-    for i in ["grid","poly"]:
+    for i in ["_grid","_poly"]:
         if args.o:
             if "." in args.o:
                 tmp_name_list = args.o.split(".")
@@ -632,32 +631,19 @@ def handle_user_filename(args):
                         if step == 0:
                             output_filename = tmp_name_list[step]
                         else:
-                            if i == "grid":
-                                output_filename = output_filename + "_" + i + "." + tmp_name_list[step]
-                            else:
-                                output_filename = output_filename + "_" + i + "." + tmp_name_list[step]
+                            output_filename = output_filename + i + "." + tmp_name_list[step]
                     if len(tmp_name_list) > 2:
                         if step == 0:
                             output_filename = tmp_name_list[step]
+                        if step == len(tmp_name_list) - 1:
+                            output_filename = output_filename + i + "." + tmp_name_list[step]
+                            break
                         else:
-                            if step == len(tmp_name_list) - 1:
-                                if i == "grid":
-                                    output_filename = output_filename + "_" + i + "." + tmp_name_list[step]
-                                else:
-                                    output_filename = output_filename + "_" + i + "." + tmp_name_list[step]
-                                break
-                            else:
-                                output_filename = output_filename + "." + tmp_name_list[step]
+                            output_filename = output_filename + "." + tmp_name_list[step]
 	    else:
-                if i == "grid":
-                    output_filename = "{}".format(args.o) + "_" + i
-                else:
-                    output_filename = "{}".format(args.o) + "_" + i
+                output_filename = "{}".format(args.o) + i
 	else:
-            if i == "grid":
-                output_filename = "{}".format(splashFilename) + "_" + i + ".xmf"
-            else:
-                output_filename = "{}".format(splashFilename) + "_" + i + ".xmf"
+            output_filename = "{}".format(splashFilename) + i + ".xmf"
 	
 	output_filename_list.append(output_filename)
     return output_filename_list
@@ -706,16 +692,14 @@ def main():
     else:
         splash_files.append(splashFilename)
     
-    create_xdmf_xml(splash_files, args) #TODO: needs to be changed
-    
+    create_xdmf_xml(splash_files, args)     
     if args.splitgrid:
  	output_filename_list = handle_user_filename(args)
- 	for fn in output_filename_list:
-	    if "grid" in fn:	
-	        write_xml_to_file(fn, grid_doc)
-	    if "poly" in fn:
-		write_xml_to_file(fn, poly_doc)
-	# TODO: build for-loop with write_xml_to_file(output_filename_list, doc)
+ 	for output_file in output_filename_list:
+	    if "grid" in output_file:
+	        write_xml_to_file(output_file, grid_doc)
+	    if "poly" in output_file:
+		write_xml_to_file(output_file, poly_doc)
     else: 
     	output_filename = "{}.xmf".format(splashFilename)
     	if args.o:
