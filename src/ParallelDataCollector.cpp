@@ -130,7 +130,7 @@ namespace splash
                 if (fname.rfind(".h5") != fname.size() - 3)
                     continue;
 
-                // extract id from filename (part between "/X/Y/Z_" and ".h5")
+                // extract id from filename (part between "/path/prefix_" and ".h5")
                 char* endPtr = NULL;
                 std::string idStr = fname.substr(fname.rfind("_") + 1,
                         fname.size() - 3 - name.size());
