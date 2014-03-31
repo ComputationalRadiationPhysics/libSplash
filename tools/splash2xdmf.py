@@ -504,18 +504,15 @@ def create_xdmf_for_splash_file(base_node_grid, base_node_poly, splashFilename, 
 
 
 def time_series_split_grids(grid_list):
-    if "grid" in grid_list:	
-        main_grid = grid_doc.createElement("Grid")
-        main_grid.setAttribute("Name", "Grids")
-        main_grid.setAttribute("GridType", "Collection")
-        main_grid.setAttribute("CollectionType", "Temporal")
-        base_node_grid = grid_list[0]
-    if "poly" in grid_list:
-        main_poly = poly_doc.createElement("Grid")
-        main_poly.setAttribute("Name", "Polys")
-        main_poly.setAttribute("GridType", "Collection")
-        main_poly.setAttribute("CollectionType", "Temporal")
-        base_node_poly = grid_list[1]
+    main_grid.setAttribute("Name", "Grids")
+    main_grid.setAttribute("GridType", "Collection")
+    main_grid.setAttribute("CollectionType", "Temporal")
+    base_node_grid = main_grid
+ 
+    main_poly.setAttribute("Name", "Polys")
+    main_poly.setAttribute("GridType", "Collection")
+    main_poly.setAttribute("CollectionType", "Temporal")
+    base_node_poly = main_poly
 
 # program functions
 
@@ -551,22 +548,16 @@ def create_xdmf_xml(splash_files_list, args):
 	base_node_poly = poly_domain
     
     if time_series:
-        if args.splitgrid:
-            for i in [main_grid, main_poly]:
-		time_series_split_grids([main_grid, main_poly])
+        if args.splitgrid:		
+            main_grid = grid_doc.createElement("Grid")
+            main_poly = poly_doc.createElement("Grid")
+            time_series_split_grids([main_grid, main_poly])
         else:
             main_grid = doc.createElement("Grid")
-            main_grid.setAttribute("Name", "Grids")
-            main_grid.setAttribute("GridType", "Collection")
-            main_grid.setAttribute("CollectionType", "Temporal")
-            base_node_grid = main_grid
-        
             main_poly = doc.createElement("Grid")
-            main_poly.setAttribute("Name", "Polys")
-            main_poly.setAttribute("GridType", "Collection")
-            main_poly.setAttribute("CollectionType", "Temporal")
-            base_node_poly = main_poly
-    
+            time_series_split_grids([main_grid, main_poly])
+
+
     for current_file in splash_files_list:
         # parse this splash file and append to current xml base node
         create_xdmf_for_splash_file(base_node_grid, base_node_poly, current_file, args)
