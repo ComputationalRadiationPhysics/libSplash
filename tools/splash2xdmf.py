@@ -514,6 +514,8 @@ def time_series_split_grids(grid_list):
     main_poly.setAttribute("CollectionType", "Temporal")
     base_node_poly = main_poly
 
+    return base_node_grid, base_node_poly
+
 # program functions
 
 def create_xdmf_xml(splash_files_list, args): 
@@ -525,6 +527,8 @@ def create_xdmf_xml(splash_files_list, args):
     ----------------
     splash_files_list: list of strings
                        list of libSplash filenames to create XDMF for
+    args:              object
+                       parsed command line user input 
     Returns:
     ----------------
     return: Element
@@ -534,6 +538,8 @@ def create_xdmf_xml(splash_files_list, args):
     time_series = (len(splash_files_list) > 1)
     
     # setup xml structure
+    global main_grid
+    global main_poly
     xdmf_root = doc.createElement("Xdmf")
     grid_xdmf_root = doc.createElement("Xdmf")
     poly_xdmf_root = doc.createElement("Xdmf")
@@ -569,23 +575,23 @@ def create_xdmf_xml(splash_files_list, args):
 		if i == "grid":
 		    grid_domain.appendChild(main_grid)
 		else:
-		    poly_domain.appandChild(main_poly)
+		    poly_domain.appendChild(main_poly)
 	else:
             domain.appendChild(main_grid)
             domain.appendChild(main_poly)
 
+    
+    if args.splitgrid:
+        for i in ["grid","poly"]:
+            if i == "grid":
+	        grid_xdmf_root.appendChild(grid_domain)
+	        grid_doc.appendChild(grid_xdmf_root)
+	    else:
+		poly_xdmf_root.appendChild(poly_domain)
+		poly_doc.appendChild(poly_xdmf_root)
     else:
-        if args.splitgrid:
-	    for i in ["grid","poly"]:
-	        if i == "grid":
-		    grid_xdmf_root.appendChild(grid_domain)
-		    grid_doc.appendChild(grid_xdmf_root)
-	        else:
-		    poly_xdmf_root.appendChild(poly_domain)
-		    poly_doc.appendChild(poly_xdmf_root)
-        else:
-    	    xdmf_root.appendChild(domain)
-    	    doc.appendChild(xdmf_root)
+        xdmf_root.appendChild(domain)
+    	doc.appendChild(xdmf_root)
     
     return xdmf_root
 
@@ -610,7 +616,16 @@ def write_xml_to_file(filename, document):
 
 def handle_user_filename(args):
     """
-    Add function documentation here 
+    Create output filename
+    Parameters:
+    ----------------
+    args: object
+          parsed command line user input
+    
+    Returns:
+    ----------------
+    return: list
+            output filename list 
     """
     output_filename_list = list()
     for i in ["_grid","_poly"]:
