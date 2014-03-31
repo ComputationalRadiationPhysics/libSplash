@@ -37,6 +37,8 @@ SPLASH_CLASS_TYPE_GRID = 20
 verbosity_level = 0
 
 doc = Document()
+grid_doc = Document()
+poly_doc = Document()
 grids = dict()
 polys = dict()
 
@@ -522,22 +524,47 @@ def create_xdmf_xml(splash_files_list, args): # TODO: Need to add for-loop to bu
     
     # setup xml structure
     xdmf_root = doc.createElement("Xdmf")
+    grid_xdmf_root = doc.createElement("Xdmf")
+    poly_xdmf_root = doc.createElement("Xdmf")
     domain = doc.createElement("Domain")
-    base_node_grid = domain
-    base_node_poly = domain
+    grid_domain = grid_doc.createElement("Domain")
+    poly_domain = poly_doc.createElement("Domain")
+    if not args.splitgrid:
+        base_node_grid = domain
+        base_node_poly = domain
+    else:
+        base_node_grid = grid_domain
+	base_node_poly = poly_domain
     
     if time_series:
-        main_grid = doc.createElement("Grid")
-        main_grid.setAttribute("Name", "Grids")
-        main_grid.setAttribute("GridType", "Collection")
-        main_grid.setAttribute("CollectionType", "Temporal")
-        base_node_grid = main_grid
+        if args.splitgrid:
+            for i in ["grid","poly"]:
+                if i == "grid":
+		    main_grid = grid_doc.createElement("Grid")
+                    main_grid.setAttribute("Name", "Grids")
+             	    main_grid.setAttribute("GridType", "Collection")
+             	    main_grid.setAttribute("CollectionType", "Temporal")
+             	    base_node_grid = main_grid
+
+                else:
+		    main_grid = poly_doc.createElement("Grid")
+             	    main_grid.setAttribute("Name", "Polys")
+             	    main_grid.setAttribute("GridType", "Collection")
+             	    main_grid.setAttribute("CollectionType", "Temporal")
+             	    base_node_grid = main_poly
+
+        else:
+            main_grid = doc.createElement("Grid")
+            main_grid.setAttribute("Name", "Grids")
+            main_grid.setAttribute("GridType", "Collection")
+            main_grid.setAttribute("CollectionType", "Temporal")
+            base_node_grid = main_grid
         
-        main_poly = doc.createElement("Grid")
-        main_poly.setAttribute("Name", "Polys")
-        main_poly.setAttribute("GridType", "Collection")
-        main_poly.setAttribute("CollectionType", "Temporal")
-        base_node_poly = main_poly
+            main_poly = doc.createElement("Grid")
+            main_poly.setAttribute("Name", "Polys")
+            main_poly.setAttribute("GridType", "Collection")
+            main_poly.setAttribute("CollectionType", "Temporal")
+            base_node_poly = main_poly
     
     for current_file in splash_files_list:
         # parse this splash file and append to current xml base node
@@ -545,11 +572,31 @@ def create_xdmf_xml(splash_files_list, args): # TODO: Need to add for-loop to bu
 
     # finalize xml structure
     if time_series:
-        domain.appendChild(main_grid)
-        domain.appendChild(main_poly)
+	if args.splitgrid:
+	    for i in ["grid","poly"]:
+		if i == "grid":
+		    grid_domain.appendChild(main_grid)
+		else:
+		    poly_domain.appandChild(main_poly)
+	else:
+            domain.appendChild(main_grid)
+            domain.appendChild(main_poly)
 
-    xdmf_root.appendChild(domain)
-    doc.appendChild(xdmf_root)
+    else:
+        if args.splitgrid:
+	    for i in ["grid","poly"]:
+	        if i == "grid":
+		    grid_xdmf_root.appendChild(grid_domain)
+		    grid_doc.appendChild(grid_xdmf_root)
+		    print "Appended grid data ! :D"
+	        else:
+		    poly_xdmf_root.appendChild(poly_domain)
+		    poly_doc.appendChild(poly_xdmf_root)
+		    print "Appended poly data ! :D"
+        else:
+    	    xdmf_root.appendChild(domain)
+    	    doc.appendChild(xdmf_root)
+    
     return xdmf_root
 
 
@@ -663,7 +710,11 @@ def main():
     
     if args.splitgrid:
  	output_filename_list = handle_user_filename(args)
-	print output_filename_list #control funktion
+ 	for fn in output_filename_list:
+	    if "grid" in fn:	
+	        write_xml_to_file(fn, grid_doc)
+	    if "poly" in fn:
+		write_xml_to_file(fn, poly_doc)
 	# TODO: build for-loop with write_xml_to_file(output_filename_list, doc)
     else: 
     	output_filename = "{}.xmf".format(splashFilename)
