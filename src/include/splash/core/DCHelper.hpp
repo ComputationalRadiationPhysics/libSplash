@@ -24,6 +24,8 @@
 #ifndef DCHELPER_H
 #define	DCHELPER_H
 
+#include <vector>
+#include <cmath>
 #include <sstream>
 #include <iostream>
 #include <hdf5.h>
@@ -93,50 +95,92 @@ namespace splash
         static void getOptimalChunkDims(const hsize_t *dims, uint32_t ndims,
                 size_t typeSize, hsize_t *chunkDims)
         {
-            // some magic numbers at the moment
-            // there should be some research on optimal chunk sizes
-            // dims and chunkDims sizes are in elements, other sizes are in bytes
+            const size_t NUM_CHUNK_SIZES = 7;
+            const size_t CHUNK_SIZES[] = {4096, 2048, 1024, 512, 256, 128, 64};
+            
+            size_t total_data_size = typeSize;
+            size_t max_chunk_size = typeSize;
+            size_t target_chunk_size = 0;
 
-            const size_t num_thresholds = 13;
-            const size_t threshold_sizes[num_thresholds] = {1024 * 1024 * 2, 1024 * 1024,
-                1024 * 512, 1024 * 256, 1024 * 128, 1024 * 64, 1024 * 4,
-                1024, 512, 256, 128, 64, 4};
-
-            // test sizes in decreasing order
-            for (size_t max_threshold_index = 0;
-                    max_threshold_index < num_thresholds;
-                    ++max_threshold_index)
+            // compute the order of dimensions (descending)
+            // large dataset dimensions should have larger chunk sizes
+            std::vector<uint32_t> dims_order;
+            dims_order.reserve(ndims);
+            dims_order.push_back(0);
+            for (uint32_t i = 1; i < ndims; ++i)
             {
-                for (uint32_t i = 0; i < ndims; i++)
+                std::vector<uint32_t>::iterator iter;
+                for (iter = dims_order.begin(); iter != dims_order.end(); ++iter)
                 {
-                    // dim_size is in bytes
-                    size_t dim_size = dims[i] * typeSize;
-
-                    if (dim_size == 0)
-                        chunkDims[i] = 1;
-                    else
+                    if (dims[*iter] < dims[i])
                     {
-                        chunkDims[i] = threshold_sizes[num_thresholds - 1] / typeSize;
-                        if (!chunkDims[i])
-                            chunkDims[i] = 1;
+                        iter = dims_order.insert(iter, i);
+                        break;
                     }
-
-                    for (uint32_t t = max_threshold_index; t < num_thresholds; ++t)
-                        if (dim_size >= threshold_sizes[t])
-                        {
-                            chunkDims[i] = threshold_sizes[t] / typeSize;
-                            if (!chunkDims[i])
-                                chunkDims[i] = 1;
-                            break;
-                        }
                 }
 
-                size_t total_size = 1;
-                for (uint32_t i = 0; i < ndims; i++)
-                    total_size *= chunkDims[i] * typeSize;
-
-                if (total_size < 1024 * 1024 * 1024)
+                if (iter == dims_order.end())
+                    dims_order.push_back(i);
+            }
+            
+            for (uint32_t i = 0; i < ndims; ++i)
+            {
+                // initial number of chunks per dimension
+                chunkDims[i] = 1;
+                
+                // try to make at least two chunks for each dimension
+                size_t half_dim = dims[i] / 2;
+                
+                // compute sizes
+                max_chunk_size *= (half_dim > 0) ? half_dim : 1;
+                total_data_size *= dims[i];
+            }
+            
+            // compute the target chunk size
+            for (uint32_t i = 0; i < NUM_CHUNK_SIZES; ++i)
+            {
+                target_chunk_size = CHUNK_SIZES[i] * 1024;
+                if (target_chunk_size <= max_chunk_size)
                     break;
+            }
+            
+            size_t current_chunk_size = typeSize;
+            size_t last_chunk_diff = target_chunk_size;
+            int current_index = 0;
+
+            while (current_chunk_size < target_chunk_size)
+            {
+                // test if increasing chunk size optimizes towards target chunk size
+                size_t chunk_diff = std::abs(target_chunk_size - (current_chunk_size * 2));
+                if (chunk_diff >= last_chunk_diff)
+                    break;
+
+                // find next dimension to increase chunk size for
+                int can_increase_dim = 0;
+                for (uint32_t d = 0; d < ndims; ++d)
+                {
+                    int current_dim = dims_order[current_index];
+                    
+                    // increasing chunk size possible
+                    if (chunkDims[current_dim] * 2 <= dims[current_dim])
+                    {
+                        chunkDims[current_dim] *= 2;
+                        current_chunk_size *= 2;
+                        can_increase_dim = 1;
+                    }
+
+                    current_index = (current_index + 1) % ndims;
+
+                    if (can_increase_dim)
+                        break;
+                }
+
+                // can not increase chunk size in any dimension
+                // we must use the current chunk sizes
+                if (!can_increase_dim)
+                    break;
+
+                last_chunk_diff = chunk_diff;
             }
         }
 
