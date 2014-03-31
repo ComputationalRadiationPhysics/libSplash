@@ -127,13 +127,18 @@ namespace splash
                 std::string fname;
                 fname.assign(dp->d_name);
                 // end with correct file extension
-                if (fname.find(".h5") != fname.size() - 3)
+                if (fname.rfind(".h5") != fname.size() - 3)
                     continue;
 
-                // extract id from filename
-                int32_t id = atoi(
-                        fname.substr(name.size(), fname.size() - 3 - name.size()).c_str());
-                ids.insert(id);
+                // extract id from filename (part between "/X/Y/Z_" and ".h5")
+                char* endPtr = NULL;
+                std::string idStr = fname.substr(fname.rfind("_") + 1,
+                        fname.size() - 3 - name.size());
+
+                int32_t id = strtol(idStr.c_str(), &endPtr, 10);
+                if (endPtr && *endPtr == 0L) {
+                    ids.insert(id);
+                }
             }
         }
         (void) closedir(dirp);
