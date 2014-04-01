@@ -72,6 +72,9 @@ cmake -DCMAKE_MODULE_PATH=. --help-module FindSplash | less
 
 and use the following lines in your `CMakeLists.txt`:
 ```cmake
+# this example will require at least CMake 2.8.5
+cmake_minimum_required(VERSION 2.8.5)
+
 # add path to FindSplash.cmake, e.g. in the directory in cmake/
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
