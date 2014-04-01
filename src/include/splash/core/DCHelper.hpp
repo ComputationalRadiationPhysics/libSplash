@@ -87,7 +87,16 @@ namespace splash
         }
 
         /**
-         * @param dims dimensions to get chunk dims for
+         * Computes the chunk dimensions for a dataset.
+         * 
+         * Chunk dimensions are selected to create chunks sizes between
+         * 64KByte and 4MB. Smaller chunk sizes are inefficient due to overhead,
+         * larger chunks do not map well to file system blocks and striding.
+         * 
+         * Chunk dimensions are less or equal to dataset dimensions and do
+         * not need to be a factor of the respective dataset dimension.
+         * 
+         * @param dims dimensions of dataset to get chunk dims for
          * @param ndims number of dimensions for dims and chunkDims
          * @param typeSize size of each element in bytes
          * @param chunkDims pointer to array for resulting chunk dimensions
@@ -96,7 +105,8 @@ namespace splash
                 size_t typeSize, hsize_t *chunkDims)
         {
             const size_t NUM_CHUNK_SIZES = 7;
-            const size_t CHUNK_SIZES[] = {4096, 2048, 1024, 512, 256, 128, 64};
+            // chunk sizes in KByte
+            const size_t CHUNK_SIZES_KB[] = {4096, 2048, 1024, 512, 256, 128, 64};
             
             size_t total_data_size = typeSize;
             size_t max_chunk_size = typeSize;
@@ -139,7 +149,7 @@ namespace splash
             // compute the target chunk size
             for (uint32_t i = 0; i < NUM_CHUNK_SIZES; ++i)
             {
-                target_chunk_size = CHUNK_SIZES[i] * 1024;
+                target_chunk_size = CHUNK_SIZES_KB[i] * 1024;
                 if (target_chunk_size <= max_chunk_size)
                     break;
             }
