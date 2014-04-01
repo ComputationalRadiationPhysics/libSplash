@@ -24,7 +24,7 @@
 #ifndef DCHELPER_H
 #define	DCHELPER_H
 
-#include <vector>
+#include <map>
 #include <cmath>
 #include <sstream>
 #include <iostream>
@@ -114,24 +114,9 @@ namespace splash
 
             // compute the order of dimensions (descending)
             // large dataset dimensions should have larger chunk sizes
-            std::vector<uint32_t> dims_order;
-            dims_order.reserve(ndims);
-            dims_order.push_back(0);
-            for (uint32_t i = 1; i < ndims; ++i)
-            {
-                std::vector<uint32_t>::iterator iter;
-                for (iter = dims_order.begin(); iter != dims_order.end(); ++iter)
-                {
-                    if (dims[*iter] < dims[i])
-                    {
-                        iter = dims_order.insert(iter, i);
-                        break;
-                    }
-                }
-
-                if (iter == dims_order.end())
-                    dims_order.push_back(i);
-            }
+            std::multimap<hsize_t, uint32_t> dims_order;
+            for (uint32_t i = 0; i < ndims; ++i)
+                dims_order.insert(std::make_pair(dims[i], i));
             
             for (uint32_t i = 0; i < ndims; ++i)
             {
@@ -156,7 +141,8 @@ namespace splash
             
             size_t current_chunk_size = typeSize;
             size_t last_chunk_diff = target_chunk_size;
-            int current_index = 0;
+            std::multimap<hsize_t, uint32_t>::const_iterator current_index = 
+                    dims_order.begin();
 
             while (current_chunk_size < target_chunk_size)
             {
@@ -169,7 +155,7 @@ namespace splash
                 int can_increase_dim = 0;
                 for (uint32_t d = 0; d < ndims; ++d)
                 {
-                    int current_dim = dims_order[current_index];
+                    int current_dim = current_index->second;
                     
                     // increasing chunk size possible
                     if (chunkDims[current_dim] * 2 <= dims[current_dim])
@@ -179,7 +165,9 @@ namespace splash
                         can_increase_dim = 1;
                     }
 
-                    current_index = (current_index + 1) % ndims;
+                    current_index++;
+                    if (current_index == dims_order.end())
+                        current_index = dims_order.begin();
 
                     if (can_increase_dim)
                         break;
