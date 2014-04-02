@@ -503,22 +503,27 @@ def create_xdmf_for_splash_file(base_node_grid, base_node_poly, splashFilename, 
     return True
 
 
-def time_series_split_grids(grid_list):
-    main_grid.setAttribute("Name", "Grids")
-    main_grid.setAttribute("GridType", "Collection")
-    main_grid.setAttribute("CollectionType", "Temporal")
+def time_series_grids(main_grid, main_poly):
+    """
+    
+    """
+    for i in [main_grid, main_poly]:
+	if i == main_grid:
+            i.setAttribute("Name", "Grids")
+        else:
+	    i.setAttribute("Name", "Polys")
+
+	i.setAttribute("GridType", "Collection")
+        i.setAttribute("CollectionType", "Temporal")
+
     base_node_grid = main_grid
- 
-    main_poly.setAttribute("Name", "Polys")
-    main_poly.setAttribute("GridType", "Collection")
-    main_poly.setAttribute("CollectionType", "Temporal")
     base_node_poly = main_poly
 
     return base_node_grid, base_node_poly
 
 # program functions
 
-def create_xdmf_xml(splash_files_list, args): 
+def create_xdmf_xml(splash_files_list, args):
     """
     Return the single XDMF XML structure in the current document for all libSplash
     files in splash_files_list
@@ -538,8 +543,6 @@ def create_xdmf_xml(splash_files_list, args):
     time_series = (len(splash_files_list) > 1)
     
     # setup xml structure
-    global main_grid
-    global main_poly
     xdmf_root = doc.createElement("Xdmf")
     grid_xdmf_root = doc.createElement("Xdmf")
     poly_xdmf_root = doc.createElement("Xdmf")
@@ -557,11 +560,11 @@ def create_xdmf_xml(splash_files_list, args):
         if args.splitgrid:		
             main_grid = grid_doc.createElement("Grid")
             main_poly = poly_doc.createElement("Grid")
-            time_series_split_grids([main_grid, main_poly])
+            time_series_grids(main_grid, main_poly)
         else:
             main_grid = doc.createElement("Grid")
             main_poly = doc.createElement("Grid")
-            time_series_split_grids([main_grid, main_poly])
+            time_series_grids(main_grid, main_poly)
 
 
     for current_file in splash_files_list:
@@ -571,24 +574,18 @@ def create_xdmf_xml(splash_files_list, args):
     # finalize xml structure
     if time_series:
 	if args.splitgrid:
-	    for i in ["grid","poly"]:
-		if i == "grid":
-		    grid_domain.appendChild(main_grid)
-		else:
-		    poly_domain.appendChild(main_poly)
+	    grid_domain.appendChild(main_grid)
+	    poly_domain.appendChild(main_poly)
 	else:
             domain.appendChild(main_grid)
             domain.appendChild(main_poly)
 
     
     if args.splitgrid:
-        for i in ["grid","poly"]:
-            if i == "grid":
-	        grid_xdmf_root.appendChild(grid_domain)
-	        grid_doc.appendChild(grid_xdmf_root)
-	    else:
-		poly_xdmf_root.appendChild(poly_domain)
-		poly_doc.appendChild(poly_xdmf_root)
+        grid_xdmf_root.appendChild(grid_domain)
+        grid_doc.appendChild(grid_xdmf_root)
+	poly_xdmf_root.appendChild(poly_domain)
+	poly_doc.appendChild(poly_xdmf_root)
     else:
         xdmf_root.appendChild(domain)
     	doc.appendChild(xdmf_root)
@@ -614,44 +611,23 @@ def write_xml_to_file(filename, document):
     log("Created XDMF file '{}'".format(filename), True, 0)
     
 
-def handle_user_filename(args):
+def handle_user_filename(filename):
     """
     Create output filename
     Parameters:
     ----------------
-    args: object
-          parsed command line user input
-    
+    filename: string
+              output filename
     Returns:
     ----------------
     return: list
             output filename list 
     """
     output_filename_list = list()
+    tmp = filename.rfind(".")
     for i in ["_grid","_poly"]:
-        if args.o:
-            if "." in args.o:
-                tmp_name_list = args.o.split(".")
-                for step in range(0 , len(tmp_name_list)):
-                    if len(tmp_name_list) == 2:
-                        if step == 0:
-                            output_filename = tmp_name_list[step]
-                        else:
-                            output_filename = output_filename + i + "." + tmp_name_list[step]
-                    if len(tmp_name_list) > 2:
-                        if step == 0:
-                            output_filename = tmp_name_list[step]
-                        if step == len(tmp_name_list) - 1:
-                            output_filename = output_filename + i + "." + tmp_name_list[step]
-                            break
-                        else:
-                            output_filename = output_filename + "." + tmp_name_list[step]
-	    else:
-                output_filename = "{}".format(args.o) + i
-	else:
-            output_filename = "{}".format(splashFilename) + i + ".xmf"
-	
-	output_filename_list.append(output_filename)
+        tmp_filename = filename[:tmp] + i + "." + filename[tmp+1:]	
+	output_filename_list.append(tmp_filename)
     return output_filename_list
 
     
@@ -669,7 +645,7 @@ def get_args_parser():
   
     parser.add_argument("--fullpath", help="Use absolute paths for HDF5 files", action="store_true")
     
-    parser.add_argument("--splitgrid", help="Split the XML-tree in grid and poly and make seperate output file for each", action="store_true")
+    parser.add_argument("--splitgrid", help="Split the XML-tree in grid and poly and make separate output files for each", action="store_true")
     
     return parser
 
@@ -697,19 +673,21 @@ def main():
             splash_files.append(s_filename)
     else:
         splash_files.append(splashFilename)
-    
+   
     create_xdmf_xml(splash_files, args)     
+
+    output_filename = "{}.xmf".format(splashFilename)
+    if args.o:
+        output_filename = args.o
+
     if args.splitgrid:
- 	output_filename_list = handle_user_filename(args)
+ 	output_filename_list = handle_user_filename(output_filename)
  	for output_file in output_filename_list:
-	    if "grid" in output_file:
+	    if "_grid.xmf" in output_file:
 	        write_xml_to_file(output_file, grid_doc)
-	    if "poly" in output_file:
+	    if "_poly.xmf" in output_file:
 		write_xml_to_file(output_file, poly_doc)
     else: 
-    	output_filename = "{}.xmf".format(splashFilename)
-    	if args.o:
-            output_filename = args.o
         write_xml_to_file(output_filename, doc)
 
 if __name__ == "__main__":
