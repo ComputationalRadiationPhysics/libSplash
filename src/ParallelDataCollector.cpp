@@ -96,6 +96,10 @@ namespace splash
     {
         log_msg(2, "listing files for %s", baseFilename.c_str());
 
+        /* Split baseFilename into path and name prefix.
+         * Always append '_' since PDC filenames are 'prefix_timestep.h5'.
+         * e.g. '/path/to/filename' -> dir_path='/path/to/' name='filename_'
+         */
         std::string dir_path, name;
         std::string::size_type pos = baseFilename.find_last_of('/');
         if (pos == std::string::npos)
@@ -106,8 +110,8 @@ namespace splash
         {
             dir_path.assign(baseFilename.c_str(), baseFilename.c_str() + pos);
             name.assign(baseFilename.c_str() + pos + 1);
-            name.append("_");
         }
+        name.append("_");
 
         dirent *dp = NULL;
         DIR *dirp = NULL;
@@ -140,6 +144,7 @@ namespace splash
                 int32_t id = strtol(idStr.c_str(), &endPtr, 10);
                 if (endPtr && *endPtr == 0L) {
                     ids.insert(id);
+                    log_msg(3, "found file %s with ID %d", fname.c_str(), id);
                 }
             }
         }
