@@ -505,7 +505,16 @@ def create_xdmf_for_splash_file(base_node_grid, base_node_poly, splashFilename, 
 
 def time_series_grids(main_grid, main_poly):
     """
-    
+    Subfunction for create_xdmf_xml, which appends attributes to xml nodes
+
+    Parameters:
+    ----------------
+    main_grid, main_poly: element 
+                          XML node 
+    Returns:
+    ----------------
+    return: Element
+            XML base node
     """
     for i in [main_grid, main_poly]:
 	if i == main_grid:
