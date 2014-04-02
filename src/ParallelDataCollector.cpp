@@ -140,6 +140,7 @@ namespace splash
                 int32_t id = strtol(idStr.c_str(), &endPtr, 10);
                 if (endPtr && *endPtr == 0L) {
                     ids.insert(id);
+                    log_msg(3, "found file %s with ID %d", fname.c_str(), id);
                 }
             }
         }

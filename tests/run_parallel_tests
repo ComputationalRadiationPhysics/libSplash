@@ -27,6 +27,8 @@ function testMPI()
 
 #testMPI ./Parallel_SimpleDataTest.cpp.out 8 "Testing simple data read/write (parallel)..."
 
+testMPI ./Parallel_ListFilesTest.cpp.out 1 "Testing list files (parallel)..."
+
 testMPI ./Parallel_DomainsTest.cpp.out 8 "Testing domains (parallel)..."
 
 testMPI ./Parallel_AttributesTest.cpp.out 4 "Testing reading/writing attributes (parallel)..."
