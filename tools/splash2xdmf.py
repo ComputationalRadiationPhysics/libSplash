@@ -503,7 +503,7 @@ def create_xdmf_for_splash_file(base_node_grid, base_node_poly, splashFilename, 
     return True
 
 
-def time_series_grids(main_grid, main_poly):
+def grid_attribute_setter (main_grid, main_poly):
     """
     Subfunction for create_xdmf_xml, which appends attributes to xml nodes
 
@@ -516,19 +516,14 @@ def time_series_grids(main_grid, main_poly):
     return: Element
             XML base node
     """
+    main_grid.setAttribute("Name","Grids")
+    main_poly.setAttribute("Name","Polys")
+    
     for i in [main_grid, main_poly]:
-	if i == main_grid:
-            i.setAttribute("Name", "Grids")
-        else:
-	    i.setAttribute("Name", "Polys")
-
-	i.setAttribute("GridType", "Collection")
+        i.setAttribute("GridType", "Collection")
         i.setAttribute("CollectionType", "Temporal")
 
-    base_node_grid = main_grid
-    base_node_poly = main_poly
-
-    return base_node_grid, base_node_poly
+    return main_grid, main_poly
 
 # program functions
 
@@ -569,12 +564,13 @@ def create_xdmf_xml(splash_files_list, args):
         if args.splitgrid:		
             main_grid = grid_doc.createElement("Grid")
             main_poly = poly_doc.createElement("Grid")
-            time_series_grids(main_grid, main_poly)
         else:
             main_grid = doc.createElement("Grid")
             main_poly = doc.createElement("Grid")
-            time_series_grids(main_grid, main_poly)
 
+        grid_attribute_setter(main_grid, main_poly)
+        base_node_grid = main_grid
+        base_node_poly = main_poly
 
     for current_file in splash_files_list:
         # parse this splash file and append to current xml base node
@@ -687,14 +683,18 @@ def main():
 
     output_filename = "{}.xmf".format(splashFilename)
     if args.o:
-        output_filename = args.o
+        if args.o.endswith(".xmf"):
+            output_filename = args.o
+        else:
+            print "The script was stopped, because your output filename doesn't have\nan ending paraview can work with. Please use the ending '.xmf'!"
+            sys.exit()
 
     if args.splitgrid:
  	output_filename_list = handle_user_filename(output_filename)
  	for output_file in output_filename_list:
-	    if "_grid.xmf" in output_file:
+	    if output_file.endswith("_grid.xmf"):
 	        write_xml_to_file(output_file, grid_doc)
-	    if "_poly.xmf" in output_file:
+	    if output_file.endswith("_poly.xmf"):
 		write_xml_to_file(output_file, poly_doc)
     else: 
         write_xml_to_file(output_filename, doc)
