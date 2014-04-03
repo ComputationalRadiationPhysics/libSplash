@@ -509,7 +509,7 @@ def grid_attribute_setter (main_grid, main_poly):
 
     Parameters:
     ----------------
-    main_grid, main_poly: element 
+    main_grid, main_poly: Element 
                           XML node 
     Returns:
     ----------------
@@ -553,7 +553,7 @@ def create_xdmf_xml(splash_files_list, args):
     domain = doc.createElement("Domain")
     grid_domain = grid_doc.createElement("Domain")
     poly_domain = poly_doc.createElement("Domain")
-    if not args.splitgrid:
+    if args.no_splitgrid:
         base_node_grid = domain
         base_node_poly = domain
     else:
@@ -561,12 +561,12 @@ def create_xdmf_xml(splash_files_list, args):
         base_node_poly = poly_domain
     
     if time_series:
-        if args.splitgrid:		
-            main_grid = grid_doc.createElement("Grid")
-            main_poly = poly_doc.createElement("Grid")
-        else:
+        if args.no_splitgrid:		
             main_grid = doc.createElement("Grid")
             main_poly = doc.createElement("Grid")
+        else:
+            main_grid = grid_doc.createElement("Grid")
+            main_poly = poly_doc.createElement("Grid")
 
         grid_attribute_setter(main_grid, main_poly)
         base_node_grid = main_grid
@@ -578,24 +578,24 @@ def create_xdmf_xml(splash_files_list, args):
 
     # finalize xml structure
     if time_series:
-	if args.splitgrid:
-            grid_domain.appendChild(main_grid)
-            poly_domain.appendChild(main_poly)
-	else:
-            domain.appendChild(main_grid) 
+	if args.no_splitgrid:
+            domain.appendChild(main_grid)
             domain.appendChild(main_poly)
+	else:
+            grid_domain.appendChild(main_grid) 
+            poly_domain.appendChild(main_poly)
 
     
-    if args.splitgrid:
+    if args.no_splitgrid:
+        xdmf_root.appendChild(domain)
+        doc.appendChild(xdmf_root)
+        return xdmf_root       
+    else:
         grid_xdmf_root.appendChild(grid_domain)
         grid_doc.appendChild(grid_xdmf_root)
         poly_xdmf_root.appendChild(poly_domain)
         poly_doc.appendChild(poly_xdmf_root)
-    else:
-        xdmf_root.appendChild(domain)
-        doc.appendChild(xdmf_root)
-    
-    return xdmf_root
+        return (grid_xdmf_root, poly_xdmf_root)
 
 
 def write_xml_to_file(filename, document):
@@ -650,7 +650,7 @@ def get_args_parser():
   
     parser.add_argument("--fullpath", help="Use absolute paths for HDF5 files", action="store_true")
     
-    parser.add_argument("--splitgrid", help="Split the XML-tree in grid and poly and make separate output files for each", action="store_true")
+    parser.add_argument("--no_splitgrid", help="Avoid the XML-tree to be split in grid and poly grids for separate output files", action="store_true")
     
     return parser
 
@@ -689,15 +689,15 @@ def main():
             print "The script was stopped, because your output filename doesn't have\nan ending paraview can work with. Please use the ending '.xmf'!"
             sys.exit()
 
-    if args.splitgrid:
- 	output_filename_list = handle_user_filename(output_filename)
- 	for output_file in output_filename_list:
-	    if output_file.endswith("_grid.xmf"):
-	        write_xml_to_file(output_file, grid_doc)
-	    if output_file.endswith("_poly.xmf"):
-		write_xml_to_file(output_file, poly_doc)
-    else: 
+    if args.no_splitgrid:
         write_xml_to_file(output_filename, doc)
+    else:
+        output_filename_list = handle_user_filename(output_filename)
+        for output_file in output_filename_list:
+            if output_file.endswith("_grid.xmf"):
+                write_xml_to_file(output_file, grid_doc)
+            if output_file.endswith("_poly.xmf"):
+                write_xml_to_file(output_file, poly_doc)
 
 if __name__ == "__main__":
     main()
