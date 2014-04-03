@@ -558,7 +558,7 @@ def create_xdmf_xml(splash_files_list, args):
         base_node_poly = domain
     else:
         base_node_grid = grid_domain
-	base_node_poly = poly_domain
+        base_node_poly = poly_domain
     
     if time_series:
         if args.splitgrid:		
