@@ -37,6 +37,8 @@ SPLASH_CLASS_TYPE_GRID = 20
 verbosity_level = 0
 
 doc = Document()
+grid_doc = Document()
+poly_doc = Document()
 grids = dict()
 polys = dict()
 
@@ -501,6 +503,28 @@ def create_xdmf_for_splash_file(base_node_grid, base_node_poly, splashFilename, 
     return True
 
 
+def grid_attribute_setter (main_grid, main_poly):
+    """
+    Subfunction for create_xdmf_xml, which appends attributes to xml nodes
+
+    Parameters:
+    ----------------
+    main_grid, main_poly: element 
+                          XML node 
+    Returns:
+    ----------------
+    return: Element
+            XML base node
+    """
+    main_grid.setAttribute("Name","Grids")
+    main_poly.setAttribute("Name","Polys")
+    
+    for i in [main_grid, main_poly]:
+        i.setAttribute("GridType", "Collection")
+        i.setAttribute("CollectionType", "Temporal")
+
+    return main_grid, main_poly
+
 # program functions
 
 def create_xdmf_xml(splash_files_list, args):
@@ -512,6 +536,8 @@ def create_xdmf_xml(splash_files_list, args):
     ----------------
     splash_files_list: list of strings
                        list of libSplash filenames to create XDMF for
+    args:              object
+                       parsed command line user input 
     Returns:
     ----------------
     return: Element
@@ -522,34 +548,53 @@ def create_xdmf_xml(splash_files_list, args):
     
     # setup xml structure
     xdmf_root = doc.createElement("Xdmf")
+    grid_xdmf_root = doc.createElement("Xdmf")
+    poly_xdmf_root = doc.createElement("Xdmf")
     domain = doc.createElement("Domain")
-    base_node_grid = domain
-    base_node_poly = domain
+    grid_domain = grid_doc.createElement("Domain")
+    poly_domain = poly_doc.createElement("Domain")
+    if not args.splitgrid:
+        base_node_grid = domain
+        base_node_poly = domain
+    else:
+        base_node_grid = grid_domain
+        base_node_poly = poly_domain
     
     if time_series:
-        main_grid = doc.createElement("Grid")
-        main_grid.setAttribute("Name", "Grids")
-        main_grid.setAttribute("GridType", "Collection")
-        main_grid.setAttribute("CollectionType", "Temporal")
+        if args.splitgrid:		
+            main_grid = grid_doc.createElement("Grid")
+            main_poly = poly_doc.createElement("Grid")
+        else:
+            main_grid = doc.createElement("Grid")
+            main_poly = doc.createElement("Grid")
+
+        grid_attribute_setter(main_grid, main_poly)
         base_node_grid = main_grid
-        
-        main_poly = doc.createElement("Grid")
-        main_poly.setAttribute("Name", "Polys")
-        main_poly.setAttribute("GridType", "Collection")
-        main_poly.setAttribute("CollectionType", "Temporal")
         base_node_poly = main_poly
-    
+
     for current_file in splash_files_list:
         # parse this splash file and append to current xml base node
         create_xdmf_for_splash_file(base_node_grid, base_node_poly, current_file, args)
 
     # finalize xml structure
     if time_series:
-        domain.appendChild(main_grid)
-        domain.appendChild(main_poly)
+	if args.splitgrid:
+            grid_domain.appendChild(main_grid)
+            poly_domain.appendChild(main_poly)
+	else:
+            domain.appendChild(main_grid) 
+            domain.appendChild(main_poly)
 
-    xdmf_root.appendChild(domain)
-    doc.appendChild(xdmf_root)
+    
+    if args.splitgrid:
+        grid_xdmf_root.appendChild(grid_domain)
+        grid_doc.appendChild(grid_xdmf_root)
+        poly_xdmf_root.appendChild(poly_domain)
+        poly_doc.appendChild(poly_xdmf_root)
+    else:
+        xdmf_root.appendChild(domain)
+        doc.appendChild(xdmf_root)
+    
     return xdmf_root
 
 
@@ -570,6 +615,26 @@ def write_xml_to_file(filename, document):
     xdmf_file.close()
     log("Created XDMF file '{}'".format(filename), True, 0)
     
+
+def handle_user_filename(filename):
+    """
+    Create output filename
+    Parameters:
+    ----------------
+    filename: string
+              output filename
+    Returns:
+    ----------------
+    return: list
+            output filename list 
+    """
+    output_filename_list = list()
+    tmp = filename.rfind(".")
+    for i in ["_grid","_poly"]:
+        tmp_filename = filename[:tmp] + i + "." + filename[tmp+1:]	
+	output_filename_list.append(tmp_filename)
+    return output_filename_list
+
     
 def get_args_parser():
     parser = argparse.ArgumentParser(description="Create a XDMF meta description file from a libSplash HDF5 file.")
@@ -584,6 +649,8 @@ def get_args_parser():
     parser.add_argument("-t", "--time", help="Aggregate information over a time-series of libSplash data", action="store_true")
   
     parser.add_argument("--fullpath", help="Use absolute paths for HDF5 files", action="store_true")
+    
+    parser.add_argument("--splitgrid", help="Split the XML-tree in grid and poly and make separate output files for each", action="store_true")
     
     return parser
 
@@ -611,13 +678,26 @@ def main():
             splash_files.append(s_filename)
     else:
         splash_files.append(splashFilename)
-        
-    create_xdmf_xml(splash_files, args)
-    
+   
+    create_xdmf_xml(splash_files, args)     
+
     output_filename = "{}.xmf".format(splashFilename)
     if args.o:
-        output_filename = args.o
-    write_xml_to_file(output_filename, doc)
+        if args.o.endswith(".xmf"):
+            output_filename = args.o
+        else:
+            print "The script was stopped, because your output filename doesn't have\nan ending paraview can work with. Please use the ending '.xmf'!"
+            sys.exit()
+
+    if args.splitgrid:
+ 	output_filename_list = handle_user_filename(output_filename)
+ 	for output_file in output_filename_list:
+	    if output_file.endswith("_grid.xmf"):
+	        write_xml_to_file(output_file, grid_doc)
+	    if output_file.endswith("_poly.xmf"):
+		write_xml_to_file(output_file, poly_doc)
+    else: 
+        write_xml_to_file(output_filename, doc)
 
 if __name__ == "__main__":
     main()
