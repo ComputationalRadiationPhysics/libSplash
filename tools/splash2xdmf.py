@@ -579,21 +579,21 @@ def create_xdmf_xml(splash_files_list, args):
     # finalize xml structure
     if time_series:
 	if args.splitgrid:
-	    grid_domain.appendChild(main_grid)
-	    poly_domain.appendChild(main_poly)
+            grid_domain.appendChild(main_grid)
+            poly_domain.appendChild(main_poly)
 	else:
-            domain.appendChild(main_grid)
+            domain.appendChild(main_grid) 
             domain.appendChild(main_poly)
 
     
     if args.splitgrid:
         grid_xdmf_root.appendChild(grid_domain)
         grid_doc.appendChild(grid_xdmf_root)
-	poly_xdmf_root.appendChild(poly_domain)
-	poly_doc.appendChild(poly_xdmf_root)
+        poly_xdmf_root.appendChild(poly_domain)
+        poly_doc.appendChild(poly_xdmf_root)
     else:
         xdmf_root.appendChild(domain)
-    	doc.appendChild(xdmf_root)
+        doc.appendChild(xdmf_root)
     
     return xdmf_root
 
