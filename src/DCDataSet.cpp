@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -450,13 +450,13 @@ namespace splash
         if ((dst != NULL) && (getNDims() > 0))
         {
             log_msg(3,
-                    " ndims = %llu\n"
-                    " logical_size = %s\n"
+                    "\n ndims         = %llu\n"
+                    " logical_size  = %s\n"
                     " physical_size = %s\n"
-                    " dstBuffer = %s\n"
-                    " dstOffset = %s\n"
-                    " srcSize = %s\n"
-                    " srcOffset = %s\n",
+                    " dstBuffer     = %s\n"
+                    " dstOffset     = %s\n"
+                    " srcSize       = %s\n"
+                    " srcOffset     = %s\n",
                     (long long unsigned) ndims,
                     getLogicalSize().toString().c_str(),
                     getPhysicalSize().toString().c_str(),
@@ -503,22 +503,10 @@ namespace splash
         log_msg(3, " returns sizeRead = %s", sizeRead.toString().c_str());
     }
 
-    void DCDataSet::write(Dimensions dim, const void* data)
-    throw (DCException)
-    {
-        write(dim, Dimensions(1, 1, 1), Dimensions(0, 0, 0), dim, Dimensions(0, 0, 0), data);
-    }
-
-    void DCDataSet::write(Dimensions srcBuffer, Dimensions srcStride, Dimensions srcOffset, Dimensions srcData,
+    void DCDataSet::write(
+            Selection srcSelect,
+            Dimensions dstOffset,
             const void* data)
-    throw (DCException)
-    {
-        write(srcBuffer, srcStride, srcOffset, srcData, Dimensions(0, 0, 0), data);
-    }
-
-    void DCDataSet::write(Dimensions srcBuffer, Dimensions srcStride,
-            Dimensions srcOffset, Dimensions srcData,
-            Dimensions dstOffset, const void* data)
     throw (DCException)
     {
         log_msg(2, "DCDataSet::write (%s)", name.c_str());
@@ -527,28 +515,19 @@ namespace splash
             throw DCException(getExceptionString("write: Dataset has not been opened/created"));
 
         log_msg(3,
-                " ndims = %llu\n"
-                " logical_size = %s\n"
+                "\n ndims         = %llu\n"
+                " logical_size  = %s\n"
                 " physical_size = %s\n"
-                " src_buffer = %s\n"
-                " src_stride = %s\n"
-                " src_data = %s\n"
-                " src_offset = %s\n"
-                " dst_offset = %s\n",
+                " src_select    = %s\n"
+                " dst_offset    = %s\n",
                 (long long unsigned) ndims,
                 getLogicalSize().toString().c_str(),
                 getPhysicalSize().toString().c_str(),
-                srcBuffer.toString().c_str(),
-                srcStride.toString().c_str(),
-                srcData.toString().c_str(),
-                srcOffset.toString().c_str(),
+                srcSelect.toString().c_str(),
                 dstOffset.toString().c_str());
 
         // swap dimensions if necessary
-        srcBuffer.swapDims(ndims);
-        srcStride.swapDims(ndims);
-        srcData.swapDims(ndims);
-        srcOffset.swapDims(ndims);
+        srcSelect.swapDims(ndims);
         dstOffset.swapDims(ndims);
 
         // dataspace to read from
@@ -556,33 +535,34 @@ namespace splash
 
         if (getLogicalSize().getScalarSize() != 0)
         {
-            dsp_src = H5Screate_simple(ndims, srcBuffer.getPointer(), NULL);
+            dsp_src = H5Screate_simple(ndims, srcSelect.size.getPointer(), NULL);
             if (dsp_src < 0)
                 throw DCException(getExceptionString("write: Failed to create source dataspace"));
 
             // select hyperslap only if necessary
-            if ((srcOffset.getScalarSize() != 0) || (srcData != srcBuffer) || (srcStride.getScalarSize() != 1))
+            if ((srcSelect.offset.getScalarSize() != 0) || (srcSelect.count != srcSelect.size) || 
+                    (srcSelect.stride.getScalarSize() != 1))
             {
-                if (H5Sselect_hyperslab(dsp_src, H5S_SELECT_SET, srcOffset.getPointer(),
-                        srcStride.getPointer(), srcData.getPointer(), NULL) < 0 ||
+                if (H5Sselect_hyperslab(dsp_src, H5S_SELECT_SET, srcSelect.offset.getPointer(),
+                        srcSelect.stride.getPointer(), srcSelect.count.getPointer(), NULL) < 0 ||
                         H5Sselect_valid(dsp_src) <= 0)
                     throw DCException(getExceptionString("write: Invalid source hyperslap selection"));
             }
 
-            if (srcData.getScalarSize() == 0)
+            if (srcSelect.count.getScalarSize() == 0)
                 H5Sselect_none(dsp_src);
 
             // dataspace to write to
             // select hyperslap only if necessary
-            if ((dstOffset.getScalarSize() != 0) || (srcData != getPhysicalSize()))
+            if ((dstOffset.getScalarSize() != 0) || (srcSelect.count != getPhysicalSize()))
             {
                 if (H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, dstOffset.getPointer(),
-                        NULL, srcData.getPointer(), NULL) < 0 ||
+                        NULL, srcSelect.count.getPointer(), NULL) < 0 ||
                         H5Sselect_valid(dataspace) <= 0)
                     throw DCException(getExceptionString("write: Invalid target hyperslap selection"));
             }
 
-            if (!data || (srcData.getScalarSize() == 0))
+            if (!data || (srcSelect.count.getScalarSize() == 0))
             {
                 H5Sselect_none(dataspace);
                 data = NULL;

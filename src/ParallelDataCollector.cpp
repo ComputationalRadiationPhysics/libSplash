@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -512,67 +512,20 @@ namespace splash
     }
 
     void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
-            const Dimensions srcData, const char* name, const void* data)
+            const Selection select, const char* name, const void* buf)
     throw (DCException)
     {
         Dimensions globalSize, globalOffset;
-        gatherMPIWrites(ndims, srcData, globalSize, globalOffset);
+        gatherMPIWrites(ndims, select.count, globalSize, globalOffset);
 
         write(id, globalSize, globalOffset,
-                type, ndims, srcData, Dimensions(1, 1, 1),
-                srcData, Dimensions(0, 0, 0), name, data);
-    }
-
-    void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
-            const Dimensions srcBuffer, const Dimensions srcData, const Dimensions srcOffset,
-            const char* name, const void* data)
-    throw (DCException)
-    {
-        Dimensions globalSize, globalOffset;
-        gatherMPIWrites(ndims, srcData, globalSize, globalOffset);
-
-        write(id, globalSize, globalOffset,
-                type, ndims, srcBuffer, Dimensions(1, 1, 1),
-                srcData, srcOffset, name, data);
-    }
-
-    void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
-            const Dimensions srcBuffer, const Dimensions srcStride, const Dimensions srcData,
-            const Dimensions srcOffset, const char* name, const void* buf)
-    throw (DCException)
-    {
-        Dimensions globalSize, globalOffset;
-        gatherMPIWrites(ndims, srcData, globalSize, globalOffset);
-
-        write(id, globalSize, globalOffset,
-                type, ndims, srcBuffer, srcStride, srcData,
-                srcOffset, name, buf);
+                type, ndims, select, name, buf);
     }
 
     void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
             const Dimensions globalOffset,
-            const CollectionType& type, uint32_t ndims, const Dimensions srcData,
-            const char* name, const void* buf)
-    {
-        write(id, globalSize, globalOffset, type, ndims, srcData, Dimensions(1, 1, 1), srcData,
-                Dimensions(0, 0, 0), name, buf);
-    }
-
-    void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
-            const Dimensions globalOffset,
-            const CollectionType& type, uint32_t ndims, const Dimensions srcBuffer,
-            const Dimensions srcData, const Dimensions srcOffset, const char* name,
-            const void* buf)
-    {
-        write(id, globalSize, globalOffset, type, ndims, srcBuffer, Dimensions(1, 1, 1),
-                srcData, srcOffset, name, buf);
-    }
-
-    void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
-            const Dimensions globalOffset,
-            const CollectionType& type, uint32_t ndims, const Dimensions srcBuffer,
-            const Dimensions srcStride, const Dimensions srcData,
-            const Dimensions srcOffset, const char* name, const void* buf)
+            const CollectionType& type, uint32_t ndims, 
+            const Selection select, const char* name, const void* buf)
     {
         if (name == NULL)
             throw DCException(getExceptionString("write", "parameter name is NULL"));
@@ -592,7 +545,7 @@ namespace splash
 
         // write data to the group
         writeDataSet(group.getHandle(), globalSize, globalOffset, type, ndims,
-                srcBuffer, srcStride, srcData, srcOffset, dset_name.c_str(), buf);
+                select, dset_name.c_str(), buf);
     }
 
     void ParallelDataCollector::reserve(int32_t id,
@@ -674,7 +627,7 @@ namespace splash
             throw DCException(getExceptionString("append",
                     "Cannot open dataset (missing reserve?)", dset_name.c_str()));
         } else
-            dataset.write(size, Dimensions(1, 1, 1), Dimensions(0, 0, 0), size, globalOffset, buf);
+            dataset.write(Selection(size), globalOffset, buf);
 
         dataset.close();
     }
@@ -940,19 +893,21 @@ namespace splash
         dataset.close();
     }
 
-    void ParallelDataCollector::writeDataSet(H5Handle group, const Dimensions globalSize,
+    void ParallelDataCollector::writeDataSet(H5Handle group,
+            const Dimensions globalSize,
             const Dimensions globalOffset,
-            const CollectionType& datatype, uint32_t ndims,
-            const Dimensions srcBuffer, const Dimensions srcStride,
-            const Dimensions srcData, const Dimensions srcOffset,
-            const char* name, const void* data) throw (DCException)
+            const CollectionType& datatype,
+            uint32_t ndims,
+            const Selection srcSelect,
+            const char* name,
+            const void* data) throw (DCException)
     {
         log_msg(2, "writeDataSet");
 
         DCParallelDataSet dataset(name);
         // always create dataset but write data only if all dimensions > 0
         dataset.create(datatype, group, globalSize, ndims, this->options.enableCompression);
-        dataset.write(srcBuffer, srcStride, srcOffset, srcData, globalOffset, data);
+        dataset.write(srcSelect, globalOffset, data);
         dataset.close();
     }
 

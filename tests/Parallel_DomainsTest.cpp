@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash.
  *
@@ -91,7 +91,6 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
     const Dimensions global_domain_offset(17, 32, 5);
     const Dimensions domain_offset = (mpiPos * gridSize) + global_domain_offset;
     const Dimensions global_domain_size = domain_size * mpiSize;
-    const Dimensions full_grid_size = gridSize * mpiSize;
 
     DataCollector::initFileCreationAttr(fattr);
     fattr.fileAccType = DataCollector::FAT_CREATE;
@@ -106,9 +105,10 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
 #endif
 
     // initial part of the test: data is written to the file
-    parallelDomainCollector->writeDomain(iteration, ctInt, 3, gridSize, "grid_data",
-            domain_offset, domain_size,
-            global_domain_offset, global_domain_size,
+    parallelDomainCollector->writeDomain(iteration, ctInt, 3,
+            Selection(gridSize), "grid_data",
+            Domain(domain_offset, domain_size),
+            Domain(global_domain_offset, global_domain_size),
             IDomainCollector::GridType, data_write);
     parallelDomainCollector->close();
 
@@ -154,7 +154,7 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
         // read data container
         DataContainer *container = parallelDomainCollector->readDomain(
                 iteration, "grid_data",
-                offset, partition_size, &data_class);
+                Domain(offset, partition_size), &data_class);
 
 #if defined TESTS_DEBUG
         std::cout << "container->getNumSubdomains() = " << container->getNumSubdomains() << std::endl;
@@ -343,9 +343,10 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
     std::cout << "[" << currentMpiRank << "] poly_size = " << poly_size.toString() << std::endl;
 #endif
 
-    parallelDomainCollector->writeDomain(iteration, ctFloat, 1, poly_size,
-            "poly_data", domain_offset, domain_size,
-            global_domain_offset, global_domain_size,
+    parallelDomainCollector->writeDomain(iteration, ctFloat, 1,
+            Selection(poly_size), "poly_data", 
+            Domain(domain_offset, domain_size),
+            Domain(global_domain_offset, global_domain_size),
             IDomainCollector::PolyType, data_write);
 
     parallelDomainCollector->close();
@@ -390,7 +391,7 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
         // read data container, returns a single subdomain containing all data
         IDomainCollector::DomDataClass data_class = IDomainCollector::UndefinedType;
         DataContainer *container = parallelDomainCollector->readDomain(iteration,
-                "poly_data", offset, partition_size, &data_class);
+                "poly_data", Domain(offset, partition_size), &data_class);
 
 #if defined TESTS_DEBUG
         std::cout << "container->getNumSubdomains() = " << container->getNumSubdomains() << std::endl;
@@ -545,7 +546,7 @@ void Parallel_DomainsTest::testAppendDomains()
     pdc->open(hdf5_file_append, fAttr);
 
     pdc->reserveDomain(10, global_grid_size, 3, ctInt, "append/data",
-            Dimensions(0, 0, 0), global_grid_size, DomainCollector::GridType);
+            Domain(Dimensions(0, 0, 0), global_grid_size), DomainCollector::GridType);
     
     MPI_CHECK(MPI_Barrier(MPI_COMM_WORLD));
 
@@ -572,8 +573,7 @@ void Parallel_DomainsTest::testAppendDomains()
     pdc->open(hdf5_file_append, fAttr);
             
     DataContainer *container = pdc->readDomain(10, "append/data",
-            mpi_position * local_grid_size,
-            local_grid_size, NULL, false);
+            Domain(mpi_position * local_grid_size, local_grid_size), NULL, false);
     
     CPPUNIT_ASSERT(container);
     CPPUNIT_ASSERT(container->getNumSubdomains() == 1);
