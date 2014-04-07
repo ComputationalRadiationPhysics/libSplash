@@ -124,6 +124,7 @@ void Parallel_ListFilesTest::testListFiles()
 
     dataCollector->close();
 
+    dataCollector->finalize();
     delete dataCollector;
     delete[] tmp_ids;
 }

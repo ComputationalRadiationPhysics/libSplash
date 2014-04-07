@@ -180,6 +180,8 @@ void Parallel_ZeroAccessTest::testZeroAccess()
             std::cout << "." << std::flush;
     }
     
+    pdc->finalize();
+    
     delete pdc;
     pdc = NULL;
 }
