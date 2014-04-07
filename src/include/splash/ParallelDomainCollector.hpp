@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -45,6 +45,13 @@ namespace splash
         static std::string getExceptionString(std::string func, std::string msg,
                 const char *info);
 
+        void writeDomainAttributes(
+                int32_t id,
+                const char *name,
+                DomDataClass dataClass,
+                const Domain localDomain,
+                const Domain globalDomain);
+
     public:
         /**
          * Constructor
@@ -85,8 +92,7 @@ namespace splash
 
         DataContainer *readDomain(int32_t id,
                 const char* name,
-                Dimensions requestOffset,
-                Dimensions requestSize,
+                const Domain requestDomain,
                 DomDataClass* dataClass,
                 bool lazyLoad = false) throw (DCException);
 
@@ -95,41 +101,10 @@ namespace splash
         void writeDomain(int32_t id,
                 const CollectionType& type,
                 uint32_t ndims,
-                const Dimensions srcData,
+                const Selection select,
                 const char* name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
-                DomDataClass dataClass,
-                const void* buf) throw (DCException);
-
-        void writeDomain(int32_t id,
-                const CollectionType& type,
-                uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
-                DomDataClass dataClass,
-                const void* buf) throw (DCException);
-
-        void writeDomain(int32_t id,
-                const CollectionType& type,
-                uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcStride,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
+                const Domain localDomain,
+                const Domain globalDomain,
                 DomDataClass dataClass,
                 const void* buf) throw (DCException);
 
@@ -138,39 +113,9 @@ namespace splash
                 const Dimensions globalOffset,
                 const CollectionType& type,
                 uint32_t ndims,
-                const Dimensions srcData,
+                const Selection select,
                 const char* name,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
-                DomDataClass dataClass,
-                const void* buf) throw (DCException);
-
-        void writeDomain(int32_t id,
-                const Dimensions globalSize,
-                const Dimensions globalOffset,
-                const CollectionType& type,
-                uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
-                DomDataClass dataClass,
-                const void* buf) throw (DCException);
-
-        void writeDomain(int32_t id,
-                const Dimensions globalSize,
-                const Dimensions globalOffset,
-                const CollectionType& type,
-                uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcStride,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
+                const Domain globalDomain,
                 DomDataClass dataClass,
                 const void* buf) throw (DCException);
 
@@ -179,8 +124,7 @@ namespace splash
                 uint32_t ndims,
                 const CollectionType& type,
                 const char* name,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
+                const Domain domain,
                 DomDataClass dataClass) throw (DCException);
 
         void reserveDomain(int32_t id,
@@ -190,10 +134,9 @@ namespace splash
                 uint32_t ndims,
                 const CollectionType& type,
                 const char* name,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
+                const Domain domain,
                 DomDataClass dataClass) throw (DCException);
-        
+
     protected:
 
         bool readDomainDataForRank(
@@ -201,18 +144,15 @@ namespace splash
                 DomDataClass *dataClass,
                 int32_t id,
                 const char* name,
-                Dimensions requestOffset,
-                Dimensions requestSize,
+                const Domain requestDomain,
                 bool lazyLoad) throw (DCException);
 
         void appendDomain(int32_t id,
                 const CollectionType& type,
                 size_t count,
                 const char *name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
+                const Domain localDomain,
+                const Domain globalDomain,
                 const void *buf) throw (DCException);
 
         void appendDomain(int32_t id,
@@ -221,10 +161,8 @@ namespace splash
                 size_t offset,
                 size_t striding,
                 const char *name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
+                const Domain localDomain,
+                const Domain globalDomain,
                 const void *buf) throw (DCException);
 
     };

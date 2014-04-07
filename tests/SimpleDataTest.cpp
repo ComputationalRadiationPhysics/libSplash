@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -75,10 +75,10 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
     for (uint64_t i = 0; i < bufferSize; i++)
         dataWrite[i] = i;
 
-    dataCollector->write(10, ctUInt64, dimensions, gridSize, "deep/folders/data", dataWrite);
+    dataCollector->write(10, ctUInt64, dimensions, Selection(gridSize), "deep/folders/data", dataWrite);
 
-    dataCollector->write(20, ctUInt64, dimensions, gridSize, smallGridSize,
-            borderSize, "deep/folders/data_without_borders", dataWrite);
+    dataCollector->write(20, ctUInt64, dimensions, Selection(gridSize, smallGridSize,
+            borderSize), "deep/folders/data_without_borders", dataWrite);
 
     dataCollector->close();
 
@@ -252,9 +252,9 @@ void SimpleDataTest::testNullWrite()
 
     Dimensions size(100, 20, 17);
 
-    dataCollector->write(10, ctUInt32, 3, size, "deep/folders/null", NULL);
+    dataCollector->write(10, ctUInt32, 3, Selection(size), "deep/folders/null", NULL);
 
-    dataCollector->write(10, ctUInt64, 3, Dimensions(0, 0, 0), "deep/folders/null_2", NULL);
+    dataCollector->write(10, ctUInt64, 3, Selection(Dimensions(0, 0, 0)), "deep/folders/null_2", NULL);
 
     dataCollector->close();
 

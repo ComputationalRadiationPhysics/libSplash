@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -84,8 +84,8 @@ void AttributesTest::testDataAttributes()
     CPPUNIT_ASSERT_THROW(dataCollector->writeAttribute(10, ctInt, "", "", &sum2),
             DCException);
     
-    dataCollector->write(0, ctInt2, 1, Dimensions(BUF_SIZE, 1, 1), 
-            Dimensions(BUF_SIZE, 1, 1), Dimensions(0, 0, 0), "datasets/my_dataset", dummy_data);
+    dataCollector->write(0, ctInt2, 1, Selection(Dimensions(BUF_SIZE, 1, 1)),
+            "datasets/my_dataset", dummy_data);
     
     dataCollector->writeAttribute(0, ctInt, "datasets/my_dataset", "sum", &sum);
     int neg_sum = -sum;

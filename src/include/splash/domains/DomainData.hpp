@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -67,7 +67,7 @@ namespace splash
          * @param datatypeSize Size of each element in bytes.
          * @param datatype Internal representation of HDF5 datatype.
          */
-        DomainData(Domain& domain, const Dimensions elements,
+        DomainData(const Domain& domain, const Dimensions elements,
                 size_t datatypeSize, DCDataType datatype) :
         Domain(domain),
         elements(elements),

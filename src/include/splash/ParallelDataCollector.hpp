@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -161,10 +161,7 @@ namespace splash
                 const Dimensions globalOffset,
                 const CollectionType& datatype,
                 uint32_t rank,
-                const Dimensions srcBuffer,
-                const Dimensions srcStride,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
+                const Selection srcSelect,
                 const char* name,
                 const void* data) throw (DCException);
 
@@ -222,26 +219,7 @@ namespace splash
         void write(int32_t id,
                 const CollectionType& type,
                 uint32_t rank,
-                const Dimensions srcData,
-                const char* name,
-                const void* buf) throw (DCException);
-
-        void write(int32_t id,
-                const CollectionType& type,
-                uint32_t rank,
-                const Dimensions srcBuffer,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const void* buf) throw (DCException);
-
-        void write(int32_t id,
-                const CollectionType& type,
-                uint32_t rank,
-                const Dimensions srcBuffer,
-                const Dimensions srcStride,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
+                const Selection select,
                 const char* name,
                 const void* buf) throw (DCException);
 
@@ -250,30 +228,7 @@ namespace splash
                 const Dimensions globalOffset,
                 const CollectionType& type,
                 uint32_t rank,
-                const Dimensions srcData,
-                const char* name,
-                const void* buf);
-
-        void write(int32_t id,
-                const Dimensions globalSize,
-                const Dimensions globalOffset,
-                const CollectionType& type,
-                uint32_t rank,
-                const Dimensions srcBuffer,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const void* buf);
-
-        void write(int32_t id,
-                const Dimensions globalSize,
-                const Dimensions globalOffset,
-                const CollectionType& type,
-                uint32_t rank,
-                const Dimensions srcBuffer,
-                const Dimensions srcStride,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
+                const Selection select,
                 const char* name,
                 const void* buf);
 

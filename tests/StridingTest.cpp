@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -76,10 +76,10 @@ bool StridingTest::subtestStriding(Dimensions gridSize, Dimensions striding, uin
         dataWrite[i] = i;
 
     dataCollector->write(0, ctInt, dimensions,
-            gridSize,
-            striding,
+            Selection(gridSize,
             dstGridSize,
             Dimensions(0, 0, 0),
+            striding),
             "data_strided", dataWrite);
 
     dataCollector->close();

@@ -85,9 +85,7 @@ void BenchmarkTest::runBenchmark(uint32_t cx, uint32_t cy, uint32_t cz,
     dataCollector->open("/fastfs/fschmitt/hdf5/bench", attr);
     //dataCollector->open("/tmp/bench", attr);
 
-    dataCollector->write(0, ctInt, 3, gridSize, gridSize, Dimensions(0, 0, 0), "data", data);
-    //dataCollector->write(1, &ctInt, 3, gridSize, gridSize, gridOffset, "data", data);
-    //dataCollector->write(2, &ctInt, 3, gridSize, gridSize, gridOffset, "data", data);
+    dataCollector->write(0, ctInt, 3, Selection(gridSize), "data", data);
 
     dataCollector->close();
 }

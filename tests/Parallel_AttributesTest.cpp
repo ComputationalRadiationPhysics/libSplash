@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash.
  *
@@ -84,8 +84,8 @@ void Parallel_AttributesTest::testDataAttributes()
         dummy_data[2 * i + 1] = val_y;
     }
 
-    dataCollector->write(0, ctInt2, 1, Dimensions(BUF_SIZE, 1, 1),
-            Dimensions(BUF_SIZE, 1, 1), Dimensions(0, 0, 0), "attr/attr2/attr3/data", dummy_data);
+    dataCollector->write(0, ctInt2, 1, Selection(Dimensions(BUF_SIZE, 1, 1)),
+            "attr/attr2/attr3/data", dummy_data);
 
     dataCollector->writeAttribute(0, ctInt, "attr/attr2/attr3/data", "sum", &sum);
     int neg_sum = -sum;
