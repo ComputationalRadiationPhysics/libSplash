@@ -199,6 +199,17 @@ namespace splash
     {
         H5Pclose(fileAccProperties);
     }
+    
+    void ParallelDataCollector::finalize()
+    {
+        log_msg(1, "finalizing data collector");
+        
+        if (options.mpiComm != MPI_COMM_NULL)
+        {
+            MPI_Comm_free(&options.mpiComm);
+            options.mpiComm = MPI_COMM_NULL;
+        }
+    }
 
     void ParallelDataCollector::open(const char* filename, FileCreationAttr &attr)
     throw (DCException)

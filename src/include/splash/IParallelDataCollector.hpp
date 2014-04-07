@@ -165,6 +165,12 @@ namespace splash
                 size_t stride,
                 const char *name,
                 const void *buf) = 0;
+        
+        /**
+         * Finalizes by freeing all MPI resources.
+         * Must be called before MPI_Finalize.
+         */
+        virtual void finalize(void) = 0;
 
     private:
     };

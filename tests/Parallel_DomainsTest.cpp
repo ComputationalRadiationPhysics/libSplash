@@ -295,6 +295,7 @@ void Parallel_DomainsTest::testGridDomains()
                                 iteration++;
                             }
 
+                    parallelDomainCollector->finalize();
                     delete parallelDomainCollector;
                     parallelDomainCollector = NULL;
 
@@ -513,6 +514,7 @@ void Parallel_DomainsTest::testPolyDomains()
                         iteration++;
                     }
 
+                    parallelDomainCollector->finalize();
                     delete parallelDomainCollector;
                     parallelDomainCollector = NULL;
 

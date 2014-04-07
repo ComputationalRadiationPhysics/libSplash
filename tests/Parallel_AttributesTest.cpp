@@ -122,6 +122,7 @@ void Parallel_AttributesTest::testDataAttributes()
     
     CPPUNIT_ASSERT(sum == old_sum);
 
+    dataCollector->finalize();
     dataCollector->close();
     delete dataCollector;
 }

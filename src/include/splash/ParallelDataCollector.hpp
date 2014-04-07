@@ -337,6 +337,9 @@ namespace splash
                 const Dimensions dstOffset,
                 Dimensions &sizeRead,
                 void* buf) throw (DCException);
+        
+        void finalize(void);
+
     private:
 
         void readGlobalAttribute(const char*,
