@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt, Axel Huebl
+ * Copyright 2013-2014 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
