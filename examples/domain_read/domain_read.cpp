@@ -95,7 +95,7 @@ int main(int argc, char **argv)
     Domain domain = dc.getGlobalDomain(ids[0], first_entry.name.c_str());
     DomainCollector::DomDataClass dataClass = DomainCollector::UndefinedType;
     DataContainer* container = dc.readDomain(ids[0], first_entry.name.c_str(),
-            domain.getOffset(), domain.getSize(), &dataClass, false);
+            domain, &dataClass, false);
 
     // access all elements, no matter how many subdomains
     for (size_t i = 0; i < container->getNumElements(); ++i)

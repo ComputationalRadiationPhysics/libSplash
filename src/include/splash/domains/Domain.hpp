@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -60,14 +60,6 @@ namespace splash
         Domain(Dimensions offset, Dimensions size) :
         offset(offset),
         size(size)
-        {
-
-        }
-
-        /**
-         * Destructor.
-         */
-        virtual ~Domain()
         {
 
         }

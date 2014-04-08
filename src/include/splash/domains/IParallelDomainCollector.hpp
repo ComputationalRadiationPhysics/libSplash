@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -41,57 +41,10 @@ namespace splash
         virtual void writeDomain(int32_t id,
                 const CollectionType& type,
                 uint32_t ndims,
-                const Dimensions srcData,
+                const Selection select,
                 const char* name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
-                DomDataClass dataClass,
-                const void* buf) = 0;
-
-        /**
-         * The global size and the write offset for the calling process are
-         * determined automatically via MPI among all participating processes.
-         * Note: This is not possible when writing 2D data with a 3D MPI topology.
-         * 
-         * The global domain size and the domain offset for the calling process are
-         * determined automatically via MPI among all participating processes.
-         */
-        virtual void writeDomain(int32_t id,
-                const CollectionType& type,
-                uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
-                DomDataClass dataClass,
-                const void* buf) = 0;
-
-        /**
-         * The global size and the write offset for the calling process are
-         * determined automatically via MPI among all participating processes.
-         * Note: This is not possible when writing 2D data with a 3D MPI topology.
-         * 
-         * The global domain size and the domain offset for the calling process are
-         * determined automatically via MPI among all participating processes.
-         */
-        virtual void writeDomain(int32_t id,
-                const CollectionType& type,
-                uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcStride,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
+                const Domain localDomain,
+                const Domain globalDomain,
                 DomDataClass dataClass,
                 const void* buf) = 0;
 
@@ -103,10 +56,9 @@ namespace splash
          * @param globalOffset 3D-offset in the globalSize-buffer this process writes to.
          * @param type Type information for data.
          * @param ndims Number of dimensions (1-3) of the buffer.
-         * @param srcData Dimensions of the data in the buffer.
+         * @param select Selection in src buffer.
          * @param name Name of the dataset.
-         * @param globalDomainOffset Global offset of this domain.
-         * @param globalDomainSize Global domain size.
+         * @param globalDomain Global domain information.
          * @param dataClass Domain type annotation.
          * @param buf Buffer with data.
          */
@@ -115,74 +67,9 @@ namespace splash
                 const Dimensions globalOffset,
                 const CollectionType& type,
                 uint32_t ndims,
-                const Dimensions srcData,
+                const Selection select,
                 const char* name,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
-                DomDataClass dataClass,
-                const void* buf) = 0;
-
-        /**
-         * Writes data with annotated domain information.
-         * 
-         * @param id ID for iteration.
-         * @param globalSize Dimensions for global collective buffer.
-         * @param globalOffset 3D-offset in the globalSize-buffer this process writes to.
-         * @param type Type information for data.
-         * @param ndims Number of dimensions (1-3) of the buffer.
-         * @param srcBuffer Dimensions of the buffer to read from.
-         * @param srcData Dimensions of the data in the buffer.
-         * @param srcOffset Offset of \p srcData in \p srcBuffer.
-         * @param name Name of the dataset.
-         * @param globalDomainOffset Global offset of this domain.
-         * @param globalDomainSize Global domain size.
-         * @param dataClass Domain type annotation.
-         * @param buf Buffer with data.
-         */
-        virtual void writeDomain(int32_t id,
-                const Dimensions globalSize,
-                const Dimensions globalOffset,
-                const CollectionType& type,
-                uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
-                DomDataClass dataClass,
-                const void* buf) = 0;
-
-        /**
-         * Writes data with annotated domain information.
-         * 
-         * @param id ID for iteration.
-         * @param globalSize Dimensions for global collective buffer.
-         * @param globalOffset 3D-offset in the globalSize-buffer this process writes to.
-         * @param type Type information for data.
-         * @param ndims Number of dimensions (1-3) of the buffer.
-         * @param srcBuffer Dimensions of the buffer to read from.
-         * @param srcStride Size of striding in each dimension. 1 means 'no stride'.
-         * @param srcData Dimensions of the data in the buffer.
-         * @param srcOffset Offset of \p srcData in \p srcBuffer.
-         * @param name Name of the dataset.
-         * @param globalDomainOffset Global offset of this domain.
-         * @param globalDomainSize Global domain size.
-         * @param dataClass Domain type annotation.
-         * @param buf Buffer with data.
-         */
-        virtual void writeDomain(int32_t id,
-                const Dimensions globalSize,
-                const Dimensions globalOffset,
-                const CollectionType& type,
-                uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcStride,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
+                const Domain globalDomain,
                 DomDataClass dataClass,
                 const void* buf) = 0;
         
@@ -194,8 +81,7 @@ namespace splash
          * @param ndims Number of dimensions (1-3).
          * @param type Type information for data.
          * @param name Name for the dataset.
-         * @param domainOffset Global domain offset.
-         * @param domainSize Global domain size.
+         * @param domain Global domain information.
          * @param dataClass Subdomain type annotation.
          */
         virtual void reserveDomain(int32_t id,
@@ -203,8 +89,7 @@ namespace splash
                 uint32_t ndims,
                 const CollectionType& type,
                 const char* name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
+                const Domain domain,
                 DomDataClass dataClass) = 0;
         
         /**
@@ -221,8 +106,7 @@ namespace splash
          * @param ndims Number of dimensions (1-3).
          * @param type Type information for data.
          * @param name Name for the dataset.
-         * @param domainOffset Offset of this local subdomain in the global domain.
-         * @param domainSize Size of this local subdomain in the global domain.
+         * @param domain Global domain information.
          * @param dataClass Subdomain type annotation.
          */
         virtual void reserveDomain(int32_t id,
@@ -232,8 +116,7 @@ namespace splash
                 uint32_t ndims,
                 const CollectionType& type,
                 const char* name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
+                const Domain domain,
                 DomDataClass dataClass) = 0;
     };
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -27,6 +27,7 @@
 #include "splash/domains/IDomainCollector.hpp"
 #include "splash/SerialDataCollector.hpp"
 #include "splash/Dimensions.hpp"
+#include "splash/Selection.hpp"
 #include "splash/DCException.hpp"
 
 namespace splash
@@ -70,8 +71,7 @@ namespace splash
 
         DataContainer *readDomain(int32_t id,
                 const char* name,
-                Dimensions domainOffset,
-                Dimensions domainSize,
+                Domain domain,
                 DomDataClass* dataClass,
                 bool lazyLoad = false) throw (DCException);
 
@@ -80,41 +80,10 @@ namespace splash
         void writeDomain(int32_t id,
                 const CollectionType& type,
                 uint32_t ndims,
-                const Dimensions srcData,
+                const Selection select,
                 const char* name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
-                DomDataClass dataClass,
-                const void* buf) throw (DCException);
-
-        void writeDomain(int32_t id,
-                const CollectionType& type,
-                uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
-                DomDataClass dataClass,
-                const void* buf) throw (DCException);
-
-        void writeDomain(int32_t id,
-                const CollectionType& type,
-                uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcStride,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
+                const Domain localDomain,
+                const Domain globalDomain,
                 DomDataClass dataClass,
                 const void* buf) throw (DCException);
 
@@ -122,10 +91,8 @@ namespace splash
                 const CollectionType& type,
                 size_t count,
                 const char *name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
+                const Domain localDomain,
+                const Domain globalDomain,
                 const void *buf) throw (DCException);
 
         void appendDomain(int32_t id,
@@ -134,19 +101,23 @@ namespace splash
                 size_t offset,
                 size_t striding,
                 const char *name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
+                const Domain localDomain,
+                const Domain globalDomain,
                 const void *buf) throw (DCException);
 
     protected:
+        void writeDomainAttributes(
+                int32_t id,
+                const char *name,
+                DomDataClass dataClass,
+                const Domain localDomain,
+                const Domain globalDomain) throw (DCException);
+        
         bool readDomainInfoForRank(
                 Dimensions mpiPosition,
                 int32_t id,
                 const char* name,
-                Dimensions requestOffset,
-                Dimensions requestSize,
+                const Domain requestDomain,
                 Domain &fileDomain) throw (DCException);
 
         bool readDomainDataForRank(
@@ -155,8 +126,7 @@ namespace splash
                 Dimensions mpiPosition,
                 int32_t id,
                 const char* name,
-                Dimensions requestOffset,
-                Dimensions requestSize,
+                const Domain requestDomain,
                 bool lazyLoad) throw (DCException);
 
         void readGridInternal(
@@ -164,8 +134,8 @@ namespace splash
                 Dimensions mpiPosition,
                 int32_t id,
                 const char* name,
-                Domain &clientDomain,
-                Domain &requestDomain) throw (DCException);
+                const Domain &clientDomain,
+                const Domain &requestDomain) throw (DCException);
 
         void readPolyInternal(
                 DataContainer *dataContainer,
@@ -173,7 +143,7 @@ namespace splash
                 int32_t id,
                 const char* name,
                 const Dimensions &dataSize,
-                Domain &clientDomain,
+                const Domain &clientDomain,
                 bool lazyLoad) throw (DCException);
 
         void readGlobalSizeFallback(int32_t id,

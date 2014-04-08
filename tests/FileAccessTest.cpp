@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -54,16 +54,14 @@ void FileAccessTest::testWriteAfterCreate()
     dataCollector->open(HDF5_FILE, attr);
     int data = 1;
     
-    dataCollector->write(1, ctInt, 1, Dimensions(1, 1, 1), Dimensions(1, 1, 1), 
-            Dimensions(0, 0, 0), "data", &data);
+    dataCollector->write(1, ctInt, 1, Selection(Dimensions(1, 1, 1)), "data", &data);
     dataCollector->close();
 
     // write second dataset to file (write to existing file)
     dataCollector->open(HDF5_FILE, attr);
     data = 2;
     
-    dataCollector->write(2, ctInt, 1, Dimensions(1, 1, 1), Dimensions(1, 1, 1), 
-            Dimensions(0, 0, 0), "data", &data);
+    dataCollector->write(2, ctInt, 1, Selection(Dimensions(1, 1, 1)), "data", &data);
     dataCollector->close();
     
     

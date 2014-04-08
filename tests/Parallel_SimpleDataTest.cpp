@@ -304,6 +304,7 @@ void Parallel_SimpleDataTest::testWriteRead()
                                 iteration++;
                             }
 
+                    parallelDataCollector->finalize();
                     delete parallelDataCollector;
                     parallelDataCollector = NULL;
 
@@ -499,6 +500,7 @@ void Parallel_SimpleDataTest::testFill()
                         iteration++;
                     }
 
+                    parallelDataCollector->finalize();
                     delete parallelDataCollector;
                     parallelDataCollector = NULL;
 

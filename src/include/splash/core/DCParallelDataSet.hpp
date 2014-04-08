@@ -56,7 +56,6 @@ namespace splash
         void setWriteIndependent()
         {
             H5Pset_dxpl_mpio(dsetWriteProperties, H5FD_MPIO_INDEPENDENT);
-            //H5Pset_dxpl_mpio_collective_opt(dsetWriteProperties, H5FD_MPIO_INDIVIDUAL_IO);
         }
     };
     /**

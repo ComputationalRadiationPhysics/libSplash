@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -43,38 +43,7 @@ namespace splash
         virtual void write(int32_t id,
                 const CollectionType& type,
                 uint32_t rank,
-                const Dimensions srcData,
-                const char* name,
-                const void* buf) = 0;
-
-        /**
-         * Implements \ref DataCollector::write
-         * The global size and the write offset for the calling process are
-         * determined automatically via MPI among all participating processes.
-         * Note: This is not possible when writing 2D data with a 3D MPI topology.
-         */
-        virtual void write(int32_t id,
-                const CollectionType& type,
-                uint32_t rank,
-                const Dimensions srcBuffer,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const void* buf) = 0;
-
-        /**
-         * Implements \ref DataCollector::write
-         * The global size and the write offset for the calling process are
-         * determined automatically via MPI among all participating processes.
-         * Note: This is not possible when writing 2D data with a 3D MPI topology.
-         */
-        virtual void write(int32_t id,
-                const CollectionType& type,
-                uint32_t rank,
-                const Dimensions srcBuffer,
-                const Dimensions srcStride,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
+                const Selection select,
                 const char* name,
                 const void* buf) = 0;
 
@@ -86,7 +55,7 @@ namespace splash
          * @param globalOffset Offset in \p globalSize buffer where this process writes to.
          * @param type Type information for data.
          * @param rank Number of dimensions (1-3).
-         * @param srcData Size of local source buffer \p data.
+         * @param select Selection in src buffer.
          * @param name Name for the dataset.
          * @param buf Local buffer for writing.
          */
@@ -95,60 +64,7 @@ namespace splash
                 const Dimensions globalOffset,
                 const CollectionType& type,
                 uint32_t rank,
-                const Dimensions srcData,
-                const char* name,
-                const void* buf) = 0;
-
-        /**
-         * Writes data to HDF5 file.
-         *
-         * @param id ID for iteration
-         * @param globalSize Size of global collective write buffer.
-         * @param globalOffset Offset in \p globalSize buffer where this process writes to.
-         * @param type Type information for data.
-         * @param rank Number of dimensions (1-3).
-         * @param srcBuffer Size of local source buffer \p buf.
-         * @param srcData Size of data in \p srcBuffer.
-         * @param srcOffset Local offset of data in \p srcBuffer.
-         * @param name Name for the dataset.
-         * @param buf Local buffer for writing.
-         */
-        virtual void write(int32_t id,
-                const Dimensions globalSize,
-                const Dimensions globalOffset,
-                const CollectionType& type,
-                uint32_t rank,
-                const Dimensions srcBuffer,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const void* buf) = 0;
-
-        /**
-         * Writes data to HDF5 file.
-         *
-         * @param id ID for iteration.
-         * @param globalSize Size of global collective write buffer.
-         * @param globalOffset Offset in \p globalSize buffer where this process writes to.
-         * @param type Type information for data.
-         * @param rank Number of dimensions (1-3).
-         * @param srcBuffer Size of local source buffer \p buf.
-         * @param srcStride Striding to be used for reading from
-         * \p srcBuffer in each dimension. 1 means 'no stride'.
-         * @param srcData Size of data in \p srcBuffer.
-         * @param srcOffset Local offset of data in \p srcBuffer.
-         * @param name Name for the dataset.
-         * @param buf Local buffer for writing.
-         */
-        virtual void write(int32_t id,
-                const Dimensions globalSize,
-                const Dimensions globalOffset,
-                const CollectionType& type,
-                uint32_t rank,
-                const Dimensions srcBuffer,
-                const Dimensions srcStride,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
+                const Selection select,
                 const char* name,
                 const void* buf) = 0;
         
@@ -249,6 +165,12 @@ namespace splash
                 size_t stride,
                 const char *name,
                 const void *buf) = 0;
+        
+        /**
+         * Finalizes by freeing all MPI resources.
+         * Must be called before MPI_Finalize.
+         */
+        virtual void finalize(void) = 0;
 
     private:
     };

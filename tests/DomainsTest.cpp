@@ -120,8 +120,8 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize,
         std::cout << "global_domain_size = " << globalDomainSize.toString() << std::endl;
 #endif
 
-        dataCollector->writeDomain(iteration, ctInt, rank, local_grid_size, "grid_data",
-                domain_offset, local_grid_size, globalDomainOffset, globalDomainSize,
+        dataCollector->writeDomain(iteration, ctInt, rank, Selection(local_grid_size), "grid_data",
+                Domain(domain_offset, local_grid_size), Domain(globalDomainOffset, globalDomainSize),
                 DomainCollector::GridType, data_write);
 
         dataCollector->close();
@@ -132,7 +132,7 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize,
         dataCollector->open(hdf5_file_grid, fattr);
         DomainCollector::DomDataClass data_class = DomainCollector::UndefinedType;
         DataContainer *container = dataCollector->readDomain(iteration, "grid_data",
-                domain_offset, local_grid_size, &data_class, false);
+                Domain(domain_offset, local_grid_size), &data_class, false);
         dataCollector->close();
 
         CPPUNIT_ASSERT(container != NULL);
@@ -198,7 +198,7 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize,
 
             // read data container
             DataContainer *container = dataCollector->readDomain(iteration, "grid_data",
-                    offset + globalDomainOffset, partition_size, &data_class);
+                    Domain(offset + globalDomainOffset, partition_size), &data_class);
 
 #if defined TESTS_DEBUG
             std::cout << "container->getNumSubdomains() = " << container->getNumSubdomains() << std::endl;
@@ -381,8 +381,8 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
 #endif
 
         dataCollector->writeDomain(iteration, ctFloat, 1, Dimensions(mpi_elements, 1, 1),
-                "poly_data", domain_offset, grid_size,
-                globalDomainOffset, globalDomainSize,
+                "poly_data", Domain(domain_offset, grid_size),
+                Domain(globalDomainOffset, globalDomainSize),
                 DomainCollector::PolyType, data_write);
 
         dataCollector->close();
@@ -427,7 +427,7 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
 
             // read data container
             DataContainer *container = dataCollector->readDomain(iteration, "poly_data",
-                    offset, partition_size, &data_class);
+                    Domain(offset, partition_size), &data_class);
 
 #if defined TESTS_DEBUG
             std::cout << "container->getNumSubdomains() = " << container->getNumSubdomains() << std::endl;
@@ -560,12 +560,12 @@ void DomainsTest::testAppendDomains()
             data_write[i] = (float) i;
 
         dataCollector->appendDomain(0, ctFloat, 10, 0, 1, "append_data",
-                domainOffset, grid_size,
-                globalDomainOffset, globalDomainSize, data_write);
+                Domain(domainOffset, grid_size),
+                Domain(globalDomainOffset, globalDomainSize), data_write);
 
         dataCollector->appendDomain(0, ctFloat, elements - 10, 10, 1, "append_data",
-                domainOffset, grid_size,
-                globalDomainOffset, globalDomainSize, data_write);
+                Domain(domainOffset, grid_size),
+                Domain(globalDomainOffset, globalDomainSize), data_write);
 
         dataCollector->close();
 
@@ -581,7 +581,7 @@ void DomainsTest::testAppendDomains()
         // read data container
         IDomainCollector::DomDataClass data_class = IDomainCollector::UndefinedType;
         DataContainer *container = dataCollector->readDomain(0, "append_data",
-                Dimensions(0, 0, 0), grid_size, &data_class);
+                Domain(Dimensions(0, 0, 0), grid_size), &data_class);
 
 #if defined TESTS_DEBUG
         std::cout << "container->getNumSubdomains() = " << container->getNumSubdomains() << std::endl;
