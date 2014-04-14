@@ -678,10 +678,14 @@ def main():
             splash_files.append(s_filename)
     else:
         splash_files.append(splashFilename)
-   
-    create_xdmf_xml(splash_files, args)     
+        tmp = splashFilename.rfind(".h5")
+        splashFilename = splashFilename[:tmp]   
 
+
+    create_xdmf_xml(splash_files, args)    
+ 
     output_filename = "{}.xmf".format(splashFilename)
+    print output_filename
     if args.o:
         if args.o.endswith(".xmf"):
             output_filename = args.o
