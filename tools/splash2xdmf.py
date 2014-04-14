@@ -685,7 +685,6 @@ def main():
     create_xdmf_xml(splash_files, args)    
  
     output_filename = "{}.xmf".format(splashFilename)
-    print output_filename
     if args.o:
         if args.o.endswith(".xmf"):
             output_filename = args.o
