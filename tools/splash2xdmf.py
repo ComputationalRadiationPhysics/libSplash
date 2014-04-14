@@ -681,7 +681,6 @@ def main():
         tmp = splashFilename.rfind(".h5")
         splashFilename = splashFilename[:tmp]   
 
-
     create_xdmf_xml(splash_files, args)    
  
     output_filename = "{}.xmf".format(splashFilename)
