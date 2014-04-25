@@ -198,6 +198,10 @@ ELSE(HDF5_IS_PARALLEL)
         )
 ENDIF(HDF5_IS_PARALLEL)
 
+# install python scripts
+INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/tools/splash2xdmf.py
+        DESTINATION share/pyshared)
+
 #-------------------------------------------------------------------------------
 
 # build tools

@@ -23,6 +23,7 @@ script:
   - cmake -DTOOLS_MPI=$SPLASHMPI $SRC
   - make package
   - sudo dpkg -i libsplash*.deb
+  - ls -hal /usr/share/pyshared/
   - rm -rf $BUILD/*
 # compile examples/
   - cmake -DWITH_MPI=$SPLASHMPI $SRC/examples
