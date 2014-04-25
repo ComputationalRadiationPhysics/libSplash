@@ -75,8 +75,8 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize,
 
     int mpi_rank = totalMpiRank;
     Dimensions global_grid_size(0, 0, 0);
-    Dimensions globalDomainSize(1, 1, 1);
-    const Dimensions globalDomainOffset(12, 7, 1);
+    Dimensions global_domain_size(1, 1, 1);
+    const Dimensions global_domain_offset(12, 7, 1);
 
     if (mpi_rank < max_rank)
     {
@@ -87,18 +87,19 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize,
 
         const Dimensions local_grid_size =
                 (mpi_position + Dimensions(1, 1, 1)) * gridSize;
-        Dimensions domain_offset(globalDomainOffset);
+        const Dimensions local_domain_size = local_grid_size;
+        Dimensions local_domain_offset(0, 0, 0);
 
         for (size_t i = 0; i < 3; ++i)
             for (size_t m = 0; m < mpiSize[i]; ++m)
             {
                 if (m == mpi_position[i])
-                    domain_offset[i] += global_grid_size[i];
+                    local_domain_offset[i] = global_grid_size[i];
 
                 global_grid_size[i] += gridSize[i] * (m + 1);
             }
 
-        globalDomainSize.set(global_grid_size);
+        global_domain_size.set(global_grid_size);
 
         // write data
         int *data_write = new int[local_grid_size.getScalarSize()];
@@ -114,14 +115,16 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize,
 
 #if defined TESTS_DEBUG
         std::cout << "writing..." << std::endl;
-        std::cout << "mpi_position = " << mpi_position.toString() << std::endl;
-        std::cout << "domain_offset = " << domain_offset.toString() << std::endl;
-        std::cout << "global_domain_offset = " << globalDomainOffset.toString() << std::endl;
-        std::cout << "global_domain_size = " << globalDomainSize.toString() << std::endl;
+        std::cout << "mpi_position         = " << mpi_position.toString() << std::endl;
+        std::cout << "local_domain_offset  = " << local_domain_offset.toString() << std::endl;
+        std::cout << "local_domain_size    = " << local_domain_size.toString() << std::endl;
+        std::cout << "global_domain_offset = " << global_domain_offset.toString() << std::endl;
+        std::cout << "global_domain_size   = " << global_domain_size.toString() << std::endl;
 #endif
 
         dataCollector->writeDomain(iteration, ctInt, rank, Selection(local_grid_size), "grid_data",
-                Domain(domain_offset, local_grid_size), Domain(globalDomainOffset, globalDomainSize),
+                Domain(local_domain_offset, local_domain_size),
+                Domain(global_domain_offset, global_domain_size),
                 DomainCollector::GridType, data_write);
 
         dataCollector->close();
@@ -132,7 +135,8 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize,
         dataCollector->open(hdf5_file_grid, fattr);
         DomainCollector::DomDataClass data_class = DomainCollector::UndefinedType;
         DataContainer *container = dataCollector->readDomain(iteration, "grid_data",
-                Domain(domain_offset, local_grid_size), &data_class, false);
+                Domain(global_domain_offset + local_domain_offset, local_grid_size),
+                &data_class, false);
         dataCollector->close();
 
         CPPUNIT_ASSERT(container != NULL);
@@ -180,7 +184,7 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize,
                         offset[d] += gridSize[d] * (m + 1);
                 }
 
-            Dimensions partition_size = globalDomainSize - offset;
+            Dimensions partition_size = global_domain_size - offset;
 
 #if defined TESTS_DEBUG
             std::cout << "mpi_size = " << mpiSize.toString() << std::endl;
@@ -193,12 +197,12 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize,
 
             Domain global_domain;
             global_domain = dataCollector->getGlobalDomain(iteration, "grid_data");
-            CPPUNIT_ASSERT(global_domain.getOffset() == globalDomainOffset);
-            CPPUNIT_ASSERT(global_domain.getSize() == globalDomainSize);
+            CPPUNIT_ASSERT(global_domain.getOffset() == global_domain_offset);
+            CPPUNIT_ASSERT(global_domain.getSize() == global_domain_size);
 
             // read data container
             DataContainer *container = dataCollector->readDomain(iteration, "grid_data",
-                    Domain(offset + globalDomainOffset, partition_size), &data_class);
+                    Domain(offset + global_domain_offset, partition_size), &data_class);
 
 #if defined TESTS_DEBUG
             std::cout << "container->getNumSubdomains() = " << container->getNumSubdomains() << std::endl;
@@ -338,8 +342,11 @@ void DomainsTest::testGridDomains()
 void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numElements,
         uint32_t iteration)
 {
-    Dimensions grid_size(20, 10, 5);
-    Dimensions global_grid_size = grid_size * mpiSize;
+    Dimensions local_grid_size(20, 10, 5);
+    Dimensions global_grid_size = local_grid_size * mpiSize;
+    
+    const Dimensions global_domain_offset(15, 0, 7);
+        const Dimensions global_domain_size = mpiSize * local_grid_size;
 
     int max_rank = 1;
     for (int i = 0; i < 3; i++)
@@ -359,9 +366,6 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
                 (mpi_rank / mpiSize[0]) % mpiSize[1],
                 (mpi_rank / mpiSize[0]) / mpiSize[1]);
 
-        const Dimensions globalDomainOffset(0, 0, 0);
-        const Dimensions globalDomainSize = mpiSize * grid_size;
-
         for (size_t i = 0; i < mpi_elements; ++i)
             data_write[i] = (float) mpi_rank;
 
@@ -372,17 +376,22 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
 
         dataCollector->open(hdf5_file_poly, fattr);
 
-        Dimensions domain_offset = mpi_position * grid_size + globalDomainOffset;
+        Dimensions local_domain_offset = mpi_position * local_grid_size;
+        Dimensions local_domain_size = local_grid_size;
 
 #if defined TESTS_DEBUG
         std::cout << "writing..." << std::endl;
         std::cout << "mpi_position = " << mpi_position.toString() << std::endl;
-        std::cout << "domain_offset = " << domain_offset.toString() << std::endl;
+        std::cout << "local_domain_offset = " << local_domain_offset.toString() << std::endl;
+        std::cout << "local_domain_size = " << local_domain_size.toString() << std::endl;
+        std::cout << "global_domain_offset = " << global_domain_offset.toString() << std::endl;
+        std::cout << "global_domain_size = " << global_domain_size.toString() << std::endl;
 #endif
 
         dataCollector->writeDomain(iteration, ctFloat, 1, Dimensions(mpi_elements, 1, 1),
-                "poly_data", Domain(domain_offset, grid_size),
-                Domain(globalDomainOffset, globalDomainSize),
+                "poly_data", 
+                Domain(local_domain_offset, local_domain_size),
+                Domain(global_domain_offset, global_domain_size),
                 DomainCollector::PolyType, data_write);
 
         dataCollector->close();
@@ -406,6 +415,7 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
             global_num_elements += numElements * (i + 1);
 
 #if defined TESTS_DEBUG
+        std::cout << "numElements         = " << numElements << std::endl;
         std::cout << "global_num_elements = " << global_num_elements << std::endl;
 #endif
 
@@ -419,7 +429,7 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
             Dimensions partition_size = global_grid_size - offset;
 
 #if defined TESTS_DEBUG
-            std::cout << "offset = " << offset.toString() << std::endl;
+            std::cout << "offset         = " << offset.toString() << std::endl;
             std::cout << "partition_size = " << partition_size.toString() << std::endl;
 #endif
 
@@ -427,7 +437,7 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
 
             // read data container
             DataContainer *container = dataCollector->readDomain(iteration, "poly_data",
-                    Domain(offset, partition_size), &data_class);
+                    Domain(global_domain_offset + offset, partition_size), &data_class);
 
 #if defined TESTS_DEBUG
             std::cout << "container->getNumSubdomains() = " << container->getNumSubdomains() << std::endl;
@@ -447,20 +457,20 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
                 Dimensions subdomain_elements = subdomain->getElements();
                 Dimensions subdomain_offset = subdomain->getOffset();
 
+                // Find out the expected value (original mpi rank) 
+                // for this subdomain.
+                Dimensions subdomain_mpi_pos = (subdomain_offset - global_domain_offset) / local_grid_size;
+                int subdomain_mpi_rank = subdomain_mpi_pos[2] * mpiSize[1] * mpiSize[0] +
+                        subdomain_mpi_pos[1] * mpiSize[0] + subdomain_mpi_pos[0];
+                
 #if defined TESTS_DEBUG
                 std::cout << "subdomain->getElements() = " << subdomain->getElements().toString() << std::endl;
-                std::cout << "subdomain->getSize() = " << subdomain->getSize().toString() << std::endl;
+                std::cout << "subdomain->getSize()     = " << subdomain->getSize().toString() << std::endl;
+                std::cout << "subdomain_mpi_rank       = " << subdomain_mpi_rank << std::endl;
 #endif
 
                 float *subdomain_data = (float*) (subdomain->getData());
                 CPPUNIT_ASSERT(subdomain_elements.getScalarSize() != 0);
-
-                // Find out the expected value (original mpi rank) 
-                // for this subdomain.
-                Dimensions subdomain_mpi_pos = subdomain_offset / grid_size;
-
-                int subdomain_mpi_rank = subdomain_mpi_pos[2] * mpiSize[1] * mpiSize[0] +
-                        subdomain_mpi_pos[1] * mpiSize[0] + subdomain_mpi_pos[0];
 
                 CPPUNIT_ASSERT(subdomain_elements.getScalarSize() == numElements * (subdomain_mpi_rank + 1));
 
