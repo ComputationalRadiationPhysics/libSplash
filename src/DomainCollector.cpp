@@ -124,12 +124,18 @@ namespace splash
     {
         {
             hid_t dset_handle = openDatasetHandle(id, name, &mpiPosition);
+            Dimensions global_domain_offset;
 
             DCAttribute::readAttribute(DOMCOL_ATTR_OFFSET, dset_handle,
                     fileDomain.getOffset().getPointer());
 
             DCAttribute::readAttribute(DOMCOL_ATTR_SIZE, dset_handle,
                     fileDomain.getSize().getPointer());
+            
+            DCAttribute::readAttribute(DOMCOL_ATTR_GLOBAL_OFFSET, dset_handle,
+                    global_domain_offset.getPointer());
+            
+            fileDomain.getOffset() += global_domain_offset;
 
             closeDatasetHandle(dset_handle);
         }
@@ -354,7 +360,7 @@ namespace splash
         log_msg(3, "loading from mpi_position %s", mpiPosition.toString().c_str());
 
         bool readResult = false;
-        Domain client_domain;
+        Domain local_client_domain, global_client_domain;
         Dimensions data_size;
         DomDataClass tmp_data_class = UndefinedType;
 
@@ -362,16 +368,26 @@ namespace splash
             hid_t dset_handle = openDatasetHandle(id, name, &mpiPosition);
 
             DCAttribute::readAttribute(DOMCOL_ATTR_OFFSET, dset_handle,
-                    client_domain.getOffset().getPointer());
+                    local_client_domain.getOffset().getPointer());
 
             DCAttribute::readAttribute(DOMCOL_ATTR_SIZE, dset_handle,
-                    client_domain.getSize().getPointer());
+                    local_client_domain.getSize().getPointer());
+            
+            DCAttribute::readAttribute(DOMCOL_ATTR_GLOBAL_OFFSET, dset_handle,
+                    global_client_domain.getOffset().getPointer());
+
+            DCAttribute::readAttribute(DOMCOL_ATTR_GLOBAL_SIZE, dset_handle,
+                    global_client_domain.getSize().getPointer());
 
             DCAttribute::readAttribute(DOMCOL_ATTR_CLASS, dset_handle,
                     &tmp_data_class);
 
             closeDatasetHandle(dset_handle);
         }
+        
+        Domain client_domain(
+                local_client_domain.getOffset() + global_client_domain.getOffset(),
+                local_client_domain.getSize());
 
         readSizeInternal(handles.get(mpiPosition), id, name, data_size);
 

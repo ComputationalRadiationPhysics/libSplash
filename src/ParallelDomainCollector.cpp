@@ -71,7 +71,16 @@ namespace splash
             const char* name)
     throw (DCException)
     {
-        return getLocalDomain(id, name);
+        if (this->fileStatus == FST_CLOSED)
+            throw DCException(getExceptionString("getGlobalDomain",
+                "this access is not permitted", NULL));
+
+        Domain domain;
+
+        readAttribute(id, name, DOMCOL_ATTR_GLOBAL_SIZE, domain.getSize().getPointer());
+        readAttribute(id, name, DOMCOL_ATTR_GLOBAL_OFFSET, domain.getOffset().getPointer());
+
+        return domain;
     }
 
     Domain ParallelDomainCollector::getLocalDomain(int32_t id,
@@ -82,13 +91,12 @@ namespace splash
             throw DCException(getExceptionString("getLocalDomain",
                 "this access is not permitted", NULL));
 
-        Dimensions size(1, 1, 1);
-        Dimensions offset(0, 0, 0);
+        Domain domain;
 
-        readAttribute(id, name, DOMCOL_ATTR_SIZE, size.getPointer());
-        readAttribute(id, name, DOMCOL_ATTR_OFFSET, offset.getPointer());
+        readAttribute(id, name, DOMCOL_ATTR_SIZE, domain.getSize().getPointer());
+        readAttribute(id, name, DOMCOL_ATTR_OFFSET, domain.getOffset().getPointer());
 
-        return Domain(offset, size);
+        return domain;
     }
 
     bool ParallelDomainCollector::readDomainDataForRank(
@@ -100,10 +108,16 @@ namespace splash
             bool lazyLoad)
     throw (DCException)
     {
-        Domain client_domain;
-
-        readAttribute(id, name, DOMCOL_ATTR_OFFSET, client_domain.getOffset().getPointer());
-        readAttribute(id, name, DOMCOL_ATTR_SIZE, client_domain.getSize().getPointer());
+        Domain local_client_domain, global_client_domain;
+        
+        readAttribute(id, name, DOMCOL_ATTR_OFFSET, local_client_domain.getOffset().getPointer());
+        readAttribute(id, name, DOMCOL_ATTR_SIZE, local_client_domain.getSize().getPointer());
+        readAttribute(id, name, DOMCOL_ATTR_GLOBAL_OFFSET, global_client_domain.getOffset().getPointer());
+        readAttribute(id, name, DOMCOL_ATTR_GLOBAL_SIZE, global_client_domain.getSize().getPointer());
+        
+        Domain client_domain(
+                local_client_domain.getOffset() + global_client_domain.getOffset(),
+                local_client_domain.getSize());
 
         Dimensions data_elements;
         read(id, name, data_elements, NULL);
@@ -446,8 +460,9 @@ namespace splash
     throw (DCException)
     {
         write(id, globalSize, globalOffset, type, ndims, select, name, buf);
+        Domain localDomain(Dimensions(0, 0, 0), globalDomain.getSize());
 
-        writeDomainAttributes(id, name, dataClass, globalDomain, globalDomain);
+        writeDomainAttributes(id, name, dataClass, localDomain, globalDomain);
     }
 
     void ParallelDomainCollector::reserveDomain(int32_t id,
@@ -460,8 +475,9 @@ namespace splash
     throw (DCException)
     {
         reserve(id, globalSize, ndims, type, name);
+        Domain localDomain(Dimensions(0, 0, 0), globalDomain.getSize());
 
-        writeDomainAttributes(id, name, dataClass, globalDomain, globalDomain);
+        writeDomainAttributes(id, name, dataClass, localDomain, globalDomain);
     }
 
     void ParallelDomainCollector::reserveDomain(int32_t id,
@@ -476,8 +492,9 @@ namespace splash
     throw (DCException)
     {
         reserve(id, size, globalSize, globalOffset, ndims, type, name);
+        Domain localDomain(Dimensions(0, 0, 0), globalDomain.getSize());
 
-        writeDomainAttributes(id, name, dataClass, globalDomain, globalDomain);
+        writeDomainAttributes(id, name, dataClass, localDomain, globalDomain);
     }
 
     void ParallelDomainCollector::appendDomain(int32_t id,
@@ -489,8 +506,7 @@ namespace splash
             const void *buf)
     throw (DCException)
     {
-        appendDomain(id, type, count, 0, 1, name, localDomain,
-                globalDomain, buf);
+        appendDomain(id, type, count, 0, 1, name, localDomain, globalDomain, buf);
     }
 
     void ParallelDomainCollector::appendDomain(int32_t /*id*/,

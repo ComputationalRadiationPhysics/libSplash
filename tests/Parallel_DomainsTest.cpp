@@ -87,10 +87,10 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
     for (size_t i = 0; i < gridSize.getScalarSize(); ++i)
         data_write[i] = currentMpiRank + 1;
 
-    const Dimensions domain_size = gridSize;
+    const Dimensions local_domain_size = gridSize;
     const Dimensions global_domain_offset(17, 32, 5);
-    const Dimensions domain_offset = (mpiPos * gridSize) + global_domain_offset;
-    const Dimensions global_domain_size = domain_size * mpiSize;
+    const Dimensions local_domain_offset = (mpiPos * gridSize);
+    const Dimensions global_domain_size = local_domain_size * mpiSize;
 
     DataCollector::initFileCreationAttr(fattr);
     fattr.fileAccType = DataCollector::FAT_CREATE;
@@ -101,13 +101,13 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
 
 #if defined TESTS_DEBUG
     std::cout << "writing..." << std::endl;
-    std::cout << "domain_offset = " << domain_offset.toString() << std::endl;
+    std::cout << "local_domain_offset = " << local_domain_offset.toString() << std::endl;
 #endif
 
     // initial part of the test: data is written to the file
     parallelDomainCollector->writeDomain(iteration, ctInt, 3,
             Selection(gridSize), "grid_data",
-            Domain(domain_offset, domain_size),
+            Domain(local_domain_offset, local_domain_size),
             Domain(global_domain_offset, global_domain_size),
             IDomainCollector::GridType, data_write);
     parallelDomainCollector->close();
@@ -125,7 +125,7 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
     parallelDomainCollector->open(hdf5_file_grid, fattr);
 
 #if defined TESTS_DEBUG
-    std::cout << "full_grid_size = " << full_grid_size.toString() << std::endl;
+    std::cout << "global_domain_size = " << global_domain_size.toString() << std::endl;
 #endif
 
     // test different domain offsets
@@ -317,8 +317,8 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
         const Dimensions mpiSize, const Dimensions mpiPos,
         const uint32_t numElements, uint32_t dimensions, MPI_Comm mpiComm)
 {
-    Dimensions domain_size(20, 10, 5);
-    Dimensions global_domain_size = domain_size * mpiSize;
+    Dimensions local_domain_size(20, 10, 5);
+    Dimensions global_domain_size = local_domain_size * mpiSize;
 
     const Dimensions global_domain_offset(2, 4, 8);
 
@@ -335,18 +335,18 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
 
     parallelDomainCollector->open(hdf5_file_poly, fattr);
 
-    Dimensions domain_offset = mpiPos * domain_size + global_domain_offset;
+    Dimensions local_domain_offset = mpiPos * local_domain_size + global_domain_offset;
 
 #if defined TESTS_DEBUG
     std::cout << "[" << currentMpiRank << "] writing..." << std::endl;
-    std::cout << "[" << currentMpiRank << "] mpi_position = " << mpiPos.toString() << std::endl;
-    std::cout << "[" << currentMpiRank << "] domain_offset = " << domain_offset.toString() << std::endl;
-    std::cout << "[" << currentMpiRank << "] poly_size = " << poly_size.toString() << std::endl;
+    std::cout << "[" << currentMpiRank << "] mpi_position        = " << mpiPos.toString() << std::endl;
+    std::cout << "[" << currentMpiRank << "] local_domain_offset = " << local_domain_offset.toString() << std::endl;
+    std::cout << "[" << currentMpiRank << "] poly_size           = " << poly_size.toString() << std::endl;
 #endif
 
     parallelDomainCollector->writeDomain(iteration, ctFloat, 1,
             Selection(poly_size), "poly_data", 
-            Domain(domain_offset, domain_size),
+            Domain(local_domain_offset, local_domain_size),
             Domain(global_domain_offset, global_domain_size),
             IDomainCollector::PolyType, data_write);
 
@@ -385,7 +385,7 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
         offset = offset + global_domain_offset;
 
 #if defined TESTS_DEBUG
-        std::cout << "offset = " << offset.toString() << std::endl;
+        std::cout << "offset         = " << offset.toString() << std::endl;
         std::cout << "partition_size = " << partition_size.toString() << std::endl;
 #endif
 
@@ -409,7 +409,7 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
 
 #if defined TESTS_DEBUG
         std::cout << "[" << currentMpiRank << "] subdomain->getElements() = " << subdomain->getElements().toString() << std::endl;
-        std::cout << "[" << currentMpiRank << "] subdomain->getSize() = " << subdomain->getSize().toString() << std::endl;
+        std::cout << "[" << currentMpiRank << "] subdomain->getSize()     = " << subdomain->getSize().toString() << std::endl;
 #endif
 
         float *subdomain_data = (float*) (subdomain->getData());
@@ -537,6 +537,7 @@ void Parallel_DomainsTest::testAppendDomains()
     const Dimensions mpi_size(totalMpiSize, 1, 1);
     const Dimensions local_grid_size(10, 5, 3);
     const Dimensions global_grid_size = mpi_size * local_grid_size;
+    const Dimensions global_domain_offset(14, 700, 1);
     Dimensions mpi_position;
     indexToPos(myMpiRank, mpi_size, mpi_position);
 
@@ -548,7 +549,7 @@ void Parallel_DomainsTest::testAppendDomains()
     pdc->open(hdf5_file_append, fAttr);
 
     pdc->reserveDomain(10, global_grid_size, 3, ctInt, "append/data",
-            Domain(Dimensions(0, 0, 0), global_grid_size), DomainCollector::GridType);
+            Domain(global_domain_offset, global_grid_size), DomainCollector::GridType);
     
     MPI_CHECK(MPI_Barrier(MPI_COMM_WORLD));
 
@@ -575,7 +576,8 @@ void Parallel_DomainsTest::testAppendDomains()
     pdc->open(hdf5_file_append, fAttr);
             
     DataContainer *container = pdc->readDomain(10, "append/data",
-            Domain(mpi_position * local_grid_size, local_grid_size), NULL, false);
+            Domain(global_domain_offset + mpi_position * local_grid_size, local_grid_size),
+            NULL, false);
     
     CPPUNIT_ASSERT(container);
     CPPUNIT_ASSERT(container->getNumSubdomains() == 1);
