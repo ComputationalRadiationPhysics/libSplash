@@ -1,5 +1,5 @@
  #
- # Copyright 2013 Felix Schmitt, Axel Huebl
+ # Copyright 2013-2014 Felix Schmitt, Axel Huebl
  #
  # This file is part of libSplash. 
  # 
@@ -7,7 +7,8 @@
  # it under the terms of of either the GNU General Public License or 
  # the GNU Lesser General Public License as published by 
  # the Free Software Foundation, either version 3 of the License, or 
- # (at your option) any later version. 
+ # (at your option) any later version.
+ #
  # libSplash is distributed in the hope that it will be useful, 
  # but WITHOUT ANY WARRANTY; without even the implied warranty of 
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
@@ -359,11 +360,11 @@ ENDIF(HDF5_IS_PARALLEL)
 
 # CPACK_DEBIAN_PACKAGE_SUGGESTS
 # deb-src support
-# DEBIAN_PACKAGE_BUILDS_DEPENDS : not implemented by cmake yet?
+# DEBIAN_PACKAGE_BUILDS_DEPENDS : not implemented by cmake yet
 
 # END: DEB specific -----------------------------------------------------------
 
-# create or creates specific library names like ???
+# create or creates specific library names
 #  libsplash.so     -> libsplash.so.1
 #  libsplash.so.1   -> libsplash.so.1.1
 #  libsplash.so.1.1 -> libsplash.so.1.1.0
