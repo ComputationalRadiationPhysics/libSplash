@@ -38,9 +38,10 @@
  * \image html zih_logo.jpg
  * \image html hzdr_logo.jpg
  *
- * @authors Felix Schmitt
- * @authors René Widera
  * @authors Axel Huebl
+ * @authors Felix Schmitt
+ * @authors Conrad Schumann
+ * @authors René Widera
  */
 
 #ifndef _DATACOLLECTOR_H
