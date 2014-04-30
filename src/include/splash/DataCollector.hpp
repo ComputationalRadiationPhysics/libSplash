@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -38,9 +38,10 @@
  * \image html zih_logo.jpg
  * \image html hzdr_logo.jpg
  *
- * @authors Felix Schmitt
- * @authors René Widera
  * @authors Axel Huebl
+ * @authors Felix Schmitt
+ * @authors Conrad Schumann
+ * @authors René Widera
  */
 
 #ifndef _DATACOLLECTOR_H
@@ -50,6 +51,7 @@
 
 #include "splash/CollectionType.hpp"
 #include "splash/Dimensions.hpp"
+#include "splash/Selection.hpp"
 
 namespace splash
 {
@@ -189,59 +191,14 @@ namespace splash
          * @param id ID for iteration.
          * @param type Type information for data.
          * @param ndims Number of dimensions (1-3).
-         * @param srcData Size of local buffer for to read from. 
+         * @param select Selection in src buffer
          * @param name Name for the dataset.
          * @param buf Buffer for writing.
          */
         virtual void write(int32_t id,
                 const CollectionType& type,
                 uint32_t ndims,
-                const Dimensions srcData,
-                const char* name,
-                const void* buf) = 0;
-
-        /**
-         * Writes data to HDF5 file.
-         *
-         * @param id ID for iteration.
-         * @param type Type information for data.
-         * @param ndims Number of dimensions (1-3).
-         * @param srcBuffer dimensions of memory buffer
-         * @param srcData intended 3D dimension for dataset
-         * @param srcOffset offset of dataset in memory buffer
-         * @param name Name for the dataset.
-         * @param buf Buffer for writing.
-         */
-        virtual void write(int32_t id,
-                const CollectionType& type,
-                uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const void* buf) = 0;
-
-        /**
-         * Writes data to HDF5 file.
-         *
-         * @param id ID for iteration.
-         * @param type Type information for data.
-         * @param ndims Number of dimensions (1-3).
-         * @param srcBuffer Size of buffer for to read from.
-         * @param srcStride Striding to be used for reading from
-         * \p srcBuffer in each dimension. 1 means 'no stride'.
-         * @param srcData Size of data in \p srcBuffer.
-         * @param srcOffset Offset of data in \p srcBuffer.
-         * @param name Name for the dataset.
-         * @param buf Buffer for writing.
-         */
-        virtual void write(int32_t id,
-                const CollectionType& type,
-                uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcStride,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
+                const Selection select,
                 const char* name,
                 const void* buf) = 0;
 

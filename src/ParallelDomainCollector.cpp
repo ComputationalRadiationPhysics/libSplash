@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -40,6 +40,22 @@ namespace splash
 
         return full_msg.str();
     }
+    
+    void ParallelDomainCollector::writeDomainAttributes(
+            int32_t id,
+            const char *name,
+            DomDataClass dataClass,
+            const Domain localDomain,
+            const Domain globalDomain)
+    {
+        ColTypeInt32 int_t;
+        ColTypeDim dim_t;
+        writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
+        writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, localDomain.getSize().getPointer());
+        writeAttribute(id, dim_t, name, DOMCOL_ATTR_OFFSET, localDomain.getOffset().getPointer());
+        writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_SIZE, globalDomain.getSize().getPointer());
+        writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_OFFSET, globalDomain.getOffset().getPointer());
+    }
 
     ParallelDomainCollector::ParallelDomainCollector(MPI_Comm comm, MPI_Info info,
             const Dimensions topology, uint32_t maxFileHandles) :
@@ -55,7 +71,16 @@ namespace splash
             const char* name)
     throw (DCException)
     {
-        return getLocalDomain(id, name);
+        if (this->fileStatus == FST_CLOSED)
+            throw DCException(getExceptionString("getGlobalDomain",
+                "this access is not permitted", NULL));
+
+        Domain domain;
+
+        readAttribute(id, name, DOMCOL_ATTR_GLOBAL_SIZE, domain.getSize().getPointer());
+        readAttribute(id, name, DOMCOL_ATTR_GLOBAL_OFFSET, domain.getOffset().getPointer());
+
+        return domain;
     }
 
     Domain ParallelDomainCollector::getLocalDomain(int32_t id,
@@ -66,13 +91,12 @@ namespace splash
             throw DCException(getExceptionString("getLocalDomain",
                 "this access is not permitted", NULL));
 
-        Dimensions size(1, 1, 1);
-        Dimensions offset(0, 0, 0);
+        Domain domain;
 
-        readAttribute(id, name, DOMCOL_ATTR_SIZE, size.getPointer());
-        readAttribute(id, name, DOMCOL_ATTR_OFFSET, offset.getPointer());
+        readAttribute(id, name, DOMCOL_ATTR_SIZE, domain.getSize().getPointer());
+        readAttribute(id, name, DOMCOL_ATTR_OFFSET, domain.getOffset().getPointer());
 
-        return Domain(offset, size);
+        return domain;
     }
 
     bool ParallelDomainCollector::readDomainDataForRank(
@@ -80,16 +104,20 @@ namespace splash
             DomDataClass *dataClass,
             int32_t id,
             const char* name,
-            Dimensions requestOffset,
-            Dimensions requestSize,
+            const Domain requestDomain,
             bool lazyLoad)
     throw (DCException)
     {
-        Domain client_domain;
-        Domain request_domain(requestOffset, requestSize);
-
-        readAttribute(id, name, DOMCOL_ATTR_OFFSET, client_domain.getOffset().getPointer());
-        readAttribute(id, name, DOMCOL_ATTR_SIZE, client_domain.getSize().getPointer());
+        Domain local_client_domain, global_client_domain;
+        
+        readAttribute(id, name, DOMCOL_ATTR_OFFSET, local_client_domain.getOffset().getPointer());
+        readAttribute(id, name, DOMCOL_ATTR_SIZE, local_client_domain.getSize().getPointer());
+        readAttribute(id, name, DOMCOL_ATTR_GLOBAL_OFFSET, global_client_domain.getOffset().getPointer());
+        readAttribute(id, name, DOMCOL_ATTR_GLOBAL_SIZE, global_client_domain.getSize().getPointer());
+        
+        Domain client_domain(
+                local_client_domain.getOffset() + global_client_domain.getOffset(),
+                local_client_domain.getSize());
 
         Dimensions data_elements;
         read(id, name, data_elements, NULL);
@@ -112,10 +140,10 @@ namespace splash
         }
 
         log_msg(3, "clientdom. = %s", client_domain.toString().c_str());
-        log_msg(3, "requestdom. = %s", request_domain.toString().c_str());
+        log_msg(3, "requestdom. = %s", requestDomain.toString().c_str());
 
         // test on intersection and add new DomainData to the container if necessary
-        if ((requestSize.getScalarSize() > 0) && !Domain::testIntersection(request_domain, client_domain))
+        if ((requestDomain.getSize().getScalarSize() > 0) && !Domain::testIntersection(requestDomain, client_domain))
             return false;
 
         // Poly data has no internal grid structure, 
@@ -228,7 +256,7 @@ namespace splash
                 H5Gclose(group_id);
 
                 DomainData *target_data = new DomainData(
-                        request_domain, request_domain.getSize(),
+                        requestDomain, requestDomain.getSize(),
                         datatype_size, dc_datatype);
 
                 dataContainer->add(target_data);
@@ -245,27 +273,29 @@ namespace splash
 
             size_t ndims = getNDims(handles.get(id), id, name);
 
+            const Dimensions request_offset = requestDomain.getOffset();
+            const Dimensions request_size = requestDomain.getSize();
             for (uint32_t i = 0; i < ndims; ++i)
             {
                 dst_offset[i] = std::max((int64_t) client_domain.getOffset()[i] -
-                        (int64_t) requestOffset[i], (int64_t) 0);
+                        (int64_t) request_offset[i], (int64_t) 0);
 
-                if (requestOffset[i] <= client_start[i])
+                if (request_offset[i] <= client_start[i])
                 {
                     src_offset[i] = 0;
 
-                    if (requestOffset[i] + requestSize[i] >= client_start[i] + client_size[i])
+                    if (request_offset[i] + request_size[i] >= client_start[i] + client_size[i])
                         src_size[i] = client_size[i];
                     else
-                        src_size[i] = requestOffset[i] + requestSize[i] - client_start[i];
+                        src_size[i] = request_offset[i] + request_size[i] - client_start[i];
                 } else
                 {
-                    src_offset[i] = requestOffset[i] - client_start[i];
+                    src_offset[i] = request_offset[i] - client_start[i];
 
-                    if (requestOffset[i] + requestSize[i] >= client_start[i] + client_size[i])
+                    if (request_offset[i] + request_size[i] >= client_start[i] + client_size[i])
                         src_size[i] = client_size[i] - src_offset[i];
                     else
-                        src_size[i] = requestOffset[i] + requestSize[i] -
+                        src_size[i] = request_offset[i] + request_size[i] -
                             (client_start[i] + src_offset[i]);
                 }
             }
@@ -282,9 +312,9 @@ namespace splash
                     src_size.toString().c_str(),
                     src_offset.toString().c_str());
 
-            assert(src_size[0] <= request_domain.getSize()[0]);
-            assert(src_size[1] <= request_domain.getSize()[1]);
-            assert(src_size[2] <= request_domain.getSize()[2]);
+            assert(src_size[0] <= requestDomain.getSize()[0]);
+            assert(src_size[1] <= requestDomain.getSize()[1]);
+            assert(src_size[2] <= requestDomain.getSize()[2]);
 
             // read intersecting partition into destination buffer
             Dimensions elements_read(0, 0, 0);
@@ -303,10 +333,10 @@ namespace splash
             log_msg(3, "elements_read = %s", elements_read.toString().c_str());
             bool read_success = true;
 
-            if ((requestSize.getScalarSize() == 0) && (elements_read.getScalarSize() != 0))
+            if ((request_size.getScalarSize() == 0) && (elements_read.getScalarSize() != 0))
                 read_success = false;
 
-            if ((requestSize.getScalarSize() != 0) && (elements_read != src_size))
+            if ((request_size.getScalarSize() != 0) && (elements_read != src_size))
                 read_success = false;
 
             if (!read_success)
@@ -321,8 +351,7 @@ namespace splash
 
     DataContainer *ParallelDomainCollector::readDomain(int32_t id,
             const char* name,
-            Dimensions requestOffset,
-            Dimensions requestSize,
+            const Domain requestDomain,
             DomDataClass* dataClass,
             bool lazyLoad)
     throw (DCException)
@@ -333,8 +362,7 @@ namespace splash
 
         DataContainer * data_container = new DataContainer();
 
-        log_msg(3, "requestOffset = %s", requestOffset.toString().c_str());
-        log_msg(3, "requestSize = %s", requestSize.toString().c_str());
+        log_msg(3, "requestDomain = %s", requestDomain.toString().c_str());
 
         DomDataClass data_class = UndefinedType;
 
@@ -342,8 +370,7 @@ namespace splash
                 &data_class,
                 id,
                 name,
-                requestOffset,
-                requestSize,
+                requestDomain,
                 lazyLoad);
 
         if (dataClass != NULL)
@@ -404,70 +431,20 @@ namespace splash
     void ParallelDomainCollector::writeDomain(int32_t id,
             const CollectionType& type,
             uint32_t ndims,
-            const Dimensions srcData,
+            const Selection select,
             const char* name,
-            const Dimensions /*localDomainOffset*/,
-            const Dimensions /*localDomainSize*/,
-            const Dimensions globalDomainOffset,
-            const Dimensions globalDomainSize,
+            const Domain /*localDomain*/,
+            const Domain globalDomain,
             DomDataClass dataClass,
             const void* buf)
     throw (DCException)
     {
         Dimensions globalSize, globalOffset;
-        gatherMPIWrites(ndims, srcData, globalSize, globalOffset);
+        gatherMPIWrites(ndims, select.count, globalSize, globalOffset);
 
         writeDomain(id, globalSize, globalOffset,
-                type, ndims, srcData, Dimensions(1, 1, 1), srcData,
-                Dimensions(0, 0, 0), name,
-                globalDomainOffset, globalDomainSize, dataClass, buf);
-    }
-
-    void ParallelDomainCollector::writeDomain(int32_t id,
-            const CollectionType& type,
-            uint32_t ndims,
-            const Dimensions srcBuffer,
-            const Dimensions srcData,
-            const Dimensions srcOffset,
-            const char* name,
-            const Dimensions /*localDomainOffset*/,
-            const Dimensions /*localDomainSize*/,
-            const Dimensions globalDomainOffset,
-            const Dimensions globalDomainSize,
-            DomDataClass dataClass,
-            const void* buf)
-    throw (DCException)
-    {
-        Dimensions globalSize, globalOffset;
-        gatherMPIWrites(ndims, srcData, globalSize, globalOffset);
-
-        writeDomain(id, globalSize, globalOffset,
-                type, ndims, srcBuffer, Dimensions(1, 1, 1), srcData, srcOffset,
-                name, globalDomainOffset, globalDomainSize, dataClass, buf);
-    }
-
-    void ParallelDomainCollector::writeDomain(int32_t id,
-            const CollectionType& type,
-            uint32_t ndims,
-            const Dimensions srcBuffer,
-            const Dimensions srcStride,
-            const Dimensions srcData,
-            const Dimensions srcOffset,
-            const char* name,
-            const Dimensions /*localDomainOffset*/,
-            const Dimensions /*localDomainSize*/,
-            const Dimensions globalDomainOffset,
-            const Dimensions globalDomainSize,
-            DomDataClass dataClass,
-            const void* buf)
-    throw (DCException)
-    {
-        Dimensions globalSize, globalOffset;
-        gatherMPIWrites(ndims, srcData, globalSize, globalOffset);
-
-        writeDomain(id, globalSize, globalOffset,
-                type, ndims, srcBuffer, srcStride, srcData, srcOffset,
-                name, globalDomainOffset, globalDomainSize, dataClass, buf);
+                type, ndims, select,
+                name, globalDomain, dataClass, buf);
     }
 
     void ParallelDomainCollector::writeDomain(int32_t id,
@@ -475,67 +452,17 @@ namespace splash
             const Dimensions globalOffset,
             const CollectionType& type,
             uint32_t ndims,
-            const Dimensions srcData,
+            const Selection select,
             const char* name,
-            const Dimensions globalDomainOffset,
-            const Dimensions globalDomainSize,
+            const Domain globalDomain,
             DomDataClass dataClass,
             const void* buf)
     throw (DCException)
     {
-        writeDomain(id, globalSize, globalOffset,
-                type, ndims, srcData, Dimensions(1, 1, 1), srcData,
-                Dimensions(0, 0, 0), name, globalDomainOffset, globalDomainSize,
-                dataClass, buf);
-    }
+        write(id, globalSize, globalOffset, type, ndims, select, name, buf);
+        Domain localDomain(Dimensions(0, 0, 0), globalDomain.getSize());
 
-    void ParallelDomainCollector::writeDomain(int32_t id,
-            const Dimensions globalSize,
-            const Dimensions globalOffset,
-            const CollectionType& type,
-            uint32_t ndims,
-            const Dimensions srcBuffer,
-            const Dimensions srcData,
-            const Dimensions srcOffset,
-            const char* name,
-            const Dimensions globalDomainOffset,
-            const Dimensions globalDomainSize,
-            DomDataClass dataClass,
-            const void* buf)
-    throw (DCException)
-    {
-        writeDomain(id, globalSize, globalOffset,
-                type, ndims, srcBuffer, Dimensions(1, 1, 1), srcData, srcOffset,
-                name, globalDomainOffset, globalDomainSize, dataClass, buf);
-    }
-
-    void ParallelDomainCollector::writeDomain(int32_t id,
-            const Dimensions globalSize,
-            const Dimensions globalOffset,
-            const CollectionType& type,
-            uint32_t ndims,
-            const Dimensions srcBuffer,
-            const Dimensions srcStride,
-            const Dimensions srcData,
-            const Dimensions srcOffset,
-            const char* name,
-            const Dimensions globalDomainOffset,
-            const Dimensions globalDomainSize,
-            DomDataClass dataClass,
-            const void* buf)
-    throw (DCException)
-    {
-        ColTypeDim dim_t;
-        ColTypeInt int_t;
-
-        write(id, globalSize, globalOffset, type, ndims, srcBuffer, srcStride,
-                srcData, srcOffset, name, buf);
-
-        writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, globalDomainSize.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_OFFSET, globalDomainOffset.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_SIZE, globalDomainSize.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_OFFSET, globalDomainOffset.getPointer());
+        writeDomainAttributes(id, name, dataClass, localDomain, globalDomain);
     }
 
     void ParallelDomainCollector::reserveDomain(int32_t id,
@@ -543,21 +470,14 @@ namespace splash
             uint32_t ndims,
             const CollectionType& type,
             const char* name,
-            const Dimensions globalDomainOffset,
-            const Dimensions globalDomainSize,
+            const Domain globalDomain,
             DomDataClass dataClass)
     throw (DCException)
     {
-        ColTypeDim dim_t;
-        ColTypeInt int_t;
-
         reserve(id, globalSize, ndims, type, name);
+        Domain localDomain(Dimensions(0, 0, 0), globalDomain.getSize());
 
-        writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, globalDomainSize.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_OFFSET, globalDomainOffset.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_SIZE, globalDomainSize.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_OFFSET, globalDomainOffset.getPointer());
+        writeDomainAttributes(id, name, dataClass, localDomain, globalDomain);
     }
 
     void ParallelDomainCollector::reserveDomain(int32_t id,
@@ -567,36 +487,26 @@ namespace splash
             uint32_t ndims,
             const CollectionType& type,
             const char* name,
-            const Dimensions globalDomainOffset,
-            const Dimensions globalDomainSize,
+            const Domain globalDomain,
             DomDataClass dataClass)
     throw (DCException)
     {
-        ColTypeDim dim_t;
-        ColTypeInt int_t;
-
         reserve(id, size, globalSize, globalOffset, ndims, type, name);
+        Domain localDomain(Dimensions(0, 0, 0), globalDomain.getSize());
 
-        writeAttribute(id, int_t, name, DOMCOL_ATTR_CLASS, &dataClass);
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_SIZE, globalDomainSize.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_OFFSET, globalDomainOffset.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_SIZE, globalDomainSize.getPointer());
-        writeAttribute(id, dim_t, name, DOMCOL_ATTR_GLOBAL_OFFSET, globalDomainOffset.getPointer());
+        writeDomainAttributes(id, name, dataClass, localDomain, globalDomain);
     }
 
     void ParallelDomainCollector::appendDomain(int32_t id,
             const CollectionType& type,
             size_t count,
             const char *name,
-            const Dimensions domainOffset,
-            const Dimensions domainSize,
-            const Dimensions globalDomainOffset,
-            const Dimensions globalDomainSize,
+            const Domain localDomain,
+            const Domain globalDomain,
             const void *buf)
     throw (DCException)
     {
-        appendDomain(id, type, count, 0, 1, name, domainOffset, domainSize,
-                globalDomainOffset, globalDomainSize, buf);
+        appendDomain(id, type, count, 0, 1, name, localDomain, globalDomain, buf);
     }
 
     void ParallelDomainCollector::appendDomain(int32_t /*id*/,
@@ -605,10 +515,8 @@ namespace splash
             size_t /*offset*/,
             size_t /*striding*/,
             const char* /*name*/,
-            const Dimensions /*domainOffset*/,
-            const Dimensions /*domainSize*/,
-            const Dimensions /*globalDomainOffset*/,
-            const Dimensions /*globalDomainSize*/,
+            const Domain /*localDomain*/,
+            const Domain /*globalDomain*/,
             const void* /*buf*/)
     throw (DCException)
     {

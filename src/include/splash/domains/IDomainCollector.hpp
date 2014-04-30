@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -23,6 +23,7 @@
 #define	IDOMAINCOLLECTOR_HPP
 
 #include "splash/Dimensions.hpp"
+#include "splash/Selection.hpp"
 #include "splash/domains/DataContainer.hpp"
 #include "splash/domains/DomainData.hpp"
 #include "splash/domains/Domain.hpp"
@@ -89,8 +90,7 @@ namespace splash
          * 
          * @param id ID of the iteration.
          * @param name Name of the dataset.
-         * @param domainOffset Domain offset for reading (logical start of the requested partition).
-         * @param domainSize Domain size for reading (logical size of the requested partition).
+         * @param domain Domain for reading.
          * @param dataClass Optional domain type annotation, can be NULL.
          * @param lazyLoad Set to load only size information for each subdomain,
          * data must be loaded later using \ref IDomainCollector::readDomainLazy.
@@ -98,8 +98,7 @@ namespace splash
          */
         virtual DataContainer *readDomain(int32_t id,
                 const char* name,
-                Dimensions domainOffset,
-                Dimensions domainSize,
+                const Domain domain,
                 DomDataClass* dataClass,
                 bool lazyLoad = false) = 0;
 
@@ -118,88 +117,20 @@ namespace splash
          * @param id ID of the iteration for writing.
          * @param type Type information for data.
          * @param ndims Number of dimensions (1-3).
-         * @param srcData dimensions of the data in the buffer
+         * @param select Selection in src buffer.
          * @param name Name for the dataset to create/append.
-         * @param domainOffset Local offset of this subdomain.
-         * @param domainSize Local size of this subdomain.
-         * @param globalDomainOffset Logical offset of the global domain.
-         * @param globalDomainSize Logical size of the global domain.
+         * @param localDomain Local subdomain.
+         * @param globalDomain Logical global domain.
          * @param dataClass Subdomain type annotation.
          * @param buf Buffer with data.
          */
         virtual void writeDomain(int32_t id,
                 const CollectionType& type,
                 uint32_t ndims,
-                const Dimensions srcData,
+                const Selection select,
                 const char* name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
-                DomDataClass dataClass,
-                const void* buf) = 0;
-
-        /**
-         * Writes data with annotated domain information.
-         * 
-         * @param id ID of the iteration for writing.
-         * @param type Type information for data.
-         * @param ndims Number of dimensions (1-3).
-         * @param srcBuffer Size of the buffer to read from.
-         * @param srcData dimensions of the data in the buffer
-         * @param srcOffset Offset of \p srcData in \p srcBuffer.
-         * @param name Name for the dataset to create/append.
-         * @param domainOffset Local offset of this subdomain.
-         * @param domainSize Local size of this subdomain.
-         * @param globalDomainOffset Logical offset of the global domain.
-         * @param globalDomainSize Logical size of the global domain.
-         * @param dataClass Subdomain type annotation.
-         * @param buf Buffer with data.
-         */
-        virtual void writeDomain(int32_t id,
-                const CollectionType& type,
-                uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
-                DomDataClass dataClass,
-                const void* buf) = 0;
-
-        /**
-         * Writes data with annotated domain information.
-         * 
-         * @param id ID of the iteration for writing.
-         * @param type Type information for data.
-         * @param ndims Number of dimensions (1-3).
-         * @param srcBuffer Size of the buffer to read from.
-         * @param srcStride Size of striding in each dimension. 1 means 'no stride'.
-         * @param srcData Size of the data in the buffer.
-         * @param srcOffset Offset of \p srcData in \p srcBuffer.
-         * @param name Name for the dataset to create/append.
-         * @param domainOffset Local offset of this subdomain.
-         * @param domainSize Local size of this subdomain.
-         * @param globalDomainOffset Logical offset of the global domain.
-         * @param globalDomainSize Logical size of the global domain.
-         * @param dataClass Subdomain type annotation.
-         * @param buf Buffer with data.
-         */
-        virtual void writeDomain(int32_t id,
-                const CollectionType& type,
-                uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcStride,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
+                const Domain localDomain,
+                const Domain globalDomain,
                 DomDataClass dataClass,
                 const void* buf) = 0;
 
@@ -210,20 +141,16 @@ namespace splash
          * @param type Type information for data.
          * @param count Number of elements to append.
          * @param name Name for the dataset to create/append.
-         * @param domainOffset Local offset of this subdomain.
-         * @param domainSize Local size of this subdomain.
-         * @param globalDomainOffset Logical offset of the global domain.
-         * @param globalDomainSize Logical size of the global domain.
+         * @param localDomain Local subdomain.
+         * @param globalDomain Logical global domain.
          * @param buf Buffer with data.
          */
         virtual void appendDomain(int32_t id,
                 const CollectionType& type,
                 size_t count,
                 const char *name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
+                const Domain localDomain,
+                const Domain globalDomain,
                 const void *buf) = 0;
 
         /**
@@ -237,10 +164,8 @@ namespace splash
          * Data must contain at least (striding * count) elements. 
          * 1 mean 'no striding'.
          * @param name Name for the dataset to create/append.
-         * @param domainOffset Local offset of this subdomain.
-         * @param domainSize Local size of this subdomain.
-         * @param globalDomainOffset Logical offset of the global domain.
-         * @param globalDomainSize Logical size of the global domain.
+         * @param localDomain Local subdomain.
+         * @param globalDomain Logical global domain.
          * @param buf Buffer with data.
          */
         virtual void appendDomain(int32_t id,
@@ -249,10 +174,8 @@ namespace splash
                 size_t offset,
                 size_t striding,
                 const char *name,
-                const Dimensions domainOffset,
-                const Dimensions domainSize,
-                const Dimensions globalDomainOffset,
-                const Dimensions globalDomainSize,
+                const Domain localDomain,
+                const Domain globalDomain,
                 const void *buf) = 0;
     };
 

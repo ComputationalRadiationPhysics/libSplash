@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -102,8 +102,8 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         attr.fileAccType = DataCollector::FAT_CREATE;
         pdc->open(HDF5_FILE, attr);
         
-        pdc->write(10, ctInt64, 1, Dimensions(dataSize, 1, 1),
-                Dimensions(elements, 1, 1), Dimensions(0, 0, 0), "data", data);
+        pdc->write(10, ctInt64, 1, Selection(Dimensions(dataSize, 1, 1),
+                Dimensions(elements, 1, 1), Dimensions(0, 0, 0)), "data", data);
         
         pdc->write(10, ctUInt64, 1, Dimensions(1, 1, 1), "elements", &elements);
         
@@ -179,6 +179,8 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         if (myMpiRank == 0)
             std::cout << "." << std::flush;
     }
+    
+    pdc->finalize();
     
     delete pdc;
     pdc = NULL;

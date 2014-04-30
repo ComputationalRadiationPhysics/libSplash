@@ -56,6 +56,7 @@ Parallel_RemoveTest::~Parallel_RemoveTest()
 {
     if (dataCollector != NULL)
     {
+        dataCollector->finalize();
         delete dataCollector;
         dataCollector = NULL;
     }

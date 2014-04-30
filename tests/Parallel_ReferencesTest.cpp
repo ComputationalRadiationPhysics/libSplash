@@ -53,6 +53,7 @@ Parallel_ReferencesTest::~Parallel_ReferencesTest()
 {
     if (dataCollector != NULL)
     {
+        dataCollector->finalize();
         delete dataCollector;
         dataCollector = NULL;
     }

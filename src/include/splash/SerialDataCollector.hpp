@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -187,10 +187,7 @@ namespace splash
                 hid_t group,
                 const CollectionType& datatype,
                 uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcStride,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
+                const Selection select,
                 const char* name,
                 const void* data) throw (DCException);
 
@@ -242,26 +239,7 @@ namespace splash
         void write(int32_t id,
                 const CollectionType& type,
                 uint32_t ndims,
-                const Dimensions srcData,
-                const char* name,
-                const void* data) throw (DCException);
-
-        void write(int32_t id,
-                const CollectionType& type,
-                uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
-                const char* name,
-                const void* data) throw (DCException);
-
-        void write(int32_t id,
-                const CollectionType& type,
-                uint32_t ndims,
-                const Dimensions srcBuffer,
-                const Dimensions srcStride,
-                const Dimensions srcData,
-                const Dimensions srcOffset,
+                const Selection select,
                 const char* name,
                 const void* data) throw (DCException);
 

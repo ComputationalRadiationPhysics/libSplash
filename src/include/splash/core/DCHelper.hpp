@@ -24,6 +24,8 @@
 #ifndef DCHELPER_H
 #define	DCHELPER_H
 
+#include <map>
+#include <cmath>
 #include <sstream>
 #include <iostream>
 #include <hdf5.h>
@@ -85,7 +87,16 @@ namespace splash
         }
 
         /**
-         * @param dims dimensions to get chunk dims for
+         * Computes the chunk dimensions for a dataset.
+         * 
+         * Chunk dimensions are selected to create chunks sizes between
+         * 64KByte and 4MB. Smaller chunk sizes are inefficient due to overhead,
+         * larger chunks do not map well to file system blocks and striding.
+         * 
+         * Chunk dimensions are less or equal to dataset dimensions and do
+         * not need to be a factor of the respective dataset dimension.
+         * 
+         * @param dims dimensions of dataset to get chunk dims for
          * @param ndims number of dimensions for dims and chunkDims
          * @param typeSize size of each element in bytes
          * @param chunkDims pointer to array for resulting chunk dimensions
@@ -93,49 +104,81 @@ namespace splash
         static void getOptimalChunkDims(const hsize_t *dims, uint32_t ndims,
                 size_t typeSize, hsize_t *chunkDims)
         {
-            // some magic numbers at the moment
-            // there should be some research on optimal chunk sizes
-            // dims and chunkDims sizes are in elements, other sizes are in bytes
+            const size_t NUM_CHUNK_SIZES = 7;
+            // chunk sizes in KByte
+            const size_t CHUNK_SIZES_KB[] = {4096, 2048, 1024, 512, 256, 128, 64};
+            
+            size_t total_data_size = typeSize;
+            size_t max_chunk_size = typeSize;
+            size_t target_chunk_size = 0;
 
-            const size_t num_thresholds = 13;
-            const size_t threshold_sizes[num_thresholds] = {1024 * 1024 * 2, 1024 * 1024,
-                1024 * 512, 1024 * 256, 1024 * 128, 1024 * 64, 1024 * 4,
-                1024, 512, 256, 128, 64, 4};
-
-            for (size_t max_threshold_index = 0;
-                    max_threshold_index < num_thresholds;
-                    ++max_threshold_index)
+            // compute the order of dimensions (descending)
+            // large dataset dimensions should have larger chunk sizes
+            std::multimap<hsize_t, uint32_t> dims_order;
+            for (uint32_t i = 0; i < ndims; ++i)
+                dims_order.insert(std::make_pair(dims[i], i));
+            
+            for (uint32_t i = 0; i < ndims; ++i)
             {
-                for (uint32_t i = 0; i < ndims; i++)
-                {
-                    // dim_size is in bytes
-                    size_t dim_size = dims[i] * typeSize;
+                // initial number of chunks per dimension
+                chunkDims[i] = 1;
+                
+                // try to make at least two chunks for each dimension
+                size_t half_dim = dims[i] / 2;
+                
+                // compute sizes
+                max_chunk_size *= (half_dim > 0) ? half_dim : 1;
+                total_data_size *= dims[i];
+            }
+            
+            // compute the target chunk size
+            for (uint32_t i = 0; i < NUM_CHUNK_SIZES; ++i)
+            {
+                target_chunk_size = CHUNK_SIZES_KB[i] * 1024;
+                if (target_chunk_size <= max_chunk_size)
+                    break;
+            }
+            
+            size_t current_chunk_size = typeSize;
+            size_t last_chunk_diff = target_chunk_size;
+            std::multimap<hsize_t, uint32_t>::const_iterator current_index = 
+                    dims_order.begin();
 
-                    if (dim_size == 0)
-                        chunkDims[i] = 1;
-                    else
+            while (current_chunk_size < target_chunk_size)
+            {
+                // test if increasing chunk size optimizes towards target chunk size
+                size_t chunk_diff = std::abs(target_chunk_size - (current_chunk_size * 2));
+                if (chunk_diff >= last_chunk_diff)
+                    break;
+
+                // find next dimension to increase chunk size for
+                int can_increase_dim = 0;
+                for (uint32_t d = 0; d < ndims; ++d)
+                {
+                    int current_dim = current_index->second;
+                    
+                    // increasing chunk size possible
+                    if (chunkDims[current_dim] * 2 <= dims[current_dim])
                     {
-                        chunkDims[i] = threshold_sizes[num_thresholds - 1] / typeSize;
-                        if (!chunkDims[i])
-                            chunkDims[i] = 1;
+                        chunkDims[current_dim] *= 2;
+                        current_chunk_size *= 2;
+                        can_increase_dim = 1;
                     }
 
-                    for (uint32_t t = max_threshold_index; t < num_thresholds; ++t)
-                        if (dim_size >= threshold_sizes[t])
-                        {
-                            chunkDims[i] = threshold_sizes[t] / typeSize;
-                            if (!chunkDims[i])
-                                chunkDims[i] = 1;
-                            break;
-                        }
+                    current_index++;
+                    if (current_index == dims_order.end())
+                        current_index = dims_order.begin();
+
+                    if (can_increase_dim)
+                        break;
                 }
 
-                size_t total_size = 1;
-                for (uint32_t i = 0; i < ndims; i++)
-                    total_size *= chunkDims[i] * typeSize;
-
-                if (total_size < 1024 * 1024 * 1024)
+                // can not increase chunk size in any dimension
+                // we must use the current chunk sizes
+                if (!can_increase_dim)
                     break;
+
+                last_chunk_diff = chunk_diff;
             }
         }
 

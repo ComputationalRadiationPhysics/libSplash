@@ -80,7 +80,7 @@ Germany\\[1ex]
 
 \section{About libSplash}
 
-libSplash is a combined project of the Center for Information Services and HPC (ZIH) of the
+libSplash is a joined project of the Center for Information Services and HPC (ZIH) of the
 Technical University of Dresden and the Helmholtz-Zentrum Dresden-Rossendorf (HZDR).
 The project aims at developing a HDF5-based I/O library for HPC simulations.
 It is created as an easy-to-use frontend for the standard HDF5 library with support for MPI processes in a cluster environment.
@@ -98,26 +98,48 @@ Doxygen HTML documentation.
 
 \section{Installation}
 
-\subsection{Requirements}
+\subsection{Requirements and Compiling}
 
-Please see the file doc/INSTALL.md for details.
-
-\subsection{Compiling}
-
-Please see the file doc/INSTALL.md for details.
-
-\subsection{Linking}
-
-Please see the file doc/INSTALL.md for details.
+Please see the file \path{doc/INSTALL.md} for details.
 
 \section{Usage}
 
-To use libSplash in your application, the only include file necessary is \code{splash.h}.
+\subsection{Linking to your Project}
+
+We provide a \code{FindSplash.cmake} module that can be used in your codes\newline
+\path{CMakeLists.txt} file. Install instructions and further hints for non-cmake based
+linking can be found in the file \path{doc/INSTALL.md} .
+
+\subsection{Includes}
+
+To use libSplash in your application, the only include file necessary is\newline
+\path{splash/splash.h} .
+This include will make the following defines available in your code:
+\begin{itemize}
+    \item \code{SPLASH\_SUPPORTED\_SERIAL 1} output to serial (posix) files per rank.
+    \item \code{SPLASH\_SUPPORTED\_PARALLEL 1} output to parallel HDF5 files
+          (optional, can be undefined)
+    \item \code{SPLASH\_VERSION\_MAJOR}, \code{\dots\_MINOR}, \code{\dots\_PATCH}
+          the libraries version number.
+    \item \code{SPLASH\_FILE\_FORMAT\_MAJOR}, \code{\dots\_MINOR} the libSplash file
+          format that will be created by this version of libSplash.
+\end{itemize}
+
+Note: the file format created by libSplash does not have to correspond to the libraries
+release version.
+
+The following convention applies: if a files major file format does not differ from the
+file format version of the install, libSplash will be able to read and write it.
+Changes in the minor version of the file format are backwards compatible.
+
+\subsection{Getting Started}
+
 libSplash consists of two parts: the basic \code{DataCollector} interface and the extended \code{DomainCollector} interface.
 
 \code{DataCollector} is the basic interface for most operations, such as accessing files as well as reading
 and writing Datasets and Attributes.
 This interface is implemented in the \code{SerialDataCollector} and \code{ParallelDataCollector} classes.
+
 \code{DomainCollector} extends this interface with operations on \emph{Domains} which can represent the simulation area,
 a logical data field or a similar logical program structure.
 This is helpful to allow easy post-mortem access to the stored data from an analysis or visualization tool.
@@ -190,7 +212,7 @@ Groups can be organized in hierarchies.
 
 Before data can be stored or read, files must be opened by calling
 \code{DataCollector::open}. This method requires the common part of the filename
-and an object of type \code{FileCreationAttr}.
+and an object of type \\ \code{FileCreationAttr}.
 This object defines the file access type as well as the number of
 participating MPI processes, the MPI position of the calling process and further information.
 The following file access types are available:
@@ -232,7 +254,7 @@ a basic type (e.g. \code{int}) or structured type (i.e. a \code{struct}).
 Subclasses of the abstract class \code{CollectionType} are used to define the
 \emph{Datatype} of a Dataset when storing data (or attributes to data).
 The range of available types can be easily extended by defining a new subclass
-(see \emph{include/basetypes} for a list of existing types).
+(see \path{include/splash/basetypes} for a list of existing types).
 
 Datasets are stored in the \emph{data} group of libSplash files and must be
 related to a specific index beneath this group.
@@ -242,13 +264,16 @@ related to a specific index beneath this group.
 
 To write data, use any of the \code{DataCollector::write} methods.
 They require the used datatype, the number
-of dimensions (\code{ndims}, 1-3), the size of the actual data, buffers and offsets in
-each dimension as a \code{Dimensions} object, the name for the dataset and a pointer
+of dimensions (\code{ndims}, 1-3), the size of the actual data, buffers, strides and offsets in
+each dimension as a \code{Selection} object, the name for the dataset and a pointer
 holding the data.
 Any existing dataset in this group with the same is name is overwritten.
 
 Please note that the user is responsible to pass a correct \code{CollectionType} to
 any \code{write} call. Otherwise, user data may be interpreted incorrectly.
+Besides the pre-defined data types, new types can be created by inheriting from the \code{CollectionType}
+interface or using the macros for array- and compound-types, \code{TYPE\_ARRAY()} and \\ \code{TYPE\_COMPOUND()}.
+
 
 \subsection{Reading}
 
@@ -415,7 +440,7 @@ that each file contains only a single iteration but the data from all processes)
 
 \subsection{Opening Files}
 
-Before data can be stored or read, files must be opened by calling
+Before data can be stored or read, files must be opened by calling \\
 \code{ParallelDataCollector::open}. This method requires the common part of the filename
 and an object of type \code{FileCreationAttr}.
 Calls to this function are collective.

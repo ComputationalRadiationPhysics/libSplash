@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -54,13 +54,10 @@ namespace splash
 
         // set new cache size
         H5Pget_cache(fileAccProperties, &metaCacheElements, &rawCacheElements, &rawCacheSize, &policy);
-        rawCacheSize = 64 * 1024 * 1024;
+        rawCacheSize = 256 * 1024 * 1024;
         H5Pset_cache(fileAccProperties, metaCacheElements, rawCacheElements, rawCacheSize, policy);
 
-        //H5Pset_chunk_cache(0, H5D_CHUNK_CACHE_NSLOTS_DEFAULT,
-        //  H5D_CHUNK_CACHE_NBYTES_DEFAULT, H5D_CHUNK_CACHE_W0_DEFAULT);
-
-        log_msg(3, "Raw Data Cache = %llu KiB", (long long unsigned) (rawCacheSize / 1024));
+        log_msg(3, "Raw Data Cache (File) = %llu KiB", (long long unsigned) (rawCacheSize / 1024));
     }
 
     bool SerialDataCollector::fileExists(std::string filename)
@@ -398,23 +395,7 @@ namespace splash
     }
 
     void SerialDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
-            const Dimensions srcData, const char* name, const void* data)
-    throw (DCException)
-    {
-        write(id, type, ndims, srcData, Dimensions(1, 1, 1), srcData, Dimensions(0, 0, 0), name, data);
-    }
-
-    void SerialDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
-            const Dimensions srcBuffer, const Dimensions srcData, const Dimensions srcOffset,
-            const char* name, const void* data)
-    throw (DCException)
-    {
-        write(id, type, ndims, srcBuffer, Dimensions(1, 1, 1), srcData, srcOffset, name, data);
-    }
-
-    void SerialDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
-            const Dimensions srcBuffer, const Dimensions srcStride, const Dimensions srcData,
-            const Dimensions srcOffset, const char* name, const void* data)
+            const Selection select, const char* name, const void* data)
     throw (DCException)
     {
         if (name == NULL)
@@ -438,8 +419,7 @@ namespace splash
         // write data to the group
         try
         {
-            writeDataSet(group.getHandle(), type, ndims,
-                    srcBuffer, srcStride, srcData, srcOffset, dset_name.c_str(), data);
+            writeDataSet(group.getHandle(), type, ndims, select, dset_name.c_str(), data);
         } catch (DCException)
         {
             throw;
@@ -816,19 +796,20 @@ namespace splash
         handles.open(full_filename, fileAccProperties, H5F_ACC_RDONLY);
     }
 
-    void SerialDataCollector::writeDataSet(hid_t group, const CollectionType& datatype,
+    void SerialDataCollector::writeDataSet(hid_t group,
+            const CollectionType& datatype,
             uint32_t ndims,
-            const Dimensions srcBuffer, const Dimensions srcStride,
-            const Dimensions srcData, const Dimensions srcOffset,
-            const char* name, const void* data) throw (DCException)
+            const Selection select,
+            const char* name,
+            const void* data) throw (DCException)
     {
         log_msg(2, "writeDataSet");
 
         DCDataSet dataset(name);
         // always create dataset but write data only if all dimensions > 0 and data available
-        dataset.create(datatype, group, srcData, ndims, this->enableCompression);
-        if (data && (srcData.getScalarSize() > 0))
-            dataset.write(srcBuffer, srcStride, srcOffset, srcData, data);
+        dataset.create(datatype, group, select.count, ndims, this->enableCompression);
+        if (data && (select.count.getScalarSize() > 0))
+            dataset.write(select, Dimensions(0, 0, 0), data);
         dataset.close();
     }
 
@@ -846,10 +827,11 @@ namespace splash
             dataset.create(datatype, group, data_size, 1, this->enableCompression);
 
             if (count > 0)
-                dataset.write(Dimensions(offset + count * stride, 1, 1),
-                    Dimensions(stride, 1, 1),
+                dataset.write(Selection(data_size,
+                    Dimensions(offset + count * stride, 1, 1),
                     Dimensions(offset, 0, 0),
-                    data_size,
+                    Dimensions(stride, 1, 1)),
+                    Dimensions(0, 0, 0),
                     data);
         } else
             if (count > 0)

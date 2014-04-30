@@ -1,6 +1,35 @@
 Change Log for libSplash
 ================================================================
 
+Release 1.2.0
+-------------
+**Date:** 2014-04-30
+
+**New Features**
+
+ - splash2xdmf python script to create XDMF descriptions for libSplash files
+   with domain information
+ - allow to read/write attributes at groups
+
+
+**Interface Changes**
+
+ - major interface change: simplified interfaces as most read/write routines
+   now use a Selection class for describe the source layout
+ - local domain offsets are now exclusive, i.e. do not include the
+   global domain offset
+ - changed file format version to 2.0
+ - add a finalize() call to ParallelDataCollector to free MPI resources
+
+
+**Bug Fixes**
+
+ - fix automatic chunking algorithm
+ - only use HDF5 hyperslaps if necessary for improved performance
+ - fix bug in getMaxID and getEntryIDs for ParallelDataCollector
+
+
+
 Release 1.1.1
 -------------
 **Date:** 2014-02-20

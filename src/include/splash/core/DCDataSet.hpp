@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2014 Felix Schmitt
  *
  * This file is part of libSplash. 
  * 
@@ -30,6 +30,7 @@
 
 #include "splash/DCException.hpp"
 #include "splash/Dimensions.hpp"
+#include "splash/Selection.hpp"
 #include "splash/CollectionType.hpp"
 #include "splash/basetypes/ColTypeDim.hpp"
 
@@ -118,35 +119,11 @@ namespace splash
         /**
          * Writes data to an open dataset.
          *
-         * @param srcBuffer size of source buffer to read from
-         * @param data source buffer to read from
-         */
-        void write(Dimensions srcBuffer, const void* data) throw (DCException);
-
-        /**
-         * Writes data to an open dataset.
-         *
-         * @param srcBuffer size of source buffer to read from
-         * @param srcStride sizeof striding in each dimension. 1 means 'no stride'
-         * @param srcOffset offset in source buffer for reading
-         * @param srcData size of data in source buffer to read
-         * @param data source buffer to read from
-         */
-        void write(Dimensions srcBuffer, Dimensions srcStride, Dimensions srcOffset,
-                Dimensions srcData, const void* data) throw (DCException);
-
-        /**
-         * Writes data to an open dataset.
-         *
-         * @param srcBuffer size of source buffer to read from
-         * @param srcStride sizeof striding in each dimension. 1 means 'no stride'
-         * @param srcOffset offset in source buffer for reading
-         * @param srcData size of data in source buffer to read
+         * @param select selection in src buffer
          * @param dstOffset offset in dataset for writing
          * @param data source buffer to read from
          */
-        void write(Dimensions srcBuffer, Dimensions srcStride, Dimensions srcOffset,
-                Dimensions srcData, Dimensions dstOffset, const void* data) throw (DCException);
+        void write(Selection srcSelect, Dimensions dstOffset, const void* data) throw (DCException);
 
         /**
          * Reads data from an open dataset.

@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt, Axel Huebl
+ * Copyright 2013-2014 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -87,34 +87,64 @@ namespace splash
         return Domain(domain_offset, domain_size);
     }
 
+    void DomainCollector::writeDomainAttributes(
+            int32_t id,
+            const char *name,
+            DomDataClass dataClass,
+            const Domain localDomain,
+            const Domain globalDomain)
+    throw (DCException)
+    {
+        ColTypeInt32 int_t;
+        ColTypeDim dim_t;
+        
+        hid_t dset_handle = openDatasetHandle(id, name, NULL);
+        
+        DCAttribute::writeAttribute(DOMCOL_ATTR_CLASS, int_t.getDataType(),
+                dset_handle, &dataClass);
+        DCAttribute::writeAttribute(DOMCOL_ATTR_SIZE, dim_t.getDataType(),
+                dset_handle, localDomain.getSize().getPointer());
+        DCAttribute::writeAttribute(DOMCOL_ATTR_OFFSET, dim_t.getDataType(),
+                dset_handle, localDomain.getOffset().getPointer());
+        DCAttribute::writeAttribute(DOMCOL_ATTR_GLOBAL_SIZE, dim_t.getDataType(),
+                dset_handle, globalDomain.getSize().getPointer());
+        DCAttribute::writeAttribute(DOMCOL_ATTR_GLOBAL_OFFSET, dim_t.getDataType(),
+                dset_handle, globalDomain.getOffset().getPointer());
+        
+        closeDatasetHandle(dset_handle);
+    }
+
     bool DomainCollector::readDomainInfoForRank(
             Dimensions mpiPosition,
             int32_t id,
             const char* name,
-            Dimensions requestOffset,
-            Dimensions requestSize,
+            const Domain requestDomain,
             Domain &fileDomain)
     throw (DCException)
     {
         {
             hid_t dset_handle = openDatasetHandle(id, name, &mpiPosition);
+            Dimensions global_domain_offset;
 
             DCAttribute::readAttribute(DOMCOL_ATTR_OFFSET, dset_handle,
                     fileDomain.getOffset().getPointer());
 
             DCAttribute::readAttribute(DOMCOL_ATTR_SIZE, dset_handle,
                     fileDomain.getSize().getPointer());
+            
+            DCAttribute::readAttribute(DOMCOL_ATTR_GLOBAL_OFFSET, dset_handle,
+                    global_domain_offset.getPointer());
+            
+            fileDomain.getOffset() += global_domain_offset;
 
             closeDatasetHandle(dset_handle);
         }
 
         // zero request sizes will not intersect with anything
-        if (requestSize == Dimensions(0,0,0))
+        if (requestDomain.getSize() == Dimensions(0, 0, 0))
             return false;
 
-        Domain request_domain(requestOffset, requestSize);
-
-        return Domain::testIntersection(request_domain, fileDomain);
+        return Domain::testIntersection(requestDomain, fileDomain);
     }
 
     void DomainCollector::readGridInternal(
@@ -122,8 +152,8 @@ namespace splash
             Dimensions mpiPosition,
             int32_t id,
             const char* name,
-            Domain &clientDomain,
-            Domain &requestDomain
+            const Domain &clientDomain,
+            const Domain &requestDomain
             )
     throw (DCException)
     {
@@ -248,7 +278,7 @@ namespace splash
             int32_t id,
             const char* name,
             const Dimensions &dataSize,
-            Domain &clientDomain,
+            const Domain &clientDomain,
             bool lazyLoad
             )
     throw (DCException)
@@ -323,16 +353,14 @@ namespace splash
             Dimensions mpiPosition,
             int32_t id,
             const char* name,
-            Dimensions requestOffset,
-            Dimensions requestSize,
+            const Domain requestDomain,
             bool lazyLoad)
     throw (DCException)
     {
         log_msg(3, "loading from mpi_position %s", mpiPosition.toString().c_str());
 
         bool readResult = false;
-        Domain client_domain;
-        Domain request_domain(requestOffset, requestSize);
+        Domain local_client_domain, global_client_domain;
         Dimensions data_size;
         DomDataClass tmp_data_class = UndefinedType;
 
@@ -340,16 +368,26 @@ namespace splash
             hid_t dset_handle = openDatasetHandle(id, name, &mpiPosition);
 
             DCAttribute::readAttribute(DOMCOL_ATTR_OFFSET, dset_handle,
-                    client_domain.getOffset().getPointer());
+                    local_client_domain.getOffset().getPointer());
 
             DCAttribute::readAttribute(DOMCOL_ATTR_SIZE, dset_handle,
-                    client_domain.getSize().getPointer());
+                    local_client_domain.getSize().getPointer());
+            
+            DCAttribute::readAttribute(DOMCOL_ATTR_GLOBAL_OFFSET, dset_handle,
+                    global_client_domain.getOffset().getPointer());
+
+            DCAttribute::readAttribute(DOMCOL_ATTR_GLOBAL_SIZE, dset_handle,
+                    global_client_domain.getSize().getPointer());
 
             DCAttribute::readAttribute(DOMCOL_ATTR_CLASS, dset_handle,
                     &tmp_data_class);
 
             closeDatasetHandle(dset_handle);
         }
+        
+        Domain client_domain(
+                local_client_domain.getOffset() + global_client_domain.getOffset(),
+                local_client_domain.getSize());
 
         readSizeInternal(handles.get(mpiPosition), id, name, data_size);
 
@@ -358,14 +396,14 @@ namespace splash
                 "requestdom.= %s "
                 "data size  = %s",
                 client_domain.toString().c_str(),
-                request_domain.toString().c_str(),
+                requestDomain.toString().c_str(),
                 data_size.toString().c_str());
 
-        const bool emptyRequest = ( data_size.getScalarSize() == 1 &&
-                                    client_domain.getSize().getScalarSize() == 0 );
+        const bool emptyRequest = (data_size.getScalarSize() == 1 &&
+                client_domain.getSize().getScalarSize() == 0);
 
         if (tmp_data_class == GridType && data_size != client_domain.getSize() &&
-            !emptyRequest )
+                !emptyRequest)
         {
             std::cout << data_size.toString() << ", " << client_domain.getSize().toString() << std::endl;
             throw DCException("DomainCollector::readDomain: Size of data must match domain size for Grid data.");
@@ -381,7 +419,7 @@ namespace splash
         }
 
         // test on intersection and add new DomainData to the container if necessary
-        if (Domain::testIntersection(request_domain, client_domain))
+        if (Domain::testIntersection(requestDomain, client_domain))
         {
             readResult = true;
 
@@ -397,7 +435,7 @@ namespace splash
                     // For Grid data, only the subchunk is read into its target position
                     // in the destination buffer.
                     readGridInternal(dataContainer, mpiPosition, id, name,
-                            client_domain, request_domain);
+                            client_domain, requestDomain);
                     break;
                 default:
                     return false;
@@ -412,8 +450,7 @@ namespace splash
 
     DataContainer *DomainCollector::readDomain(int32_t id,
             const char* name,
-            Dimensions requestOffset,
-            Dimensions requestSize,
+            Domain requestDomain,
             DomDataClass* dataClass,
             bool lazyLoad)
     throw (DCException)
@@ -422,12 +459,11 @@ namespace splash
             throw DCException("DomainCollector::readDomain: this access is not permitted");
 
         DataContainer *data_container = new DataContainer();
+        Dimensions request_offset = requestDomain.getOffset();
 
         log_msg(3,
-                "requestOffset = %s "
-                "requestSize = %s",
-                requestOffset.toString().c_str(),
-                requestSize.toString().c_str());
+                "requestDomain = %s ",
+                requestDomain.toString().c_str());
 
         DomDataClass data_class = UndefinedType;
         Dimensions mpi_size;
@@ -447,7 +483,7 @@ namespace splash
         // for periodically moving (e.g. moving window) simulations
         // this happens to be _not_ at mpi_pos(0,0,0)
         {
-            Dimensions delta(0,0,0);
+            Dimensions delta(0, 0, 0);
             Dimensions belowZero(min_dims);
             Dimensions aboveZero(max_dims);
             Domain minDom;
@@ -459,10 +495,10 @@ namespace splash
                         aboveZero.toString().c_str());
 
                 Domain maxDom;
-                readDomainInfoForRank( belowZero, id, name,
-                                       Dimensions(0,0,0), Dimensions(0,0,0), minDom);
-                readDomainInfoForRank( aboveZero, id, name,
-                                       Dimensions(0,0,0), Dimensions(0,0,0), maxDom);
+                readDomainInfoForRank(belowZero, id, name,
+                        Domain(Dimensions(0, 0, 0), Dimensions(0, 0, 0)), minDom);
+                readDomainInfoForRank(aboveZero, id, name,
+                        Domain(Dimensions(0, 0, 0), Dimensions(0, 0, 0)), maxDom);
 
                 log_msg(4, "find zero: minDom.getOffset() = %s, maxDom.getOffset() = %s",
                         minDom.getOffset().toString().c_str(),
@@ -475,11 +511,10 @@ namespace splash
                     {
                         delta[i] = ceil(((double) aboveZero[i] - (double) belowZero[i]) / 2.0);
                         belowZero[i] += delta[i];
-                    }
-                    // found zero point for this i
+                    }                        // found zero point for this i
                     else if (minDom.getOffset()[i] == globalDomain.getOffset()[i])
                         delta[i] = 0;
-                    // jumped over the zero position during last +-=delta[i]
+                        // jumped over the zero position during last +-=delta[i]
                     else
                     {
                         belowZero[i] -= delta[i];
@@ -487,27 +522,26 @@ namespace splash
                     }
                 }
 
-            } while (delta != Dimensions(0,0,0));
+            } while (delta != Dimensions(0, 0, 0));
 
             // search above or below zero point?
             //
             // the file with the largest mpi position, but not necessarily
             // the one with the largest local domain offset
             Domain lastDom;
-            readDomainInfoForRank( mpi_size - Dimensions(1, 1, 1), id, name,
-                                   Dimensions(0,0,0), Dimensions(0,0,0), lastDom);
+            readDomainInfoForRank(mpi_size - Dimensions(1, 1, 1), id, name,
+                    Domain(Dimensions(0, 0, 0), Dimensions(0, 0, 0)), lastDom);
             for (size_t i = 0; i < 3; ++i)
             {
-                if (requestOffset[i] <= lastDom.getBack()[i])
+                if (request_offset[i] <= lastDom.getBack()[i])
                 {
                     min_dims[i] = belowZero[i];
                     max_dims[i] = mpi_size[i] - 1;
-                }
-                else
+                } else
                 {
                     min_dims[i] = 0;
                     belowZero[i] > 1 ? max_dims[i] = belowZero[i] - 1
-                                     : max_dims[i] = 0;
+                            : max_dims[i] = 0;
                 }
             }
         }
@@ -537,7 +571,7 @@ namespace splash
             }
 
             if (readDomainInfoForRank(current_mpi_pos, id, name,
-                    requestOffset, point_dim, file_domain))
+                    Domain(request_offset, point_dim), file_domain))
             {
                 found_start = true;
                 break;
@@ -545,10 +579,10 @@ namespace splash
 
             for (size_t i = 0; i < 3; ++i)
             {
-                if (requestOffset[i] >= file_domain.getOffset()[i])
+                if (request_offset[i] >= file_domain.getOffset()[i])
                     min_dims[i] = current_mpi_pos[i];
 
-                if (requestOffset[i] < file_domain.getOffset()[i])
+                if (request_offset[i] < file_domain.getOffset()[i])
                     max_dims[i] = current_mpi_pos[i] - 1;
             }
         } while (last_mpi_pos != current_mpi_pos);
@@ -565,7 +599,7 @@ namespace splash
         // the file domain is added to the DataContainer.
 
         // set new min_dims to top-left corner
-        for (size_t i = 0; i < 3; ++i )
+        for (size_t i = 0; i < 3; ++i)
             max_dims[i] = (current_mpi_pos[i] + mpi_size[i] - 1) % mpi_size[i];
         min_dims = current_mpi_pos;
 
@@ -597,8 +631,7 @@ namespace splash
                             mpi_position,
                             id,
                             name,
-                            requestOffset,
-                            requestSize,
+                            requestDomain,
                             lazyLoad))
                     {
                         // readDomainDataForRank returns false if no intersection
@@ -611,8 +644,7 @@ namespace splash
                             {
                                 max_dims[0] = (x + mpi_size[0] - 1) % mpi_size[0];
                                 x = max_dims[0];
-                            }
-                            else
+                            } else
                             {
                                 max_dims[1] = (y + mpi_size[1] - 1) % mpi_size[1];
                                 y = max_dims[1];
@@ -692,97 +724,28 @@ namespace splash
     void DomainCollector::writeDomain(int32_t id,
             const CollectionType& type,
             uint32_t ndims,
-            const Dimensions srcData,
+            const Selection select,
             const char* name,
-            const Dimensions domainOffset,
-            const Dimensions domainSize,
-            const Dimensions globalDomainOffset,
-            const Dimensions globalDomainSize,
+            const Domain localDomain,
+            const Domain globalDomain,
             DomDataClass dataClass,
             const void* buf)
     throw (DCException)
     {
-
-        writeDomain(id, type, ndims, srcData, Dimensions(1, 1, 1), srcData,
-                Dimensions(0, 0, 0), name, domainOffset, domainSize,
-                globalDomainOffset, globalDomainSize, dataClass, buf);
-    }
-
-    void DomainCollector::writeDomain(int32_t id,
-            const CollectionType& type,
-            uint32_t ndims,
-            const Dimensions srcBuffer,
-            const Dimensions srcData,
-            const Dimensions srcOffset,
-            const char* name,
-            const Dimensions domainOffset,
-            const Dimensions domainSize,
-            const Dimensions globalDomainOffset,
-            const Dimensions globalDomainSize,
-            DomDataClass dataClass,
-            const void* buf)
-    throw (DCException)
-    {
-
-        writeDomain(id, type, ndims, srcBuffer, Dimensions(1, 1, 1), srcData, srcOffset,
-                name, domainOffset, domainSize, globalDomainOffset, globalDomainSize,
-                dataClass, buf);
-    }
-
-    void DomainCollector::writeDomain(int32_t id,
-            const CollectionType& type,
-            uint32_t ndims,
-            const Dimensions srcBuffer,
-            const Dimensions srcStride,
-            const Dimensions srcData,
-            const Dimensions srcOffset,
-            const char* name,
-            const Dimensions domainOffset,
-            const Dimensions domainSize,
-            const Dimensions globalDomainOffset,
-            const Dimensions globalDomainSize,
-            DomDataClass dataClass,
-            const void* buf)
-    throw (DCException)
-    {
-        ColTypeDim dim_t;
-        ColTypeInt int_t;
-
-        write(id, type, ndims, srcBuffer, srcStride, srcData, srcOffset, name, buf);
-
-        {
-
-            hid_t dset_handle = openDatasetHandle(id, name, NULL);
-
-            DCAttribute::writeAttribute(DOMCOL_ATTR_CLASS, int_t.getDataType(),
-                    dset_handle, &dataClass);
-            DCAttribute::writeAttribute(DOMCOL_ATTR_SIZE, dim_t.getDataType(),
-                    dset_handle, domainSize.getPointer());
-            DCAttribute::writeAttribute(DOMCOL_ATTR_OFFSET, dim_t.getDataType(),
-                    dset_handle, domainOffset.getPointer());
-            DCAttribute::writeAttribute(DOMCOL_ATTR_GLOBAL_SIZE, dim_t.getDataType(),
-                    dset_handle, globalDomainSize.getPointer());
-            DCAttribute::writeAttribute(DOMCOL_ATTR_GLOBAL_OFFSET, dim_t.getDataType(),
-                    dset_handle, globalDomainOffset.getPointer());
-
-            closeDatasetHandle(dset_handle);
-        }
+        write(id, type, ndims, select, name, buf);
+        writeDomainAttributes(id, name, dataClass, localDomain, globalDomain);
     }
 
     void DomainCollector::appendDomain(int32_t id,
             const CollectionType& type,
             size_t count,
             const char* name,
-            const Dimensions domainOffset,
-            const Dimensions domainSize,
-            const Dimensions globalDomainOffset,
-            const Dimensions globalDomainSize,
+            const Domain localDomain,
+            const Domain globalDomain,
             const void* buf)
     throw (DCException)
     {
-
-        appendDomain(id, type, count, 0, 1, name, domainOffset, domainSize,
-                globalDomainOffset, globalDomainSize, buf);
+        appendDomain(id, type, count, 0, 1, name, localDomain, globalDomain, buf);
     }
 
     void DomainCollector::appendDomain(int32_t id,
@@ -791,16 +754,11 @@ namespace splash
             size_t offset,
             size_t striding,
             const char* name,
-            const Dimensions domainOffset,
-            const Dimensions domainSize,
-            const Dimensions globalDomainOffset,
-            const Dimensions globalDomainSize,
+            const Domain localDomain,
+            const Domain globalDomain,
             const void* buf)
     throw (DCException)
     {
-        ColTypeDim dim_t;
-        ColTypeInt int_t;
-        DomDataClass data_class = PolyType;
         Dimensions elements(1, 1, 1);
 
         // temporarly change file access status to allow read access
@@ -822,24 +780,7 @@ namespace splash
         elements[0] = elements[0] + count;
 
         append(id, type, count, offset, striding, name, buf);
-
-        {
-
-            hid_t dset_handle = openDatasetHandle(id, name, NULL);
-
-            DCAttribute::writeAttribute(DOMCOL_ATTR_CLASS, int_t.getDataType(),
-                    dset_handle, &data_class);
-            DCAttribute::writeAttribute(DOMCOL_ATTR_SIZE, dim_t.getDataType(),
-                    dset_handle, domainSize.getPointer());
-            DCAttribute::writeAttribute(DOMCOL_ATTR_OFFSET, dim_t.getDataType(),
-                    dset_handle, domainOffset.getPointer());
-            DCAttribute::writeAttribute(DOMCOL_ATTR_GLOBAL_SIZE, dim_t.getDataType(),
-                    dset_handle, globalDomainSize.getPointer());
-            DCAttribute::writeAttribute(DOMCOL_ATTR_GLOBAL_OFFSET, dim_t.getDataType(),
-                    dset_handle, globalDomainOffset.getPointer());
-
-            closeDatasetHandle(dset_handle);
-        }
+        writeDomainAttributes(id, name, PolyType, localDomain, globalDomain);
     }
 
     void DomainCollector::readGlobalSizeFallback(int32_t id,
