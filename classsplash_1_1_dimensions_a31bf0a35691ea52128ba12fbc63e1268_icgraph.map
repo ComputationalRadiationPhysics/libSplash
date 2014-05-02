@@ -1,3 +1,5 @@
 <map id="splash::Dimensions::getSize" name="splash::Dimensions::getSize">
-<area shape="rect" id="node3" href="$classsplash_1_1_col_type_dim.html#a92ffefe2ab94335f6930a7e65cc99ee5" title="splash::ColTypeDim\l::getSize" alt="" coords="185,5,319,49"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_col_type_dim.html#a92ffefe2ab94335f6930a7e65cc99ee5" title="splash::ColTypeDim\l::getSize" alt="" coords="219,5,352,49"/>
+<area shape="rect" id="node5" href="$classsplash_1_1_parallel_domain_collector.html#a99d33679aa6c572b39ec360714000bb8" title="splash::ParallelDomainCollector\l::writeDomain" alt="" coords="184,71,387,115"/>
+<area shape="rect" id="node7" href="$classsplash_1_1_parallel_domain_collector.html#a4750bd3741bae248cf145af2b06605d6" title="splash::ParallelDomainCollector\l::reserveDomain" alt="" coords="184,138,387,182"/>
 </map>

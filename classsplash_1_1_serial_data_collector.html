@@ -89,12 +89,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a118b73eab72dd9effee2d27d2590af62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a433f3a6f318f5780df0c301667f9b43a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_serial_data_collector.html#a433f3a6f318f5780df0c301667f9b43a">getEntriesForID</a> (int32_t id, <a class="el" href="classsplash_1_1_data_collector.html#a5f45b43a195d158c0b1252efc838077b">DCEntry</a> *entries, size_t *count)  throw (DCException)</td></tr>
 <tr class="separator:a433f3a6f318f5780df0c301667f9b43a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97b5678516746f66cf20dc73b0318271"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_serial_data_collector.html#a97b5678516746f66cf20dc73b0318271">write</a> (int32_t id, const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> srcData, const char *name, const void *data)  throw (DCException)</td></tr>
-<tr class="separator:a97b5678516746f66cf20dc73b0318271"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc1b899546048dd4d28560d36b7b7a3f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_serial_data_collector.html#acc1b899546048dd4d28560d36b7b7a3f">write</a> (int32_t id, const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const void *data)  throw (DCException)</td></tr>
-<tr class="separator:acc1b899546048dd4d28560d36b7b7a3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1744030d4c2477df254bcb2d9140b2b1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_serial_data_collector.html#a1744030d4c2477df254bcb2d9140b2b1">write</a> (int32_t id, const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> srcStride, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const void *data)  throw (DCException)</td></tr>
-<tr class="separator:a1744030d4c2477df254bcb2d9140b2b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6f626acac468b70be9f9f8df12ab9be"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_serial_data_collector.html#ac6f626acac468b70be9f9f8df12ab9be">write</a> (int32_t id, const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="classsplash_1_1_selection.html">Selection</a> select, const char *name, const void *data)  throw (DCException)</td></tr>
+<tr class="separator:ac6f626acac468b70be9f9f8df12ab9be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d92fa08a37a7edbccd97a707c34a363"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_serial_data_collector.html#a7d92fa08a37a7edbccd97a707c34a363">append</a> (int32_t id, const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;type, size_t count, const char *name, const void *data)  throw (DCException)</td></tr>
 <tr class="separator:a7d92fa08a37a7edbccd97a707c34a363"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad46997b935e5afadbd9d3d20004f39ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_serial_data_collector.html#ad46997b935e5afadbd9d3d20004f39ee">append</a> (int32_t id, const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;type, size_t count, size_t offset, size_t striding, const char *name, const void *data)  throw (DCException)</td></tr>
@@ -169,7 +165,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00098">98</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00095">95</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -204,7 +200,7 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 <p>Destructor </p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00125">125</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00122">122</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -279,7 +275,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#a7e5649ec8bd9c0726d14a5cd36691c6e">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00451">451</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00429">429</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -367,7 +363,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#a60642221d55fbeb8ef64dc8404acecff">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00458">458</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00436">436</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -396,7 +392,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#ab9f5029cccf6b507f946875696071438">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00157">157</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00154">154</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -471,7 +467,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#ae61238ea94c00c5b36c7b0c183ecd91f">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00541">541</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00519">519</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -558,7 +554,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#a733ff2e9fd8c8f4df7035492b0c6705f">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00591">591</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00569">569</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -617,7 +613,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#adb147760cd721e5bda3647eb5fb4cae7">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00690">690</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00668">668</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -669,7 +665,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#ad086aee6b77c71093c3482f999f5bfac">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00654">654</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00632">632</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -697,7 +693,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#af0183b7614889e91b5d3482691b0c934">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00644">644</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00622">622</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -732,7 +728,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#afb017489b8d41807882020c6795c5ce7">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00649">649</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00627">627</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -793,7 +789,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#a5041b92d97e4ce6343949ef324414781">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00129">129</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00126">126</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -868,7 +864,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#adf26c6bdf8811dce8f259f8b9b11b8ab">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00377">377</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00372">372</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -948,7 +944,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#aca02f039fbabfc26bb8f7889652f0c18">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00386">386</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00381">381</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -1021,7 +1017,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#a3d9be07fbc75f6713f17c77099656deb">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00255">255</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00252">252</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -1089,7 +1085,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#a09239994e60f4a45dd1214eae06d9489">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00187">187</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00184">184</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -1130,7 +1126,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#ac8fe4fbc18d5dd42d593125dcd70a5ac">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00488">488</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00466">466</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -1191,7 +1187,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#af662750e1f344a55b0f4972fc9a5d165">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00517">517</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00495">495</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -1204,7 +1200,7 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a class="anchor" id="a97b5678516746f66cf20dc73b0318271"></a>
+<a class="anchor" id="ac6f626acac468b70be9f9f8df12ab9be"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1232,8 +1228,8 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>srcData</em>, </td>
+          <td class="paramtype">const <a class="el" href="classsplash_1_1_selection.html">Selection</a>&#160;</td>
+          <td class="paramname"><em>select</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1271,211 +1267,16 @@ Here is the call graph for this function:</div>
     <tr><td class="paramname">id</td><td>ID for iteration. </td></tr>
     <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
     <tr><td class="paramname">ndims</td><td>Number of dimensions (1-3). </td></tr>
-    <tr><td class="paramname">srcData</td><td>Size of local buffer for to read from. </td></tr>
+    <tr><td class="paramname">select</td><td><a class="el" href="classsplash_1_1_selection.html">Selection</a> in src buffer </td></tr>
     <tr><td class="paramname">name</td><td>Name for the dataset. </td></tr>
     <tr><td class="paramname">buf</td><td>Buffer for writing. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implements <a class="el" href="classsplash_1_1_data_collector.html#ac5ea097f7ccb95b3732133791ffe7e86">splash::DataCollector</a>.</p>
+<p>Implements <a class="el" href="classsplash_1_1_data_collector.html#a080d7210069db9ecbd6c9ebf5c597b8c">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00402">402</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="acc1b899546048dd4d28560d36b7b7a3f"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void splash::SerialDataCollector::write </td>
-          <td>(</td>
-          <td class="paramtype">int32_t&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;&#160;</td>
-          <td class="paramname"><em>type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>ndims</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>srcBuffer</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>srcData</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>srcOffset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>buf</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-        <tr>
-          <td align="right">throw </td><td>(</td><td colspan="2"><a class="el" href="classsplash_1_1_d_c_exception.html">DCException</a></td>
-        </tr>
-        <tr>
-          <td align="right"></td><td>)</td><td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Writes data to HDF5 file.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>ID for iteration. </td></tr>
-    <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
-    <tr><td class="paramname">ndims</td><td>Number of dimensions (1-3). </td></tr>
-    <tr><td class="paramname">srcBuffer</td><td>dimensions of memory buffer </td></tr>
-    <tr><td class="paramname">srcData</td><td>intended 3D dimension for dataset </td></tr>
-    <tr><td class="paramname">srcOffset</td><td>offset of dataset in memory buffer </td></tr>
-    <tr><td class="paramname">name</td><td>Name for the dataset. </td></tr>
-    <tr><td class="paramname">buf</td><td>Buffer for writing. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Implements <a class="el" href="classsplash_1_1_data_collector.html#a207238ab5a67ffca2802b38592ea9f8d">splash::DataCollector</a>.</p>
-
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00409">409</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a1744030d4c2477df254bcb2d9140b2b1"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void splash::SerialDataCollector::write </td>
-          <td>(</td>
-          <td class="paramtype">int32_t&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;&#160;</td>
-          <td class="paramname"><em>type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>ndims</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>srcBuffer</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>srcStride</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>srcData</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>srcOffset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>buf</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-        <tr>
-          <td align="right">throw </td><td>(</td><td colspan="2"><a class="el" href="classsplash_1_1_d_c_exception.html">DCException</a></td>
-        </tr>
-        <tr>
-          <td align="right"></td><td>)</td><td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Writes data to HDF5 file.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>ID for iteration. </td></tr>
-    <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
-    <tr><td class="paramname">ndims</td><td>Number of dimensions (1-3). </td></tr>
-    <tr><td class="paramname">srcBuffer</td><td>Size of buffer for to read from. </td></tr>
-    <tr><td class="paramname">srcStride</td><td>Striding to be used for reading from <code>srcBuffer</code> in each dimension. 1 means 'no stride'. </td></tr>
-    <tr><td class="paramname">srcData</td><td>Size of data in <code>srcBuffer</code>. </td></tr>
-    <tr><td class="paramname">srcOffset</td><td>Offset of data in <code>srcBuffer</code>. </td></tr>
-    <tr><td class="paramname">name</td><td>Name for the dataset. </td></tr>
-    <tr><td class="paramname">buf</td><td>Buffer for writing. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Implements <a class="el" href="classsplash_1_1_data_collector.html#a26576c8c634ae91391307b737377811c">splash::DataCollector</a>.</p>
-
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00417">417</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00397">397</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -1548,7 +1349,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#a8a717f5e90b7395f6e7e43c4abfbcf07">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00319">319</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00316">316</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -1607,7 +1408,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classsplash_1_1_data_collector.html#a897146e01d44742bd8e21ef55bc855c8">splash::DataCollector</a>.</p>
 
-<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00231">231</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_serial_data_collector_8cpp_source.html#l00228">228</a> of file <a class="el" href="_serial_data_collector_8cpp_source.html">SerialDataCollector.cpp</a>.</p>
 
 </div>
 </div>
@@ -1618,7 +1419,7 @@ Here is the call graph for this function:</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jan 28 2014 15:38:48 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 2 2014 09:58:47 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.4
 </small></address>

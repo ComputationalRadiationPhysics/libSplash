@@ -79,25 +79,21 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a20de3fb45f8107222e6591432dc72488"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3709f2853d376279e190270597611c5e"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classsplash_1_1_domain.html">Domain</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_i_domain_collector.html#a3709f2853d376279e190270597611c5e">getLocalDomain</a> (int32_t id, const char *name)=0</td></tr>
 <tr class="separator:a3709f2853d376279e190270597611c5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f68830147e32652bf6eac17b67e0185"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classsplash_1_1_data_container.html">DataContainer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_i_domain_collector.html#a1f68830147e32652bf6eac17b67e0185">readDomain</a> (int32_t id, const char *name, <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> domainOffset, <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> domainSize, <a class="el" href="classsplash_1_1_i_domain_collector.html#a60fa0935f08683f0c4f295228fefe4c5">DomDataClass</a> *dataClass, bool lazyLoad=false)=0</td></tr>
-<tr class="separator:a1f68830147e32652bf6eac17b67e0185"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a790f103dc4a76405bfee799fc3cb9408"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classsplash_1_1_data_container.html">DataContainer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_i_domain_collector.html#a790f103dc4a76405bfee799fc3cb9408">readDomain</a> (int32_t id, const char *name, const <a class="el" href="classsplash_1_1_domain.html">Domain</a> domain, <a class="el" href="classsplash_1_1_i_domain_collector.html#a60fa0935f08683f0c4f295228fefe4c5">DomDataClass</a> *dataClass, bool lazyLoad=false)=0</td></tr>
+<tr class="separator:a790f103dc4a76405bfee799fc3cb9408"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ce54a707718dd7ef285112eeba8e555"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_i_domain_collector.html#a4ce54a707718dd7ef285112eeba8e555">readDomainLazy</a> (<a class="el" href="classsplash_1_1_domain_data.html">DomainData</a> *domainData)=0</td></tr>
 <tr class="separator:a4ce54a707718dd7ef285112eeba8e555"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3986ee69fcb32f6cb06395cf426aa7d9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_i_domain_collector.html#a3986ee69fcb32f6cb06395cf426aa7d9">writeDomain</a> (int32_t id, const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> srcData, const char *name, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> domainSize, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="classsplash_1_1_i_domain_collector.html#a60fa0935f08683f0c4f295228fefe4c5">DomDataClass</a> dataClass, const void *buf)=0</td></tr>
-<tr class="separator:a3986ee69fcb32f6cb06395cf426aa7d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81b2dc3280ca6f580ef952d1f5035e0f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_i_domain_collector.html#a81b2dc3280ca6f580ef952d1f5035e0f">writeDomain</a> (int32_t id, const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> domainSize, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="classsplash_1_1_i_domain_collector.html#a60fa0935f08683f0c4f295228fefe4c5">DomDataClass</a> dataClass, const void *buf)=0</td></tr>
-<tr class="separator:a81b2dc3280ca6f580ef952d1f5035e0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afce02f4d207deb78deb819e0fbcc9e88"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_i_domain_collector.html#afce02f4d207deb78deb819e0fbcc9e88">writeDomain</a> (int32_t id, const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> srcBuffer, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> srcStride, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> srcData, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> srcOffset, const char *name, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> domainSize, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> globalDomainSize, <a class="el" href="classsplash_1_1_i_domain_collector.html#a60fa0935f08683f0c4f295228fefe4c5">DomDataClass</a> dataClass, const void *buf)=0</td></tr>
-<tr class="separator:afce02f4d207deb78deb819e0fbcc9e88"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a0349bddc0921afba7419b82b47bdea"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_i_domain_collector.html#a2a0349bddc0921afba7419b82b47bdea">appendDomain</a> (int32_t id, const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;type, size_t count, const char *name, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> domainSize, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> globalDomainSize, const void *buf)=0</td></tr>
-<tr class="separator:a2a0349bddc0921afba7419b82b47bdea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e7053e453dda14fff7e192b42966c40"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_i_domain_collector.html#a5e7053e453dda14fff7e192b42966c40">appendDomain</a> (int32_t id, const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;type, size_t count, size_t offset, size_t striding, const char *name, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> domainOffset, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> domainSize, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> globalDomainOffset, const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a> globalDomainSize, const void *buf)=0</td></tr>
-<tr class="separator:a5e7053e453dda14fff7e192b42966c40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a390b31d09bef3f15a7757b420e6af901"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_i_domain_collector.html#a390b31d09bef3f15a7757b420e6af901">writeDomain</a> (int32_t id, const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;type, uint32_t ndims, const <a class="el" href="classsplash_1_1_selection.html">Selection</a> select, const char *name, const <a class="el" href="classsplash_1_1_domain.html">Domain</a> localDomain, const <a class="el" href="classsplash_1_1_domain.html">Domain</a> globalDomain, <a class="el" href="classsplash_1_1_i_domain_collector.html#a60fa0935f08683f0c4f295228fefe4c5">DomDataClass</a> dataClass, const void *buf)=0</td></tr>
+<tr class="separator:a390b31d09bef3f15a7757b420e6af901"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11a3de66c56b98593f9c6c0a8d13fe51"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_i_domain_collector.html#a11a3de66c56b98593f9c6c0a8d13fe51">appendDomain</a> (int32_t id, const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;type, size_t count, const char *name, const <a class="el" href="classsplash_1_1_domain.html">Domain</a> localDomain, const <a class="el" href="classsplash_1_1_domain.html">Domain</a> globalDomain, const void *buf)=0</td></tr>
+<tr class="separator:a11a3de66c56b98593f9c6c0a8d13fe51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79f84bced37d0fd395f10a85c894a0da"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsplash_1_1_i_domain_collector.html#a79f84bced37d0fd395f10a85c894a0da">appendDomain</a> (int32_t id, const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;type, size_t count, size_t offset, size_t striding, const char *name, const <a class="el" href="classsplash_1_1_domain.html">Domain</a> localDomain, const <a class="el" href="classsplash_1_1_domain.html">Domain</a> globalDomain, const void *buf)=0</td></tr>
+<tr class="separator:a79f84bced37d0fd395f10a85c894a0da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Interface for managing domains. See <a class="el" href="classsplash_1_1_domain_collector.html">DomainCollector</a> for more information. </p>
 
-<p>Definition at line <a class="el" href="_i_domain_collector_8hpp_source.html#l00044">44</a> of file <a class="el" href="_i_domain_collector_8hpp_source.html">IDomainCollector.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_i_domain_collector_8hpp_source.html#l00045">45</a> of file <a class="el" href="_i_domain_collector_8hpp_source.html">IDomainCollector.hpp</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a class="anchor" id="a60fa0935f08683f0c4f295228fefe4c5"></a>
 <div class="memitem">
@@ -110,12 +106,12 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Annotation (attribute) class for domain data. </p>
 
-<p>Definition at line <a class="el" href="_i_domain_collector_8hpp_source.html#l00051">51</a> of file <a class="el" href="_i_domain_collector_8hpp_source.html">IDomainCollector.hpp</a>.</p>
+<p>Definition at line <a class="el" href="_i_domain_collector_8hpp_source.html#l00052">52</a> of file <a class="el" href="_i_domain_collector_8hpp_source.html">IDomainCollector.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a2a0349bddc0921afba7419b82b47bdea"></a>
+<a class="anchor" id="a11a3de66c56b98593f9c6c0a8d13fe51"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -149,26 +145,14 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>domainOffset</em>, </td>
+          <td class="paramtype">const <a class="el" href="classsplash_1_1_domain.html">Domain</a>&#160;</td>
+          <td class="paramname"><em>localDomain</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>domainSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>globalDomainOffset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>globalDomainSize</em>, </td>
+          <td class="paramtype">const <a class="el" href="classsplash_1_1_domain.html">Domain</a>&#160;</td>
+          <td class="paramname"><em>globalDomain</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -195,20 +179,18 @@ Public Member Functions</h2></td></tr>
     <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
     <tr><td class="paramname">count</td><td>Number of elements to append. </td></tr>
     <tr><td class="paramname">name</td><td>Name for the dataset to create/append. </td></tr>
-    <tr><td class="paramname">domainOffset</td><td>Local offset of this subdomain. </td></tr>
-    <tr><td class="paramname">domainSize</td><td>Local size of this subdomain. </td></tr>
-    <tr><td class="paramname">globalDomainOffset</td><td>Logical offset of the global domain. </td></tr>
-    <tr><td class="paramname">globalDomainSize</td><td>Logical size of the global domain. </td></tr>
+    <tr><td class="paramname">localDomain</td><td>Local subdomain. </td></tr>
+    <tr><td class="paramname">globalDomain</td><td>Logical global domain. </td></tr>
     <tr><td class="paramname">buf</td><td>Buffer with data. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classsplash_1_1_domain_collector.html#a385e2c004076d54cbb81bacfc7727446">splash::DomainCollector</a>.</p>
+<p>Implemented in <a class="el" href="classsplash_1_1_domain_collector.html#a0f7d3fcabcd1e623d52b4d7141717995">splash::DomainCollector</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a5e7053e453dda14fff7e192b42966c40"></a>
+<a class="anchor" id="a79f84bced37d0fd395f10a85c894a0da"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -254,26 +236,14 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>domainOffset</em>, </td>
+          <td class="paramtype">const <a class="el" href="classsplash_1_1_domain.html">Domain</a>&#160;</td>
+          <td class="paramname"><em>localDomain</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>domainSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>globalDomainOffset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>globalDomainSize</em>, </td>
+          <td class="paramtype">const <a class="el" href="classsplash_1_1_domain.html">Domain</a>&#160;</td>
+          <td class="paramname"><em>globalDomain</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -302,16 +272,14 @@ Public Member Functions</h2></td></tr>
     <tr><td class="paramname">offset</td><td>Offset in elements to start reading from. </td></tr>
     <tr><td class="paramname">striding</td><td>Striding to be used for reading. Data must contain at least (striding * count) elements. 1 mean 'no striding'. </td></tr>
     <tr><td class="paramname">name</td><td>Name for the dataset to create/append. </td></tr>
-    <tr><td class="paramname">domainOffset</td><td>Local offset of this subdomain. </td></tr>
-    <tr><td class="paramname">domainSize</td><td>Local size of this subdomain. </td></tr>
-    <tr><td class="paramname">globalDomainOffset</td><td>Logical offset of the global domain. </td></tr>
-    <tr><td class="paramname">globalDomainSize</td><td>Logical size of the global domain. </td></tr>
+    <tr><td class="paramname">localDomain</td><td>Local subdomain. </td></tr>
+    <tr><td class="paramname">globalDomain</td><td>Logical global domain. </td></tr>
     <tr><td class="paramname">buf</td><td>Buffer with data. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classsplash_1_1_domain_collector.html#a2de17237c288404f91fd3737dfea45d6">splash::DomainCollector</a>.</p>
+<p>Implemented in <a class="el" href="classsplash_1_1_domain_collector.html#a1764aa84d329512632a3b478d35657f5">splash::DomainCollector</a>.</p>
 
 </div>
 </div>
@@ -405,7 +373,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a1f68830147e32652bf6eac17b67e0185"></a>
+<a class="anchor" id="a790f103dc4a76405bfee799fc3cb9408"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -427,14 +395,8 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>domainOffset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>domainSize</em>, </td>
+          <td class="paramtype">const <a class="el" href="classsplash_1_1_domain.html">Domain</a>&#160;</td>
+          <td class="paramname"><em>domain</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -465,8 +427,7 @@ Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">id</td><td>ID of the iteration. </td></tr>
     <tr><td class="paramname">name</td><td>Name of the dataset. </td></tr>
-    <tr><td class="paramname">domainOffset</td><td><a class="el" href="classsplash_1_1_domain.html">Domain</a> offset for reading (logical start of the requested partition). </td></tr>
-    <tr><td class="paramname">domainSize</td><td><a class="el" href="classsplash_1_1_domain.html">Domain</a> size for reading (logical size of the requested partition). </td></tr>
+    <tr><td class="paramname">domain</td><td><a class="el" href="classsplash_1_1_domain.html">Domain</a> for reading. </td></tr>
     <tr><td class="paramname">dataClass</td><td>Optional domain type annotation, can be NULL. </td></tr>
     <tr><td class="paramname">lazyLoad</td><td>Set to load only size information for each subdomain, data must be loaded later using <a class="el" href="classsplash_1_1_i_domain_collector.html#a4ce54a707718dd7ef285112eeba8e555">IDomainCollector::readDomainLazy</a>. </td></tr>
   </table>
@@ -474,7 +435,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns a pointer to a newly allocated <a class="el" href="classsplash_1_1_data_container.html">DataContainer</a> holding all subdomains. </dd></dl>
 
-<p>Implemented in <a class="el" href="classsplash_1_1_parallel_domain_collector.html#a91a3f14b84f9b887aa0c01021a7ae01d">splash::ParallelDomainCollector</a>, and <a class="el" href="classsplash_1_1_domain_collector.html#abaf2497bfa08be225824cd58a574ec0f">splash::DomainCollector</a>.</p>
+<p>Implemented in <a class="el" href="classsplash_1_1_parallel_domain_collector.html#ace47c19c8fc58a9d077a668e07e4a4dd">splash::ParallelDomainCollector</a>, and <a class="el" href="classsplash_1_1_domain_collector.html#a676b96ed6d84e0074142eef1cf74440a">splash::DomainCollector</a>.</p>
 
 </div>
 </div>
@@ -511,7 +472,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a3986ee69fcb32f6cb06395cf426aa7d9"></a>
+<a class="anchor" id="a390b31d09bef3f15a7757b420e6af901"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -539,8 +500,8 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>srcData</em>, </td>
+          <td class="paramtype">const <a class="el" href="classsplash_1_1_selection.html">Selection</a>&#160;</td>
+          <td class="paramname"><em>select</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -551,26 +512,14 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>domainOffset</em>, </td>
+          <td class="paramtype">const <a class="el" href="classsplash_1_1_domain.html">Domain</a>&#160;</td>
+          <td class="paramname"><em>localDomain</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>domainSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>globalDomainOffset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>globalDomainSize</em>, </td>
+          <td class="paramtype">const <a class="el" href="classsplash_1_1_domain.html">Domain</a>&#160;</td>
+          <td class="paramname"><em>globalDomain</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -602,268 +551,17 @@ Public Member Functions</h2></td></tr>
     <tr><td class="paramname">id</td><td>ID of the iteration for writing. </td></tr>
     <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
     <tr><td class="paramname">ndims</td><td>Number of dimensions (1-3). </td></tr>
-    <tr><td class="paramname">srcData</td><td>dimensions of the data in the buffer </td></tr>
+    <tr><td class="paramname">select</td><td><a class="el" href="classsplash_1_1_selection.html">Selection</a> in src buffer. </td></tr>
     <tr><td class="paramname">name</td><td>Name for the dataset to create/append. </td></tr>
-    <tr><td class="paramname">domainOffset</td><td>Local offset of this subdomain. </td></tr>
-    <tr><td class="paramname">domainSize</td><td>Local size of this subdomain. </td></tr>
-    <tr><td class="paramname">globalDomainOffset</td><td>Logical offset of the global domain. </td></tr>
-    <tr><td class="paramname">globalDomainSize</td><td>Logical size of the global domain. </td></tr>
+    <tr><td class="paramname">localDomain</td><td>Local subdomain. </td></tr>
+    <tr><td class="paramname">globalDomain</td><td>Logical global domain. </td></tr>
     <tr><td class="paramname">dataClass</td><td>Subdomain type annotation. </td></tr>
     <tr><td class="paramname">buf</td><td>Buffer with data. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classsplash_1_1_parallel_domain_collector.html#affdddb7cb251a4082aa349784e29b6a8">splash::ParallelDomainCollector</a>, <a class="el" href="classsplash_1_1_domain_collector.html#a4b745a245075bf4c8d65a55788962ad9">splash::DomainCollector</a>, and <a class="el" href="classsplash_1_1_i_parallel_domain_collector.html#aa70d586e18e7b6dac4443a3a585a5f0c">splash::IParallelDomainCollector</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a81b2dc3280ca6f580ef952d1f5035e0f"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void splash::IDomainCollector::writeDomain </td>
-          <td>(</td>
-          <td class="paramtype">int32_t&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;&#160;</td>
-          <td class="paramname"><em>type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>ndims</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>srcBuffer</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>srcData</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>srcOffset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>domainOffset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>domainSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>globalDomainOffset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>globalDomainSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classsplash_1_1_i_domain_collector.html#a60fa0935f08683f0c4f295228fefe4c5">DomDataClass</a>&#160;</td>
-          <td class="paramname"><em>dataClass</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>buf</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Writes data with annotated domain information.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>ID of the iteration for writing. </td></tr>
-    <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
-    <tr><td class="paramname">ndims</td><td>Number of dimensions (1-3). </td></tr>
-    <tr><td class="paramname">srcBuffer</td><td>Size of the buffer to read from. </td></tr>
-    <tr><td class="paramname">srcData</td><td>dimensions of the data in the buffer </td></tr>
-    <tr><td class="paramname">srcOffset</td><td>Offset of <code>srcData</code> in <code>srcBuffer</code>. </td></tr>
-    <tr><td class="paramname">name</td><td>Name for the dataset to create/append. </td></tr>
-    <tr><td class="paramname">domainOffset</td><td>Local offset of this subdomain. </td></tr>
-    <tr><td class="paramname">domainSize</td><td>Local size of this subdomain. </td></tr>
-    <tr><td class="paramname">globalDomainOffset</td><td>Logical offset of the global domain. </td></tr>
-    <tr><td class="paramname">globalDomainSize</td><td>Logical size of the global domain. </td></tr>
-    <tr><td class="paramname">dataClass</td><td>Subdomain type annotation. </td></tr>
-    <tr><td class="paramname">buf</td><td>Buffer with data. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Implemented in <a class="el" href="classsplash_1_1_parallel_domain_collector.html#abe41eb71eb0c17ea292d7d002d6cd7d3">splash::ParallelDomainCollector</a>, <a class="el" href="classsplash_1_1_domain_collector.html#aac03205f181f7a15d20500d9b3eedb7e">splash::DomainCollector</a>, and <a class="el" href="classsplash_1_1_i_parallel_domain_collector.html#a33b7ca75bd315d1aca136c24ce7aca04">splash::IParallelDomainCollector</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="afce02f4d207deb78deb819e0fbcc9e88"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void splash::IDomainCollector::writeDomain </td>
-          <td>(</td>
-          <td class="paramtype">int32_t&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_collection_type.html">CollectionType</a> &amp;&#160;</td>
-          <td class="paramname"><em>type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>ndims</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>srcBuffer</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>srcStride</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>srcData</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>srcOffset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>domainOffset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>domainSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>globalDomainOffset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsplash_1_1_dimensions.html">Dimensions</a>&#160;</td>
-          <td class="paramname"><em>globalDomainSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classsplash_1_1_i_domain_collector.html#a60fa0935f08683f0c4f295228fefe4c5">DomDataClass</a>&#160;</td>
-          <td class="paramname"><em>dataClass</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>buf</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Writes data with annotated domain information.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>ID of the iteration for writing. </td></tr>
-    <tr><td class="paramname">type</td><td>Type information for data. </td></tr>
-    <tr><td class="paramname">ndims</td><td>Number of dimensions (1-3). </td></tr>
-    <tr><td class="paramname">srcBuffer</td><td>Size of the buffer to read from. </td></tr>
-    <tr><td class="paramname">srcStride</td><td>Size of striding in each dimension. 1 means 'no stride'. </td></tr>
-    <tr><td class="paramname">srcData</td><td>Size of the data in the buffer. </td></tr>
-    <tr><td class="paramname">srcOffset</td><td>Offset of <code>srcData</code> in <code>srcBuffer</code>. </td></tr>
-    <tr><td class="paramname">name</td><td>Name for the dataset to create/append. </td></tr>
-    <tr><td class="paramname">domainOffset</td><td>Local offset of this subdomain. </td></tr>
-    <tr><td class="paramname">domainSize</td><td>Local size of this subdomain. </td></tr>
-    <tr><td class="paramname">globalDomainOffset</td><td>Logical offset of the global domain. </td></tr>
-    <tr><td class="paramname">globalDomainSize</td><td>Logical size of the global domain. </td></tr>
-    <tr><td class="paramname">dataClass</td><td>Subdomain type annotation. </td></tr>
-    <tr><td class="paramname">buf</td><td>Buffer with data. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Implemented in <a class="el" href="classsplash_1_1_parallel_domain_collector.html#a0c230e814de87f43e68dee4f2bcdd96b">splash::ParallelDomainCollector</a>, <a class="el" href="classsplash_1_1_domain_collector.html#ad82b0b552cc50740dd48b154fca5b65c">splash::DomainCollector</a>, and <a class="el" href="classsplash_1_1_i_parallel_domain_collector.html#ad899472e5e5795a2c2d3d543565ac037">splash::IParallelDomainCollector</a>.</p>
+<p>Implemented in <a class="el" href="classsplash_1_1_parallel_domain_collector.html#a31ad5ce8ffca906b5b6949681b9eb13c">splash::ParallelDomainCollector</a>, <a class="el" href="classsplash_1_1_domain_collector.html#a25f74739b3bf75343efffb1847c68d9c">splash::DomainCollector</a>, and <a class="el" href="classsplash_1_1_i_parallel_domain_collector.html#af21f7af3f7dc7a76003f4f5e83c30558">splash::IParallelDomainCollector</a>.</p>
 
 </div>
 </div>
@@ -873,7 +571,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jan 28 2014 15:38:48 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 2 2014 09:58:47 for libDataCollector by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.4
 </small></address>

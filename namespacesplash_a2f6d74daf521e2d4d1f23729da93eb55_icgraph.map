@@ -1,15 +1,16 @@
 <map id="splash::log_msg" name="splash::log_msg">
-<area shape="rect" id="node3" href="$classsplash_1_1_domain_collector.html#abaf2497bfa08be225824cd58a574ec0f" title="splash::DomainCollector\l::readDomain" alt="" coords="188,5,345,49"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_domain_collector.html#a676b96ed6d84e0074142eef1cf74440a" title="splash::DomainCollector\l::readDomain" alt="" coords="188,5,345,49"/>
 <area shape="rect" id="node5" href="$namespacesplash.html#a25814150ab7b3bf2777217442cddfe44" title="splash::parseEnvVars" alt="" coords="196,71,337,99"/>
-<area shape="rect" id="node11" href="$classsplash_1_1_parallel_data_collector.html#a260c66f709875d5ec893bcbe9826f7e1" title="splash::ParallelDataCollector\l::open" alt="" coords="175,122,359,166"/>
-<area shape="rect" id="node13" href="$classsplash_1_1_parallel_data_collector.html#a834c63d632fb9ea6e593e3e0d848241d" title="splash::ParallelDataCollector\l::close" alt="" coords="175,189,359,233"/>
-<area shape="rect" id="node15" href="$classsplash_1_1_parallel_data_collector.html#a716a0977d3d8802d6ef3164437ff51a8" title="splash::ParallelDataCollector\l::readGlobalAttribute" alt="" coords="175,255,359,299"/>
-<area shape="rect" id="node17" href="$classsplash_1_1_parallel_data_collector.html#a630bfc10784f353ba5bf560573c0e28d" title="splash::ParallelDataCollector\l::writeGlobalAttribute" alt="" coords="175,322,359,366"/>
-<area shape="rect" id="node19" href="$classsplash_1_1_parallel_data_collector.html#abe3f814adcf8e6254a992cc7b49283f3" title="splash::ParallelDataCollector\l::remove" alt="" coords="175,389,359,433"/>
-<area shape="rect" id="node21" href="$classsplash_1_1_parallel_domain_collector.html#a91a3f14b84f9b887aa0c01021a7ae01d" title="splash::ParallelDomainCollector\l::readDomain" alt="" coords="165,455,368,499"/>
-<area shape="rect" id="node23" href="$classsplash_1_1_serial_data_collector.html#aea4e54e96b5ca6c9aabd519360ac9010" title="splash::SerialDataCollector\l::open" alt="" coords="180,522,353,566"/>
-<area shape="rect" id="node25" href="$classsplash_1_1_serial_data_collector.html#a59ca72ddd5e11d0a7e38197bbe724802" title="splash::SerialDataCollector\l::close" alt="" coords="180,589,353,633"/>
-<area shape="rect" id="node27" href="$classsplash_1_1_serial_data_collector.html#a5e2815e750beb90494f5005c3be8a143" title="splash::SerialDataCollector\l::remove" alt="" coords="180,655,353,699"/>
+<area shape="rect" id="node11" href="$classsplash_1_1_parallel_data_collector.html#a5de5d6fa5346590fafcde4a6f075f8fb" title="splash::ParallelDataCollector\l::finalize" alt="" coords="175,122,359,166"/>
+<area shape="rect" id="node13" href="$classsplash_1_1_parallel_data_collector.html#a260c66f709875d5ec893bcbe9826f7e1" title="splash::ParallelDataCollector\l::open" alt="" coords="175,189,359,233"/>
+<area shape="rect" id="node15" href="$classsplash_1_1_parallel_data_collector.html#a834c63d632fb9ea6e593e3e0d848241d" title="splash::ParallelDataCollector\l::close" alt="" coords="175,255,359,299"/>
+<area shape="rect" id="node17" href="$classsplash_1_1_parallel_data_collector.html#a716a0977d3d8802d6ef3164437ff51a8" title="splash::ParallelDataCollector\l::readGlobalAttribute" alt="" coords="175,322,359,366"/>
+<area shape="rect" id="node19" href="$classsplash_1_1_parallel_data_collector.html#a630bfc10784f353ba5bf560573c0e28d" title="splash::ParallelDataCollector\l::writeGlobalAttribute" alt="" coords="175,389,359,433"/>
+<area shape="rect" id="node21" href="$classsplash_1_1_parallel_data_collector.html#abe3f814adcf8e6254a992cc7b49283f3" title="splash::ParallelDataCollector\l::remove" alt="" coords="175,455,359,499"/>
+<area shape="rect" id="node23" href="$classsplash_1_1_parallel_domain_collector.html#ace47c19c8fc58a9d077a668e07e4a4dd" title="splash::ParallelDomainCollector\l::readDomain" alt="" coords="165,522,368,566"/>
+<area shape="rect" id="node25" href="$classsplash_1_1_serial_data_collector.html#aea4e54e96b5ca6c9aabd519360ac9010" title="splash::SerialDataCollector\l::open" alt="" coords="180,589,353,633"/>
+<area shape="rect" id="node27" href="$classsplash_1_1_serial_data_collector.html#a59ca72ddd5e11d0a7e38197bbe724802" title="splash::SerialDataCollector\l::close" alt="" coords="180,655,353,699"/>
+<area shape="rect" id="node29" href="$classsplash_1_1_serial_data_collector.html#a5e2815e750beb90494f5005c3be8a143" title="splash::SerialDataCollector\l::remove" alt="" coords="180,722,353,766"/>
 <area shape="rect" id="node7" href="$classsplash_1_1_parallel_data_collector.html#a163072d211feae64e96eb46a2cdd2fdf" title="splash::ParallelDataCollector\l::ParallelDataCollector" alt="" coords="417,30,601,74"/>
 <area shape="rect" id="node9" href="$classsplash_1_1_serial_data_collector.html#af05eb8a493e303837ef18d2d113c6ea8" title="splash::SerialDataCollector\l::SerialDataCollector" alt="" coords="423,97,596,141"/>
 </map>
