@@ -807,7 +807,9 @@ namespace splash
 
         DCDataSet dataset(name);
         // always create dataset but write data only if all dimensions > 0 and data available
-        dataset.create(datatype, group, select.count, ndims, this->enableCompression);
+        // not extensible
+        dataset.create(datatype, group, select.count, ndims,
+                this->enableCompression, false);
         if (data && (select.count.getScalarSize() > 0))
             dataset.write(select, Dimensions(0, 0, 0), data);
         dataset.close();
@@ -824,7 +826,8 @@ namespace splash
         if (!dataset.open(group))
         {
             Dimensions data_size(count, 1, 1);
-            dataset.create(datatype, group, data_size, 1, this->enableCompression);
+            // create dataset extensible
+            dataset.create(datatype, group, data_size, 1, this->enableCompression, true);
 
             if (count > 0)
                 dataset.write(Selection(data_size,

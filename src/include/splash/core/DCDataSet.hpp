@@ -89,9 +89,10 @@ namespace splash
          * @param size target size
          * @param ndims number of dimensions
          * @param compression enables transparent compression on the data
+         * @param extensible enable the dataset to be extensible
          */
         void create(const CollectionType& colType, hid_t group, const Dimensions size,
-                uint32_t ndims, bool compression) throw (DCException);
+                uint32_t ndims, bool compression, bool extensible) throw (DCException);
 
         /**
          * Create an object reference

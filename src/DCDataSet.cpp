@@ -194,7 +194,8 @@ namespace splash
     }
 
     void DCDataSet::create(const CollectionType& colType,
-            hid_t group, const Dimensions size, uint32_t ndims, bool compression)
+            hid_t group, const Dimensions size, uint32_t ndims,
+            bool compression, bool extensible)
     throw (DCException)
     {
         log_msg(2, "DCDataSet::create (%s, size %s)", name.c_str(), size.toString().c_str());
@@ -222,7 +223,12 @@ namespace splash
         {
             hsize_t *max_dims = new hsize_t[ndims];
             for (size_t i = 0; i < ndims; ++i)
-                max_dims[i] = H5F_UNLIMITED;
+            {
+                if (extensible)
+                    max_dims[i] = H5F_UNLIMITED;
+                else
+                    max_dims[i] = getPhysicalSize()[i];
+            }
 
             dataspace = H5Screate_simple(ndims, getPhysicalSize().getPointer(), max_dims);
 
