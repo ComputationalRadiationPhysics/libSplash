@@ -9,7 +9,8 @@ using the command
 `$ git clone git@github.com:ComputationalRadiationPhysics/libSplash.git`
 
 Building libSplash **requires HDF5 in version 1.8.6** or higher with **shared library support**
-(`--enable-shared`).
+`--enable-shared`.
+For **parallel output** with MPI configure with `--enable-parallel`.
 However, we recommend that you use HDF5 1.8.11 or newer for best support and results.
 
 To use the CMakeLists.txt file which comes with the source code, you must have
