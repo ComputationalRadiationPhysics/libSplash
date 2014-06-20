@@ -917,7 +917,9 @@ namespace splash
 
         DCParallelDataSet dataset(name);
         // always create dataset but write data only if all dimensions > 0
-        dataset.create(datatype, group, globalSize, ndims, this->options.enableCompression);
+        // not extensible
+        dataset.create(datatype, group, globalSize, ndims,
+                this->options.enableCompression, false);
         dataset.write(srcSelect, globalOffset, data);
         dataset.close();
     }
@@ -1017,8 +1019,9 @@ namespace splash
         group.openCreate(handles.get(id), group_path);
 
         DCParallelDataSet dataset(dset_name.c_str());
-        // create the empty dataset
-        dataset.create(type, group.getHandle(), globalSize, ndims, this->options.enableCompression);
+        // create the empty extensible dataset
+        dataset.create(type, group.getHandle(), globalSize, ndims,
+                this->options.enableCompression, true);
         dataset.close();
     }
 
