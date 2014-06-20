@@ -1,6 +1,22 @@
 Change Log for libSplash
 ================================================================
 
+Release 1.2.1
+-------------
+**Date:** 2014-06-20
+
+This release contains a minor improvement in the data format.
+The internal format was increased to version 2.1 (which is
+backwards compatible to all 2.x formated files).
+
+**Misc**
+
+ - parallel simple data test re-enabled #130
+ - data sets: use fixed size (non-extensible) by default,
+   use `H5F_UNLIMTED` only in append mode #135
+ - update install notes #134
+
+
 Release 1.2.0
 -------------
 **Date:** 2014-04-30
