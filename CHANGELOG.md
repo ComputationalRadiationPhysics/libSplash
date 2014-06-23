@@ -1,6 +1,14 @@
 Change Log for libSplash
 ================================================================
 
+Release 1.2.2
+-------------
+**Date:** 2014-06-21
+
+That release was necessary since we forgot to bump the version
+number in <splash/version.hpp> with the last release.
+
+
 Release 1.2.1
 -------------
 **Date:** 2014-06-20
