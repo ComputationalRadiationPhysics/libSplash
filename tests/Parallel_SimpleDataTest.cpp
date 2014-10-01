@@ -24,6 +24,8 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
+#include <set>
+#include <string>
 
 #include "Parallel_SimpleDataTest.h"
 
@@ -107,6 +109,7 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
 {
     bool results_correct = true;
     DataCollector::FileCreationAttr fileCAttr;
+    std::set<std::string> datasetNames;
 
 #if defined TESTS_DEBUG
     if (currentMpiRank == 0)
@@ -128,6 +131,13 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
 
     parallelDataCollector->write(iteration, ctInt, dimensions, gridSize,
             "deep/folder/data", dataWrite);
+    datasetNames.insert("deep/folder/data/");
+    parallelDataCollector->write(iteration, ctInt, dimensions, gridSize,
+            "deep/folder/data2", dataWrite);
+    datasetNames.insert("deep/folder/data2/");
+    parallelDataCollector->write(iteration, ctInt, dimensions, gridSize,
+            "another_dataset", dataWrite);
+    datasetNames.insert("another_dataset/");
     parallelDataCollector->close();
 
     delete[] dataWrite;
@@ -168,6 +178,36 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
             MPI_INFO_NULL, mpiSize, 1);
 
     readCollector->open(HDF5_FILE, fileCAttr);
+    
+    /* test entries listing */
+    {
+        DataCollector::DCEntry *entries = NULL;
+        size_t numEntries = 0;
+
+        int32_t *ids = NULL;
+        size_t numIDs = 0;
+        readCollector->getEntryIDs(NULL, &numIDs);
+        /* there might be old files, but we are at least at the current iteration */
+        CPPUNIT_ASSERT(numIDs >= iteration + 1);
+        ids = new int32_t[numIDs];
+        readCollector->getEntryIDs(ids, NULL);
+
+        readCollector->getEntriesForID(iteration, NULL, &numEntries);
+        CPPUNIT_ASSERT(numEntries == 3);
+        entries = new DataCollector::DCEntry[numEntries];
+        readCollector->getEntriesForID(iteration, entries, NULL);
+
+        CPPUNIT_ASSERT(numEntries == datasetNames.size());
+        for (uint32_t i = 0; i < numEntries; ++i)
+        {
+            /* test that listed datasets match expected dataset names*/
+            CPPUNIT_ASSERT(datasetNames.find(entries[i].name) != datasetNames.end());
+        }
+
+        delete[] entries;
+        delete[] ids;
+    }
+    
     readCollector->read(iteration, "deep/folder/data", size_read, data_read);
     readCollector->close();
 
