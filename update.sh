@@ -19,7 +19,7 @@ doxygen
 
 # update old documentation
 cd $myDir
-rsync -r --delete --filter='P update.sh' --filter='P .git' $TMPDIR/libSplash/doc/doxygenDoku/html/ .
+rsync -r --delete --filter='P update.sh' --filter='P .git' --filter="P .nojekyll" $TMPDIR/libSplash/doc/doxygenDoku/html/ .
 
 rm -rf $TDIR
 exit 0
