@@ -131,13 +131,13 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
 
     parallelDataCollector->write(iteration, ctInt, dimensions, gridSize,
             "deep/folder/data", dataWrite);
-    datasetNames.insert("deep/folder/data/");
+    datasetNames.insert("deep/folder/data");
     parallelDataCollector->write(iteration, ctInt, dimensions, gridSize,
             "deep/folder/data2", dataWrite);
-    datasetNames.insert("deep/folder/data2/");
+    datasetNames.insert("deep/folder/data2");
     parallelDataCollector->write(iteration, ctInt, dimensions, gridSize,
             "another_dataset", dataWrite);
-    datasetNames.insert("another_dataset/");
+    datasetNames.insert("another_dataset");
     parallelDataCollector->close();
 
     delete[] dataWrite;
