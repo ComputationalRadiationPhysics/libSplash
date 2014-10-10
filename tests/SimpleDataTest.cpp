@@ -79,11 +79,11 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
         dataWrite[i] = i;
 
     dataCollector->write(10, ctUInt64, dimensions, Selection(gridSize), "deep/folders/data", dataWrite);
-    datasetNames.insert("deep/folders/data/");
+    datasetNames.insert("deep/folders/data");
 
     dataCollector->write(20, ctUInt64, dimensions, Selection(gridSize, smallGridSize,
             borderSize), "deep/folders/data_without_borders", dataWrite);
-    datasetNames.insert("deep/folders/data_without_borders/");
+    datasetNames.insert("deep/folders/data_without_borders");
 
     dataCollector->close();
 
