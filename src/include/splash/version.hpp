@@ -26,7 +26,7 @@
 /** the splash version reflects the changes in API */
 #define SPLASH_VERSION_MAJOR 1
 #define SPLASH_VERSION_MINOR 2
-#define SPLASH_VERSION_PATCH 2
+#define SPLASH_VERSION_PATCH 3
 
 /** we can always handle files from the same major release
  *  changes in the minor number have to be backwards compatible
