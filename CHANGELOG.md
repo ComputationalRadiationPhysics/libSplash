@@ -1,6 +1,22 @@
 Change Log for libSplash
 ================================================================
 
+Release 1.2.3
+-------------
+**Date:** 2014-10-14
+
+This release contains a minor fix for listing entries and groups.
+
+**Misc**
+
+ - Remove / from datasets when listing entries #143
+
+
+**Bug Fixes**
+
+ - Fix bug when querying DCGroup entries #142
+
+
 Release 1.2.2
 -------------
 **Date:** 2014-06-21
