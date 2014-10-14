@@ -176,8 +176,13 @@ namespace splash
                 H5Lget_name_by_idx(base, ".", H5_INDEX_NAME,
                         H5_ITER_INC, i, link_name_c, len_name + 1, H5P_LINK_ACCESS_DEFAULT);
 
-                currentEntryName = std::string(link_name_c) + std::string("/");
+                currentEntryName = std::string(link_name_c);
+                if (obj_info.type == H5O_TYPE_GROUP)
+                {
+                    currentEntryName += std::string("/");
+                }
                 currentBaseName += currentEntryName;
+
                 delete[] link_name_c;
             }
 
@@ -191,7 +196,7 @@ namespace splash
             if (obj_info.type == H5O_TYPE_DATASET)
             {
                 if (param->entries)
-                    param->entries[param->count].name = currentEntryName;
+                    param->entries[param->count].name = currentBaseName;
 
                 param->count++;
             }

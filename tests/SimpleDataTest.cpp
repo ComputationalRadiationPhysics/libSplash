@@ -25,6 +25,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <limits.h>
+#include <set>
+#include <string>
 
 #include "SimpleDataTest.h"
 
@@ -56,6 +58,7 @@ SimpleDataTest::~SimpleDataTest()
 bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize, uint32_t dimensions)
 {
     bool resultsCorrect = true;
+    std::set<std::string> datasetNames;
 
     Dimensions smallGridSize(gridSize[0] - 2 * borderSize[0],
             gridSize[1] - 2 * borderSize[1],
@@ -76,9 +79,11 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
         dataWrite[i] = i;
 
     dataCollector->write(10, ctUInt64, dimensions, Selection(gridSize), "deep/folders/data", dataWrite);
+    datasetNames.insert("deep/folders/data");
 
     dataCollector->write(20, ctUInt64, dimensions, Selection(gridSize, smallGridSize,
             borderSize), "deep/folders/data_without_borders", dataWrite);
+    datasetNames.insert("deep/folders/data_without_borders");
 
     dataCollector->close();
 
@@ -109,10 +114,14 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
         entries = new DataCollector::DCEntry[numEntries];
         dataCollector->getEntriesForID(ids[j], entries, NULL);
 
-#if defined TESTS_DEBUG
         for (uint32_t i = 0; i < numEntries; ++i)
+        {
+#if defined TESTS_DEBUG
             printf("id=%d name=%s\n", ids[j], entries[i].name.c_str());
 #endif
+            /* test that listed datasets match expected dataset names*/
+            CPPUNIT_ASSERT(datasetNames.find(entries[i].name) != datasetNames.end());
+        }
 
         delete[] entries;
     }
