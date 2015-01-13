@@ -26,6 +26,7 @@
 
 #include <map>
 #include <cmath>
+#include <cstdlib>
 #include <sstream>
 #include <iostream>
 #include <hdf5.h>
@@ -147,7 +148,7 @@ namespace splash
             while (current_chunk_size < target_chunk_size)
             {
                 // test if increasing chunk size optimizes towards target chunk size
-                size_t chunk_diff = std::abs(target_chunk_size - (current_chunk_size * 2));
+                size_t chunk_diff = abs(target_chunk_size - (current_chunk_size * 2));
                 if (chunk_diff >= last_chunk_diff)
                     break;
 
