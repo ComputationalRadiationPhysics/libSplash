@@ -84,6 +84,8 @@ void Parallel_ZeroAccessTest::testZeroAccess()
     /* test loops */
     for (size_t loop = 0; loop < NUM_TEST_LOOPS; ++loop)
     {
+        int64_t *nullData = NULL;
+
         /* clear data buffer */
         for (size_t i = 0; i < dataSize; ++i)
             data[i] = -1;
@@ -91,8 +93,10 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         /* set and write number of data elements for this round */
         size_t elements = 0;
         size_t zeroAccess = rand() % 2;
-        if (!zeroAccess)
-         elements = (rand() % dataSize) + 1;
+        if (!zeroAccess) {
+            elements = (rand() % dataSize) + 1;
+            nullData = new int64_t[elements];
+        }
         
         size_t readElements = 100000;
         for (size_t i = 0; i < elements; ++i)
@@ -149,8 +153,19 @@ void Parallel_ZeroAccessTest::testZeroAccess()
         /* read data for comparison */
         pdc->read(10, Dimensions(readElements, 1, 1), Dimensions(myOffset, 0, 0),
                 "data", sizeRead, data);
-        
+
         CPPUNIT_ASSERT(sizeRead == Dimensions(elements, 1, 1));
+
+        /* read data, use NULL ptr if none elements to read */
+        pdc->read(10, Dimensions(readElements, 1, 1), Dimensions(myOffset, 0, 0),
+                "data", sizeRead, nullData);
+
+        CPPUNIT_ASSERT(sizeRead == Dimensions(elements, 1, 1));
+
+        if (nullData)
+        {
+            delete[] nullData;
+        }
         
         for (size_t i = 0; i < dataSize; ++i)
         {
