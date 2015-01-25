@@ -10,7 +10,7 @@ This release fixes a bug with parallel NULL reads.
 **Bug Fixes**
 
  - Fix Null-Access Parallel Read Hang #148
- - Fix compile error on Read Hat #147
+ - Fix compile error on Red Hat #147
 
 
 Release 1.2.3
