@@ -1,6 +1,18 @@
 Change Log for libSplash
 ================================================================
 
+Release 1.2.4
+-------------
+**Date:** 2015-01-25
+
+This release fixes a bug with parallel NULL reads.
+
+**Bug Fixes**
+
+ - Fix Null-Access Parallel Read Hang #148
+ - Fix compile error on Red Hat #147
+
+
 Release 1.2.3
 -------------
 **Date:** 2014-10-14
