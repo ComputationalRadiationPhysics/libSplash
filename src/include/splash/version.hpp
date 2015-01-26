@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt, Axel Huebl
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  *
@@ -26,7 +26,7 @@
 /** the splash version reflects the changes in API */
 #define SPLASH_VERSION_MAJOR 1
 #define SPLASH_VERSION_MINOR 2
-#define SPLASH_VERSION_PATCH 3
+#define SPLASH_VERSION_PATCH 4
 
 /** we can always handle files from the same major release
  *  changes in the minor number have to be backwards compatible
