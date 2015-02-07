@@ -31,7 +31,7 @@
 /** we can always handle files from the same major release
  *  changes in the minor number have to be backwards compatible
  */
-#define SPLASH_FILE_FORMAT_MAJOR 2
-#define SPLASH_FILE_FORMAT_MINOR 1
+#define SPLASH_FILE_FORMAT_MAJOR 3
+#define SPLASH_FILE_FORMAT_MINOR 0
 
 #endif	/* VERSION_HPP */
