@@ -42,6 +42,7 @@ before_script:
   - lsb_release -a
   - echo "$SRC"
   - ls -hal $SRC
+  - ls -hal /usr/include
 # PPA providing hdf5 >= 1.8.6 and OpenMPI >= 1.5.1
 # -> remove legacy hdf5 and mpi packages/deps from travis
   - sudo apt-get remove -qq libhdf5* libopenmpi* openmpi-bin
@@ -58,4 +59,10 @@ before_script:
   - sudo apt-get install -qq -f libboost-program-options-dev
   - sudo apt-get -t o=LP-PPA-james-page-openmpi install -q -f $APTMPI
   - sudo apt-get -t o=LP-PPA-axel-huebl-libsplash install -q -f $APTHDF5
+  - sudo apt-get install python-numpy cython
+  - sudo -H pip install --upgrade pip
+#   numpy and cython should be already satisfied
+  - export HDF5_DIR=/usr
+  - export C_INCLUDE_PATH=/usr/lib/openmpi/include
+  - pip install --user h5py
   - mkdir -p $BUILD ~/lib
