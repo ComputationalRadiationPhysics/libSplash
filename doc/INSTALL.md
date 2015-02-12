@@ -17,7 +17,8 @@ To use the CMakeLists.txt file which comes with the source code, you must have
 The splashtools and some tests also require an **MPI 2.2** compatible MPI library,
 e.g. **OpenMPI 1.5.1** or higher.
 
-Tests require the development version of the **CppUnit** library.
+Our *tests* require the development version of the **CppUnit** library and
+python support for `h5py` & `numpy`.
 
 
 Compiling

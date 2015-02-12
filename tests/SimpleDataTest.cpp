@@ -40,7 +40,8 @@ using namespace splash;
 
 SimpleDataTest::SimpleDataTest() :
 ctUInt32(),
-ctUInt64()
+ctUInt64(),
+ctBool()
 {
     dataCollector = new SerialDataCollector(10);
     srand(time(NULL));
@@ -74,9 +75,13 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
     // initial part of the test: data is written to the file, once with and once
     // without borders
     uint64_t *dataWrite = new uint64_t[bufferSize];
+    bool     *boolWrite = new bool[bufferSize];
 
     for (uint64_t i = 0; i < bufferSize; i++)
+    {
         dataWrite[i] = i;
+        boolWrite[i] = ( i%2 == 0 );
+    }
 
     dataCollector->write(10, ctUInt64, dimensions, Selection(gridSize), "deep/folders/data", dataWrite);
     datasetNames.insert("deep/folders/data");
@@ -84,6 +89,13 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
     dataCollector->write(20, ctUInt64, dimensions, Selection(gridSize, smallGridSize,
             borderSize), "deep/folders/data_without_borders", dataWrite);
     datasetNames.insert("deep/folders/data_without_borders");
+
+    dataCollector->write(10, ctBool, dimensions, Selection(gridSize), "deep/folders/data_bool", boolWrite);
+    datasetNames.insert("deep/folders/data_bool");
+
+    dataCollector->write(20, ctBool, dimensions, Selection(gridSize, smallGridSize,
+            borderSize), "deep/folders/data_bool_without_borders", boolWrite);
+    datasetNames.insert("deep/folders/data_bool_without_borders");
 
     dataCollector->close();
 
@@ -103,6 +115,9 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
     int32_t *ids = NULL;
     size_t numIDs = 0;
     dataCollector->getEntryIDs(NULL, &numIDs);
+#if defined TESTS_DEBUG
+    printf("number of entry IDs=%d\n", numIDs);
+#endif
     CPPUNIT_ASSERT(numIDs == 2);
     ids = new int32_t[numIDs];
     dataCollector->getEntryIDs(ids, NULL);
@@ -110,7 +125,7 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
     for (uint32_t j = 0; j < numIDs; ++j)
     {
         dataCollector->getEntriesForID(ids[j], NULL, &numEntries);
-        CPPUNIT_ASSERT(numEntries == 1);
+        CPPUNIT_ASSERT(numEntries == 2);
         entries = new DataCollector::DCEntry[numEntries];
         dataCollector->getEntriesForID(ids[j], entries, NULL);
 
@@ -129,8 +144,12 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
     delete[] ids;
 
     uint64_t *dataRead = new uint64_t[bufferSize];
+    bool *boolRead = new bool[bufferSize];
     for (uint64_t i = 0; i < bufferSize; i++)
+    {
         dataRead[i] = UINT64_MAX;
+        boolRead[i] = false;
+    }
 
     Dimensions resultSize;
     dataCollector->read(10, "deep/folders/data", resultSize, dataRead);
@@ -138,17 +157,31 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
     for (uint32_t i = 0; i < 3; i++)
         CPPUNIT_ASSERT(resultSize[i] == gridSize[i]);
 
+    dataCollector->read(10, "deep/folders/data_bool", resultSize, boolRead);
+
     for (uint64_t i = 0; i < bufferSize; i++)
+    {
         if (dataRead[i] != dataWrite[i])
         {
 #if defined TESTS_DEBUG
-            std::cout << i << ": " << dataRead[i] << " != exptected " << dataWrite[i] << std::endl;
+            std::cout << i << ": " << dataRead[i] << " != expected " << dataWrite[i] << std::endl;
 #endif
             resultsCorrect = false;
             break;
         }
+        if (boolRead[i] != boolWrite[i])
+        {
+#if defined TESTS_DEBUG
+            std::cout << i << ": " << boolRead[i] << " != expected " << boolWrite[i] << std::endl;
+#endif
+            resultsCorrect = false;
+            break;
+        }
+    }
 
     delete[] dataRead;
+    delete[] boolRead;
+    delete[] boolWrite;
 
     CPPUNIT_ASSERT_MESSAGE("simple write/read failed", resultsCorrect);
 
