@@ -46,7 +46,7 @@ Licences can be found in [GPL](COPYING) or [LGPL](COPYING.LESSER), respectively.
 Install
 -------
 
-See our notes in [INSTALL.md](doc/INSTALL.md).
+See our notes in [INSTALL.md](INSTALL.md).
 
 
 Usage
