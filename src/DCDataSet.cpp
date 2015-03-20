@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Alexander Debus
  *
  * This file is part of libSplash. 
  * 
@@ -24,6 +24,8 @@
 #include <string>
 #include <sstream>
 #include <cassert>
+#include <sstream>
+#include <iomanip>
 
 #include "splash/sdc_defines.hpp"
 
@@ -34,14 +36,60 @@
 #include "splash/DCException.hpp"
 #include "splash/basetypes/ColTypeDim.hpp"
 
+herr_t H5Ewalk_strings(unsigned n, const H5E_error2_t *err_desc, void *client_data)
+{
+    //FILE		*stream = (FILE *)client_data;
+    std::ostringstream *stream = (std::ostringstream *)client_data;
+    const char		*maj_str = NULL;
+    const char		*min_str = NULL;
+
+    /* Check arguments */
+    assert (err_desc);
+    if (!client_data) client_data = stderr;
+
+    /* Get descriptions for the major and minor error numbers */
+    maj_str = H5Eget_major (err_desc->maj_num);
+    min_str = H5Eget_minor (err_desc->min_num);
+
+    /* Print error message */
+    
+    *stream << "  #" << std::setfill('0') << std::setw(3) << n;
+    *stream << ": " <<  err_desc->file_name << " line " << err_desc->line;
+    *stream << " in " << err_desc->func_name << "(): " << err_desc->desc << std::endl;
+    
+    /*fprintf (stream, "%*s#%03d: %s line %u in %s(): %s\n",
+         indent, "", n, err_desc->file_name, err_desc->line,
+         err_desc->func_name, err_desc->desc);*/
+    
+    *stream << "    major(" << std::setfill('0') << std::setw(2) << err_desc->maj_num;
+    *stream << "): " << maj_str << std::endl;
+    
+    /*fprintf (stream, "%*smajor(%02d): %s\n",
+         indent*2, "", err_desc->maj_num, maj_str);*/
+    
+    *stream << "    minor(" << std::setfill('0') << std::setw(2) << err_desc->min_num;
+    *stream << "): " << min_str << std::endl;
+    /*fprintf (stream, "%*sminor(%02d): %s\n",
+         indent*2, "", err_desc->min_num, min_str);*/
+
+    return 0;
+}
+
 namespace splash
 {
 
     std::string DCDataSet::getExceptionString(std::string msg)
     {
-        return (std::string("Exception for DCDataSet [") + name + std::string("] ") +
-                msg);
+        std::ostringstream stream("", std::ios_base::out);
+        H5Ewalk2( H5E_DEFAULT, H5E_WALK_DOWNWARD, &H5Ewalk_strings, (void*)&stream );
+        std::string result(std::string("Exception for DCDataSet [") + name + std::string("] ") +
+                msg + std::string("\n") + stream.str() );
+        
+        return result;
     }
+    
+    //herr_t H5Ewalk (H5E_direction_t direction, H5E_walk_t func, void *client_data)
+    //std::ostringstream *stream = std::ostringstream("", std::ios_base::out);
 
     void DCDataSet::splitPath(const std::string fullName, std::string &path, std::string &name)
     {

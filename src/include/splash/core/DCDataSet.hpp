@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Alexander Debus
  *
  * This file is part of libSplash. 
  * 
@@ -33,6 +33,8 @@
 #include "splash/Selection.hpp"
 #include "splash/CollectionType.hpp"
 #include "splash/basetypes/ColTypeDim.hpp"
+
+herr_t H5Ewalk_strings(unsigned n, const H5E_error2_t *err_desc, void *client_data);
 
 namespace splash
 {
@@ -258,7 +260,7 @@ namespace splash
     /**
      * \endcond
      */
-
+    
 }
 
 #endif	/* DCDATASET_HPP */
