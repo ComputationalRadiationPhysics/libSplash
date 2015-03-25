@@ -36,61 +36,54 @@
 #include "splash/DCException.hpp"
 #include "splash/basetypes/ColTypeDim.hpp"
 
-herr_t H5Ewalk_strings(unsigned n, const H5E_error2_t *err_desc, void *client_data)
-{
-    //FILE		*stream = (FILE *)client_data;
-    std::ostringstream *stream = (std::ostringstream *)client_data;
-    const char		*maj_str = NULL;
-    const char		*min_str = NULL;
-
-    /* Check arguments */
-    assert (err_desc);
-    if (!client_data) client_data = stderr;
-
-    /* Get descriptions for the major and minor error numbers */
-    maj_str = H5Eget_major (err_desc->maj_num);
-    min_str = H5Eget_minor (err_desc->min_num);
-
-    /* Print error message */
-    
-    *stream << "  #" << std::setfill('0') << std::setw(3) << n;
-    *stream << ": " <<  err_desc->file_name << " line " << err_desc->line;
-    *stream << " in " << err_desc->func_name << "(): " << err_desc->desc << std::endl;
-    
-    /*fprintf (stream, "%*s#%03d: %s line %u in %s(): %s\n",
-         indent, "", n, err_desc->file_name, err_desc->line,
-         err_desc->func_name, err_desc->desc);*/
-    
-    *stream << "    major(" << std::setfill('0') << std::setw(2) << err_desc->maj_num;
-    *stream << "): " << maj_str << std::endl;
-    
-    /*fprintf (stream, "%*smajor(%02d): %s\n",
-         indent*2, "", err_desc->maj_num, maj_str);*/
-    
-    *stream << "    minor(" << std::setfill('0') << std::setw(2) << err_desc->min_num;
-    *stream << "): " << min_str << std::endl;
-    /*fprintf (stream, "%*sminor(%02d): %s\n",
-         indent*2, "", err_desc->min_num, min_str);*/
-
-    return 0;
-}
-
 namespace splash
 {
+    herr_t H5Ewalk_strings(unsigned n, const H5E_error2_t *err_desc, void *client_data)
+    {
+        std::ostringstream *stream = (std::ostringstream *)client_data;
+        const char		*maj_str = NULL;
+        const char		*min_str = NULL;
 
-    std::string DCDataSet::getExceptionString(std::string msg)
+        /* Check arguments */
+        assert (err_desc);
+        if (!client_data) client_data = stderr;
+
+        /* Get descriptions for the major and minor error numbers */
+        maj_str = H5Eget_major (err_desc->maj_num);
+        min_str = H5Eget_minor (err_desc->min_num);
+
+        /* Print error message */
+        
+        *stream << "  #" << std::setfill('0') << std::setw(3) << n;
+        *stream << ": " <<  err_desc->file_name << " line " << err_desc->line;
+        *stream << " in " << err_desc->func_name << "(): " << err_desc->desc << std::endl;
+        
+        *stream << "    major(" << std::setfill('0') << std::setw(2) << err_desc->maj_num;
+        *stream << "): " << maj_str << std::endl;
+        
+        
+        *stream << "    minor(" << std::setfill('0') << std::setw(2) << err_desc->min_num;
+        *stream << "): " << min_str << std::endl;
+        
+        return 0;
+    }
+
+    std::string DCDataSet::getHDF5ExceptionString(std::string msg)
     {
         std::ostringstream stream("", std::ios_base::out);
-        H5Ewalk2( H5E_DEFAULT, H5E_WALK_DOWNWARD, &H5Ewalk_strings, (void*)&stream );
+        H5Ewalk2( H5E_DEFAULT, H5E_WALK_DOWNWARD, &splash::H5Ewalk_strings, (void*)&stream );
         std::string result(std::string("Exception for DCDataSet [") + name + std::string("] ") +
                 msg + std::string("\n") + stream.str() );
         
         return result;
     }
-    
-    //herr_t H5Ewalk (H5E_direction_t direction, H5E_walk_t func, void *client_data)
-    //std::ostringstream *stream = std::ostringstream("", std::ios_base::out);
 
+    std::string DCDataSet::getExceptionString(std::string msg)
+    {
+        return (std::string("Exception for DCDataSet [") + name + std::string("] ") +
+                msg);
+    }
+    
     void DCDataSet::splitPath(const std::string fullName, std::string &path, std::string &name)
     {
         std::string::size_type pos = fullName.find_last_of('/');
@@ -167,27 +160,27 @@ namespace splash
         dataset = H5Dopen(group, name.c_str(), H5P_DATASET_ACCESS_DEFAULT);
 
         if (dataset < 0)
-            throw DCException(getExceptionString("open: Failed to open dataset"));
+            throw DCException(getHDF5ExceptionString("open: Failed to open dataset"));
 
         datatype = H5Dget_type(dataset);
         if (datatype < 0)
         {
             H5Dclose(dataset);
-            throw DCException(getExceptionString("open: Failed to get type of dataset"));
+            throw DCException(getHDF5ExceptionString("open: Failed to get type of dataset"));
         }
 
         dataspace = H5Dget_space(dataset);
         if (dataspace < 0)
         {
             H5Dclose(dataset);
-            throw DCException(getExceptionString("open: Failed to open dataspace"));
+            throw DCException(getHDF5ExceptionString("open: Failed to open dataspace"));
         }
 
         int dims_result = H5Sget_simple_extent_ndims(dataspace);
         if (dims_result < 0)
         {
             close();
-            throw DCException(getExceptionString("open: Failed to get dimensions"));
+            throw DCException(getHDF5ExceptionString("open: Failed to get dimensions"));
         }
 
         ndims = dims_result;
@@ -196,7 +189,7 @@ namespace splash
         if (H5Sget_simple_extent_dims(dataspace, getLogicalSize().getPointer(), NULL) < 0)
         {
             close();
-            throw DCException(getExceptionString("open: Failed to get sizes"));
+            throw DCException(getHDF5ExceptionString("open: Failed to get sizes"));
         }
 
         getLogicalSize().swapDims(ndims);
@@ -223,7 +216,7 @@ namespace splash
                     log_msg(1, "chunk_dims[%llu] = %llu",
                             (long long unsigned) i, (long long unsigned) (chunk_dims[i]));
                 }
-                throw DCException(getExceptionString("setChunking: Failed to set chunking"));
+                throw DCException(getHDF5ExceptionString("setChunking: Failed to set chunking"));
             }
         }
     }
@@ -237,7 +230,7 @@ namespace splash
             // set gzip compression level (1=lowest - 9=highest)
             if (H5Pset_shuffle(this->dsetProperties) < 0 ||
                     H5Pset_deflate(this->dsetProperties, 1) < 0)
-                throw DCException(getExceptionString("setCompression: Failed to set compression"));
+                throw DCException(getHDF5ExceptionString("setCompression: Failed to set compression"));
         }
     }
 
@@ -249,7 +242,7 @@ namespace splash
         log_msg(2, "DCDataSet::create (%s, size %s)", name.c_str(), size.toString().c_str());
 
         if (opened)
-            throw DCException(getExceptionString("create: dataset is already open"));
+            throw DCException(getHDF5ExceptionString("create: dataset is already open"));
 
         // if the dataset already exists, remove/unlink it
         // note that this won't free the memory occupied by this
@@ -288,14 +281,14 @@ namespace splash
 
 
         if (dataspace < 0)
-            throw DCException(getExceptionString("create: Failed to create dataspace"));
+            throw DCException(getHDF5ExceptionString("create: Failed to create dataspace"));
 
         // create the new dataset
         dataset = H5Dcreate(group, this->name.c_str(), this->datatype, dataspace,
                 H5P_DEFAULT, dsetProperties, H5P_DEFAULT);
 
         if (dataset < 0)
-            throw DCException(getExceptionString("create: Failed to create dataset"));
+            throw DCException(getHDF5ExceptionString("create: Failed to create dataset"));
 
         isReference = false;
         opened = true;
@@ -310,28 +303,28 @@ namespace splash
             throw DCException(getExceptionString("createReference: dataset is already open"));
 
         if (checkExistence && H5Lexists(refGroup, name.c_str(), H5P_LINK_ACCESS_DEFAULT))
-            throw DCException(getExceptionString("createReference: this reference already exists"));
+            throw DCException(getHDF5ExceptionString("createReference: this reference already exists"));
 
         getLogicalSize().set(srcDataSet.getLogicalSize());
         this->ndims = srcDataSet.getNDims();
 
         if (H5Rcreate(&regionRef, srcGroup, srcDataSet.getName().c_str(), H5R_OBJECT, -1) < 0)
-            throw DCException(getExceptionString("createReference: failed to create region reference"));
+            throw DCException(getHDF5ExceptionString("createReference: failed to create region reference"));
 
         hsize_t ndims = 1;
         dataspace = H5Screate_simple(1, &ndims, NULL);
         if (dataspace < 0)
-            throw DCException(getExceptionString("createReference: failed to create dataspace for reference"));
+            throw DCException(getHDF5ExceptionString("createReference: failed to create dataspace for reference"));
 
         dataset = H5Dcreate(refGroup, name.c_str(), H5T_STD_REF_OBJ,
                 dataspace, H5P_DEFAULT, dsetProperties, H5P_DEFAULT);
 
         if (dataset < 0)
-            throw DCException(getExceptionString("createReference: failed to create dataset for reference"));
+            throw DCException(getHDF5ExceptionString("createReference: failed to create dataset for reference"));
 
         if (H5Dwrite(dataset, H5T_STD_REF_OBJ, H5S_ALL, H5S_ALL,
                 dsetWriteProperties, &regionRef) < 0)
-            throw DCException(getExceptionString("createReference: failed to write reference"));
+            throw DCException(getHDF5ExceptionString("createReference: failed to write reference"));
 
         isReference = true;
         opened = true;
@@ -349,7 +342,7 @@ namespace splash
             throw DCException(getExceptionString("createReference: dataset is already open"));
 
         if (checkExistence && H5Lexists(refGroup, name.c_str(), H5P_LINK_ACCESS_DEFAULT))
-            throw DCException(getExceptionString("createReference: this reference already exists"));
+            throw DCException(getHDF5ExceptionString("createReference: this reference already exists"));
 
         getLogicalSize().set(count);
         this->ndims = srcDataSet.getNDims();
@@ -363,26 +356,26 @@ namespace splash
                 offset.getPointer(), stride.getPointer(),
                 count.getPointer(), NULL) < 0 ||
                 H5Sselect_valid(srcDataSet.getDataSpace()) <= 0)
-            throw DCException(getExceptionString("createReference: failed to select hyperslap for reference"));
+            throw DCException(getHDF5ExceptionString("createReference: failed to select hyperslap for reference"));
 
         if (H5Rcreate(&regionRef, srcGroup, srcDataSet.getName().c_str(), H5R_DATASET_REGION,
                 srcDataSet.getDataSpace()) < 0)
-            throw DCException(getExceptionString("createReference: failed to create region reference"));
+            throw DCException(getHDF5ExceptionString("createReference: failed to create region reference"));
 
         hsize_t ndims = 1;
         dataspace = H5Screate_simple(1, &ndims, NULL);
         if (dataspace < 0)
-            throw DCException(getExceptionString("createReference: failed to create dataspace for reference"));
+            throw DCException(getHDF5ExceptionString("createReference: failed to create dataspace for reference"));
 
         dataset = H5Dcreate(refGroup, name.c_str(), H5T_STD_REF_DSETREG,
                 dataspace, H5P_DEFAULT, dsetProperties, H5P_DEFAULT);
 
         if (dataset < 0)
-            throw DCException(getExceptionString("createReference: failed to create dataset for reference"));
+            throw DCException(getHDF5ExceptionString("createReference: failed to create dataset for reference"));
 
         if (H5Dwrite(dataset, H5T_STD_REF_DSETREG, H5S_ALL, H5S_ALL,
                 dsetWriteProperties, &regionRef) < 0)
-            throw DCException(getExceptionString("createReference: failed to write reference"));
+            throw DCException(getHDF5ExceptionString("createReference: failed to write reference"));
 
         isReference = true;
         opened = true;
@@ -395,7 +388,7 @@ namespace splash
         isReference = false;
 
         if (H5Dclose(dataset) < 0 || H5Sclose(dataspace) < 0)
-            throw DCException(getExceptionString("close: Failed to close dataset"));
+            throw DCException(getHDF5ExceptionString("close: Failed to close dataset"));
     }
 
     size_t DCDataSet::getNDims()
@@ -460,7 +453,7 @@ namespace splash
 
         size_t size = H5Tget_size(this->datatype);
         if (size == 0)
-            throw DCException(getExceptionString("getDataTypeSize: could not get size of datatype"));
+            throw DCException(getHDF5ExceptionString("getDataTypeSize: could not get size of datatype"));
 
         return size;
     }
@@ -526,7 +519,7 @@ namespace splash
 
             hid_t dst_dataspace = H5Screate_simple(ndims, dstBuffer.getPointer(), NULL);
             if (dst_dataspace < 0)
-                throw DCException(getExceptionString("read: Failed to create target dataspace"));
+                throw DCException(getHDF5ExceptionString("read: Failed to create target dataspace"));
 
             if (!dst) {
                 H5Sselect_none(dst_dataspace);
@@ -534,7 +527,7 @@ namespace splash
                 if (H5Sselect_hyperslab(dst_dataspace, H5S_SELECT_SET, dstOffset.getPointer(), NULL,
                         srcSize.getPointer(), NULL) < 0 ||
                         H5Sselect_valid(dst_dataspace) <= 0)
-                    throw DCException(getExceptionString("read: Target dataspace hyperslab selection is not valid!"));
+                    throw DCException(getHDF5ExceptionString("read: Target dataspace hyperslab selection is not valid!"));
             }
 
             if (!dst || srcSize.getScalarSize() == 0) {
@@ -543,11 +536,11 @@ namespace splash
                 if (H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, srcOffset.getPointer(), NULL,
                         srcSize.getPointer(), NULL) < 0 ||
                         H5Sselect_valid(dataspace) <= 0)
-                    throw DCException(getExceptionString("read: Source dataspace hyperslab selection is not valid!"));
+                    throw DCException(getHDF5ExceptionString("read: Source dataspace hyperslab selection is not valid!"));
             }
             
             if (H5Dread(dataset, this->datatype, dst_dataspace, dataspace, dsetReadProperties, dst) < 0)
-                throw DCException(getExceptionString("read: Failed to read dataset"));
+                throw DCException(getHDF5ExceptionString("read: Failed to read dataset"));
 
             H5Sclose(dst_dataspace);
 
@@ -596,7 +589,7 @@ namespace splash
         {
             dsp_src = H5Screate_simple(ndims, srcSelect.size.getPointer(), NULL);
             if (dsp_src < 0)
-                throw DCException(getExceptionString("write: Failed to create source dataspace"));
+                throw DCException(getHDF5ExceptionString("write: Failed to create source dataspace"));
 
             // select hyperslap only if necessary
             if ((srcSelect.offset.getScalarSize() != 0) || (srcSelect.count != srcSelect.size) || 
@@ -605,7 +598,7 @@ namespace splash
                 if (H5Sselect_hyperslab(dsp_src, H5S_SELECT_SET, srcSelect.offset.getPointer(),
                         srcSelect.stride.getPointer(), srcSelect.count.getPointer(), NULL) < 0 ||
                         H5Sselect_valid(dsp_src) <= 0)
-                    throw DCException(getExceptionString("write: Invalid source hyperslap selection"));
+                    throw DCException(getHDF5ExceptionString("write: Invalid source hyperslap selection"));
             }
 
             if (srcSelect.count.getScalarSize() == 0)
@@ -618,7 +611,7 @@ namespace splash
                 if (H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, dstOffset.getPointer(),
                         NULL, srcSelect.count.getPointer(), NULL) < 0 ||
                         H5Sselect_valid(dataspace) <= 0)
-                    throw DCException(getExceptionString("write: Invalid target hyperslap selection"));
+                    throw DCException(getHDF5ExceptionString("write: Invalid target hyperslap selection"));
             }
 
             if (!data || (srcSelect.count.getScalarSize() == 0))
@@ -630,7 +623,7 @@ namespace splash
             // write data to the dataset
 
             if (H5Dwrite(dataset, this->datatype, dsp_src, dataspace, dsetWriteProperties, data) < 0)
-                throw DCException(getExceptionString("write: Failed to write dataset"));
+                throw DCException(getHDF5ExceptionString("write: Failed to write dataset"));
 
             H5Sclose(dsp_src);
         }
@@ -655,7 +648,7 @@ namespace splash
             max_dims[i] = H5F_UNLIMITED;
 
         if (H5Sset_extent_simple(dataspace, 1, getLogicalSize().getPointer(), max_dims) < 0)
-            throw DCException(getExceptionString("append: Failed to set new extent"));
+            throw DCException(getHDF5ExceptionString("append: Failed to set new extent"));
 
         delete[] max_dims;
         max_dims = NULL;
@@ -663,26 +656,26 @@ namespace splash
         log_msg(3, "logical_size = %s", getLogicalSize().toString().c_str());
 
         if (H5Dset_extent(dataset, getLogicalSize().getPointer()) < 0)
-            throw DCException(getExceptionString("append: Failed to extend dataset"));
+            throw DCException(getHDF5ExceptionString("append: Failed to extend dataset"));
 
         // select the region in the target DataSpace to write to
         Dimensions dim_data(count, 1, 1);
         if (H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, target_offset.getPointer(),
                 NULL, dim_data.getPointer(), NULL) < 0 ||
                 H5Sselect_valid(dataspace) < 0)
-            throw DCException(getExceptionString("append: Invalid target hyperslap selection"));
+            throw DCException(getHDF5ExceptionString("append: Invalid target hyperslap selection"));
 
         // append data to the dataset.
         // select the region in the source DataSpace to read from
         Dimensions dim_src(offset + count * stride, 1, 1);
         hid_t dsp_src = H5Screate_simple(1, dim_src.getPointer(), NULL);
         if (dsp_src < 0)
-            throw DCException(getExceptionString("append: Failed to create src dataspace while appending"));
+            throw DCException(getHDF5ExceptionString("append: Failed to create src dataspace while appending"));
 
         if (H5Sselect_hyperslab(dsp_src, H5S_SELECT_SET, Dimensions(offset, 0, 0).getPointer(),
                 Dimensions(stride, 1, 1).getPointer(), dim_data.getPointer(), NULL) < 0 ||
                 H5Sselect_valid(dsp_src) < 0)
-            throw DCException(getExceptionString("append: Invalid source hyperslap selection"));
+            throw DCException(getHDF5ExceptionString("append: Invalid source hyperslap selection"));
 
         if (!data || (count == 0))
         {
@@ -691,7 +684,7 @@ namespace splash
         }
 
         if (H5Dwrite(dataset, this->datatype, dsp_src, dataspace, dsetWriteProperties, data) < 0)
-            throw DCException(getExceptionString("append: Failed to append dataset"));
+            throw DCException(getHDF5ExceptionString("append: Failed to append dataset"));
 
         H5Sclose(dsp_src);
     }

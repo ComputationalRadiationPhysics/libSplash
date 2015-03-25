@@ -254,6 +254,7 @@ namespace splash
         bool compression;
     private:
         std::string getExceptionString(std::string msg);
+        std::string getHDF5ExceptionString(std::string msg);
 
         ColTypeDim dimType;
     };
