@@ -90,9 +90,11 @@ void AttributesTest::testDataAttributes()
     dataCollector->writeAttribute(0, ctInt, "datasets/my_dataset", "sum", &sum);
     int neg_sum = -sum;
     dataCollector->writeAttribute(0, ctInt, "datasets/my_dataset", "neg_sum", &neg_sum);
-    
+
+    char c = 'Y';
     dataCollector->writeAttribute(0, ctInt, "datasets", "sum_at_group", &sum);
-    
+    dataCollector->writeAttribute(0, ctChar, "datasets", "my_char", &c);
+
     delete[] dummy_data;
     dummy_data = NULL;
     
@@ -127,16 +129,19 @@ void AttributesTest::testDataAttributes()
     
     sum = 0;
     neg_sum = 0;
+    c = 'A';
     dataCollector->readAttribute(0, "datasets/my_dataset", "sum", &sum);
     dataCollector->readAttribute(0, "datasets/my_dataset", "neg_sum", &neg_sum);
     
     CPPUNIT_ASSERT(sum == old_sum);
     CPPUNIT_ASSERT(neg_sum == -old_sum);
-    
+
     dataCollector->readAttribute(0, "datasets", "sum_at_group", &sum);
-    
+    dataCollector->readAttribute(0, "datasets", "my_char", &c);
+
     CPPUNIT_ASSERT(sum == old_sum);
-    
+    CPPUNIT_ASSERT(c == 'Y');
+
     dataCollector->close();
 }
 

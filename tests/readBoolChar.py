@@ -24,6 +24,7 @@
 import h5py
 import numpy as np
 
+# bool compatible data sets
 f = h5py.File("h5/testWriteRead_0_0_0.h5", "r")
 data = f["data/10/deep/folders/data_bool"]
 
@@ -34,5 +35,27 @@ for i in np.arange(len):
     val = ( i%2 == 0 );
     if data1d[i] != val:
         exit(1)
+
+f.close()
+
+# single char compatible attributes
+f = h5py.File("h5/attributes_0_0_0.h5", "r")
+c = f["data/0/datasets"].attrs["my_char"]
+
+# h5py, as of 2.5.0, does not know char and
+# identifies H5T_NATIVE_CHAR as INT8
+print(c, type(c))
+
+# is...
+if type(c) is np.int8:
+    if not c == 89:
+        exit(1)
+
+# should be...
+if type(c) is np.char:
+    if not c == "Y":
+        exit(1)
+
+f.close()
 
 exit(0)

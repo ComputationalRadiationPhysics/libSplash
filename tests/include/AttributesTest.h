@@ -44,7 +44,8 @@ public:
 private:
     void testDataAttributes();
     void testArrayTypes();
-    
+
+    ColTypeChar ctChar;
     ColTypeInt ctInt;
     ColTypeInt2 ctInt2;
     ColTypeInt3Array ctInt3Array;

@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash.
  *
@@ -43,12 +43,13 @@ public:
 private:
     void testDataAttributes();
     void testArrayTypes();
-    
+
+    ColTypeChar ctChar;
     ColTypeInt ctInt;
     ColTypeInt2 ctInt2;
     ColTypeInt3Array ctInt3Array;
     ColTypeDimArray ctDimArray;
-    
+
     int mpiRank;
 };
 
