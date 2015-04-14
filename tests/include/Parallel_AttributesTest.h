@@ -49,6 +49,8 @@ private:
     ColTypeInt2 ctInt2;
     ColTypeInt3Array ctInt3Array;
     ColTypeDimArray ctDimArray;
+    ColTypeString ctString;
+    ColTypeString ctString5;
 
     int mpiRank;
 };

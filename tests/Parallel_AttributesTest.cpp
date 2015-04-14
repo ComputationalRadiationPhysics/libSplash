@@ -38,7 +38,8 @@ using namespace splash;
 #define MPI_SIZE_X 2
 #define MPI_SIZE_Y 2
 
-Parallel_AttributesTest::Parallel_AttributesTest()
+Parallel_AttributesTest::Parallel_AttributesTest() :
+  ctString5(5)
 {
     srand(time(NULL));
 
@@ -95,6 +96,13 @@ void Parallel_AttributesTest::testDataAttributes()
     char c = 'Y';
     dataCollector->writeAttribute(0, ctChar, "attr/attr2/attr3", "my_char", &c);
 
+    /* variable length string */
+    const char *string_attr = {"My first c-string."};
+    dataCollector->writeAttribute(0, ctString, NULL, "my_string", &string_attr);
+    /* fixed length string */
+    const char string_attr5[5] = {"ABCD"};
+    dataCollector->writeAttribute(0, ctString5, NULL, "my_string5", &string_attr5);
+
     delete[] dummy_data;
     dummy_data = NULL;
 
@@ -126,6 +134,14 @@ void Parallel_AttributesTest::testDataAttributes()
 
     CPPUNIT_ASSERT(sum == old_sum);
     CPPUNIT_ASSERT(c == 'Y');
+
+    char* string_read;
+    dataCollector->readAttribute(0, NULL, "my_string", &string_read);
+    char string_read5[5];
+    dataCollector->readAttribute(0, NULL, "my_string5", &string_read5);
+
+    CPPUNIT_ASSERT(strcmp(string_read, string_attr) == 0);
+    CPPUNIT_ASSERT(strcmp(string_read5, string_attr5) == 0);
 
     dataCollector->finalize();
     dataCollector->close();
