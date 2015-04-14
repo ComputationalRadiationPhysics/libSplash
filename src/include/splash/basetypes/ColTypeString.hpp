@@ -37,15 +37,13 @@ namespace splash
     {
     public:
 
-        ColTypeString() :
-          mySize(H5T_VARIABLE)
+        ColTypeString()
         {
             this->type = H5Tcopy(H5T_C_S1);
             H5Tset_size(this->type, H5T_VARIABLE);
         }
 
-        ColTypeString(size_t len) :
-          mySize(len)
+        ColTypeString(size_t len)
         {
             this->type = H5Tcopy(H5T_C_S1);
             H5Tset_size(this->type, len);
@@ -58,15 +56,14 @@ namespace splash
 
         size_t getSize() const
         {
+            size_t myElements = H5Tget_size(this->type);
+
             // for H5T_VARIABLE irrelevant ?
-            if( mySize != H5T_VARIABLE )
-               return sizeof(char) * mySize; //H5Tget_size(this->type);
+            if( myElements != H5T_VARIABLE )
+               return sizeof(char) * myElements;
             else
                return sizeof(char);
         }
-
-    private:
-        size_t mySize;
     };
 
 }
