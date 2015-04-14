@@ -56,6 +56,27 @@ if type(c) is np.char:
     if not c == "Y":
         exit(1)
 
+# variable length string compatible attributes
+s = f["/data/10"].attrs["my_string"]
+print(s, type(s))
+
+if not s == "My first c-string.":
+    exit(1)
+
+if not type(s) is str:
+    exit(1)
+
+# fixed length string compatible attributes
+s5 = f["/data/10"].attrs["my_string5"]
+print(s5, type(s5), s5.dtype)
+
+if not s5 == "ABCD":
+    exit(1)
+
+if not type(s5) is np.string_:
+    exit(1)
+
+
 f.close()
 
 exit(0)

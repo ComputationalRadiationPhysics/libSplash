@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -27,6 +27,7 @@
 #include <time.h>
 #include <iostream>
 #include <stdlib.h>
+#include <cstring>
 #include <cppunit/TestAssert.h>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(AttributesTest);
@@ -37,10 +38,11 @@ using namespace splash;
 #define TEST_FILE "h5/attributes"
 #define TEST_FILE2 "h5/attributes_array"
 
-AttributesTest::AttributesTest()
+AttributesTest::AttributesTest() :
+ctString5(5)
 {
     srand(time(NULL));
-    
+
     dataCollector = new SerialDataCollector(10);
 }
 
@@ -76,7 +78,14 @@ void AttributesTest::testDataAttributes()
     sum2 = sum;
     
     dataCollector->writeAttribute(10, ctInt, NULL, "timestep", &sum2);
-    
+
+    /* variable length string */
+    const char *string_attr = {"My first c-string."};
+    dataCollector->writeAttribute(10, ctString, NULL, "my_string", &string_attr);
+    /* fixed length string */
+    const char string_attr5[5] = {"ABCD"};
+    dataCollector->writeAttribute(10, ctString5, NULL, "my_string5", &string_attr5);
+
     CPPUNIT_ASSERT_THROW(dataCollector->writeAttribute(10, ctInt, NULL, NULL, &sum2),
             DCException);
     CPPUNIT_ASSERT_THROW(dataCollector->writeAttribute(10, ctInt, NULL, "", &sum2),
@@ -112,7 +121,15 @@ void AttributesTest::testDataAttributes()
     dataCollector->open(TEST_FILE, attr);
     
     dataCollector->readAttribute(10, NULL, "timestep", &sum2);
-    
+
+    char* string_read;
+    dataCollector->readAttribute(10, NULL, "my_string", &string_read);
+    char string_read5[5];
+    dataCollector->readAttribute(10, NULL, "my_string5", &string_read5);
+
+    CPPUNIT_ASSERT(strcmp(string_read, string_attr) == 0);
+    CPPUNIT_ASSERT(strcmp(string_read5, string_attr5) == 0);
+
     Dimensions src_data;
     dataCollector->read(0, "datasets/my_dataset", src_data, dummy_data);
     
