@@ -8,12 +8,20 @@ mkdir $dir/h5
 cd $dir
 OK=0
 
+function testLast()
+{
+    if [ $1 -ne 0 ]; then
+        echo "An error occured in $2..."
+    fi
+}
 function testSerial()
 {
     if [ -e "$1" ]; then
         echo -e "\n$2\n"
         $1
-        OK=$(( OK + $? ))
+        last=$?
+        testLast $last $1
+        OK=$(( OK + $last ))
     fi
 }
 function testMPI()
@@ -21,7 +29,9 @@ function testMPI()
     if [ -e "$1" ]; then
         echo -e "\n$3\n"
         mpirun -n $2 $1
-        OK=$(( OK + $? ))
+        last=$?
+        testLast $last $1
+        OK=$(( OK + $last ))
     fi
 }
 
