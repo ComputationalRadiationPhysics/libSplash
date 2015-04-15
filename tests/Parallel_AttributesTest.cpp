@@ -25,6 +25,7 @@
 #include <time.h>
 #include <iostream>
 #include <stdlib.h>
+#include <cstring>
 #include <cppunit/TestAssert.h>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(Parallel_AttributesTest);
