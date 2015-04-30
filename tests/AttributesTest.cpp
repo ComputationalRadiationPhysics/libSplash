@@ -39,7 +39,7 @@ using namespace splash;
 #define TEST_FILE2 "h5/attributes_array"
 
 AttributesTest::AttributesTest() :
-ctString5(5)
+ctString4(4)
 {
     srand(time(NULL));
 
@@ -79,12 +79,12 @@ void AttributesTest::testDataAttributes()
     
     dataCollector->writeAttribute(10, ctInt, NULL, "timestep", &sum2);
 
-    /* variable length string */
+    /* variable length string, '\0' terminated */
     const char *string_attr = {"My first c-string."};
     dataCollector->writeAttribute(10, ctString, NULL, "my_string", &string_attr);
-    /* fixed length string */
-    const char string_attr5[5] = {"ABCD"};
-    dataCollector->writeAttribute(10, ctString5, NULL, "my_string5", &string_attr5);
+    /* fixed length string, '\0' terminated */
+    const char string_attr4[5] = {"ABCD"};
+    dataCollector->writeAttribute(10, ctString4, NULL, "my_string4", &string_attr4);
 
     CPPUNIT_ASSERT_THROW(dataCollector->writeAttribute(10, ctInt, NULL, NULL, &sum2),
             DCException);
@@ -124,11 +124,11 @@ void AttributesTest::testDataAttributes()
 
     char* string_read;
     dataCollector->readAttribute(10, NULL, "my_string", &string_read);
-    char string_read5[5];
-    dataCollector->readAttribute(10, NULL, "my_string5", &string_read5);
+    char string_read4[5];
+    dataCollector->readAttribute(10, NULL, "my_string4", &string_read4);
 
     CPPUNIT_ASSERT(strcmp(string_read, string_attr) == 0);
-    CPPUNIT_ASSERT(strcmp(string_read5, string_attr5) == 0);
+    CPPUNIT_ASSERT(strcmp(string_read4, string_attr4) == 0);
 
     Dimensions src_data;
     dataCollector->read(0, "datasets/my_dataset", src_data, dummy_data);

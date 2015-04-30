@@ -28,9 +28,12 @@ namespace splash
 {
     /** Variable and fixed length strings
      *
-     * Since C-strings are NULL-terminated, len must be +1
-     * of the actual length of the string for fixed length strings.
+     * Do not forget that C-strings are NULL-terminated.
+     * As in <cstring>'s strlen() our length in the API
+     * does not count the terminator, but c-strings still MUST
+     * end with it, else HDF5 write/reads will fail.
      *
+     * \see https://hdfgroup.org/HDF5/doc/RM/RM_H5T.html#Datatype-SetSize
      * \see http://hdfgroup.org/HDF5/doc/RM/RM_H5T.html#CreateVLString
      */
     class ColTypeString : public CollectionType
@@ -46,7 +49,9 @@ namespace splash
         ColTypeString(size_t len)
         {
             this->type = H5Tcopy(H5T_C_S1);
-            H5Tset_size(this->type, len);
+            /* HDF5 requires space for the \0-terminator character,
+             * otherwise it will not be stored or retrieved */
+            H5Tset_size(this->type, len + 1);
         }
 
         ~ColTypeString()
@@ -69,4 +74,3 @@ namespace splash
 }
 
 #endif	/* COLTYPESTRING_H */
-

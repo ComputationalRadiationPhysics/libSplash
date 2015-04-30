@@ -67,13 +67,13 @@ if not type(s) is str:
     exit(1)
 
 # fixed length string compatible attributes
-s5 = f["/data/10"].attrs["my_string5"]
-print(s5, type(s5), s5.dtype)
+s4 = f["/data/10"].attrs["my_string4"]
+print(s4, type(s4), s4.dtype)
 
-if not s5 == "ABCD":
+if not s4 == "ABCD":
     exit(1)
 
-if not type(s5) is np.string_:
+if not type(s4) is np.string_:
     exit(1)
 
 

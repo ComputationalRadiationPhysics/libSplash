@@ -65,4 +65,6 @@ before_script:
   - export HDF5_DIR=/usr
   - export C_INCLUDE_PATH=/usr/lib/openmpi/include
   - pip install --user h5py
+  - python -c "import numpy; print(numpy.version.version)"
+  - python -c "import h5py; print(h5py.version.version)"
   - mkdir -p $BUILD ~/lib

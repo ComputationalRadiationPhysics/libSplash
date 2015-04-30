@@ -43,7 +43,7 @@ SimpleDataTest::SimpleDataTest() :
 ctUInt32(),
 ctUInt64(),
 ctBool(),
-ctString3(3)
+ctString2(2)
 {
     dataCollector = new SerialDataCollector(10);
     srand(time(NULL));
@@ -88,6 +88,13 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
         strWrite[i][0] = 'A';
         strWrite[i][1] = 'B';
         strWrite[i][2] = '\0';
+        /* the NULL terminator is EXTREMELY important for HDF5, else the data
+         * will not be written/read correctly. Its the same for <cstring>'s
+         * strlen() function - make sure strWrite[i] is a valid '\0' terminated
+         * c-string!
+         *
+         * \see https://hdfgroup.org/HDF5/doc/RM/RM_H5T.html#Datatype-SetSize */
+        CPPUNIT_ASSERT(strlen(strWrite[i]) == 2);
     }
 
     dataCollector->write(10, ctUInt64, dimensions, Selection(gridSize), "deep/folders/data", dataWrite);
@@ -104,10 +111,10 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
             borderSize), "deep/folders/data_bool_without_borders", boolWrite);
     datasetNames.insert("deep/folders/data_bool_without_borders");
 
-    dataCollector->write(10, ctString3, dimensions, Selection(gridSize), "deep/folders/data_str", strWrite);
+    dataCollector->write(10, ctString2, dimensions, Selection(gridSize), "deep/folders/data_str", strWrite);
     datasetNames.insert("deep/folders/data_str");
 
-    dataCollector->write(20, ctString3, dimensions, Selection(gridSize, smallGridSize,
+    dataCollector->write(20, ctString2, dimensions, Selection(gridSize, smallGridSize,
             borderSize), "deep/folders/data_str_without_borders", strWrite);
     datasetNames.insert("deep/folders/data_str_without_borders");
 

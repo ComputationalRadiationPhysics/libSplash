@@ -50,7 +50,7 @@ private:
     ColTypeInt3Array ctInt3Array;
     ColTypeDimArray ctDimArray;
     ColTypeString ctString;
-    ColTypeString ctString5;
+    ColTypeString ctString4;
 
     int mpiRank;
 };
