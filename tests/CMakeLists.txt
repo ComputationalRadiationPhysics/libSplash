@@ -35,7 +35,7 @@ OPTION(WITH_MPI "use MPI-based tests" OFF)
 #-------------------------------------------------------------------------------
 
 # HDF5 is required package
-FIND_PACKAGE(HDF5 REQUIRED)
+FIND_PACKAGE(HDF5 1.8.6 REQUIRED)
 INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
 
 IF(WITH_MPI)
