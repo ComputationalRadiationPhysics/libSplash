@@ -171,9 +171,9 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
     {
         dataRead[i] = UINT64_MAX;
         boolRead[i] = false;
-        strRead[i][0] = 'Q';
-        strRead[i][1] = 'P';
-        strRead[i][2] = '\0';
+        strRead[i][0] = 'P';
+        strRead[i][1] = 'Q';
+        strRead[i][2] = 'R'; /* reads should write a '\0' in here */
     }
 
     Dimensions resultSize;

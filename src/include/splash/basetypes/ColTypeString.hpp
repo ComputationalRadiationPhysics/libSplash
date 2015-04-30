@@ -63,11 +63,12 @@ namespace splash
         {
             size_t myElements = H5Tget_size(this->type);
 
-            // for H5T_VARIABLE irrelevant ?
-            if( myElements != H5T_VARIABLE )
-               return sizeof(char) * myElements;
+            /* for variable length string the size is first known after reading
+             * the actual data or attribute, so we forward HDF5's behaviour */
+            if( H5Tis_variable_str(this->type) )
+               return myElements; /* == sizeof(char*) see H5Tget_size description */
             else
-               return sizeof(char);
+               return sizeof(char) * (myElements - 1); /* just as strlen() */
         }
     };
 
