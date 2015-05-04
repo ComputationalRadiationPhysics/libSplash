@@ -52,7 +52,7 @@ ENDFOREACH()
 #-------------------------------------------------------------------------------
 
 # HDF5 is required
-FIND_PACKAGE(HDF5 REQUIRED)
+FIND_PACKAGE(HDF5 1.8.6 REQUIRED)
 INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
 SET(LIBS ${LIBS} ${HDF5_LIBRARIES})
 

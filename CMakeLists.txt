@@ -70,7 +70,7 @@ MESSAGE(STATUS "Building libSplash version ${SPLASH_VERSION}")
 #-------------------------------------------------------------------------------
 
 # HDF5 is required package
-FIND_PACKAGE(HDF5 REQUIRED)
+FIND_PACKAGE(HDF5 1.8.6 REQUIRED)
 INCLUDE_DIRECTORIES(SYSTEM ${HDF5_INCLUDE_DIR})
 
 # check if static version of HDF5 is used
