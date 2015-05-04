@@ -32,8 +32,7 @@ script:
 # compile and run tests/
   - cmake -DWITH_MPI=$SPLASHMPI $SRC/tests
   - make
-
-after_script:
+# run tests
   - $SRC/tests/run_tests $BUILD
   - $SRC/tests/run_parallel_tests $BUILD
 
