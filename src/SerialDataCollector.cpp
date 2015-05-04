@@ -404,7 +404,7 @@ namespace splash
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
             throw DCException(getExceptionString("write", "this access is not permitted"));
 
-        if (ndims < 1 || ndims > 3)
+        if (ndims < 1 || ndims > DSP_DIM_MAX)
             throw DCException(getExceptionString("write", "maximum dimension is invalid"));
 
         if (id > this->maxID)

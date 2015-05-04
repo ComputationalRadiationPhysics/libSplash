@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by 
  * the Free Software Foundation, either version 3 of the License, or 
  * (at your option) any later version. 
+ *
  * libSplash is distributed in the hope that it will be useful, 
  * but WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
@@ -544,7 +545,7 @@ namespace splash
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
             throw DCException(getExceptionString("write", "this access is not permitted"));
 
-        if (ndims < 1 || ndims > 3)
+        if (ndims < 1 || ndims > DSP_DIM_MAX)
             throw DCException(getExceptionString("write", "maximum dimension is invalid"));
 
         // create group for this id/iteration
@@ -571,7 +572,7 @@ namespace splash
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
             throw DCException(getExceptionString("write", "this access is not permitted"));
 
-        if (ndims < 1 || ndims > 3)
+        if (ndims < 1 || ndims > DSP_DIM_MAX)
             throw DCException(getExceptionString("write", "maximum dimension is invalid"));
 
         reserveInternal(id, globalSize, ndims, type, name);
@@ -591,7 +592,7 @@ namespace splash
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
             throw DCException(getExceptionString("write", "this access is not permitted"));
 
-        if (ndims < 1 || ndims > 3)
+        if (ndims < 1 || ndims > DSP_DIM_MAX)
             throw DCException(getExceptionString("write", "maximum dimension is invalid"));
 
         Dimensions global_size, global_offset;
@@ -619,7 +620,7 @@ namespace splash
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
             throw DCException(getExceptionString("append", "this access is not permitted"));
 
-        if (ndims < 1 || ndims > 3)
+        if (ndims < 1 || ndims > DSP_DIM_MAX)
             throw DCException(getExceptionString("append", "maximum dimension is invalid"));
 
         // create group for this id/iteration
@@ -928,14 +929,14 @@ namespace splash
             Dimensions &globalSize, Dimensions &globalOffset)
     throw (DCException)
     {
-        uint64_t write_sizes[options.mpiSize * 3];
-        uint64_t local_write_size[3] = {localSize[0], localSize[1], localSize[2]};
+        uint64_t write_sizes[options.mpiSize * DSP_DIM_MAX];
+        uint64_t local_write_size[DSP_DIM_MAX] = {localSize[0], localSize[1], localSize[2]};
 
         globalSize.set(1, 1, 1);
         globalOffset.set(0, 0, 0);
 
-        if (MPI_Allgather(local_write_size, 3, MPI_UNSIGNED_LONG_LONG,
-                write_sizes, 3, MPI_UNSIGNED_LONG_LONG, options.mpiComm) != MPI_SUCCESS)
+        if (MPI_Allgather(local_write_size, DSP_DIM_MAX, MPI_UNSIGNED_LONG_LONG,
+                write_sizes, DSP_DIM_MAX, MPI_UNSIGNED_LONG_LONG, options.mpiComm) != MPI_SUCCESS)
             throw DCException(getExceptionString("gatherMPIWrites",
                 "MPI_Allgather failed", NULL));
 
@@ -971,9 +972,9 @@ namespace splash
                         index = dim * tmp_mpi_topology[0] * tmp_mpi_topology[1];
                 }
 
-                globalSize[i] += write_sizes[index * 3 + i];
+                globalSize[i] += write_sizes[index * DSP_DIM_MAX + i];
                 if (dim < tmp_mpi_pos[i])
-                    globalOffset[i] += write_sizes[index * 3 + i];
+                    globalOffset[i] += write_sizes[index * DSP_DIM_MAX + i];
             }
         }
     }

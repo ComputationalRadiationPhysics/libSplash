@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013, 2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by 
  * the Free Software Foundation, either version 3 of the License, or 
  * (at your option) any later version. 
+ *
  * libSplash is distributed in the hope that it will be useful, 
  * but WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
@@ -65,7 +66,7 @@ namespace splash
                 return;
 
             hsize_t tmp1;
-            hsize_t tmp3[3];
+            hsize_t tmp3[DSP_DIM_MAX];
 
             switch (rank)
             {
