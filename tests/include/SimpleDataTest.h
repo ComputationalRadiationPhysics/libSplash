@@ -64,6 +64,7 @@ private:
     ColTypeUInt32 ctUInt32;
     ColTypeUInt64 ctUInt64;
     ColTypeBool   ctBool;
+    ColTypeString ctString2;
     DataCollector *dataCollector;
 };
 

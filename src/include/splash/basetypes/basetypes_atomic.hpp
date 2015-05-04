@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -28,7 +28,7 @@
 
 namespace splash
 {
-    
+
 #define TYPE_ATOMIC(_name, _h5_type, _real_type)                               \
     class ColType##_name : public CollectionType                               \
     {                                                                          \
@@ -40,11 +40,12 @@ namespace splash
         size_t getSize() const                                                 \
         { return sizeof (_real_type); }                                        \
     };
-    
+
 TYPE_ATOMIC(Float, H5T_NATIVE_FLOAT, float);
 TYPE_ATOMIC(Double, H5T_NATIVE_DOUBLE, double);
 
 TYPE_ATOMIC(Int, H5T_NATIVE_INT, int);
+TYPE_ATOMIC(Char, H5T_NATIVE_CHAR, char);
 
 TYPE_ATOMIC(UInt8, H5T_INTEL_U8, uint8_t);
 TYPE_ATOMIC(UInt16, H5T_INTEL_U16, uint16_t);
@@ -55,7 +56,7 @@ TYPE_ATOMIC(Int8, H5T_INTEL_I8, int8_t);
 TYPE_ATOMIC(Int16, H5T_INTEL_I16, int16_t);
 TYPE_ATOMIC(Int32, H5T_INTEL_I32, int32_t);
 TYPE_ATOMIC(Int64, H5T_INTEL_I64, int64_t);
-    
+
 }
 
 #endif	/* BASETYPES_ATOMIC_HPP */

@@ -36,9 +36,9 @@ function testMPI()
 }
 
 testSerial ./SimpleDataTest.cpp.out "Testing simple data read/write..."
-testSerial ./readBool.py "Testing h5py compatible read..."
 
 testSerial ./AttributesTest.cpp.out "Testing reading/writing attributes..."
+testSerial ./readBoolChar.py "Testing h5py compatible read..."
 
 testSerial ./AppendTest.cpp.out "Testing append data..."
 
