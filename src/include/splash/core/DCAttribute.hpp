@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013, 2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -27,6 +27,7 @@
 #include <hdf5.h>
 
 #include "splash/DCException.hpp"
+#include "splash/Dimensions.hpp"
 
 namespace splash
 {
@@ -50,7 +51,7 @@ namespace splash
 
         /**
          * Basic static method for writing an attribute.
-         * 
+         *
          * @param name name of the attribute
          * @param type datatype information of the attribute
          * @param parent parent object to add attribute to
@@ -60,6 +61,25 @@ namespace splash
                 const hid_t type,
                 hid_t parent,
                 const void *src) throw (DCException);
+
+
+        /**
+         * Basic static method for writing an attribute.
+         *
+         * @param name name of the attribute
+         * @param type datatype information of the attribute
+         * @param parent parent object to add attribute to
+         * @param ndims Number of dimensions (1-3)
+         * @param dims Number of elements
+         * @param src buffer with value
+         */
+        static void writeAttribute(const char *name,
+                const hid_t type,
+                hid_t parent,
+                uint32_t ndims,
+                const Dimensions dims,
+                const void *src) throw (DCException);
+
     private:
         DCAttribute();
         

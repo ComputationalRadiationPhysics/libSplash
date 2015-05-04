@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash.
  *
@@ -161,22 +161,26 @@ void Parallel_AttributesTest::testArrayTypes()
             MPI_COMM_WORLD, MPI_INFO_NULL, Dimensions(MPI_SIZE_X, MPI_SIZE_Y, 1), 1);
 
     dataCollector->open(TEST_FILE2, attr);
-    dataCollector->writeGlobalAttribute(10, ctInt3Array, "testposition", array_data_write);
+    dataCollector->writeGlobalAttribute(10, ctInt3Array, "testpositionArray", array_data_write);
+    dataCollector->writeGlobalAttribute(10, ctInt, "testposition", 1u, Dimensions(3, 1, 1), array_data_write);
     dataCollector->writeGlobalAttribute(20, ctDimArray, "testdim", dim_write.getPointer());
     dataCollector->close();
 
     int array_data_read[3] = {0, 0, 0};
+    int data_read[3] = {0, 0, 0};
     Dimensions dim_read;
 
     attr.fileAccType = DataCollector::FAT_READ;
     dataCollector->open(TEST_FILE2, attr);
-    dataCollector->readGlobalAttribute(10, "testposition", array_data_read);
+    dataCollector->readGlobalAttribute(10, "testpositionArray", array_data_read);
+    dataCollector->readGlobalAttribute(10, "testposition", data_read);
     dataCollector->readGlobalAttribute(20, "testdim", dim_read.getPointer());
     dataCollector->close();
 
     for (int i = 0; i < 3; i++)
     {
         CPPUNIT_ASSERT(array_data_read[i] == array_data_write[i]);
+        CPPUNIT_ASSERT(data_read[i] == array_data_write[i]);
         CPPUNIT_ASSERT(dim_write[i] == dim_read[i]);
     }
 
