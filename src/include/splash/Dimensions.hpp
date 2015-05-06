@@ -28,6 +28,8 @@
 #include <sstream>
 #include <hdf5.h>
 
+#define DSP_DIM_MAX 3
+
 namespace splash
 {
 

@@ -39,8 +39,6 @@ namespace splash
 #define SDC_ATTR_GRID_SIZE "grid_size"
 #define SDC_ATTR_SIZE "client_size"
 #define SDC_ATTR_COMPRESSION "compression"
-
-#define DSP_DIM_MAX 3
 }
 
 #endif	/* SDC_DEFINES_H */
