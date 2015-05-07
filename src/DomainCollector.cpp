@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt, Axel Huebl
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by 
  * the Free Software Foundation, either version 3 of the License, or 
  * (at your option) any later version. 
+ *
  * libSplash is distributed in the hope that it will be useful, 
  * but WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
@@ -504,7 +505,7 @@ namespace splash
                         minDom.getOffset().toString().c_str(),
                         maxDom.getOffset().toString().c_str());
 
-                for (size_t i = 0; i < 3; ++i)
+                for (size_t i = 0; i < DSP_DIM_MAX; ++i)
                 {
                     // zero still between min and max?
                     if (minDom.getOffset()[i] > maxDom.getOffset()[i])
@@ -531,7 +532,7 @@ namespace splash
             Domain lastDom;
             readDomainInfoForRank(mpi_size - Dimensions(1, 1, 1), id, name,
                     Domain(Dimensions(0, 0, 0), Dimensions(0, 0, 0)), lastDom);
-            for (size_t i = 0; i < 3; ++i)
+            for (size_t i = 0; i < DSP_DIM_MAX; ++i)
             {
                 if (request_offset[i] <= lastDom.getBack()[i])
                 {
@@ -564,7 +565,7 @@ namespace splash
             last_mpi_pos = current_mpi_pos;
 
             // set current_mpi_pos to be the 'center' between min_dims and max_dims
-            for (size_t i = 0; i < 3; ++i)
+            for (size_t i = 0; i < DSP_DIM_MAX; ++i)
             {
                 current_mpi_pos[i] = min_dims[i] +
                         ceil(((double) max_dims[i] - (double) min_dims[i]) / 2.0);
@@ -577,7 +578,7 @@ namespace splash
                 break;
             }
 
-            for (size_t i = 0; i < 3; ++i)
+            for (size_t i = 0; i < DSP_DIM_MAX; ++i)
             {
                 if (request_offset[i] >= file_domain.getOffset()[i])
                     min_dims[i] = current_mpi_pos[i];
@@ -599,7 +600,7 @@ namespace splash
         // the file domain is added to the DataContainer.
 
         // set new min_dims to top-left corner
-        for (size_t i = 0; i < 3; ++i)
+        for (size_t i = 0; i < DSP_DIM_MAX; ++i)
             max_dims[i] = (current_mpi_pos[i] + mpi_size[i] - 1) % mpi_size[i];
         min_dims = current_mpi_pos;
 
@@ -794,10 +795,10 @@ namespace splash
             readAttribute(id, dataName, DOMCOL_ATTR_GLOBAL_SIZE, data, mpiPosition);
         } catch (DCException)
         {
-            hsize_t local_size[3];
+            hsize_t local_size[DSP_DIM_MAX];
             readAttribute(id, dataName, DOMCOL_ATTR_SIZE, local_size, mpiPosition);
 
-            for (int i = 0; i < 3; ++i)
+            for (int i = 0; i < DSP_DIM_MAX; ++i)
                 data[i] = mpiTopology[i] * local_size[i];
         }
     }
@@ -813,7 +814,7 @@ namespace splash
             readAttribute(id, dataName, DOMCOL_ATTR_GLOBAL_OFFSET, data, mpiPosition);
         } catch (DCException)
         {
-            for (int i = 0; i < 3; ++i)
+            for (int i = 0; i < DSP_DIM_MAX; ++i)
                 data[i] = 0;
         }
     }

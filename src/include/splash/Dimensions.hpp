@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt, Axel Huebl
+ * Copyright 2013, 2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash.
  *
@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * libSplash is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -27,6 +28,8 @@
 #include <sstream>
 #include <hdf5.h>
 
+#define DSP_DIM_MAX 3
+
 namespace splash
 {
 
@@ -37,7 +40,7 @@ namespace splash
     class Dimensions
     {
     private:
-        hsize_t s[3];
+        hsize_t s[DSP_DIM_MAX];
     public:
 
         /**
@@ -208,7 +211,7 @@ namespace splash
          */
         inline static size_t getSize()
         {
-            return 3 * sizeof (hsize_t);
+            return DSP_DIM_MAX * sizeof (hsize_t);
         }
 
         /**
@@ -250,7 +253,7 @@ namespace splash
          */
         inline uint32_t getDims(void) const
         {
-            uint32_t dims = 3;
+            uint32_t dims = DSP_DIM_MAX;
             if (s[2] == 1)
             {
                 dims = 2;
@@ -268,7 +271,7 @@ namespace splash
         void swapDims(uint32_t dims)
         {
             hsize_t tmp1 = s[0];
-            hsize_t tmp2[3] = {s[2], s[1], s[0]};
+            hsize_t tmp2[DSP_DIM_MAX] = {s[2], s[1], s[0]};
 
             switch (dims)
             {
