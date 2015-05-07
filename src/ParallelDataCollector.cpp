@@ -358,6 +358,9 @@ namespace splash
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
             throw DCException(getExceptionString("writeGlobalAttribute", "this access is not permitted"));
 
+        if (ndims < 1u || ndims > DSP_DIM_MAX)
+            throw DCException(getExceptionString("writeGlobalAttribute", "maximum dimension `ndims` is invalid"));
+
         DCParallelGroup group_custom;
         group_custom.open(handles.get(id), SDC_GROUP_CUSTOM);
 
@@ -460,6 +463,9 @@ namespace splash
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
             throw DCException(getExceptionString("writeAttribute", "this access is not permitted"));
+
+        if (ndims < 1u || ndims > DSP_DIM_MAX)
+            throw DCException(getExceptionString("writeAttribute", "maximum dimension `ndims` is invalid"));
 
         std::string group_path, obj_name;
         std::string dataNameInternal = "";

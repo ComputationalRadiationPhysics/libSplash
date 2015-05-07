@@ -92,7 +92,7 @@ void AttributesTest::testDataAttributes()
             DCException);
     CPPUNIT_ASSERT_THROW(dataCollector->writeAttribute(10, ctInt, "", "", &sum2),
             DCException);
-    
+
     dataCollector->write(0, ctInt2, 1, Selection(Dimensions(BUF_SIZE, 1, 1)),
             "datasets/my_dataset", dummy_data);
     
@@ -105,6 +105,9 @@ void AttributesTest::testDataAttributes()
     dataCollector->writeAttribute(0, ctInt, "datasets", "sum_at_group", &sum);
     dataCollector->writeAttribute(0, ctChar, "datasets", "my_char", &c);
     dataCollector->writeAttribute(0, ctDouble, "datasets", "unitDimension", 1u, Dimensions(7,0,0), d);
+
+    CPPUNIT_ASSERT_THROW(dataCollector->writeAttribute(0, ctDouble, "datasets",
+            "invalnDims", 4u, Dimensions(7,0,0), d), DCException);
 
     delete[] dummy_data;
     dummy_data = NULL;

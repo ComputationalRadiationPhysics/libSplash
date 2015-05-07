@@ -65,12 +65,6 @@ namespace splash
                                      uint32_t ndims, const Dimensions dims, const void* src)
     throw (DCException)
     {
-        if (name == NULL)
-            throw DCException(getExceptionString("attribute", "parameter name is NULL"));
-
-        if (ndims < 1u || ndims > 3u)
-            throw DCException(getExceptionString(name, "maximum dimension is invalid"));
-
         hid_t attr = -1;
         if (H5Aexists(parent, name))
             attr = H5Aopen(parent, name, H5P_DEFAULT);
