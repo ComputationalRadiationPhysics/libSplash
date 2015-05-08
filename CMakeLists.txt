@@ -39,6 +39,9 @@ PROJECT(libSplash)
 SET(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}"
                       "$ENV{HDF5_ROOT}")
 
+# own modules for find_packages
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ ${CMAKE_MODULE_PATH})
+
 #-------------------------------------------------------------------------------
 
 # install prefix
