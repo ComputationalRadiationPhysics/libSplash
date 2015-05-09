@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -272,6 +272,13 @@ namespace splash
                 const char *name,
                 const void* buf) throw (DCException);
 
+        void writeGlobalAttribute(int32_t id,
+                const CollectionType& type,
+                const char *name,
+                uint32_t ndims,
+                const Dimensions dims,
+                const void* buf) throw (DCException);
+
         void readAttribute(int32_t id,
                 const char *dataName,
                 const char *attrName,
@@ -282,6 +289,14 @@ namespace splash
                 const CollectionType& type,
                 const char *dataName,
                 const char *attrName,
+                const void *buf) throw (DCException);
+
+        void writeAttribute(int32_t id,
+                const CollectionType& type,
+                const char *dataName,
+                const char *attrName,
+                uint32_t ndims,
+                const Dimensions dims,
                 const void *buf) throw (DCException);
 
         void read(int32_t id,
@@ -351,6 +366,15 @@ namespace splash
 
         void writeGlobalAttribute(const CollectionType& /*type*/,
                 const char* /*name*/,
+                const void* /*data*/)
+        {
+
+        }
+
+        void writeGlobalAttribute(const CollectionType& /*type*/,
+                const char* /*name*/,
+                uint32_t /*ndims*/,
+                const Dimensions /*dims*/,
                 const void* /*data*/)
         {
 

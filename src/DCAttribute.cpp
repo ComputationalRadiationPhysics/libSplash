@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013, 2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -61,7 +61,8 @@ namespace splash
         H5Aclose(attr);
     }
 
-    void DCAttribute::writeAttribute(const char* name, const hid_t type, hid_t parent, const void* src)
+    void DCAttribute::writeAttribute(const char* name, const hid_t type, hid_t parent,
+                                     uint32_t ndims, const Dimensions dims, const void* src)
     throw (DCException)
     {
         hid_t attr = -1;
@@ -69,7 +70,12 @@ namespace splash
             attr = H5Aopen(parent, name, H5P_DEFAULT);
         else
         {
-            hid_t dsp = H5Screate(H5S_SCALAR);
+            hid_t dsp;
+            if( ndims == 1 && dims.getScalarSize() == 1 )
+                dsp = H5Screate(H5S_SCALAR);
+            else
+                dsp = H5Screate_simple( ndims, dims.getPointer(), dims.getPointer() );
+
             attr = H5Acreate(parent, name, type, dsp, H5P_DEFAULT, H5P_DEFAULT);
             H5Sclose(dsp);
         }
@@ -84,6 +90,13 @@ namespace splash
         }
 
         H5Aclose(attr);
+    }
+
+    void DCAttribute::writeAttribute(const char* name, const hid_t type, hid_t parent, const void* src)
+    throw (DCException)
+    {
+        const Dimensions dims(1, 1, 1);
+        writeAttribute(name, type, parent, 1u, dims, src);
     }
 
 }

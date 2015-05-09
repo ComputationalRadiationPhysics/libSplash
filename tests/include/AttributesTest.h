@@ -46,6 +46,7 @@ private:
     void testArrayTypes();
 
     ColTypeChar ctChar;
+    ColTypeDouble ctDouble;
     ColTypeInt ctInt;
     ColTypeInt2 ctInt2;
     ColTypeInt3Array ctInt3Array;

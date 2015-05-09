@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -230,18 +230,32 @@ namespace splash
             const void* data)
     throw (DCException)
     {
+        const Dimensions dims(1, 1, 1);
+        writeGlobalAttribute(type, name, 1u, dims, data);
+    }
+
+    void SerialDataCollector::writeGlobalAttribute(const CollectionType& type,
+            const char* name,
+            uint32_t ndims,
+            const Dimensions dims,
+            const void* data)
+    throw (DCException)
+    {
         if (name == NULL || data == NULL)
             throw DCException(getExceptionString("writeGlobalAttribute", "a parameter was null"));
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
             throw DCException(getExceptionString("writeGlobalAttribute", "this access is not permitted"));
 
+        if (ndims < 1u || ndims > DSP_DIM_MAX)
+            throw DCException(getExceptionString("writeGlobalAttribute", "maximum dimension `ndims` is invalid"));
+
         DCGroup group_custom;
         group_custom.open(handles.get(0), SDC_GROUP_CUSTOM);
 
         try
         {
-            DCAttribute::writeAttribute(name, type.getDataType(), group_custom.getHandle(), data);
+            DCAttribute::writeAttribute(name, type.getDataType(), group_custom.getHandle(), ndims, dims, data);
         } catch (DCException e)
         {
             std::cerr << e.what() << std::endl;
@@ -320,6 +334,20 @@ namespace splash
             const void* data)
     throw (DCException)
     {
+        const Dimensions dims(1, 1, 1);
+        SerialDataCollector::writeAttribute( id, type, dataName, attrName,
+                                             1u, dims, data);
+    }
+
+    void SerialDataCollector::writeAttribute(int32_t id,
+            const CollectionType& type,
+            const char *dataName,
+            const char *attrName,
+            uint32_t ndims,
+            const Dimensions dims,
+            const void* data)
+    throw (DCException)
+    {
         if (attrName == NULL || data == NULL)
             throw DCException(getExceptionString("writeAttribute", "a parameter was null"));
 
@@ -332,6 +360,9 @@ namespace splash
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
             throw DCException(getExceptionString("writeAttribute", "this access is not permitted"));
+
+        if (ndims < 1u || ndims > DSP_DIM_MAX)
+            throw DCException(getExceptionString("writeAttribute", "maximum dimension `ndims` is invalid"));
 
         std::string group_path, obj_name;
         std::string dataNameInternal = "";
@@ -354,7 +385,7 @@ namespace splash
 
             try
             {
-                DCAttribute::writeAttribute(attrName, type.getDataType(), obj_id, data);
+                DCAttribute::writeAttribute(attrName, type.getDataType(), obj_id, ndims, dims, data);
             } catch (DCException)
             {
                 H5Oclose(obj_id);
@@ -365,7 +396,7 @@ namespace splash
         {
             // attach attribute to the iteration group
             group.openCreate(handles.get(0), group_path);
-            DCAttribute::writeAttribute(attrName, type.getDataType(), group.getHandle(), data);
+            DCAttribute::writeAttribute(attrName, type.getDataType(), group.getHandle(), ndims, dims, data);
         }
     }
 

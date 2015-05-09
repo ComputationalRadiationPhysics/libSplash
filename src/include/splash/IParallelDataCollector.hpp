@@ -125,7 +125,14 @@ namespace splash
                 const CollectionType& type,
                 const char *name,
                 const void* buf) = 0;
-        
+
+        virtual void writeGlobalAttribute(int32_t id,
+                const CollectionType& type,
+                const char *name,
+                uint32_t ndims,
+                const Dimensions dims,
+                const void* buf) = 0;
+
         virtual void readGlobalAttribute(const char *name,
                 void* buf,
                 Dimensions *mpiPosition = NULL) = 0;
@@ -133,7 +140,13 @@ namespace splash
         virtual void writeGlobalAttribute(const CollectionType& type,
                 const char *name,
                 const void* buf) = 0;
-        
+
+        virtual void writeGlobalAttribute(const CollectionType& type,
+                const char *name,
+                uint32_t ndims,
+                const Dimensions dims,
+                const void* buf) = 0;
+
         /**
          * Appends (1-3) dimensional data to a dataset created with
          * \ref IParallelDataCollector::reserve.

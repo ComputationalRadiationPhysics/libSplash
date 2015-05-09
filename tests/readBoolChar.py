@@ -24,7 +24,7 @@
 import h5py
 import numpy as np
 
-# bool compatible data sets
+# bool compatible data sets ###################################################
 f = h5py.File("h5/testWriteRead_0_0_0.h5", "r")
 data = f["data/10/deep/folders/data_bool"]
 
@@ -38,8 +38,28 @@ for i in np.arange(len):
 
 f.close()
 
-# single char compatible attributes
+# compatible attributes #######################################################
+f = h5py.File("h5/attributes_array_0_0_0.h5", "r")
+
+# array attributes
+dg = f["custom"].attrs["testposition"]
+print(dg, type(dg), dg.dtype)
+
+ref_dg = np.array([17, 12, -99], dtype="int")
+if not np.array_equal(dg, ref_dg):
+    exit(1)
+
+f.close()
 f = h5py.File("h5/attributes_0_0_0.h5", "r")
+
+d = f["data/0/datasets"].attrs["unitDimension"]
+print(d, type(d), d.dtype)
+
+ref_d = np.array([-3., 0., 1., 1., 0., 0., 0.], dtype="float64")
+if not np.array_equal(d, ref_d):
+    exit(1)
+
+# single char compatible attributes
 c = f["data/0/datasets"].attrs["my_char"]
 
 # h5py, as of 2.5.0, does not know char and

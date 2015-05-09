@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -319,6 +319,21 @@ namespace splash
                 const char *name,
                 const void* buf) = 0;
 
+       /**
+         * Writes global attribute to HDF5 file (default group).
+         *
+         * @param type Type information for data.
+         * @param name Name of the attribute.
+         * @param ndims Number of dimensions (1-3)
+         * @param dims Number of elements
+         * @param buf Buffer to be written as attribute.
+         */
+        virtual void writeGlobalAttribute(const CollectionType& type,
+                const char *name,
+                uint32_t ndims,
+                const Dimensions dims,
+                const void* buf) = 0;
+
         /**
          * Reads an attribute from a single dataset.
          * 
@@ -352,7 +367,27 @@ namespace splash
                 const char *dataName,
                 const char *attrName,
                 const void *buf) = 0;
-        
+
+        /**
+         * Writes an attribute to a single dataset.
+         *
+         * @param id ID for iteration.
+         * @param type Type information for data.
+         * @param dataName Name of the dataset in group \p id to write attribute to.
+         * If dataName is NULL, the attribute is written for the iteration group.
+         * @param attrName Name of the attribute.
+         * @param ndims Number of dimensions (1-3)
+         * @param dims Number of elements
+         * @param buf Buffer to be written as attribute.
+         */
+        virtual void writeAttribute(int32_t id,
+                const CollectionType& type,
+                const char *dataName,
+                const char *attrName,
+                uint32_t ndims,
+                const Dimensions dims,
+                const void *buf) = 0;
+
         /**
          * Reads data from HDF5 file.
          * If data is to be read (instead of only its size in the file),
