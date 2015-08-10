@@ -26,6 +26,12 @@ import numpy as np
 
 # bool compatible data sets ###################################################
 f = h5py.File("h5/testWriteRead_0_0_0.h5", "r")
+
+# print version
+print("Splash version: {}".format(f["header"].attrs["splashVersion"]))
+print("Splash format: {}".format(f["header"].attrs["splashFormat"]))
+
+# read data set
 data = f["data/10/deep/folders/data_bool"]
 
 len = data.size
