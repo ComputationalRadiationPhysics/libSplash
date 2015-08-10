@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by 
  * the Free Software Foundation, either version 3 of the License, or 
  * (at your option) any later version. 
+ *
  * libSplash is distributed in the hope that it will be useful, 
  * but WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
@@ -39,6 +40,8 @@ namespace splash
 #define SDC_ATTR_GRID_SIZE "grid_size"
 #define SDC_ATTR_SIZE "client_size"
 #define SDC_ATTR_COMPRESSION "compression"
+#define SDC_ATTR_VERSION "splashVersion"
+#define SDC_ATTR_FORMAT "splashFormat"
 }
 
 #endif	/* SDC_DEFINES_H */

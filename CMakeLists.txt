@@ -1,5 +1,5 @@
  #
- # Copyright 2013-2014 Felix Schmitt, Axel Huebl
+ # Copyright 2013-2015 Felix Schmitt, Axel Huebl
  #
  # This file is part of libSplash. 
  # 
@@ -112,7 +112,7 @@ ENDIF(NOT SPLASH_RELEASE)
 SET(SPLASH_LIBS z ${HDF5_LIBRARIES})
 
 # serial or parallel version of libSplash
-SET(SPLASH_CLASSES logging DCAttribute DCDataSet DCGroup HandleMgr SerialDataCollector DomainCollector)
+SET(SPLASH_CLASSES logging DCAttribute DCDataSet DCGroup HandleMgr SerialDataCollector DomainCollector SDCHelper)
 IF(HDF5_IS_PARALLEL)
     #parallel version 
     MESSAGE(STATUS "Parallel HDF5 found. Building parallel version")

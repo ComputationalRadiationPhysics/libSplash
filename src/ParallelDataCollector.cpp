@@ -25,8 +25,12 @@
 #include <dirent.h>
 #include <stdlib.h>
 #include <cstring>
+#include <sstream>
 
+#include "splash/version.hpp"
 #include "splash/ParallelDataCollector.hpp"
+#include "splash/basetypes/ColTypeDim.hpp"
+#include "splash/basetypes/ColTypeString.hpp"
 #include "splash/core/DCParallelDataSet.hpp"
 #include "splash/core/DCAttribute.hpp"
 #include "splash/core/DCParallelGroup.hpp"
@@ -821,10 +825,19 @@ namespace splash
         DCParallelGroup group;
         group.create(fHandle, SDC_GROUP_HEADER);
 
-        ColTypeDim dim_t;
-
         int32_t index = id;
         bool compression = enableCompression;
+        std::stringstream splashVersion;
+        splashVersion << SPLASH_VERSION_MAJOR << "."
+                      << SPLASH_VERSION_MINOR << "."
+                      << SPLASH_VERSION_PATCH;
+        std::stringstream splashFormat;
+        splashFormat << SPLASH_FILE_FORMAT_MAJOR << "."
+                     << SPLASH_FILE_FORMAT_MINOR;
+
+        ColTypeDim dim_t;
+        ColTypeString ctStringVersion(splashVersion.str().length());
+        ColTypeString ctStringFormat(splashFormat.str().length());
 
         // create master specific header attributes
         DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, H5T_NATIVE_INT32,
@@ -835,6 +848,12 @@ namespace splash
 
         DCAttribute::writeAttribute(SDC_ATTR_MPI_SIZE, dim_t.getDataType(),
                 group.getHandle(), mpiTopology.getPointer());
+
+        DCAttribute::writeAttribute(SDC_ATTR_VERSION, ctStringVersion.getDataType(),
+                group.getHandle(), splashVersion.str().c_str());
+
+        DCAttribute::writeAttribute(SDC_ATTR_FORMAT, ctStringFormat.getDataType(),
+                group.getHandle(), splashFormat.str().c_str());
     }
 
     void ParallelDataCollector::openCreate(const char *filename,
