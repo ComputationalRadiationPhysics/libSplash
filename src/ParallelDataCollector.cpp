@@ -322,7 +322,7 @@ namespace splash
             throw DCException(getExceptionString("readGlobalAttribute", "this access is not permitted"));
 
         DCParallelGroup group_custom;
-        group_custom.open(handles.get(id), SDC_GROUP_CUSTOM);
+        group_custom.open(handles.get(id), PDC_GROUP_CUSTOM);
 
         try
         {
@@ -362,7 +362,7 @@ namespace splash
             throw DCException(getExceptionString("writeGlobalAttribute", "maximum dimension `ndims` is invalid"));
 
         DCParallelGroup group_custom;
-        group_custom.open(handles.get(id), SDC_GROUP_CUSTOM);
+        group_custom.open(handles.get(id), PDC_GROUP_CUSTOM);
 
         try
         {
@@ -795,7 +795,7 @@ namespace splash
 
         // the custom group holds user-specified attributes
         DCParallelGroup group;
-        group.create(handle, SDC_GROUP_CUSTOM);
+        group.create(handle, PDC_GROUP_CUSTOM);
         group.close();
 
         // the data group holds the actual simulation data
