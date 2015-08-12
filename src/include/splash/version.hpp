@@ -34,4 +34,7 @@
 #define SPLASH_FILE_FORMAT_MAJOR 3
 #define SPLASH_FILE_FORMAT_MINOR 2
 
+/** The version of HDF5 that was used to compile splash */
+#define SPLASH_HDF5_VERSION "${HDF5_VERSION}"
+
 #endif	/* VERSION_HPP */

@@ -172,7 +172,14 @@ INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/include/."
   PATTERN ".svn" EXCLUDE
   PATTERN ".git" EXCLUDE
   PATTERN "splash_*.h" EXCLUDE
+  PATTERN "version.hpp" EXCLUDE
 )
+
+# version.hpp file with SPLASH_HDF5_VERSION set accordingly
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/src/include/splash/version.hpp
+                ${CMAKE_CURRENT_BINARY_DIR}/splash/version.hpp )
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/splash/version.hpp
+        DESTINATION include/splash)
 
 # install correct splash header file
 # (will be executed after the POST_BUILD copies of splash.h)
