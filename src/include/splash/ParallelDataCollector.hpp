@@ -33,6 +33,7 @@
 
 #include "splash/DCException.hpp"
 #include "splash/sdc_defines.hpp"
+#include "splash/pdc_defines.hpp"
 #include "splash/core/HandleMgr.hpp"
 
 namespace splash
