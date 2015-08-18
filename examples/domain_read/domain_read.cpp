@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Richard Pausch
  *
  * This file is part of libSplash. 
  * 
@@ -70,8 +70,8 @@ int main(int argc, char **argv)
         dc.getEntryIDs(ids, &num_ids);
     }
 
-    // get entries for 1. id (timestep)
-    std::cout << "reading from timestep " << ids[0] << std::endl;
+    // get entries for 1. id (iteration step)
+    std::cout << "reading from iteration step " << ids[0] << std::endl;
     DataCollector::DCEntry *entries = NULL;
     size_t num_entries = 0;
     dc.getEntriesForID(ids[0], NULL, &num_entries);
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
         dc.getEntriesForID(ids[0], entries, &num_entries);
     }
 
-    // read 1. entry from this timestep
+    // read 1. entry from this iteration step
     DataCollector::DCEntry first_entry = entries[0];
     std::cout << "reading entry " << first_entry.name << std::endl;
 

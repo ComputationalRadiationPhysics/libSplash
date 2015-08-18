@@ -102,7 +102,7 @@ namespace splash
         log_msg(2, "listing files for %s", baseFilename.c_str());
 
         /* Split baseFilename into path and name prefix.
-         * Always append '_' since PDC filenames are 'prefix_timestep.h5'.
+         * Always append '_' since PDC filenames are 'prefix_iterationstep.h5'.
          * e.g. '/path/to/filename' -> dir_path='/path/to/' name='filename_'
          */
         std::string dir_path, name;

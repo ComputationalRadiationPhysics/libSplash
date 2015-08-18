@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Richard Pausch
  *
  * This file is part of libSplash. 
  * 
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
      * http://computationalradiationphysics.github.io/libSplash/classsplash_1_1_domain_collector.html
      * for more information on this interface.
      **/
-    dc.writeDomain(10,                    /* timestamp/iteration */
+    dc.writeDomain(10,                    /* iteration step (timestep in case of PIConGPU) */
             ctFloat,                      /* data type */
             localGridSize.getDims(),      /* number of dimensions (here 3) */
             Selection(localGridSize),     /* data size of this process */

@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Richard Pausch
  *
  * This file is part of libSplash. 
  * 
@@ -142,7 +142,7 @@ int main(int argc, char **argv)
             dc.getEntryIDs(ids, &num_ids);
         }
 
-        // get entries for 1. id (timestep)
+        // get entries for 1. id (iteration stamp)
         DataCollector::DCEntry *entries = NULL;
         size_t num_entries = 0;
         dc.getEntriesForID(ids[0], NULL, &num_entries);
