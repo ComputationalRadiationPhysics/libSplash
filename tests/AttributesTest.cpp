@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2015 Felix Schmitt, Axel Huebl
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl, Richard Pausch
  *
  * This file is part of libSplash. 
  * 
@@ -77,7 +77,7 @@ void AttributesTest::testDataAttributes()
     }
     sum2 = sum;
     
-    dataCollector->writeAttribute(10, ctInt, NULL, "timestep", &sum2);
+    dataCollector->writeAttribute(10, ctInt, NULL, "iteration", &sum2);
 
     /* variable length string, '\0' terminated */
     const char *string_attr = {"My first c-string."};
@@ -125,7 +125,7 @@ void AttributesTest::testDataAttributes()
     
     dataCollector->open(TEST_FILE, attr);
     
-    dataCollector->readAttribute(10, NULL, "timestep", &sum2);
+    dataCollector->readAttribute(10, NULL, "iteration", &sum2);
 
     char* string_read;
     dataCollector->readAttribute(10, NULL, "my_string", &string_read);

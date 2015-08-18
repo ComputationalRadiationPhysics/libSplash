@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Richard Pausch
  *
  * This file is part of libSplash. 
  * 
@@ -488,7 +488,7 @@ int listAvailableDatasets(Options& options, DataCollector *dc, const char* /*fil
         }
     }
 
-    // number of timesteps in this file
+    // number of iterations in this file
     size_t num_entries = 0;
     dc->getEntriesForID(id, NULL, &num_entries);
 
