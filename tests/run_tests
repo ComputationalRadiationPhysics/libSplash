@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ $# -eq 0 ]; then
+    echo "  WARNING:"
+    echo "    No path for build director was given."
+    echo "    Will use \"build\" instead."
+fi
+
 dir=${1:-build}
 
 rm -rf $dir/h5
