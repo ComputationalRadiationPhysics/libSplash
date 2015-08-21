@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by 
  * the Free Software Foundation, either version 3 of the License, or 
  * (at your option) any later version. 
+ *
  * libSplash is distributed in the hope that it will be useful, 
  * but WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
@@ -488,7 +489,7 @@ int listAvailableDatasets(Options& options, DataCollector *dc, const char* /*fil
         }
     }
 
-    // number of timesteps in this file
+    // number of iterations in this file
     size_t num_entries = 0;
     dc->getEntriesForID(id, NULL, &num_entries);
 
@@ -499,7 +500,7 @@ int listAvailableDatasets(Options& options, DataCollector *dc, const char* /*fil
 
         for (size_t i = 0; i < num_entries; ++i)
             std::cout << entries[i].name << std::endl;
-        
+
         delete[] entries;
     }
 

@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by 
  * the Free Software Foundation, either version 3 of the License, or 
  * (at your option) any later version. 
+ *
  * libSplash is distributed in the hope that it will be useful, 
  * but WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
@@ -100,7 +101,7 @@ int main(int argc, char **argv)
      * http://computationalradiationphysics.github.io/libSplash/classsplash_1_1_domain_collector.html
      * for more information on this interface.
      **/
-    dc.writeDomain(10,                    /* timestamp/iteration */
+    dc.writeDomain(10,                    /* iteration */
             ctFloat,                      /* data type */
             localGridSize.getDims(),      /* number of dimensions (here 3) */
             Selection(localGridSize),     /* data size of this process */
