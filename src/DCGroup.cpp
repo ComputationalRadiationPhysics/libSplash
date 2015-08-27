@@ -196,7 +196,10 @@ namespace splash
             if (obj_info.type == H5O_TYPE_DATASET)
             {
                 if (param->entries)
+                {
                     param->entries[param->count].name = currentBaseName;
+                    // type ...
+                }
 
                 param->count++;
             }

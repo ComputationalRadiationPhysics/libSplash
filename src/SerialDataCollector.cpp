@@ -425,6 +425,22 @@ namespace splash
                 Dimensions(0, 0, 0), sizeRead, ndims, data);
     }
 
+    void SerialDataCollector::readMeta(int32_t id,
+            CollectionType &type,
+            const char* name,
+            const Dimensions dstBuffer,
+            const Dimensions dstOffset,
+            Dimensions &sizeRead)
+    throw (DCException)
+    {
+        if (fileStatus != FST_READING && fileStatus != FST_WRITING && fileStatus != FST_MERGING)
+            throw DCException(getExceptionString("read", "this access is not permitted"));
+
+        uint32_t ndims = 0;
+        readDataSetMeta(handles.get(0), id, type, name, dstBuffer, dstOffset,
+                Dimensions(0, 0, 0), sizeRead, ndims);
+    }
+
     void SerialDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
             const Selection select, const char* name, const void* data)
     throw (DCException)
@@ -954,6 +970,41 @@ namespace splash
         DCDataSet dataset(dset_name.c_str());
         dataset.open(group.getHandle());
         dataset.read(dstBuffer, dstOffset, srcSize, srcOffset, sizeRead, srcDims, dst);
+        dataset.close();
+    }
+
+    void SerialDataCollector::readDataSetMeta(H5Handle h5File,
+            int32_t id,
+            CollectionType &type,
+            const char* name,
+            const Dimensions dstBuffer,
+            const Dimensions dstOffset,
+            const Dimensions srcOffset,
+            Dimensions &sizeRead,
+            uint32_t& srcDims)
+    throw (DCException)
+    {
+        log_msg(2, "readDataSetMeta");
+
+        std::string group_path, dset_name;
+        DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
+
+        DCGroup group;
+        group.open(h5File, group_path);
+
+        DCDataSet dataset(dset_name.c_str());
+        dataset.open(group.getHandle());
+
+        size_t datatype_size = 0;
+        DCDataType dc_datatype = DCDT_UNKNOWN;
+        datatype_size = dataset.getDataTypeSize();
+        dc_datatype = dataset.getDCDataType();
+
+        // make a collection for "type" out of it...
+        //type.getDataType() = ...
+
+        Dimensions src_size(dataset.getSize() - srcOffset);
+        dataset.read(dstBuffer, dstOffset, src_size, srcOffset, sizeRead, srcDims, NULL);
         dataset.close();
     }
 

@@ -312,6 +312,13 @@ namespace splash
                 Dimensions &sizeRead,
                 void* buf) throw (DCException);
 
+/*        void readMeta(int32_t id,
+                CollectionType &type,
+                const char* name,
+                const Dimensions dstBuffer,
+                const Dimensions dstOffset,
+                Dimensions &sizeRead) throw (DCException);*/
+
         /**
          * Reads data from HDF5 file.
          * If data is to be read (instead of only its size in the file),
