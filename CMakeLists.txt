@@ -76,15 +76,14 @@ MESSAGE(STATUS "Building libSplash version ${SPLASH_VERSION}")
 FIND_PACKAGE(HDF5 1.8.6 REQUIRED)
 INCLUDE_DIRECTORIES(SYSTEM ${HDF5_INCLUDE_DIR})
 
-# check if static version of HDF5 is used
-#   CMake prefers .so/shared libraries                 
-#   if we find a static HDF5 lib in the ${HDF5_LIBRARIES}
-#   it means there is only a static version installed
-SET(HDF5_IS_STATIC ON)
-STRING(FIND "${HDF5_LIBRARIES}" "hdf5.a" HDF5_IS_STATIC_POS)
-IF(${HDF5_IS_STATIC_POS} EQUAL -1)
-    SET(HDF5_IS_STATIC OFF)
-ENDIF(${HDF5_IS_STATIC_POS} EQUAL -1)
+# check if shared version of HDF5 can be used
+#   CMake prefers .so/shared libraries over static ones
+SET(HDF5_HAS_SHARED ON)
+STRING(FIND "${HDF5_LIBRARIES}" "hdf5.so" HDF5_HAS_SHARED_POS)
+IF(${HDF5_HAS_SHARED_POS} EQUAL -1)
+    SET(HDF5_HAS_SHARED OFF)
+ENDIF()
+UNSET(HDF5_HAS_SHARED_POS)
 
 #-------------------------------------------------------------------------------
 
@@ -147,12 +146,12 @@ AUX_SOURCE_DIRECTORY("${CMAKE_CURRENT_SOURCE_DIR}/tools" TOOLS_SOURCES)
 #-------------------------------------------------------------------------------
 
 # build libsplash shared (if shared HDF5 is used)
-IF(HDF5_IS_STATIC)
+IF(NOT HDF5_HAS_SHARED)
     MESSAGE(WARNING "Skipping dynamic libSplash because HDF5 library is static")
-ELSE(HDF5_IS_STATIC)
+ELSE()
     ADD_LIBRARY(splash SHARED ${LIBRARY_SOURCES})
     TARGET_LINK_LIBRARIES(splash ${SPLASH_LIBS})
-ENDIF(HDF5_IS_STATIC)
+ENDIF()
 
 # build libsplash static
 ADD_LIBRARY(splash_static STATIC ${LIBRARY_SOURCES})
@@ -160,9 +159,9 @@ SET_TARGET_PROPERTIES(splash_static PROPERTIES OUTPUT_NAME splash)
 TARGET_LINK_LIBRARIES (splash_static ${SPLASH_LIBS})
 
 # install libs
-IF(NOT HDF5_IS_STATIC)
+IF(HDF5_HAS_SHARED)
     INSTALL(TARGETS splash LIBRARY DESTINATION lib)
-ENDIF(NOT HDF5_IS_STATIC)
+ENDIF()
 
 INSTALL(TARGETS splash_static ARCHIVE DESTINATION lib)
 
@@ -220,7 +219,11 @@ OPTION(WITH_TOOLS "enable splashtools" ON)
 IF(WITH_TOOLS)
     MESSAGE(STATUS "Building splashtools")
 
-    SET(TOOLS_LIBS ${TOOLS_LIBS} splash_static)
+    IF(HDF5_HAS_SHARED)
+        SET(TOOLS_LIBS ${TOOLS_LIBS} splash)
+    ELSE()
+        SET(TOOLS_LIBS ${TOOLS_LIBS} splash_static)
+    ENDIF()
     INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
     # MPI for tools
