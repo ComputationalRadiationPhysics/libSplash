@@ -33,6 +33,10 @@ print("Splash format: {}".format(f["header"].attrs["splashFormat"]))
 
 # read data set
 data = f["data/10/deep/folders/data_bool"]
+print(data, type(data), data.dtype)
+
+if not type(data[0,0,0]) is np.bool_:
+    exit(1)
 
 len = data.size
 data1d = data[:,:,:].reshape(len)
