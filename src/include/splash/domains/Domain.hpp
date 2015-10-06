@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -7,7 +7,8 @@
  * it under the terms of of either the GNU General Public License or 
  * the GNU Lesser General Public License as published by 
  * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
+ * (at your option) any later version.
+ *
  * libSplash is distributed in the hope that it will be useful, 
  * but WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
@@ -18,8 +19,6 @@
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
  */
-
-
 
 #ifndef DOMAIN_HPP
 #define	DOMAIN_HPP
@@ -53,13 +52,13 @@ namespace splash
 
         /**
          * Constructor.
-         * 
-         * @param offset Offset of this domain in the parent domain.
-         * @param size Size of this domain in every dimension.
+         *
+         * @param offset_ Offset of this domain in the parent domain.
+         * @param size_ Size of this domain in every dimension.
          */
-        Domain(Dimensions offset, Dimensions size) :
-        offset(offset),
-        size(size)
+        Domain(Dimensions offset_, Dimensions size_) :
+        offset(offset_),
+        size(size_)
         {
 
         }
@@ -177,4 +176,3 @@ namespace splash
 }
 
 #endif	/* DOMAIN_HPP */
-

@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Felix Schmitt
+ * Copyright 2014-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash.
  *
@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * libSplash is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -39,12 +40,12 @@ namespace splash
 
         /**
          * Constructor
-         * 
-         * @param size size of src buffer (select complete buffer)
+         *
+         * @param size_ size of src buffer (select complete buffer)
          */
-        Selection(Dimensions size) :
-        size(size),
-        count(size),
+        Selection(Dimensions size_) :
+        size(size_),
+        count(size_),
         offset(0, 0, 0),
         stride(1, 1, 1)
         {
@@ -52,16 +53,16 @@ namespace splash
         }
 
         /**
-         * Constructor 
-         * 
-         * @param size size of src buffer
-         * @param count size of selection within src buffer
-         * @param offset offset of selection within src buffer
+         * Constructor
+         *
+         * @param size_ size of src buffer
+         * @param count_ size of selection within src buffer
+         * @param offset_ offset of selection within src buffer
          */
-        Selection(Dimensions size, Dimensions count, Dimensions offset) :
-        size(size),
-        count(count),
-        offset(offset),
+        Selection(Dimensions size_, Dimensions count_, Dimensions offset_) :
+        size(size_),
+        count(count_),
+        offset(offset_),
         stride(1, 1, 1)
         {
 
@@ -69,24 +70,24 @@ namespace splash
 
         /**
          * Constructor
-         * 
-         * @param size size of src buffer
-         * @param count size of selection within src buffer
-         * @param offset offset of selection within src buffer
-         * @param stride stride of selection within src buffer
+         *
+         * @param size_ size of src buffer
+         * @param count_ size of selection within src buffer
+         * @param offset_ offset of selection within src buffer
+         * @param stride_ stride of selection within src buffer
          */
-        Selection(Dimensions size, Dimensions count, Dimensions offset, Dimensions stride) :
-        size(size),
-        count(count),
-        offset(offset),
-        stride(stride)
+        Selection(Dimensions size_, Dimensions count_, Dimensions offset_, Dimensions stride_) :
+        size(size_),
+        count(count_),
+        offset(offset_),
+        stride(stride_)
         {
 
         }
-        
+
         /**
          * Swap dimensions
-         * 
+         *
          * @param ndims number of dimensions of this selection
          */
         void swapDims(uint32_t ndims)
@@ -96,7 +97,7 @@ namespace splash
             offset.swapDims(ndims);
             stride.swapDims(ndims);
         }
-        
+
         /**
          * Create a string representation of this selection
          * 
@@ -122,4 +123,3 @@ namespace splash
 }
 
 #endif	/* SELECTION_HPP */
-
