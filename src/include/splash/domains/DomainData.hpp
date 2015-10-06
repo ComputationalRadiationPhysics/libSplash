@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -7,7 +7,8 @@
  * it under the terms of of either the GNU General Public License or 
  * the GNU Lesser General Public License as published by 
  * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
+ * (at your option) any later version.
+ *
  * libSplash is distributed in the hope that it will be useful, 
  * but WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
@@ -18,8 +19,6 @@
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
  */
-
-
 
 #ifndef DOMAINDATA_HPP
 #define	DOMAINDATA_HPP
@@ -61,20 +60,20 @@ namespace splash
         /**
          * Constructor.
          * Allocates enough memory to hold 'elements' data of 'type'.
-         * 
-         * @param domain The underlying Domain.
-         * @param elements Number of data elements in every dimension.
-         * @param datatypeSize Size of each element in bytes.
-         * @param datatype Internal representation of HDF5 datatype.
+         *
+         * @param domain_ The underlying Domain.
+         * @param elements_ Number of data elements in every dimension.
+         * @param datatypeSize_ Size of each element in bytes.
+         * @param datatype_ Internal representation of HDF5 datatype.
          */
-        DomainData(const Domain& domain, const Dimensions elements,
-                size_t datatypeSize, DCDataType datatype) :
-        Domain(domain),
-        elements(elements),
+        DomainData(const Domain& domain_, const Dimensions elements_,
+                size_t datatypeSize_, DCDataType datatype_) :
+        Domain(domain_),
+        elements(elements_),
         data(NULL),
         loadingReference(NULL),
-        datatype(datatype),
-        datatypeSize(datatypeSize)
+        datatype(datatype_),
+        datatypeSize(datatypeSize_)
         {
             data = new uint8_t[datatypeSize * elements.getScalarSize()];
             assert(data != NULL);
@@ -232,4 +231,3 @@ namespace splash
 }
 
 #endif	/* DOMAINDATA_HPP */
-
