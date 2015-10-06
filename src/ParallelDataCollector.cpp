@@ -29,8 +29,7 @@
 
 #include "splash/version.hpp"
 #include "splash/ParallelDataCollector.hpp"
-#include "splash/basetypes/ColTypeDim.hpp"
-#include "splash/basetypes/ColTypeString.hpp"
+#include "splash/basetypes/basetypes.hpp"
 #include "splash/core/DCParallelDataSet.hpp"
 #include "splash/core/DCAttribute.hpp"
 #include "splash/core/DCParallelGroup.hpp"
@@ -835,15 +834,17 @@ namespace splash
         splashFormat << SPLASH_FILE_FORMAT_MAJOR << "."
                      << SPLASH_FILE_FORMAT_MINOR;
 
+        ColTypeInt32 ctInt32;
+        ColTypeBool ctBool;
         ColTypeDim dim_t;
         ColTypeString ctStringVersion(splashVersion.str().length());
         ColTypeString ctStringFormat(splashFormat.str().length());
 
         // create master specific header attributes
-        DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, H5T_NATIVE_INT32,
+        DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, ctInt32.getDataType(),
                 group.getHandle(), &index);
 
-        DCAttribute::writeAttribute(SDC_ATTR_COMPRESSION, H5T_NATIVE_HBOOL,
+        DCAttribute::writeAttribute(SDC_ATTR_COMPRESSION, ctBool.getDataType(),
                 group.getHandle(), &compression);
 
         DCAttribute::writeAttribute(SDC_ATTR_MPI_SIZE, dim_t.getDataType(),

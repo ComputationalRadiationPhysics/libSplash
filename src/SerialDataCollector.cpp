@@ -29,6 +29,8 @@
 
 #include "splash/SerialDataCollector.hpp"
 
+#include "splash/basetypes/basetypes.hpp"
+
 #include "splash/core/DCAttribute.hpp"
 #include "splash/core/DCDataSet.hpp"
 #include "splash/core/DCGroup.hpp"
@@ -163,7 +165,8 @@ namespace splash
             // write number of iterations
             try
             {
-                DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, H5T_NATIVE_INT32,
+                ColTypeInt32 ctInt32;
+                DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, ctInt32.getDataType(),
                         group.getHandle(), &maxID);
             } catch (DCException e)
             {
