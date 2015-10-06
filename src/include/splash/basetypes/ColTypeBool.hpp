@@ -40,7 +40,7 @@ public:
         // this is a h5py compatible implementation for bool, see:
         //   http://docs.h5py.org/en/latest/faq.html
         this->type = H5Tenum_create(H5T_NATIVE_INT8);
-        const char *names[2] = {"true", "false"};
+        const char *names[2] = {"TRUE", "FALSE"};
         const int64_t val[2] = {1, 0};
         H5Tenum_insert(this->type, names[0], &val[0]);
         H5Tenum_insert(this->type, names[1], &val[1]);
