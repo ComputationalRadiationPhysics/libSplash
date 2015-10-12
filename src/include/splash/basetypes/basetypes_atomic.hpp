@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2015 Felix Schmitt, Axel Huebl
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl, Carlchristian Eckert
  *
  * This file is part of libSplash. 
  * 
@@ -23,8 +23,11 @@
 #define	BASETYPES_ATOMIC_HPP
 
 #include <stdint.h>
+#include <iostream>
+#include <string>
 
 #include "splash/CollectionType.hpp"
+#include "splash/basetypes/ColTypeUnknown.hpp"
 
 namespace splash
 {
@@ -39,7 +42,30 @@ namespace splash
                                                                                \
         size_t getSize() const                                                 \
         { return sizeof (_real_type); }                                        \
-    };
+                                                                               \
+        static CollectionType* genType(hid_t datatype_id){                     \
+            bool found = false;                                                \
+            H5T_class_t h5_class = H5Tget_class(datatype_id);                  \
+            if(h5_class == H5T_INTEGER || h5_class == H5T_FLOAT)               \
+            {                                                                  \
+                hid_t native = H5Tget_native_type(datatype_id,H5T_DIR_DEFAULT);\
+                if(H5Tequal(native, _h5_type) == 1)                            \
+                    found = true;                                              \
+                H5Tclose(native);                                              \
+            }                                                                  \
+            if(found)                                                          \
+                return new ColType##_name;                                     \
+            else                                                               \
+                return NULL;                                                   \
+        }                                                                      \
+                                                                               \
+        std::string toString() const                                           \
+        {                                                                      \
+            return #_name;                                                     \
+        }                                                                      \
+                                                                               \
+    };                                                                         \
+
 
 TYPE_ATOMIC(Float, H5T_NATIVE_FLOAT, float);
 TYPE_ATOMIC(Double, H5T_NATIVE_DOUBLE, double);

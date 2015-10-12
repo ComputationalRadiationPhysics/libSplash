@@ -1,5 +1,6 @@
 /**
  * Copyright 2013 Felix Schmitt
+ *           2015 Carlchristian Eckert
  *
  * This file is part of libSplash. 
  * 
@@ -25,6 +26,7 @@
 #define	COLLECTIONTYPE_H
 
 #include <hdf5.h>
+#include <string>
 
 #define H5DataType hid_t
 
@@ -54,6 +56,13 @@ namespace splash
          * @return size of datatype in bytes
          */
         virtual size_t getSize() const = 0;
+
+        /**
+         * Returns a human-readable representation of the datatype.
+         *
+         * @return the name of the datatype as a string
+         */
+        virtual std::string toString() const = 0;
 
         /**
          * Destructor

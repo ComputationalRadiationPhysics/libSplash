@@ -1,5 +1,6 @@
 /**
  * Copyright 2013 Felix Schmitt
+ *           2015 Carlchristian Eckert
  *
  * This file is part of libSplash. 
  * 
@@ -27,6 +28,10 @@
 #include "splash/CollectionType.hpp"
 #include "splash/Dimensions.hpp"
 
+#include <cstdlib>
+#include <string>
+#include <cstring>
+
 namespace splash
 {
 
@@ -51,6 +56,35 @@ namespace splash
         {
             return Dimensions::getSize();
         }
+
+        std::string toString() const
+        {
+            return "Dimension";
+        }
+
+        static CollectionType* genType(hid_t datatype_id)
+        {
+            bool found = false;
+            H5T_class_t h5_class = H5Tget_class(datatype_id);
+            if(h5_class == H5T_COMPOUND){
+                if(H5Tget_nmembers(datatype_id) == 3){
+                    if(H5Tget_size(datatype_id) == Dimensions::getSize()){
+                        char* m0 = H5Tget_member_name(datatype_id, 0);
+                        char* m1 = H5Tget_member_name(datatype_id, 1);
+                        char* m2 = H5Tget_member_name(datatype_id, 2);
+                        if( (strcmp("x", m0) || strcmp("y", m1) || strcmp("z", m2)) == 0)
+                            found = true;
+                        free(m2);
+                        free(m1);
+                        free(m0);
+                    }
+                }
+            }
+            if(found)
+                return new ColTypeDim;
+            else
+                return NULL;
+		}
     };
 }
 

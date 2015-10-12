@@ -35,6 +35,7 @@
 #include "splash/core/DCHelper.hpp"
 #include "splash/core/SDCHelper.hpp"
 #include "splash/core/logging.hpp"
+#include "splash/basetypes/basetypes.hpp"
 
 namespace splash
 {
@@ -425,8 +426,7 @@ namespace splash
                 Dimensions(0, 0, 0), sizeRead, ndims, data);
     }
 
-    void SerialDataCollector::readMeta(int32_t id,
-            CollectionType &type,
+    CollectionType* SerialDataCollector::readMeta(int32_t id,
             const char* name,
             const Dimensions dstBuffer,
             const Dimensions dstOffset,
@@ -437,7 +437,7 @@ namespace splash
             throw DCException(getExceptionString("read", "this access is not permitted"));
 
         uint32_t ndims = 0;
-        readDataSetMeta(handles.get(0), id, type, name, dstBuffer, dstOffset,
+        return readDataSetMeta(handles.get(0), id, name, dstBuffer, dstOffset,
                 Dimensions(0, 0, 0), sizeRead, ndims);
     }
 
@@ -973,9 +973,8 @@ namespace splash
         dataset.close();
     }
 
-    void SerialDataCollector::readDataSetMeta(H5Handle h5File,
+    CollectionType* SerialDataCollector::readDataSetMeta(H5Handle h5File,
             int32_t id,
-            CollectionType &type,
             const char* name,
             const Dimensions dstBuffer,
             const Dimensions dstOffset,
@@ -995,17 +994,22 @@ namespace splash
         DCDataSet dataset(dset_name.c_str());
         dataset.open(group.getHandle());
 
-        size_t datatype_size = 0;
-        DCDataType dc_datatype = DCDT_UNKNOWN;
-        datatype_size = dataset.getDataTypeSize();
-        dc_datatype = dataset.getDCDataType();
+        //size_t datatype_size = 0;
+        //DCDataType dc_datatype = DCDT_UNKNOWN;
+        //datatype_size = dataset.getDataTypeSize();
+        //dc_datatype = dataset.getDCDataType();
 
-        // make a collection for "type" out of it...
-        //type.getDataType() = ...
+        size_t entrySize;
+        getEntriesForID(id, NULL, &entrySize);
+        std::vector<DataCollector::DCEntry> entries(entrySize);
+
+        getEntriesForID(id, &(*entries.begin()), NULL);
 
         Dimensions src_size(dataset.getSize() - srcOffset);
         dataset.read(dstBuffer, dstOffset, src_size, srcOffset, sizeRead, srcDims, NULL);
         dataset.close();
+
+        return entries[0].col_type;
     }
 
     void SerialDataCollector::readSizeInternal(H5Handle h5File,

@@ -1,5 +1,6 @@
 /**
  * Copyright 2013 Felix Schmitt
+ *           2015 Carlchristian Eckert
  *
  * This file is part of libSplash. 
  * 
@@ -23,6 +24,8 @@
 #define	BASETYPES_COMPOUND_HPP
 
 #include <stdint.h>
+#include <cstring>
+#include <cstdlib>
 
 #include "splash/CollectionType.hpp"
 
@@ -50,7 +53,41 @@ namespace splash
                                                                                \
         size_t getSize() const                                                 \
         { return _size * sizeof (_real_type); }                                \
-    };
+                                                                               \
+        static CollectionType* genType(hid_t datatype_id){                     \
+            H5T_class_t h5_class = H5Tget_class(datatype_id);                  \
+            bool found = false;                                                \
+            if(h5_class == H5T_COMPOUND)                                       \
+            {                                                                  \
+                int nmembers = H5Tget_nmembers(datatype_id);                   \
+                if(nmembers == _size)                                          \
+                {                                                              \
+                    for(int i = 0; i < nmembers && !found ; ++i){              \
+                        hid_t mtype = H5Tget_member_type(datatype_id, i);      \
+                        char* mname = H5Tget_member_name(datatype_id, i);      \
+                        if(H5Tequal(mtype, _h5_type) == 1 &&                   \
+                           strcmp(COMPOUND_ELEMENTS[i], mname) == 0)           \
+                        {                                                      \
+                            found = true;                                      \
+                        }                                                      \
+                        free(mname);                                           \
+                        H5Tclose(mtype);                                       \
+                    }                                                          \
+                }                                                              \
+            }                                                                  \
+            if(found)                                                          \
+                return new ColType##_name;                                     \
+            else                                                               \
+                return NULL;                                                   \
+        }                                                                      \
+                                                                               \
+        std::string toString() const                                           \
+        {                                                                      \
+            return #_name;                                                     \
+        }                                                                      \
+                                                                               \
+    };                                                                         \
+
 
 TYPE_COMPOUND(Float2, H5T_NATIVE_FLOAT, float, 2);
 TYPE_COMPOUND(Float3, H5T_NATIVE_FLOAT, float, 3);

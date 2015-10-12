@@ -312,12 +312,11 @@ namespace splash
                 Dimensions &sizeRead,
                 void* buf) throw (DCException);
 
-/*        void readMeta(int32_t id,
-                CollectionType &type,
+        CollectionType* readMeta(int32_t id,
                 const char* name,
                 const Dimensions dstBuffer,
                 const Dimensions dstOffset,
-                Dimensions &sizeRead) throw (DCException);*/
+                Dimensions &sizeRead) throw (DCException);
 
         /**
          * Reads data from HDF5 file.
@@ -415,6 +414,17 @@ namespace splash
                 Dimensions /*count*/,
                 Dimensions /*offset*/,
                 Dimensions /*stride*/) throw (DCException);
+
+
+        CollectionType* readDataSetMeta(H5Handle h5File,
+                int32_t id,
+                const char* name,
+                const Dimensions dstBuffer,
+                const Dimensions dstOffset,
+                const Dimensions srcOffset,
+                Dimensions &sizeRead,
+                uint32_t& srcDims)
+         throw (DCException);
     };
 
 }

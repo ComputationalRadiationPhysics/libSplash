@@ -1,5 +1,6 @@
 /**
- * Copyright 2013, 2015 Felix Schmitt, René Widera, Axel Huebl
+ * Copyright 2013, 2015 Felix Schmitt, René Widera, Axel Huebl,
+ *                      Carlchristian Eckert
  *
  * This file is part of libSplash. 
  * 
@@ -25,6 +26,10 @@
 #define	COLTYPEBOOL_H
 
 #include "splash/CollectionType.hpp"
+#include "splash/basetypes/ColTypeUnknown.hpp"
+
+#include <string>
+#include <cstring>
 
 namespace splash
 {
@@ -54,6 +59,32 @@ public:
     size_t getSize() const
     {
         return sizeof (bool);
+    }
+
+    static CollectionType* genType(hid_t datatype_id)
+    {
+        bool found = false;
+        H5T_class_t h5_class = H5Tget_class(datatype_id);
+        if(h5_class == H5T_ENUM){
+            if(H5Tget_nmembers(datatype_id) == 2){
+                char* m0 = H5Tget_member_name(datatype_id,0);
+                char* m1 = H5Tget_member_name(datatype_id,1);
+                if(strcmp("true" , m0) == 0 && strcmp("false", m1) == 0)
+                    found = true;
+                free(m1);
+                free(m0);
+            }
+        }
+
+        if(found)
+            return new ColTypeBool;
+        else
+            return NULL;
+    }
+
+    std::string toString() const
+    {
+        return "Bool";
     }
 };
 

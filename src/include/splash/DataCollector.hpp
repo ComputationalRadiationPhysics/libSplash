@@ -52,6 +52,7 @@
 #include "splash/CollectionType.hpp"
 #include "splash/Dimensions.hpp"
 #include "splash/Selection.hpp"
+#include "splash/core/DCDataSet.hpp"
 
 namespace splash
 {
@@ -113,6 +114,8 @@ namespace splash
              * Fully-qualified name of this dataset.
              */
             std::string name;
+            DCDataType dc_type;
+            CollectionType* col_type;
         } DCEntry;
 
         /**

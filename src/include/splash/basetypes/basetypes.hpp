@@ -31,5 +31,7 @@
 #include "splash/basetypes/ColTypeDimArray.hpp"
 #include "splash/basetypes/ColTypeString.hpp"
 
+#include "splash/basetypes/ColTypeUnknown.hpp"
+
 #endif	/* BASETYPES_HPP */
 

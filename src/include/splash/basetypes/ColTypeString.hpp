@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2015 Felix Schmitt, Axel Huebl
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl, Carlchristian Eckert
  *
  * This file is part of libSplash.
  *
@@ -23,6 +23,9 @@
 #define	COLTYPESTRING_H
 
 #include "splash/CollectionType.hpp"
+#include "splash/basetypes/ColTypeUnknown.hpp"
+
+#include <string>
 
 namespace splash
 {
@@ -70,6 +73,31 @@ namespace splash
             else
                return sizeof(char) * (myElements - 1); /* just as strlen() */
         }
+
+        static CollectionType* genType(hid_t datatype_id)
+        {
+            H5T_class_t h5_class = H5Tget_class(datatype_id);
+
+            if(h5_class == H5T_STRING){
+                if( H5Tis_variable_str(datatype_id) ){
+                    return new ColTypeString;
+                }else{
+                    size_t size = H5Tget_size(datatype_id);
+                    return new ColTypeString(size);
+                }
+            }else{
+                return NULL;
+            }
+        }
+
+        std::string toString() const
+        {
+            if( H5Tis_variable_str(this->type) )
+                return "VLString";
+            else
+                return "String";
+        }
+
     };
 
 }
