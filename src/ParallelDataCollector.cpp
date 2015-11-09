@@ -565,11 +565,9 @@ namespace splash
              const Dimensions dstOffset,
              Dimensions& sizeRead) throw (DCException)
      {
-         // TODO: Check what this line does (FST_MERGING is not defined!)
-//       if (fileStatus != FST_READING && fileStatus != FST_WRITING && fileStatus != FST_MERGING)
-//           throw DCException(getExceptionString("read", "this access is not permitted"));
+         if (fileStatus != FST_READING && fileStatus != FST_WRITING)
+             throw DCException(getExceptionString("read", "this access is not permitted"));
 
-         std::cout << "here 1" << std::endl;
          uint32_t ndims = 0;
          return readDataSetMeta(handles.get(0), id, name, dstBuffer, dstOffset,
                  Dimensions(0, 0, 0), sizeRead, ndims);
