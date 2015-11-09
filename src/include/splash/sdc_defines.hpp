@@ -34,7 +34,6 @@ namespace splash
 #define SDC_ATTR_DIM_LOCAL "dim_local"
 #define SDC_ATTR_DIM_GLOBAL "dim_global"
 #define SDC_ATTR_MAX_ID "max_id"
-#define SDC_ATTR_ID_STEP "id_step"
 #define SDC_ATTR_MPI_POSITION "mpi_position"
 #define SDC_ATTR_MPI_SIZE "mpi_size"
 #define SDC_ATTR_GRID_SIZE "grid_size"
