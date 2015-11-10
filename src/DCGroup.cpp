@@ -1,5 +1,6 @@
 /**
  * Copyright 2013 Felix Schmitt
+ *           2015 Carlchristian Eckert
  *
  * This file is part of libSplash. 
  * 
@@ -25,8 +26,11 @@
 #include <sstream>
 #include <cassert>
 #include <string.h>
+#include <typeinfo>
 
 #include "splash/core/DCGroup.hpp"
+#include "splash/basetypes/basetypes.hpp"
+#include <splash/basetypes/generateCollectionType.hpp>
 
 #define H5_TRUE 1
 #define H5_FALSE 0
@@ -196,7 +200,15 @@ namespace splash
             if (obj_info.type == H5O_TYPE_DATASET)
             {
                 if (param->entries)
+                {
                     param->entries[param->count].name = currentBaseName;
+
+                    hid_t dataset_id = H5Oopen_by_idx(base, ".", H5_INDEX_NAME, H5_ITER_INC, i, H5P_DEFAULT);
+                    hid_t datatype_id = H5Dget_type(dataset_id);
+                    param->entries[param->count].colType = generateCollectionType(datatype_id);
+                    H5Dclose(datatype_id);
+                    H5Oclose(dataset_id);
+                }
 
                 param->count++;
             }

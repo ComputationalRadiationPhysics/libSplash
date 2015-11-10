@@ -175,6 +175,18 @@ namespace splash
                 uint32_t& srcDims,
                 void* dst) throw (DCException);
 
+        /**
+         * Internal meta data reading method.
+         */
+        CollectionType* readDataSetMeta(H5Handle h5File,
+                int32_t id,
+                const char* name,
+                const Dimensions dstBuffer,
+                const Dimensions dstOffset,
+                const Dimensions srcOffset,
+                Dimensions &sizeRead,
+                uint32_t& srcDims) throw (DCException);
+
         void readSizeInternal(H5Handle h5File,
                 int32_t id,
                 const char* name,
@@ -321,6 +333,12 @@ namespace splash
                 const Dimensions dstOffset,
                 Dimensions &sizeRead,
                 void* data) throw (DCException);
+
+        CollectionType* readMeta(int32_t id,
+                const char* name,
+                const Dimensions dstBuffer,
+                const Dimensions dstOffset,
+                Dimensions &sizeRead) throw (DCException);
     };
 
 } // namespace DataCollector

@@ -1,5 +1,6 @@
 /**
  * Copyright 2013 Felix Schmitt
+ *           2015 Carlchristian Eckert
  *
  * This file is part of libSplash. 
  * 
@@ -26,6 +27,8 @@
 
 #include "splash/CollectionType.hpp"
 
+#include <string>
+
 namespace splash
 {
     class ColTypeDimArray : public CollectionType
@@ -46,6 +49,36 @@ namespace splash
         size_t getSize() const
         {
             return sizeof (hsize_t) * 3;
+        }
+
+        static CollectionType* genType(hid_t datatype_id)
+        {
+            bool found = false;
+            H5T_class_t h5_class = H5Tget_class(datatype_id);
+            if(h5_class == H5T_ARRAY)
+            {
+                hid_t base = H5Tget_super(datatype_id);
+                if(H5Tequal(base, H5T_NATIVE_HSIZE) == 1)
+                {
+                    if(H5Tget_array_ndims(datatype_id) == 1)
+                    {
+                        hsize_t adims_out[1];
+                        H5Tget_array_dims(datatype_id, adims_out);
+                        if(adims_out[0] == 3)
+                            found = true;
+                    }
+                }
+                H5Tclose(base);
+            }
+            if(found)
+                return new ColTypeDimArray;
+            else
+                return NULL;
+        }
+
+        std::string toString() const
+        {
+            return "DimArray";
         }
     };
 

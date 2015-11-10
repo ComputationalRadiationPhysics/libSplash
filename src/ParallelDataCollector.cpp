@@ -558,6 +558,20 @@ namespace splash
                 localSize, globalOffset, sizeRead, ndims, buf);
     }
 
+     CollectionType* ParallelDataCollector::readMeta(int32_t id,
+             const char* name,
+             const Dimensions dstBuffer,
+             const Dimensions dstOffset,
+             Dimensions& sizeRead) throw (DCException)
+     {
+         if (fileStatus != FST_READING && fileStatus != FST_WRITING)
+             throw DCException(getExceptionString("readMeta", "this access is not permitted"));
+
+         uint32_t ndims = 0;
+         return readDataSetMeta(handles.get(id), id, name, dstBuffer, dstOffset,
+                 Dimensions(0, 0, 0), sizeRead, ndims);
+     }
+
     void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
             const Selection select, const char* name, const void* buf)
     throw (DCException)
@@ -955,6 +969,40 @@ namespace splash
 
         dataset.read(dstBuffer, dstOffset, srcSize, srcOffset, sizeRead, srcRank, dst);
         dataset.close();
+    }
+
+    CollectionType* ParallelDataCollector::readDataSetMeta(H5Handle h5File,
+            int32_t id,
+            const char* name,
+            const Dimensions dstBuffer,
+            const Dimensions dstOffset,
+            const Dimensions srcOffset,
+            Dimensions &sizeRead,
+            uint32_t& srcDims)
+    throw (DCException)
+    {
+        log_msg(2, "readDataSetMeta");
+
+        std::string group_path, dset_name;
+        DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
+
+        DCGroup group;
+        group.open(h5File, group_path);
+
+        DCDataSet dataset(dset_name.c_str());
+        dataset.open(group.getHandle());
+
+        size_t entrySize;
+        getEntriesForID(id, NULL, &entrySize);
+        std::vector<DataCollector::DCEntry> entries(entrySize);
+
+        getEntriesForID(id, &(*entries.begin()), NULL);
+
+        Dimensions src_size(dataset.getSize() - srcOffset);
+        dataset.read(dstBuffer, dstOffset, src_size, srcOffset, sizeRead, srcDims, NULL);
+        dataset.close();
+
+        return entries[0].colType;
     }
 
     void ParallelDataCollector::writeDataSet(H5Handle group,

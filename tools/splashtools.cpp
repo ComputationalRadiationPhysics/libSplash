@@ -499,7 +499,16 @@ int listAvailableDatasets(Options& options, DataCollector *dc, const char* /*fil
         dc->getEntriesForID(id, entries, NULL);
 
         for (size_t i = 0; i < num_entries; ++i)
-            std::cout << entries[i].name << std::endl;
+        {
+            CollectionType* data_type = entries[i].colType;
+            Dimensions sizeRead;
+            dc->read(id, entries[i].name.c_str(), sizeRead, NULL);
+            std::cout << entries[i].name
+                      << " (" << data_type->toString() << ")"
+                      << " " << sizeRead.toString()
+                      << std::endl;
+
+        }
 
         delete[] entries;
     }

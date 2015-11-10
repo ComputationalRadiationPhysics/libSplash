@@ -312,6 +312,12 @@ namespace splash
                 Dimensions &sizeRead,
                 void* buf) throw (DCException);
 
+        CollectionType* readMeta(int32_t id,
+                const char* name,
+                const Dimensions dstBuffer,
+                const Dimensions dstOffset,
+                Dimensions &sizeRead) throw (DCException);
+
         /**
          * Reads data from HDF5 file.
          * If data is to be read (instead of only its size in the file),
@@ -408,6 +414,20 @@ namespace splash
                 Dimensions /*count*/,
                 Dimensions /*offset*/,
                 Dimensions /*stride*/) throw (DCException);
+
+
+        /**
+         * Internal meta data reading method.
+         */
+        CollectionType* readDataSetMeta(H5Handle h5File,
+                int32_t id,
+                const char* name,
+                const Dimensions dstBuffer,
+                const Dimensions dstOffset,
+                const Dimensions srcOffset,
+                Dimensions &sizeRead,
+                uint32_t& srcDims)
+         throw (DCException);
     };
 
 }
