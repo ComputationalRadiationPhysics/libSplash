@@ -500,7 +500,7 @@ int listAvailableDatasets(Options& options, DataCollector *dc, const char* /*fil
 
         for (size_t i = 0; i < num_entries; ++i)
         {
-            CollectionType* data_type = entries[i].col_type;
+            CollectionType* data_type = entries[i].colType;
             Dimensions sizeRead;
             dc->read(id, entries[i].name.c_str(), sizeRead, NULL);
             std::cout << entries[i].name

@@ -30,7 +30,7 @@
 
 #include "splash/core/DCGroup.hpp"
 #include "splash/basetypes/basetypes.hpp"
-#include <splash/basetypes/CollectionTypeGenerator.hpp>
+#include <splash/basetypes/generateCollectionType.hpp>
 
 #define H5_TRUE 1
 #define H5_FALSE 0
@@ -205,7 +205,7 @@ namespace splash
 
                     hid_t dataset_id = H5Oopen_by_idx(base, ".", H5_INDEX_NAME, H5_ITER_INC, i, H5P_DEFAULT);
                     hid_t datatype_id = H5Dget_type(dataset_id);
-                    param->entries[param->count].col_type = CollectionTypeGenerator::genCollectionType(datatype_id);
+                    param->entries[param->count].colType = generateCollectionType(datatype_id);
                     H5Dclose(datatype_id);
                     H5Oclose(dataset_id);
                 }

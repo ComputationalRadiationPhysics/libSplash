@@ -114,8 +114,10 @@ namespace splash
              * Fully-qualified name of this dataset.
              */
             std::string name;
-            DCDataType dc_type;
-            CollectionType* col_type;
+            /**
+             * Pointer to an instance of the CollectionType of this dataset
+             */
+            CollectionType* colType;
         } DCEntry;
 
         /**

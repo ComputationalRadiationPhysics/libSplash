@@ -23,7 +23,6 @@
 #define	COLTYPESTRING_H
 
 #include "splash/CollectionType.hpp"
-#include "splash/basetypes/ColTypeUnknown.hpp"
 
 #include <string>
 
@@ -78,14 +77,18 @@ namespace splash
         {
             H5T_class_t h5_class = H5Tget_class(datatype_id);
 
-            if(h5_class == H5T_STRING){
-                if( H5Tis_variable_str(datatype_id) ){
+            if(h5_class == H5T_STRING)
+            {
+                if( H5Tis_variable_str(datatype_id) )
+                {
                     return new ColTypeString;
-                }else{
+                } else
+                {
                     size_t size = H5Tget_size(datatype_id);
                     return new ColTypeString(size);
                 }
-            }else{
+            } else
+            {
                 return NULL;
             }
         }

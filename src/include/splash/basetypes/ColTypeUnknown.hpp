@@ -38,7 +38,7 @@ namespace splash
 
         std::string toString() const
         {
-            return "UNKNOWN";
+            return "Unknown";
         }
     };
 }

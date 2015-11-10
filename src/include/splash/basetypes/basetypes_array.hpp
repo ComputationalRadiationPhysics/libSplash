@@ -48,7 +48,8 @@ namespace splash
         size_t getSize() const                                                 \
         { return sizeof (_real_type) * _size; }                                \
                                                                                \
-        static CollectionType* genType(hid_t datatype_id){                     \
+        static CollectionType* genType(hid_t datatype_id)                      \
+        {                                                                      \
             bool found = false;                                                \
             H5T_class_t h5_class = H5Tget_class(datatype_id);                  \
             if(h5_class == H5T_ARRAY)                                          \

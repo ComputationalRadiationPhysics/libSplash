@@ -26,7 +26,6 @@
 #define	COLTYPEBOOL_H
 
 #include "splash/CollectionType.hpp"
-#include "splash/basetypes/ColTypeUnknown.hpp"
 
 #include <string>
 #include <cstring>
@@ -65,8 +64,10 @@ public:
     {
         bool found = false;
         H5T_class_t h5_class = H5Tget_class(datatype_id);
-        if(h5_class == H5T_ENUM){
-            if(H5Tget_nmembers(datatype_id) == 2){
+        if(h5_class == H5T_ENUM)
+        {
+            if(H5Tget_nmembers(datatype_id) == 2)
+            {
                 char* m0 = H5Tget_member_name(datatype_id,0);
                 char* m1 = H5Tget_member_name(datatype_id,1);
                 if(strcmp("true" , m0) == 0 && strcmp("false", m1) == 0)

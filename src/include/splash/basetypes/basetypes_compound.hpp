@@ -42,7 +42,8 @@ namespace splash
         ColType##_name()                                                       \
         {                                                                      \
             this->type = H5Tcreate(H5T_COMPOUND, sizeof (_real_type) * _size); \
-            for (size_t i = 0; i < _size; ++i) {                               \
+            for (size_t i = 0; i < _size; ++i)                                 \
+            {                                                                  \
                 H5Tinsert(this->type, COMPOUND_ELEMENTS[i],                    \
                     i * sizeof(_real_type), _h5_type);                         \
             }                                                                  \
@@ -54,7 +55,8 @@ namespace splash
         size_t getSize() const                                                 \
         { return _size * sizeof (_real_type); }                                \
                                                                                \
-        static CollectionType* genType(hid_t datatype_id){                     \
+        static CollectionType* genType(hid_t datatype_id)                      \
+        {                                                                      \
             H5T_class_t h5_class = H5Tget_class(datatype_id);                  \
             bool found = false;                                                \
             if(h5_class == H5T_COMPOUND)                                       \
@@ -62,7 +64,8 @@ namespace splash
                 int nmembers = H5Tget_nmembers(datatype_id);                   \
                 if(nmembers == _size)                                          \
                 {                                                              \
-                    for(int i = 0; i < nmembers && !found ; ++i){              \
+                    for(int i = 0; i < nmembers && !found ; ++i)               \
+                    {                                                          \
                         hid_t mtype = H5Tget_member_type(datatype_id, i);      \
                         char* mname = H5Tget_member_name(datatype_id, i);      \
                         if(H5Tequal(mtype, _h5_type) == 1 &&                   \

@@ -1006,7 +1006,7 @@ namespace splash
         dataset.read(dstBuffer, dstOffset, src_size, srcOffset, sizeRead, srcDims, NULL);
         dataset.close();
 
-        return entries[0].col_type;
+        return entries[0].colType;
     }
 
     void ParallelDataCollector::writeDataSet(H5Handle group,

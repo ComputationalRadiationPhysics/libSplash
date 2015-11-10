@@ -58,7 +58,8 @@ namespace splash
             if(h5_class == H5T_ARRAY)
             {
                 hid_t base = H5Tget_super(datatype_id);
-                if(H5Tequal(base, H5T_NATIVE_HSIZE) == 1){
+                if(H5Tequal(base, H5T_NATIVE_HSIZE) == 1)
+                {
                     if(H5Tget_array_ndims(datatype_id) == 1)
                     {
                         hsize_t adims_out[1];
