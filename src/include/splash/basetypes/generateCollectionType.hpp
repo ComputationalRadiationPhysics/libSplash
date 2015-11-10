@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * libSplash is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -35,8 +36,6 @@ namespace splash
  *
  * If the call to the genType member function of a specific collection type
  * is successful, it will return the pointer to an instance of this type.
- * Otherwise, the pointer (which points to NULL) will be destroyed at the end
- * of the local scope.
  *
  * @param _name the suffix of the ColType. i.e. to check for ColTypeBool,
  * _name should be set to Bool.

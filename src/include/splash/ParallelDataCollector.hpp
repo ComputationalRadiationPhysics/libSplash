@@ -416,6 +416,9 @@ namespace splash
                 Dimensions /*stride*/) throw (DCException);
 
 
+        /**
+         * Internal meta data reading method.
+         */
         CollectionType* readDataSetMeta(H5Handle h5File,
                 int32_t id,
                 const char* name,

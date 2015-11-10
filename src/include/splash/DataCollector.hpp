@@ -426,6 +426,25 @@ namespace splash
                 const Dimensions dstOffset,
                 Dimensions &sizeRead,
                 void* buf) = 0;
+
+        /**
+         * Reads meta data from HDF5 file.
+         *
+         * @param id ID of iteration.
+         * @param name Name of the dataset.
+         * @param dstBuffer Size of the dataset.
+         * @param dstOffset Offset in destination dataset.
+         * @param sizeRead Returns the size of the data in the file.
+         *
+         * @return The CollectionType of the dataset as a heap allocated
+         *         object. The object must be freed by the caller at the
+         *         end of the object's lifetime.
+         */
+        virtual CollectionType* readMeta(int32_t id,
+                const char* name,
+                const Dimensions dstBuffer,
+                const Dimensions dstOffset,
+                Dimensions &sizeRead) = 0;
     };
 
 }

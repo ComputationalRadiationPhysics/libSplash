@@ -161,17 +161,6 @@ namespace splash
                 void* dst)
         throw (DCException);
 
-        void readDataSetMeta(H5Handle h5File,
-                int32_t id,
-                CollectionType &type,
-                const char* name,
-                const Dimensions dstBuffer,
-                const Dimensions dstOffset,
-                const Dimensions srcOffset,
-                Dimensions &sizeRead,
-                uint32_t& srcDims)
-        throw (DCException);
-
         /**
          * Internal reading method.
          */
@@ -186,6 +175,9 @@ namespace splash
                 uint32_t& srcDims,
                 void* dst) throw (DCException);
 
+        /**
+         * Internal meta data reading method.
+         */
         CollectionType* readDataSetMeta(H5Handle h5File,
                 int32_t id,
                 const char* name,

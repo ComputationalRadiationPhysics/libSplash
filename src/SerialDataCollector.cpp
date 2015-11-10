@@ -434,10 +434,10 @@ namespace splash
     throw (DCException)
     {
         if (fileStatus != FST_READING && fileStatus != FST_WRITING && fileStatus != FST_MERGING)
-            throw DCException(getExceptionString("read", "this access is not permitted"));
+            throw DCException(getExceptionString("readMeta", "this access is not permitted"));
 
         uint32_t ndims = 0;
-        return readDataSetMeta(handles.get(0), id, name, dstBuffer, dstOffset,
+        return readDataSetMeta(handles.get(id), id, name, dstBuffer, dstOffset,
                 Dimensions(0, 0, 0), sizeRead, ndims);
     }
 
@@ -993,11 +993,6 @@ namespace splash
 
         DCDataSet dataset(dset_name.c_str());
         dataset.open(group.getHandle());
-
-        //size_t datatype_size = 0;
-        //DCDataType dc_datatype = DCDT_UNKNOWN;
-        //datatype_size = dataset.getDataTypeSize();
-        //dc_datatype = dataset.getDCDataType();
 
         size_t entrySize;
         getEntriesForID(id, NULL, &entrySize);
