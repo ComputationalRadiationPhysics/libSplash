@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2014 Felix Schmitt, Conrad Schumann, Axel Huebl
+# Copyright 2014-2015 Felix Schmitt, Conrad Schumann, Axel Huebl
 #
 # This file is part of libSplash. 
 # 
@@ -92,7 +92,7 @@ def get_common_filename(filename):
 
 def get_attr_name(dset_name):
     """
-    Return name part of HDF5 dataset without /data/<timestep>
+    Return name part of HDF5 dataset without /data/<iteration>
     
     Parameters:
     ----------------
@@ -101,7 +101,7 @@ def get_attr_name(dset_name):
     Returns:
     ----------------
     return: string
-            dataset name part with /data/<timestep> stripped
+            dataset name part with /data/<iteration> stripped
     """
 
     index = dset_name.find("/", len("/data/"))
@@ -311,7 +311,7 @@ def create_timestep_node(time):
     Parameters:
     ----------------
     time: int
-          time step
+          re-interpret libSplash iterations as time steps
     Returns:
     ----------------
     return: Element
@@ -411,9 +411,10 @@ def parse_hdf5_recursive(h5Group, h5filename, level):
             print_dataset(h5Group[g], level, h5filename)
     
 
-def get_timestep_for_group(dataGroup):
+def get_iteration_for_group(dataGroup):
     """
-    Return the time step for an libSplash HDF5 group of type /data/<timestep>
+    Return the iteration for an libSplash HDF5 group of type /data/<iteration>.
+    Will be re-interpreted as time steps for XDMF.
     
     Parameters:
     ----------------
@@ -422,12 +423,12 @@ def get_timestep_for_group(dataGroup):
     Returns:
     ----------------
     return: string
-            <timestep> part as string
+            <iteration> part as string
     """
 
     groups = dataGroup.keys()
     if len(groups) != 1:
-        print("Error: data group is expected to have a single timestep child group")
+        print("Error: data group is expected to have a single iteration child group")
         return -1
     
     objClass = dataGroup.get(groups[0], None, True)
@@ -476,15 +477,15 @@ def create_xdmf_for_splash_file(base_node_grid, base_node_poly, splashFilename, 
         h5file.close()
         return False
     
-    time_step = get_timestep_for_group(dataGroup)
+    iteration = get_iteration_for_group(dataGroup)
     
     parse_hdf5_recursive(dataGroup, splashFilenameXmf, 1)
   
     # append all collected grids to current xml base node
     index = 0
     for grid in grids.values():
-        grid.setAttribute("Name", "Grid_{}_{}".format(time_step, index))
-        grid.appendChild(create_timestep_node(time_step))
+        grid.setAttribute("Name", "Grid_{}_{}".format(iteration, index))
+        grid.appendChild(create_timestep_node(iteration))
         base_node_grid.appendChild(grid)
         index += 1
     grids.clear()
@@ -492,8 +493,8 @@ def create_xdmf_for_splash_file(base_node_grid, base_node_poly, splashFilename, 
     # append all collected polys to current xml base node
     index = 0
     for poly in polys.values():
-        poly.setAttribute("Name", "Poly_{}_{}".format(time_step, index))
-        poly.appendChild(create_timestep_node(time_step))
+        poly.setAttribute("Name", "Poly_{}_{}".format(iteration, index))
+        poly.appendChild(create_timestep_node(iteration))
         base_node_poly.appendChild(poly)
         index += 1
     polys.clear()
@@ -544,7 +545,7 @@ def create_xdmf_xml(splash_files_list, args):
             XML XDMF root node
     """
 
-    time_series = (len(splash_files_list) > 1)
+    iteration_series = (len(splash_files_list) > 1)
     
     # setup xml structure
     xdmf_root = doc.createElement("Xdmf")
@@ -560,7 +561,7 @@ def create_xdmf_xml(splash_files_list, args):
         base_node_grid = grid_domain
         base_node_poly = poly_domain
     
-    if time_series:
+    if iteration_series:
         if args.no_splitgrid:		
             main_grid = doc.createElement("Grid")
             main_poly = doc.createElement("Grid")
@@ -577,7 +578,7 @@ def create_xdmf_xml(splash_files_list, args):
         create_xdmf_for_splash_file(base_node_grid, base_node_poly, current_file, args)
 
     # finalize xml structure
-    if time_series:
+    if iteration_series:
 	if args.no_splitgrid:
             domain.appendChild(main_grid)
             domain.appendChild(main_poly)
@@ -646,7 +647,7 @@ def get_args_parser():
         
     parser.add_argument("-v", "--verbose", help="Produce verbose output", action="store_true")
     
-    parser.add_argument("-t", "--time", help="Aggregate information over a time-series of libSplash data", action="store_true")
+    parser.add_argument("-t", "--time", help="Aggregate information over a time-series over iterations in libSplash data", action="store_true")
   
     parser.add_argument("--fullpath", help="Use absolute paths for HDF5 files", action="store_true")
     
@@ -666,13 +667,13 @@ def main():
 
     # apply arguments
     splashFilename = args.splashfile
-    time_series = args.time
+    iteration_series = args.time
     if args.verbose:
         verbosity_level = 100
 
     # create the list of requested splash files
     splash_files = list()
-    if time_series:
+    if iteration_series:
         splashFilename = get_common_filename(splashFilename)
         for s_filename in glob.glob("{}_*.h5".format(splashFilename)):
             splash_files.append(s_filename)
