@@ -245,15 +245,18 @@ namespace splash
                 const void *buf) = 0;
 
         /**
-         * Removes a simulation step from the HDF5 file.
-         * 
+         * Removes a simulation iteration from the HDF5 file.
+         *
+         * Recursively removes all datasets and attributes within
+         * the iteration.
+         *
          * @param id ID to remove.
          */
         virtual void remove(int32_t id) = 0;
 
         /**
          * Removes a dataset from a HDF5 file.
-         * 
+         *
          * @param id ID holding the dataset to be removed.
          * @param name Name of the dataset to be removed.
          */
@@ -262,10 +265,10 @@ namespace splash
 
         /**
          * Creates an object reference to an existing dataset in the same HDF5 file.
-         * 
+         *
          * @param srcID ID of the iteration holding the source dataset.
          * @param srcName Name of the existing source dataset.
-         * @param dstID ID of the simulation step holding the created reference dataset.
+         * @param dstID ID of the simulation iteration holding the created reference dataset.
          * If this group does not exist, it is created.
          * @param dstName Name of the created reference.
          */
@@ -276,10 +279,10 @@ namespace splash
 
         /**
          * Creates a dataset region reference to an existing dataset in the same HDF5 file.
-         * 
+         *
          * @param srcID ID of the iteration holding the source dataset.
          * @param srcName Name of the existing source dataset.
-         * @param dstID ID of the simulation step holding the created reference dataset.
+         * @param dstID ID of the simulation iteration holding the created reference dataset.
          * If this group does not exist, it is created.
          * @param dstName Name of the created reference.
          * @param count Number of elements referenced from the source dataset.
