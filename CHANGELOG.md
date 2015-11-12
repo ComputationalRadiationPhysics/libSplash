@@ -1,6 +1,53 @@
 Change Log for libSplash
 ================================================================
 
+Release 1.3.0
+-------------
+**Date:** 2015-11-12
+
+This release adds functionality for users to fulfill formatting for
+`openPMD`. Support for array attributes, strings/chars, bools and
+further `h5py` compatibility have been added. Additionally, read
+functionality has improved by new meta calls to determine type
+and size of a data set before reading.
+The internal format was increased to version 3.3
+
+**New Features**
+
+ - bool types are now h5py compatible #153 #198
+ - new interface `readMeta` in `DataCollector`s to determine type 
+   and size before reading #203
+ - new interfaces for `DataCollector`s `writeGlobalAttribute` to support
+   arrays via HDF5 simple data spaces (h5py compatible) #170 #171
+ - `splashVersion` and `splashFormat` are now written to `/header` #183
+ - header define `SPLASH_HDF5_VERSION` remembers HDF5 version of build #177
+ - `char`s, fixed and variable length `string` support added #167
+
+
+**Interface Changes**
+
+ - `ParallelDataCollector::writeGlobalAttribute` now writes to `/` instead of
+   `/custom` (`SerialDataCollector` unchanged) #182
+
+
+**Misc**
+
+ - term "iteration" is now consequently preferred over
+   "time step" #157 #187 #188 #204
+ - public includes do not throw on `-Wshadow` any more #201
+ - `/header/compression` attribute in new bool representation #199
+ - CMake:
+   - shared library detection refactored #192
+   - FindHDF5 shipped with version support (pre CMake 3.3.0) #176 #169
+ - doxygen project name updated #178
+ - `DataSpace` refactored: prefer `DSP_DIM_MAX` over magic numbers #175
+ - test scripts
+   - CI (travis) false-positive fixed #172
+   - output improved #166
+   - warn on missing dir argument #185
+ - `INSTALL.md` now in project's root directory #158
+
+
 Release 1.2.4
 -------------
 **Date:** 2015-01-25
