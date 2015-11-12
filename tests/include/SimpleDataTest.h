@@ -34,8 +34,8 @@ class SimpleDataTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE(SimpleDataTest);
 
-    CPPUNIT_TEST(testWriteRead);
     CPPUNIT_TEST(testNullWrite);
+    CPPUNIT_TEST(testWriteRead);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -63,6 +63,8 @@ private:
 
     ColTypeUInt32 ctUInt32;
     ColTypeUInt64 ctUInt64;
+    ColTypeBool   ctBool;
+    ColTypeString ctString2;
     DataCollector *dataCollector;
 };
 

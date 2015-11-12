@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -29,12 +29,15 @@
 
 #include "splash/SerialDataCollector.hpp"
 
+#include "splash/basetypes/basetypes.hpp"
+
 #include "splash/core/DCAttribute.hpp"
 #include "splash/core/DCDataSet.hpp"
 #include "splash/core/DCGroup.hpp"
 #include "splash/core/DCHelper.hpp"
 #include "splash/core/SDCHelper.hpp"
 #include "splash/core/logging.hpp"
+#include "splash/basetypes/basetypes.hpp"
 
 namespace splash
 {
@@ -163,7 +166,8 @@ namespace splash
             // write number of iterations
             try
             {
-                DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, H5T_NATIVE_INT32,
+                ColTypeInt32 ctInt32;
+                DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, ctInt32.getDataType(),
                         group.getHandle(), &maxID);
             } catch (DCException e)
             {
@@ -230,18 +234,32 @@ namespace splash
             const void* data)
     throw (DCException)
     {
+        const Dimensions dims(1, 1, 1);
+        writeGlobalAttribute(type, name, 1u, dims, data);
+    }
+
+    void SerialDataCollector::writeGlobalAttribute(const CollectionType& type,
+            const char* name,
+            uint32_t ndims,
+            const Dimensions dims,
+            const void* data)
+    throw (DCException)
+    {
         if (name == NULL || data == NULL)
             throw DCException(getExceptionString("writeGlobalAttribute", "a parameter was null"));
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
             throw DCException(getExceptionString("writeGlobalAttribute", "this access is not permitted"));
 
+        if (ndims < 1u || ndims > DSP_DIM_MAX)
+            throw DCException(getExceptionString("writeGlobalAttribute", "maximum dimension `ndims` is invalid"));
+
         DCGroup group_custom;
         group_custom.open(handles.get(0), SDC_GROUP_CUSTOM);
 
         try
         {
-            DCAttribute::writeAttribute(name, type.getDataType(), group_custom.getHandle(), data);
+            DCAttribute::writeAttribute(name, type.getDataType(), group_custom.getHandle(), ndims, dims, data);
         } catch (DCException e)
         {
             std::cerr << e.what() << std::endl;
@@ -320,6 +338,20 @@ namespace splash
             const void* data)
     throw (DCException)
     {
+        const Dimensions dims(1, 1, 1);
+        SerialDataCollector::writeAttribute( id, type, dataName, attrName,
+                                             1u, dims, data);
+    }
+
+    void SerialDataCollector::writeAttribute(int32_t id,
+            const CollectionType& type,
+            const char *dataName,
+            const char *attrName,
+            uint32_t ndims,
+            const Dimensions dims,
+            const void* data)
+    throw (DCException)
+    {
         if (attrName == NULL || data == NULL)
             throw DCException(getExceptionString("writeAttribute", "a parameter was null"));
 
@@ -332,6 +364,9 @@ namespace splash
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
             throw DCException(getExceptionString("writeAttribute", "this access is not permitted"));
+
+        if (ndims < 1u || ndims > DSP_DIM_MAX)
+            throw DCException(getExceptionString("writeAttribute", "maximum dimension `ndims` is invalid"));
 
         std::string group_path, obj_name;
         std::string dataNameInternal = "";
@@ -354,7 +389,7 @@ namespace splash
 
             try
             {
-                DCAttribute::writeAttribute(attrName, type.getDataType(), obj_id, data);
+                DCAttribute::writeAttribute(attrName, type.getDataType(), obj_id, ndims, dims, data);
             } catch (DCException)
             {
                 H5Oclose(obj_id);
@@ -365,7 +400,7 @@ namespace splash
         {
             // attach attribute to the iteration group
             group.openCreate(handles.get(0), group_path);
-            DCAttribute::writeAttribute(attrName, type.getDataType(), group.getHandle(), data);
+            DCAttribute::writeAttribute(attrName, type.getDataType(), group.getHandle(), ndims, dims, data);
         }
     }
 
@@ -394,6 +429,21 @@ namespace splash
                 Dimensions(0, 0, 0), sizeRead, ndims, data);
     }
 
+    CollectionType* SerialDataCollector::readMeta(int32_t id,
+            const char* name,
+            const Dimensions dstBuffer,
+            const Dimensions dstOffset,
+            Dimensions &sizeRead)
+    throw (DCException)
+    {
+        if (fileStatus != FST_READING && fileStatus != FST_WRITING && fileStatus != FST_MERGING)
+            throw DCException(getExceptionString("readMeta", "this access is not permitted"));
+
+        uint32_t ndims = 0;
+        return readDataSetMeta(handles.get(id), id, name, dstBuffer, dstOffset,
+                Dimensions(0, 0, 0), sizeRead, ndims);
+    }
+
     void SerialDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
             const Selection select, const char* name, const void* data)
     throw (DCException)
@@ -404,7 +454,7 @@ namespace splash
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING || fileStatus == FST_MERGING)
             throw DCException(getExceptionString("write", "this access is not permitted"));
 
-        if (ndims < 1 || ndims > 3)
+        if (ndims < 1 || ndims > DSP_DIM_MAX)
             throw DCException(getExceptionString("write", "maximum dimension is invalid"));
 
         if (id > this->maxID)
@@ -924,6 +974,40 @@ namespace splash
         dataset.open(group.getHandle());
         dataset.read(dstBuffer, dstOffset, srcSize, srcOffset, sizeRead, srcDims, dst);
         dataset.close();
+    }
+
+    CollectionType* SerialDataCollector::readDataSetMeta(H5Handle h5File,
+            int32_t id,
+            const char* name,
+            const Dimensions dstBuffer,
+            const Dimensions dstOffset,
+            const Dimensions srcOffset,
+            Dimensions &sizeRead,
+            uint32_t& srcDims)
+    throw (DCException)
+    {
+        log_msg(2, "readDataSetMeta");
+
+        std::string group_path, dset_name;
+        DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
+
+        DCGroup group;
+        group.open(h5File, group_path);
+
+        DCDataSet dataset(dset_name.c_str());
+        dataset.open(group.getHandle());
+
+        size_t entrySize;
+        getEntriesForID(id, NULL, &entrySize);
+        std::vector<DataCollector::DCEntry> entries(entrySize);
+
+        getEntriesForID(id, &(*entries.begin()), NULL);
+
+        Dimensions src_size(dataset.getSize() - srcOffset);
+        dataset.read(dstBuffer, dstOffset, src_size, srcOffset, sizeRead, srcDims, NULL);
+        dataset.close();
+
+        return entries[0].colType;
     }
 
     void SerialDataCollector::readSizeInternal(H5Handle h5File,

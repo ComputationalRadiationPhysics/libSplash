@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by 
  * the Free Software Foundation, either version 3 of the License, or 
  * (at your option) any later version. 
+ *
  * libSplash is distributed in the hope that it will be useful, 
  * but WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
@@ -27,6 +28,7 @@
 #include <time.h>
 #include <iostream>
 #include <stdlib.h>
+#include <cstring>
 #include <cppunit/TestAssert.h>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(AttributesTest);
@@ -37,10 +39,11 @@ using namespace splash;
 #define TEST_FILE "h5/attributes"
 #define TEST_FILE2 "h5/attributes_array"
 
-AttributesTest::AttributesTest()
+AttributesTest::AttributesTest() :
+ctString4(4)
 {
     srand(time(NULL));
-    
+
     dataCollector = new SerialDataCollector(10);
 }
 
@@ -75,24 +78,38 @@ void AttributesTest::testDataAttributes()
     }
     sum2 = sum;
     
-    dataCollector->writeAttribute(10, ctInt, NULL, "timestep", &sum2);
-    
+    dataCollector->writeAttribute(10, ctInt, NULL, "iteration", &sum2);
+
+    /* variable length string, '\0' terminated */
+    const char *string_attr = {"My first c-string."};
+    dataCollector->writeAttribute(10, ctString, NULL, "my_string", &string_attr);
+    /* fixed length string, '\0' terminated */
+    const char string_attr4[5] = {"ABCD"};
+    dataCollector->writeAttribute(10, ctString4, NULL, "my_string4", &string_attr4);
+
     CPPUNIT_ASSERT_THROW(dataCollector->writeAttribute(10, ctInt, NULL, NULL, &sum2),
             DCException);
     CPPUNIT_ASSERT_THROW(dataCollector->writeAttribute(10, ctInt, NULL, "", &sum2),
             DCException);
     CPPUNIT_ASSERT_THROW(dataCollector->writeAttribute(10, ctInt, "", "", &sum2),
             DCException);
-    
+
     dataCollector->write(0, ctInt2, 1, Selection(Dimensions(BUF_SIZE, 1, 1)),
             "datasets/my_dataset", dummy_data);
     
     dataCollector->writeAttribute(0, ctInt, "datasets/my_dataset", "sum", &sum);
     int neg_sum = -sum;
     dataCollector->writeAttribute(0, ctInt, "datasets/my_dataset", "neg_sum", &neg_sum);
-    
+
+    char c = 'Y';
+    double d[7] = {-3.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0};
     dataCollector->writeAttribute(0, ctInt, "datasets", "sum_at_group", &sum);
-    
+    dataCollector->writeAttribute(0, ctChar, "datasets", "my_char", &c);
+    dataCollector->writeAttribute(0, ctDouble, "datasets", "unitDimension", 1u, Dimensions(7,0,0), d);
+
+    CPPUNIT_ASSERT_THROW(dataCollector->writeAttribute(0, ctDouble, "datasets",
+            "invalnDims", 4u, Dimensions(7,0,0), d), DCException);
+
     delete[] dummy_data;
     dummy_data = NULL;
     
@@ -109,8 +126,16 @@ void AttributesTest::testDataAttributes()
     
     dataCollector->open(TEST_FILE, attr);
     
-    dataCollector->readAttribute(10, NULL, "timestep", &sum2);
-    
+    dataCollector->readAttribute(10, NULL, "iteration", &sum2);
+
+    char* string_read;
+    dataCollector->readAttribute(10, NULL, "my_string", &string_read);
+    char string_read4[5];
+    dataCollector->readAttribute(10, NULL, "my_string4", &string_read4);
+
+    CPPUNIT_ASSERT(strcmp(string_read, string_attr) == 0);
+    CPPUNIT_ASSERT(strcmp(string_read4, string_attr4) == 0);
+
     Dimensions src_data;
     dataCollector->read(0, "datasets/my_dataset", src_data, dummy_data);
     
@@ -127,16 +152,23 @@ void AttributesTest::testDataAttributes()
     
     sum = 0;
     neg_sum = 0;
+    c = 'A';
     dataCollector->readAttribute(0, "datasets/my_dataset", "sum", &sum);
     dataCollector->readAttribute(0, "datasets/my_dataset", "neg_sum", &neg_sum);
     
     CPPUNIT_ASSERT(sum == old_sum);
     CPPUNIT_ASSERT(neg_sum == -old_sum);
-    
+
+    double dr[7] = {0., 0., 0., 0., 0., 0., 0.};
     dataCollector->readAttribute(0, "datasets", "sum_at_group", &sum);
-    
+    dataCollector->readAttribute(0, "datasets", "my_char", &c);
+    dataCollector->readAttribute(0, "datasets", "unitDimension", dr);
+
     CPPUNIT_ASSERT(sum == old_sum);
-    
+    CPPUNIT_ASSERT(c == 'Y');
+    for (int i = 0; i < 7; i++)
+        CPPUNIT_ASSERT(dr[i] == d[i]);
+
     dataCollector->close();
 }
 
@@ -150,22 +182,26 @@ void AttributesTest::testArrayTypes()
     Dimensions dim_write(104, 0, 2);
     
     dataCollector->open(TEST_FILE2, attr);
-    dataCollector->writeGlobalAttribute(ctInt3Array, "testposition", array_data_write);
+    dataCollector->writeGlobalAttribute(ctInt3Array, "testpositionArray", array_data_write);
+    dataCollector->writeGlobalAttribute(ctInt, "testposition", 1u, Dimensions(3, 1, 1), array_data_write);
     dataCollector->writeGlobalAttribute(ctDimArray, "testdim", dim_write.getPointer());
     dataCollector->close();
     
     int array_data_read[3] = {0, 0, 0};
+    int data_read[3] = {0, 0, 0};
     Dimensions dim_read;
     
     attr.fileAccType = DataCollector::FAT_READ;
     dataCollector->open(TEST_FILE2, attr);
-    dataCollector->readGlobalAttribute("testposition", array_data_read);
+    dataCollector->readGlobalAttribute("testpositionArray", array_data_read);
+    dataCollector->readGlobalAttribute("testposition", data_read);
     dataCollector->readGlobalAttribute("testdim", dim_read.getPointer());
     dataCollector->close();
     
     for (int i = 0; i < 3; i++)
     {
         CPPUNIT_ASSERT(array_data_read[i] == array_data_write[i]);
+        CPPUNIT_ASSERT(data_read[i] == array_data_write[i]);
         CPPUNIT_ASSERT(dim_write[i] == dim_read[i]);
     }
 }

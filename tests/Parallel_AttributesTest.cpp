@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash.
  *
@@ -25,6 +25,7 @@
 #include <time.h>
 #include <iostream>
 #include <stdlib.h>
+#include <cstring>
 #include <cppunit/TestAssert.h>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(Parallel_AttributesTest);
@@ -38,7 +39,8 @@ using namespace splash;
 #define MPI_SIZE_X 2
 #define MPI_SIZE_Y 2
 
-Parallel_AttributesTest::Parallel_AttributesTest()
+Parallel_AttributesTest::Parallel_AttributesTest() :
+  ctString4(4)
 {
     srand(time(NULL));
 
@@ -90,8 +92,17 @@ void Parallel_AttributesTest::testDataAttributes()
     dataCollector->writeAttribute(0, ctInt, "attr/attr2/attr3/data", "sum", &sum);
     int neg_sum = -sum;
     dataCollector->writeAttribute(0, ctInt, "attr/attr2/attr3/data", "neg_sum", &neg_sum);
-    
+
     dataCollector->writeAttribute(0, ctInt, "attr/attr2/attr3", "sum_at_group", &sum);
+    char c = 'Y';
+    dataCollector->writeAttribute(0, ctChar, "attr/attr2/attr3", "my_char", &c);
+
+    /* variable length string, '\0' terminated */
+    const char *string_attr = {"My first c-string."};
+    dataCollector->writeAttribute(0, ctString, NULL, "my_string", &string_attr);
+    /* fixed length string, '\0' terminated */
+    const char string_attr4[5] = {"ABCD"};
+    dataCollector->writeAttribute(0, ctString4, NULL, "my_string4", &string_attr4);
 
     delete[] dummy_data;
     dummy_data = NULL;
@@ -110,6 +121,7 @@ void Parallel_AttributesTest::testDataAttributes()
 
     sum = 0;
     neg_sum = 0;
+    c = 'A';
     dataCollector->readAttribute(0, "attr/attr2/attr3/data", "sum", &sum);
     dataCollector->readAttribute(0, "attr/attr2/attr3/data", "neg_sum", &neg_sum);
     
@@ -117,10 +129,20 @@ void Parallel_AttributesTest::testDataAttributes()
 
     CPPUNIT_ASSERT(sum == old_sum);
     CPPUNIT_ASSERT(neg_sum == -old_sum);
-    
+
     dataCollector->readAttribute(0, "attr/attr2/attr3", "sum_at_group", &sum);
-    
+    dataCollector->readAttribute(0, "attr/attr2/attr3", "my_char", &c);
+
     CPPUNIT_ASSERT(sum == old_sum);
+    CPPUNIT_ASSERT(c == 'Y');
+
+    char* string_read;
+    dataCollector->readAttribute(0, NULL, "my_string", &string_read);
+    char string_read4[5];
+    dataCollector->readAttribute(0, NULL, "my_string4", &string_read4);
+
+    CPPUNIT_ASSERT(strcmp(string_read, string_attr) == 0);
+    CPPUNIT_ASSERT(strcmp(string_read4, string_attr4) == 0);
 
     dataCollector->finalize();
     dataCollector->close();
@@ -139,22 +161,26 @@ void Parallel_AttributesTest::testArrayTypes()
             MPI_COMM_WORLD, MPI_INFO_NULL, Dimensions(MPI_SIZE_X, MPI_SIZE_Y, 1), 1);
 
     dataCollector->open(TEST_FILE2, attr);
-    dataCollector->writeGlobalAttribute(10, ctInt3Array, "testposition", array_data_write);
+    dataCollector->writeGlobalAttribute(10, ctInt3Array, "testpositionArray", array_data_write);
+    dataCollector->writeGlobalAttribute(10, ctInt, "testposition", 1u, Dimensions(3, 1, 1), array_data_write);
     dataCollector->writeGlobalAttribute(20, ctDimArray, "testdim", dim_write.getPointer());
     dataCollector->close();
 
     int array_data_read[3] = {0, 0, 0};
+    int data_read[3] = {0, 0, 0};
     Dimensions dim_read;
 
     attr.fileAccType = DataCollector::FAT_READ;
     dataCollector->open(TEST_FILE2, attr);
-    dataCollector->readGlobalAttribute(10, "testposition", array_data_read);
+    dataCollector->readGlobalAttribute(10, "testpositionArray", array_data_read);
+    dataCollector->readGlobalAttribute(10, "testposition", data_read);
     dataCollector->readGlobalAttribute(20, "testdim", dim_read.getPointer());
     dataCollector->close();
 
     for (int i = 0; i < 3; i++)
     {
         CPPUNIT_ASSERT(array_data_read[i] == array_data_write[i]);
+        CPPUNIT_ASSERT(data_read[i] == array_data_write[i]);
         CPPUNIT_ASSERT(dim_write[i] == dim_read[i]);
     }
 

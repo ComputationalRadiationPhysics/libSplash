@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -52,6 +52,7 @@
 #include "splash/CollectionType.hpp"
 #include "splash/Dimensions.hpp"
 #include "splash/Selection.hpp"
+#include "splash/core/DCDataSet.hpp"
 
 namespace splash
 {
@@ -113,6 +114,10 @@ namespace splash
              * Fully-qualified name of this dataset.
              */
             std::string name;
+            /**
+             * Pointer to an instance of the CollectionType of this dataset
+             */
+            CollectionType* colType;
         } DCEntry;
 
         /**
@@ -245,15 +250,18 @@ namespace splash
                 const void *buf) = 0;
 
         /**
-         * Removes a simulation step from the HDF5 file.
-         * 
+         * Removes a simulation iteration from the HDF5 file.
+         *
+         * Recursively removes all datasets and attributes within
+         * the iteration.
+         *
          * @param id ID to remove.
          */
         virtual void remove(int32_t id) = 0;
 
         /**
          * Removes a dataset from a HDF5 file.
-         * 
+         *
          * @param id ID holding the dataset to be removed.
          * @param name Name of the dataset to be removed.
          */
@@ -262,10 +270,10 @@ namespace splash
 
         /**
          * Creates an object reference to an existing dataset in the same HDF5 file.
-         * 
+         *
          * @param srcID ID of the iteration holding the source dataset.
          * @param srcName Name of the existing source dataset.
-         * @param dstID ID of the simulation step holding the created reference dataset.
+         * @param dstID ID of the simulation iteration holding the created reference dataset.
          * If this group does not exist, it is created.
          * @param dstName Name of the created reference.
          */
@@ -276,10 +284,10 @@ namespace splash
 
         /**
          * Creates a dataset region reference to an existing dataset in the same HDF5 file.
-         * 
+         *
          * @param srcID ID of the iteration holding the source dataset.
          * @param srcName Name of the existing source dataset.
-         * @param dstID ID of the simulation step holding the created reference dataset.
+         * @param dstID ID of the simulation iteration holding the created reference dataset.
          * If this group does not exist, it is created.
          * @param dstName Name of the created reference.
          * @param count Number of elements referenced from the source dataset.
@@ -319,6 +327,21 @@ namespace splash
                 const char *name,
                 const void* buf) = 0;
 
+       /**
+         * Writes global attribute to HDF5 file (default group).
+         *
+         * @param type Type information for data.
+         * @param name Name of the attribute.
+         * @param ndims Number of dimensions (1-3)
+         * @param dims Number of elements
+         * @param buf Buffer to be written as attribute.
+         */
+        virtual void writeGlobalAttribute(const CollectionType& type,
+                const char *name,
+                uint32_t ndims,
+                const Dimensions dims,
+                const void* buf) = 0;
+
         /**
          * Reads an attribute from a single dataset.
          * 
@@ -352,7 +375,27 @@ namespace splash
                 const char *dataName,
                 const char *attrName,
                 const void *buf) = 0;
-        
+
+        /**
+         * Writes an attribute to a single dataset.
+         *
+         * @param id ID for iteration.
+         * @param type Type information for data.
+         * @param dataName Name of the dataset in group \p id to write attribute to.
+         * If dataName is NULL, the attribute is written for the iteration group.
+         * @param attrName Name of the attribute.
+         * @param ndims Number of dimensions (1-3)
+         * @param dims Number of elements
+         * @param buf Buffer to be written as attribute.
+         */
+        virtual void writeAttribute(int32_t id,
+                const CollectionType& type,
+                const char *dataName,
+                const char *attrName,
+                uint32_t ndims,
+                const Dimensions dims,
+                const void *buf) = 0;
+
         /**
          * Reads data from HDF5 file.
          * If data is to be read (instead of only its size in the file),
@@ -386,6 +429,25 @@ namespace splash
                 const Dimensions dstOffset,
                 Dimensions &sizeRead,
                 void* buf) = 0;
+
+        /**
+         * Reads meta data from HDF5 file.
+         *
+         * @param id ID of iteration.
+         * @param name Name of the dataset.
+         * @param dstBuffer Size of the dataset.
+         * @param dstOffset Offset in destination dataset.
+         * @param sizeRead Returns the size of the data in the file.
+         *
+         * @return The CollectionType of the dataset as a heap allocated
+         *         object. The object must be freed by the caller at the
+         *         end of the object's lifetime.
+         */
+        virtual CollectionType* readMeta(int32_t id,
+                const char* name,
+                const Dimensions dstBuffer,
+                const Dimensions dstOffset,
+                Dimensions &sizeRead) = 0;
     };
 
 }

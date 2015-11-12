@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by 
  * the Free Software Foundation, either version 3 of the License, or 
  * (at your option) any later version. 
+ *
  * libSplash is distributed in the hope that it will be useful, 
  * but WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
@@ -24,8 +25,11 @@
 #include <dirent.h>
 #include <stdlib.h>
 #include <cstring>
+#include <sstream>
 
+#include "splash/version.hpp"
 #include "splash/ParallelDataCollector.hpp"
+#include "splash/basetypes/basetypes.hpp"
 #include "splash/core/DCParallelDataSet.hpp"
 #include "splash/core/DCAttribute.hpp"
 #include "splash/core/DCParallelGroup.hpp"
@@ -97,7 +101,7 @@ namespace splash
         log_msg(2, "listing files for %s", baseFilename.c_str());
 
         /* Split baseFilename into path and name prefix.
-         * Always append '_' since PDC filenames are 'prefix_timestep.h5'.
+         * Always append '_' since PDC filenames are 'prefix_iteration.h5'.
          * e.g. '/path/to/filename' -> dir_path='/path/to/' name='filename_'
          */
         std::string dir_path, name;
@@ -321,7 +325,7 @@ namespace splash
             throw DCException(getExceptionString("readGlobalAttribute", "this access is not permitted"));
 
         DCParallelGroup group_custom;
-        group_custom.open(handles.get(id), SDC_GROUP_CUSTOM);
+        group_custom.open(handles.get(id), PDC_GROUP_CUSTOM);
 
         try
         {
@@ -339,18 +343,33 @@ namespace splash
             const void* data)
     throw (DCException)
     {
+        const Dimensions dims(1, 1, 1);
+        writeGlobalAttribute(id, type, name, 1u, dims, data);
+    }
+
+    void ParallelDataCollector::writeGlobalAttribute(int32_t id,
+            const CollectionType& type,
+            const char *name,
+            uint32_t ndims,
+            const Dimensions dims,
+            const void* data)
+    throw (DCException)
+    {
         if (name == NULL || data == NULL)
             throw DCException(getExceptionString("writeGlobalAttribute", "a parameter was null"));
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
             throw DCException(getExceptionString("writeGlobalAttribute", "this access is not permitted"));
 
+        if (ndims < 1u || ndims > DSP_DIM_MAX)
+            throw DCException(getExceptionString("writeGlobalAttribute", "maximum dimension `ndims` is invalid"));
+
         DCParallelGroup group_custom;
-        group_custom.open(handles.get(id), SDC_GROUP_CUSTOM);
+        group_custom.open(handles.get(id), PDC_GROUP_CUSTOM);
 
         try
         {
-            DCAttribute::writeAttribute(name, type.getDataType(), group_custom.getHandle(), data);
+            DCAttribute::writeAttribute(name, type.getDataType(), group_custom.getHandle(), ndims, dims, data);
         } catch (DCException e)
         {
             log_msg(0, "Exception: %s", e.what());
@@ -421,6 +440,20 @@ namespace splash
             const void* data)
     throw (DCException)
     {
+        const Dimensions dims(1, 1, 1);
+        writeAttribute( id, type, dataName, attrName,
+                        1u, dims, data);
+    }
+
+    void ParallelDataCollector::writeAttribute(int32_t id,
+            const CollectionType& type,
+            const char *dataName,
+            const char *attrName,
+            uint32_t ndims,
+            const Dimensions dims,
+            const void* data)
+    throw (DCException)
+    {
         if (attrName == NULL || data == NULL)
             throw DCException(getExceptionString("writeAttribute", "a parameter was null"));
 
@@ -433,6 +466,9 @@ namespace splash
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
             throw DCException(getExceptionString("writeAttribute", "this access is not permitted"));
+
+        if (ndims < 1u || ndims > DSP_DIM_MAX)
+            throw DCException(getExceptionString("writeAttribute", "maximum dimension `ndims` is invalid"));
 
         std::string group_path, obj_name;
         std::string dataNameInternal = "";
@@ -454,7 +490,7 @@ namespace splash
 
             try
             {
-                DCAttribute::writeAttribute(attrName, type.getDataType(), obj_id, data);
+                DCAttribute::writeAttribute(attrName, type.getDataType(), obj_id, ndims, dims, data);
             } catch (DCException)
             {
                 H5Oclose(obj_id);
@@ -465,7 +501,7 @@ namespace splash
         {
             // attach attribute to the iteration
             group.openCreate(handles.get(id), group_path);
-            DCAttribute::writeAttribute(attrName, type.getDataType(), group.getHandle(), data);
+            DCAttribute::writeAttribute(attrName, type.getDataType(), group.getHandle(), ndims, dims, data);
         }
     }
 
@@ -522,6 +558,20 @@ namespace splash
                 localSize, globalOffset, sizeRead, ndims, buf);
     }
 
+     CollectionType* ParallelDataCollector::readMeta(int32_t id,
+             const char* name,
+             const Dimensions dstBuffer,
+             const Dimensions dstOffset,
+             Dimensions& sizeRead) throw (DCException)
+     {
+         if (fileStatus != FST_READING && fileStatus != FST_WRITING)
+             throw DCException(getExceptionString("readMeta", "this access is not permitted"));
+
+         uint32_t ndims = 0;
+         return readDataSetMeta(handles.get(id), id, name, dstBuffer, dstOffset,
+                 Dimensions(0, 0, 0), sizeRead, ndims);
+     }
+
     void ParallelDataCollector::write(int32_t id, const CollectionType& type, uint32_t ndims,
             const Selection select, const char* name, const void* buf)
     throw (DCException)
@@ -544,7 +594,7 @@ namespace splash
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
             throw DCException(getExceptionString("write", "this access is not permitted"));
 
-        if (ndims < 1 || ndims > 3)
+        if (ndims < 1 || ndims > DSP_DIM_MAX)
             throw DCException(getExceptionString("write", "maximum dimension is invalid"));
 
         // create group for this id/iteration
@@ -571,7 +621,7 @@ namespace splash
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
             throw DCException(getExceptionString("write", "this access is not permitted"));
 
-        if (ndims < 1 || ndims > 3)
+        if (ndims < 1 || ndims > DSP_DIM_MAX)
             throw DCException(getExceptionString("write", "maximum dimension is invalid"));
 
         reserveInternal(id, globalSize, ndims, type, name);
@@ -591,7 +641,7 @@ namespace splash
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
             throw DCException(getExceptionString("write", "this access is not permitted"));
 
-        if (ndims < 1 || ndims > 3)
+        if (ndims < 1 || ndims > DSP_DIM_MAX)
             throw DCException(getExceptionString("write", "maximum dimension is invalid"));
 
         Dimensions global_size, global_offset;
@@ -619,7 +669,7 @@ namespace splash
         if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
             throw DCException(getExceptionString("append", "this access is not permitted"));
 
-        if (ndims < 1 || ndims > 3)
+        if (ndims < 1 || ndims > DSP_DIM_MAX)
             throw DCException(getExceptionString("append", "maximum dimension is invalid"));
 
         // create group for this id/iteration
@@ -762,7 +812,7 @@ namespace splash
 
         // the custom group holds user-specified attributes
         DCParallelGroup group;
-        group.create(handle, SDC_GROUP_CUSTOM);
+        group.create(handle, PDC_GROUP_CUSTOM);
         group.close();
 
         // the data group holds the actual simulation data
@@ -788,20 +838,37 @@ namespace splash
         DCParallelGroup group;
         group.create(fHandle, SDC_GROUP_HEADER);
 
-        ColTypeDim dim_t;
-
         int32_t index = id;
         bool compression = enableCompression;
+        std::stringstream splashVersion;
+        splashVersion << SPLASH_VERSION_MAJOR << "."
+                      << SPLASH_VERSION_MINOR << "."
+                      << SPLASH_VERSION_PATCH;
+        std::stringstream splashFormat;
+        splashFormat << SPLASH_FILE_FORMAT_MAJOR << "."
+                     << SPLASH_FILE_FORMAT_MINOR;
+
+        ColTypeInt32 ctInt32;
+        ColTypeBool ctBool;
+        ColTypeDim dim_t;
+        ColTypeString ctStringVersion(splashVersion.str().length());
+        ColTypeString ctStringFormat(splashFormat.str().length());
 
         // create master specific header attributes
-        DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, H5T_NATIVE_INT32,
+        DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, ctInt32.getDataType(),
                 group.getHandle(), &index);
 
-        DCAttribute::writeAttribute(SDC_ATTR_COMPRESSION, H5T_NATIVE_HBOOL,
+        DCAttribute::writeAttribute(SDC_ATTR_COMPRESSION, ctBool.getDataType(),
                 group.getHandle(), &compression);
 
         DCAttribute::writeAttribute(SDC_ATTR_MPI_SIZE, dim_t.getDataType(),
                 group.getHandle(), mpiTopology.getPointer());
+
+        DCAttribute::writeAttribute(SDC_ATTR_VERSION, ctStringVersion.getDataType(),
+                group.getHandle(), splashVersion.str().c_str());
+
+        DCAttribute::writeAttribute(SDC_ATTR_FORMAT, ctStringFormat.getDataType(),
+                group.getHandle(), splashFormat.str().c_str());
     }
 
     void ParallelDataCollector::openCreate(const char *filename,
@@ -904,6 +971,40 @@ namespace splash
         dataset.close();
     }
 
+    CollectionType* ParallelDataCollector::readDataSetMeta(H5Handle h5File,
+            int32_t id,
+            const char* name,
+            const Dimensions dstBuffer,
+            const Dimensions dstOffset,
+            const Dimensions srcOffset,
+            Dimensions &sizeRead,
+            uint32_t& srcDims)
+    throw (DCException)
+    {
+        log_msg(2, "readDataSetMeta");
+
+        std::string group_path, dset_name;
+        DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, id, group_path, dset_name);
+
+        DCGroup group;
+        group.open(h5File, group_path);
+
+        DCDataSet dataset(dset_name.c_str());
+        dataset.open(group.getHandle());
+
+        size_t entrySize;
+        getEntriesForID(id, NULL, &entrySize);
+        std::vector<DataCollector::DCEntry> entries(entrySize);
+
+        getEntriesForID(id, &(*entries.begin()), NULL);
+
+        Dimensions src_size(dataset.getSize() - srcOffset);
+        dataset.read(dstBuffer, dstOffset, src_size, srcOffset, sizeRead, srcDims, NULL);
+        dataset.close();
+
+        return entries[0].colType;
+    }
+
     void ParallelDataCollector::writeDataSet(H5Handle group,
             const Dimensions globalSize,
             const Dimensions globalOffset,
@@ -928,14 +1029,14 @@ namespace splash
             Dimensions &globalSize, Dimensions &globalOffset)
     throw (DCException)
     {
-        uint64_t write_sizes[options.mpiSize * 3];
-        uint64_t local_write_size[3] = {localSize[0], localSize[1], localSize[2]};
+        uint64_t write_sizes[options.mpiSize * DSP_DIM_MAX];
+        uint64_t local_write_size[DSP_DIM_MAX] = {localSize[0], localSize[1], localSize[2]};
 
         globalSize.set(1, 1, 1);
         globalOffset.set(0, 0, 0);
 
-        if (MPI_Allgather(local_write_size, 3, MPI_UNSIGNED_LONG_LONG,
-                write_sizes, 3, MPI_UNSIGNED_LONG_LONG, options.mpiComm) != MPI_SUCCESS)
+        if (MPI_Allgather(local_write_size, DSP_DIM_MAX, MPI_UNSIGNED_LONG_LONG,
+                write_sizes, DSP_DIM_MAX, MPI_UNSIGNED_LONG_LONG, options.mpiComm) != MPI_SUCCESS)
             throw DCException(getExceptionString("gatherMPIWrites",
                 "MPI_Allgather failed", NULL));
 
@@ -971,9 +1072,9 @@ namespace splash
                         index = dim * tmp_mpi_topology[0] * tmp_mpi_topology[1];
                 }
 
-                globalSize[i] += write_sizes[index * 3 + i];
+                globalSize[i] += write_sizes[index * DSP_DIM_MAX + i];
                 if (dim < tmp_mpi_pos[i])
-                    globalOffset[i] += write_sizes[index * 3 + i];
+                    globalOffset[i] += write_sizes[index * DSP_DIM_MAX + i];
             }
         }
     }

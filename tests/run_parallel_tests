@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ $# -eq 0 ]; then
+    echo "  WARNING:"
+    echo "    No path for build director was given."
+    echo "    Will use \"build\" instead."
+fi
+
 dir=${1:-build}
 
 rm -rf $dir/h5
@@ -8,12 +14,10 @@ mkdir $dir/h5
 cd $dir
 OK=0
 
-function testSerial()
+function testLast()
 {
-    if [ -e "$1" ]; then
-        echo -e "\n$2\n"
-        $1
-        OK=$(( OK + $? ))
+    if [ $1 -ne 0 ]; then
+        echo "An error occured in $2..."
     fi
 }
 function testMPI()
@@ -21,7 +25,9 @@ function testMPI()
     if [ -e "$1" ]; then
         echo -e "\n$3\n"
         mpirun -n $2 $1
-        OK=$(( OK + $? ))
+        last=$?
+        testLast $last $1
+        OK=$(( OK + $last ))
     fi
 }
 

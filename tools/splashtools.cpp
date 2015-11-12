@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by 
  * the Free Software Foundation, either version 3 of the License, or 
  * (at your option) any later version. 
+ *
  * libSplash is distributed in the hope that it will be useful, 
  * but WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
@@ -41,19 +42,19 @@ typedef struct
 {
     bool singleFile;
     bool checkIntegrity;
-    bool deleteStep;
+    bool deleteIteration;
     bool listEntries;
     bool parallelFile;
     bool verbose;
     std::string filename;
-    int32_t step;
+    int32_t iteration;
     int mpiRank;
     int mpiSize;
     int fileIndexStart;
     int fileIndexEnd;
 } Options;
 
-int deleteFromStep(Options& options);
+int deleteFromIteration(Options& options);
 int testFileIntegrity(Options& options);
 
 /* helper functions */
@@ -61,7 +62,7 @@ int testFileIntegrity(Options& options);
 void initOptions(Options& options)
 {
     options.checkIntegrity = false;
-    options.deleteStep = false;
+    options.deleteIteration = false;
     options.listEntries = false;
     options.parallelFile = false;
     options.fileIndexEnd = -1;
@@ -70,11 +71,11 @@ void initOptions(Options& options)
     options.mpiRank = 0;
     options.mpiSize = 1;
     options.singleFile = false;
-    options.step = 0;
+    options.iteration = 0;
     options.verbose = false;
 }
 
-void deleteFromStepInFile(DataCollector *dc, int32_t step)
+void deleteFromIterationInFile(DataCollector *dc, int32_t iteration)
 {
     size_t num_entries = 0;
     dc->getEntryIDs(NULL, &num_entries);
@@ -84,7 +85,7 @@ void deleteFromStepInFile(DataCollector *dc, int32_t step)
 
     for (size_t i = 0; i < num_entries; ++i)
     {
-        if (entries[i] >= step)
+        if (entries[i] >= iteration)
         {
             dc->remove(entries[i]);
         }
@@ -103,7 +104,7 @@ int parseCmdLine(int argc, char **argv, Options& options)
     full_desc_stream << usage_stream.str() << std::endl <<
             " --help,-h\t\t\t print this help message" << std::endl <<
             " --file,-f\t<file>\t\t HDF5 libSplash file to edit" << std::endl <<
-            " --delete,-d\t<step>\t\t Delete [d,*) simulation steps" << std::endl <<
+            " --delete,-d\t<iteration>\t\t Delete iterations [d,*)" << std::endl <<
             " --check,-c\t\t\t Check file integrity" << std::endl <<
             " --list,-l\t\t\t List all file entries" << std::endl <<
 #if (SPLASH_SUPPORTED_PARALLEL==1)
@@ -150,7 +151,7 @@ int parseCmdLine(int argc, char **argv, Options& options)
                 return RESULT_ERROR;
             }
 
-            options.step = atoi(next_option);
+            options.iteration = atoi(next_option);
             i++;
             continue;
         }
@@ -405,7 +406,7 @@ int executeToolFunction(Options& options,
             // get mpi position from index
             indexToPos(i, fileMPISizeDim, mpi_pos);
 
-            // delete steps in this file
+            // delete iterations in this file
             std::stringstream mpiFilename;
 #if (SPLASH_SUPPORTED_PARALLEL==1)
             if (options.parallelFile)
@@ -427,7 +428,7 @@ int executeToolFunction(Options& options,
     return result;
 }
 
-int deleteFromStep(Options& options, DataCollector *dc, const char *filename)
+int deleteFromIteration(Options& options, DataCollector *dc, const char *filename)
 {
     int result = RESULT_OK;
     DataCollector::FileCreationAttr fileCAttr;
@@ -436,14 +437,14 @@ int deleteFromStep(Options& options, DataCollector *dc, const char *filename)
 
     if (options.verbose)
     {
-        std::cout << "[" << options.mpiRank << "] Deleting from step " <<
-                options.step << " in file " << filename << std::endl;
+        std::cout << "[" << options.mpiRank << "] Deleting from iteration " <<
+                options.iteration << " in file " << filename << std::endl;
     }
 
     try
     {
         dc->open(filename, fileCAttr);
-        deleteFromStepInFile(dc, options.step);
+        deleteFromIterationInFile(dc, options.iteration);
         dc->close();
     } catch (DCException e)
     {
@@ -488,7 +489,7 @@ int listAvailableDatasets(Options& options, DataCollector *dc, const char* /*fil
         }
     }
 
-    // number of timesteps in this file
+    // number of iterations in this file
     size_t num_entries = 0;
     dc->getEntriesForID(id, NULL, &num_entries);
 
@@ -498,8 +499,17 @@ int listAvailableDatasets(Options& options, DataCollector *dc, const char* /*fil
         dc->getEntriesForID(id, entries, NULL);
 
         for (size_t i = 0; i < num_entries; ++i)
-            std::cout << entries[i].name << std::endl;
-        
+        {
+            CollectionType* data_type = entries[i].colType;
+            Dimensions sizeRead;
+            dc->read(id, entries[i].name.c_str(), sizeRead, NULL);
+            std::cout << entries[i].name
+                      << " (" << data_type->toString() << ")"
+                      << " " << sizeRead.toString()
+                      << std::endl;
+
+        }
+
         delete[] entries;
     }
 
@@ -527,8 +537,8 @@ int main(int argc, char **argv)
         if (options.checkIntegrity)
             result = executeToolFunction(options, testFileIntegrity);
 
-        if (options.deleteStep)
-            result = executeToolFunction(options, deleteFromStep);
+        if (options.deleteIteration)
+            result = executeToolFunction(options, deleteFromIteration);
 
         if (options.listEntries)
             result = executeToolFunction(options, listAvailableDatasets);

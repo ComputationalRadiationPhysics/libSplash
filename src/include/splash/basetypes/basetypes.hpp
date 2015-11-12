@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -29,6 +29,9 @@
 #include "splash/basetypes/ColTypeBool.hpp"
 #include "splash/basetypes/ColTypeDim.hpp"
 #include "splash/basetypes/ColTypeDimArray.hpp"
+#include "splash/basetypes/ColTypeString.hpp"
+
+#include "splash/basetypes/ColTypeUnknown.hpp"
 
 #endif	/* BASETYPES_HPP */
 

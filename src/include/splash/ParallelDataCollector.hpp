@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -33,6 +33,7 @@
 
 #include "splash/DCException.hpp"
 #include "splash/sdc_defines.hpp"
+#include "splash/pdc_defines.hpp"
 #include "splash/core/HandleMgr.hpp"
 
 namespace splash
@@ -272,6 +273,13 @@ namespace splash
                 const char *name,
                 const void* buf) throw (DCException);
 
+        void writeGlobalAttribute(int32_t id,
+                const CollectionType& type,
+                const char *name,
+                uint32_t ndims,
+                const Dimensions dims,
+                const void* buf) throw (DCException);
+
         void readAttribute(int32_t id,
                 const char *dataName,
                 const char *attrName,
@@ -282,6 +290,14 @@ namespace splash
                 const CollectionType& type,
                 const char *dataName,
                 const char *attrName,
+                const void *buf) throw (DCException);
+
+        void writeAttribute(int32_t id,
+                const CollectionType& type,
+                const char *dataName,
+                const char *attrName,
+                uint32_t ndims,
+                const Dimensions dims,
                 const void *buf) throw (DCException);
 
         void read(int32_t id,
@@ -295,6 +311,12 @@ namespace splash
                 const Dimensions dstOffset,
                 Dimensions &sizeRead,
                 void* buf) throw (DCException);
+
+        CollectionType* readMeta(int32_t id,
+                const char* name,
+                const Dimensions dstBuffer,
+                const Dimensions dstOffset,
+                Dimensions &sizeRead) throw (DCException);
 
         /**
          * Reads data from HDF5 file.
@@ -356,6 +378,15 @@ namespace splash
 
         }
 
+        void writeGlobalAttribute(const CollectionType& /*type*/,
+                const char* /*name*/,
+                uint32_t /*ndims*/,
+                const Dimensions /*dims*/,
+                const void* /*data*/)
+        {
+
+        }
+
         void append(int32_t /*id*/,
                 const CollectionType& /*type*/,
                 size_t /*count*/,
@@ -383,6 +414,20 @@ namespace splash
                 Dimensions /*count*/,
                 Dimensions /*offset*/,
                 Dimensions /*stride*/) throw (DCException);
+
+
+        /**
+         * Internal meta data reading method.
+         */
+        CollectionType* readDataSetMeta(H5Handle h5File,
+                int32_t id,
+                const char* name,
+                const Dimensions dstBuffer,
+                const Dimensions dstOffset,
+                const Dimensions srcOffset,
+                Dimensions &sizeRead,
+                uint32_t& srcDims)
+         throw (DCException);
     };
 
 }

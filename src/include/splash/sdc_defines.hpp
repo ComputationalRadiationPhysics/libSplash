@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by 
  * the Free Software Foundation, either version 3 of the License, or 
  * (at your option) any later version. 
+ *
  * libSplash is distributed in the hope that it will be useful, 
  * but WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
@@ -33,14 +34,13 @@ namespace splash
 #define SDC_ATTR_DIM_LOCAL "dim_local"
 #define SDC_ATTR_DIM_GLOBAL "dim_global"
 #define SDC_ATTR_MAX_ID "max_id"
-#define SDC_ATTR_ID_STEP "id_step"
 #define SDC_ATTR_MPI_POSITION "mpi_position"
 #define SDC_ATTR_MPI_SIZE "mpi_size"
 #define SDC_ATTR_GRID_SIZE "grid_size"
 #define SDC_ATTR_SIZE "client_size"
 #define SDC_ATTR_COMPRESSION "compression"
-
-#define DSP_DIM_MAX 3
+#define SDC_ATTR_VERSION "splashVersion"
+#define SDC_ATTR_FORMAT "splashFormat"
 }
 
 #endif	/* SDC_DEFINES_H */

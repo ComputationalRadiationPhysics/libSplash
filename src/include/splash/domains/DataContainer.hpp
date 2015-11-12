@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013, 2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
  * 
@@ -7,7 +7,8 @@
  * it under the terms of of either the GNU General Public License or 
  * the GNU Lesser General Public License as published by 
  * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
+ * (at your option) any later version.
+ *
  * libSplash is distributed in the hope that it will be useful, 
  * but WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
@@ -82,7 +83,7 @@ namespace splash
             const Dimensions &entryOffset = entry->getOffset();
             const Dimensions entryBack = entry->getBack(); // last index INSIDE
 
-            for (uint32_t i = 0; i < 3; ++i)
+            for (uint32_t i = 0; i < DSP_DIM_MAX; ++i)
             {
                 offset[i] = std::min(entryOffset[i], offset[i]);
                 size[i] = std::max(entryBack[i] + 1 - offset[i], size[i]);

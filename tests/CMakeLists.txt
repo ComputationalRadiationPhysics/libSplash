@@ -35,7 +35,7 @@ OPTION(WITH_MPI "use MPI-based tests" OFF)
 #-------------------------------------------------------------------------------
 
 # HDF5 is required package
-FIND_PACKAGE(HDF5 REQUIRED)
+FIND_PACKAGE(HDF5 1.8.6 REQUIRED)
 INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
 
 IF(WITH_MPI)
@@ -108,3 +108,8 @@ FOREACH(TEST_FILE ${TEST_FILES})
 
     TARGET_LINK_LIBRARIES(${FILE}.out ${LIBS})
 ENDFOREACH()
+
+# copy scripts to "build" dir for easy testing
+FILE(COPY readBoolChar.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+FILE(COPY run_tests DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+FILE(COPY run_parallel_tests DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
