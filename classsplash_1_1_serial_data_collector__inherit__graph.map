@@ -1,4 +1,4 @@
 <map id="splash::SerialDataCollector" name="splash::SerialDataCollector">
-<area shape="rect" id="node5" href="$classsplash_1_1_domain_collector.html" title="splash::DomainCollector" alt="" coords="13,161,171,189"/>
-<area shape="rect" id="node2" href="$classsplash_1_1_data_collector.html" title="splash::DataCollector" alt="" coords="21,6,163,34"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_domain_collector.html" title="splash::DomainCollector" alt="" coords="13,155,175,181"/>
+<area shape="rect" id="node2" href="$classsplash_1_1_data_collector.html" title="splash::DataCollector" alt="" coords="22,5,166,32"/>
 </map>

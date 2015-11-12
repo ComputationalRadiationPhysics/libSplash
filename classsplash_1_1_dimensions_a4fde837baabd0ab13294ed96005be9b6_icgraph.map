@@ -1,5 +1,5 @@
 <map id="splash::Dimensions::getScalarSize" name="splash::Dimensions::getScalarSize">
-<area shape="rect" id="node3" href="$classsplash_1_1_data_container.html#a3a67d3626aa01dcb33078f7b79822c3c" title="splash::DataContainer\l::getElement" alt="" coords="204,5,351,49"/>
-<area shape="rect" id="node5" href="$classsplash_1_1_domain_data.html#a6a491dec13e608b19a8a527394b783a5" title="splash::DomainData\l::DomainData" alt="" coords="211,71,344,115"/>
-<area shape="rect" id="node7" href="$classsplash_1_1_parallel_data_collector.html#a163072d211feae64e96eb46a2cdd2fdf" title="splash::ParallelDataCollector\l::ParallelDataCollector" alt="" coords="185,138,369,182"/>
+<area shape="rect" id="node2" href="$classsplash_1_1_data_container.html#a3a67d3626aa01dcb33078f7b79822c3c" title="splash::DataContainer\l::getElement" alt="" coords="207,5,355,47"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_domain_data.html#a465340b030b182a2435045bdc0477242" title="splash::DomainData\l::DomainData" alt="" coords="213,71,350,112"/>
+<area shape="rect" id="node4" href="$classsplash_1_1_parallel_data_collector.html#a163072d211feae64e96eb46a2cdd2fdf" title="splash::ParallelDataCollector\l::ParallelDataCollector" alt="" coords="188,136,375,177"/>
 </map>

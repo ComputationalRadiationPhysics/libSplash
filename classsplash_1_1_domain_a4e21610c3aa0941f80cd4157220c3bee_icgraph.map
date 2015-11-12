@@ -1,4 +1,4 @@
 <map id="splash::Domain::getSize" name="splash::Domain::getSize">
-<area shape="rect" id="node3" href="$classsplash_1_1_parallel_domain_collector.html#ac455fb0e104ba4113dc23b955f2763d1" title="splash::ParallelDomainCollector\l::getGlobalDomain" alt="" coords="211,5,413,49"/>
-<area shape="rect" id="node5" href="$classsplash_1_1_parallel_domain_collector.html#af9b976f550cbee7d543724ca6c39339a" title="splash::ParallelDomainCollector\l::getLocalDomain" alt="" coords="211,71,413,115"/>
+<area shape="rect" id="node2" href="$classsplash_1_1_parallel_domain_collector.html#ac455fb0e104ba4113dc23b955f2763d1" title="splash::ParallelDomainCollector\l::getGlobalDomain" alt="" coords="212,5,416,47"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_parallel_domain_collector.html#af9b976f550cbee7d543724ca6c39339a" title="splash::ParallelDomainCollector\l::getLocalDomain" alt="" coords="212,71,416,112"/>
 </map>

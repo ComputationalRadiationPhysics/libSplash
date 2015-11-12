@@ -1,5 +1,5 @@
 <map id="splash::ParallelDomainCollector::getGlobalDomain" name="splash::ParallelDomainCollector::getGlobalDomain">
-<area shape="rect" id="node3" href="$classsplash_1_1_domain.html#a4e21610c3aa0941f80cd4157220c3bee" title="splash::Domain::getSize" alt="" coords="260,5,417,33"/>
-<area shape="rect" id="node5" href="$classsplash_1_1_dimensions.html#ae1e6c7ed0f8e00f14cb9108f299387dd" title="splash::Dimensions\l::getPointer" alt="" coords="273,55,404,99"/>
-<area shape="rect" id="node7" href="$classsplash_1_1_domain.html#afdf3a9d343e35d12e63787cd3d8af9b1" title="splash::Domain::getOffset" alt="" coords="256,122,421,150"/>
+<area shape="rect" id="node2" href="$classsplash_1_1_domain.html#a4e21610c3aa0941f80cd4157220c3bee" title="splash::Domain::getSize" alt="" coords="263,5,421,32"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_dimensions.html#ae1e6c7ed0f8e00f14cb9108f299387dd" title="splash::Dimensions\l::getPointer" alt="" coords="275,57,409,98"/>
+<area shape="rect" id="node4" href="$classsplash_1_1_domain.html#afdf3a9d343e35d12e63787cd3d8af9b1" title="splash::Domain::getOffset" alt="" coords="257,123,427,149"/>
 </map>

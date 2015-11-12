@@ -1,5 +1,7 @@
 <map id="splash::CollectionType" name="splash::CollectionType">
-<area shape="rect" id="node3" href="$classsplash_1_1_col_type_bool.html" title="splash::ColTypeBool" alt="" coords="5,83,141,111"/>
-<area shape="rect" id="node5" href="$classsplash_1_1_col_type_dim.html" title="splash::ColTypeDim" alt="" coords="165,83,299,111"/>
-<area shape="rect" id="node7" href="$classsplash_1_1_col_type_dim_array.html" title="splash::ColTypeDimArray" alt="" coords="323,83,485,111"/>
+<area shape="rect" id="node2" href="$classsplash_1_1_col_type_bool.html" title="splash::ColTypeBool" alt="" coords="219,5,357,32"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_col_type_dim.html" title="splash::ColTypeDim" alt="" coords="220,56,356,83"/>
+<area shape="rect" id="node4" href="$classsplash_1_1_col_type_dim_array.html" title="splash::ColTypeDimArray" alt="" coords="205,107,371,133"/>
+<area shape="rect" id="node5" href="$classsplash_1_1_col_type_string.html" title="splash::ColTypeString" alt="" coords="215,157,361,184"/>
+<area shape="rect" id="node6" href="$classsplash_1_1_col_type_unknown.html" title="splash::ColTypeUnknown" alt="" coords="204,208,372,235"/>
 </map>
