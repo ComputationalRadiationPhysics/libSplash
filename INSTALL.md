@@ -122,7 +122,7 @@ You can create your own version of the HTML documentation by running
 Parallel libSplash
 ------------------
 
-libSplash has **beta** support for parallel I/O.
+libSplash has support for parallel I/O creating a single, aggregated file per iteration.
 To build the parallel version, you need to build a parallel HDF5 library first.
 Commonly, it should be sufficient to configure HDF5 `$ configure --enable-shared --enable-parallel ...`.
 Running [cmake](#Compiling), libSplash will automatically detect the parallel HDF5
@@ -130,6 +130,8 @@ capabilities and informs you with a status message
 `Parallel HDF5 found. Building parallel version`.
 
 This builds the *ParallelDataCollector* and *ParallelDomainCollector* classes.
-*Please note that this feature is beta stage and not fully tested!*
-See *IParallelDataCollector* and *IParallelDomainCollector* interfaces for further
-information on how to use the parallel version.
+See
+[IParallelDataCollector](https://computationalradiationphysics.github.io/libSplash/classsplash_1_1_i_parallel_data_collector.html)
+and
+[IParallelDomainCollector](https://computationalradiationphysics.github.io/libSplash/classsplash_1_1_i_parallel_domain_collector.html)
+interfaces for further information on how to use the parallel version.
