@@ -44,7 +44,8 @@ before_script:
   - ls -hal /usr/include
 # PPA providing hdf5 >= 1.8.6 and OpenMPI >= 1.5.1
 # -> remove legacy hdf5 and mpi packages/deps from travis
-  - sudo apt-get remove -qq libhdf5* libopenmpi* openmpi-bin
+  - sudo apt-get remove -qq libhdf5*
+  - sudo apt-get remove -qq libopenmpi* openmpi-bin || { echo "OpenMPI not installed"; }
   - echo "yes" | sudo add-apt-repository ppa:james-page/openmpi
   - echo "yes" | sudo add-apt-repository ppa:axel-huebl/libsplash
   - sudo apt-get update -qq
