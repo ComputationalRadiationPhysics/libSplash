@@ -100,6 +100,43 @@ endif(Splash_FOUND)
 # target_link_libraries(yourBinary ${LIBS})
 ```
 
+Examples
+--------
+
+To build the examples in the `examples` subdirectory, just run the following
+commands in an empty build directory:
+
+```bash
+cmake -DWITH_MPI=ON <yourPathTo>/libSplash/examples/
+make
+```
+
+`WITH_MPI` will enable/disable MPI based tests. Parallel libSplash examples
+will require a parallel HDF5 install.
+
+```bash
+# MPI based serial (posix) writer
+#   -> creates four h5_X_Y_Z.h5 files
+#      depending on MPI topology;
+#      iterations are appended in these files
+mpiexec -n 4 ./domain_write_mpi.cpp.out h5 2 2 1
+
+# MPI based serial (posix) reader
+#    -> reads h5_X_Y_Z.h5 files
+mpiexec -n 4 ./domain_read_mpi.cpp.out h5 2 2 1
+# serial (posix) reader
+#   -> reads h5_X_Y_Z.h5 files
+./domain_read.cpp.out h5
+
+# MPI based parallel (MPI-I/O) writer
+#   -> creates ph5_10.h5 (iteration = 10);
+#      each iteration creates a new file but
+#      MPI parallel chunks of the same iteration
+#      are aggregated to one file
+mpiexec -n 4 ./parallel_domain_write.cpp.out ph5 2 2 1
+```
+
+
 Tests
 -----
 
