@@ -169,7 +169,7 @@ namespace splash
                 ColTypeInt32 ctInt32;
                 DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, ctInt32.getDataType(),
                         group.getHandle(), &maxID);
-            } catch (DCException e)
+            } catch (const DCException& e)
             {
                 log_msg(0, "Exception: %s", e.what());
                 log_msg(1, "continuing...");
@@ -223,7 +223,7 @@ namespace splash
         try
         {
             DCAttribute::readAttribute(name, group_custom.getHandle(), data);
-        } catch (DCException e)
+        } catch (const DCException&)
         {
             throw DCException(getExceptionString("readGlobalAttribute", "failed to open attribute", name));
         }
@@ -260,7 +260,7 @@ namespace splash
         try
         {
             DCAttribute::writeAttribute(name, type.getDataType(), group_custom.getHandle(), ndims, dims, data);
-        } catch (DCException e)
+        } catch (const DCException& e)
         {
             std::cerr << e.what() << std::endl;
             throw DCException(getExceptionString("writeGlobalAttribute", "failed to write attribute", name));
@@ -313,7 +313,7 @@ namespace splash
                 try
                 {
                     DCAttribute::readAttribute(attrName, obj_id, data);
-                } catch (DCException)
+                } catch (const DCException&)
                 {
                     H5Oclose(obj_id);
                     throw;
@@ -390,7 +390,7 @@ namespace splash
             try
             {
                 DCAttribute::writeAttribute(attrName, type.getDataType(), obj_id, ndims, dims, data);
-            } catch (DCException)
+            } catch (const DCException&)
             {
                 H5Oclose(obj_id);
                 throw;
@@ -470,7 +470,7 @@ namespace splash
         try
         {
             writeDataSet(group.getHandle(), type, ndims, select, dset_name.c_str(), data);
-        } catch (DCException)
+        } catch (const DCException&)
         {
             throw;
         }
@@ -507,7 +507,7 @@ namespace splash
         {
             appendDataSet(group.getHandle(), type, count, offset,
                     stride, dset_name.c_str(), data);
-        } catch (DCException)
+        } catch (const DCException&)
         {
             throw;
         }
@@ -610,7 +610,7 @@ namespace splash
             dst_dataset.close();
             src_dataset.close();
 
-        } catch (DCException e)
+        } catch (const DCException& e)
         {
             throw e;
         }
@@ -663,7 +663,7 @@ namespace splash
             dst_dataset.close();
             src_dataset.close();
 
-        } catch (DCException e)
+        } catch (const DCException& e)
         {
             throw e;
         }
@@ -916,7 +916,7 @@ namespace splash
             ndims = dataset.getNDims();
 
             dataset.close();
-        } catch (DCException e)
+        } catch (const DCException& e)
         {
             throw e;
         }
@@ -1030,7 +1030,7 @@ namespace splash
             dataset.open(group.getHandle());
             sizeRead.set(dataset.getSize());
             dataset.close();
-        } catch (DCException e)
+        } catch (const DCException& e)
         {
             throw e;
         }

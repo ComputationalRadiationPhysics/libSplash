@@ -183,7 +183,7 @@ namespace splash
                 dc_datatype = tmp_dataset.getDCDataType();
 
                 tmp_dataset.close();
-            } catch (DCException e)
+            } catch (const DCException& e)
             {
                 throw e;
             }
@@ -307,7 +307,7 @@ namespace splash
                 dc_datatype = tmp_dataset.getDCDataType();
 
                 tmp_dataset.close();
-            } catch (DCException e)
+            } catch (const DCException& e)
             {
                 throw e;
             }
@@ -770,7 +770,7 @@ namespace splash
         try
         {
             readSizeInternal(handles.get(0), id, name, elements);
-        } catch (DCException expected_exception)
+        } catch (const DCException&)
         {
             // nothing to do here but to make sure elements is set correctly
             elements.set(0, 1, 1);
@@ -793,7 +793,7 @@ namespace splash
         try
         {
             readAttribute(id, dataName, DOMCOL_ATTR_GLOBAL_SIZE, data, mpiPosition);
-        } catch (DCException)
+        } catch (const DCException&)
         {
             hsize_t local_size[DSP_DIM_MAX];
             readAttribute(id, dataName, DOMCOL_ATTR_SIZE, local_size, mpiPosition);
@@ -812,7 +812,7 @@ namespace splash
         try
         {
             readAttribute(id, dataName, DOMCOL_ATTR_GLOBAL_OFFSET, data, mpiPosition);
-        } catch (DCException)
+        } catch (const DCException&)
         {
             for (int i = 0; i < DSP_DIM_MAX; ++i)
                 data[i] = 0;

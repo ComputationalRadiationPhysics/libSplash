@@ -174,7 +174,7 @@ namespace splash
                     dc_datatype = tmp_dataset.getDCDataType();
 
                     tmp_dataset.close();
-                } catch (DCException e)
+                } catch (const DCException& e)
                 {
                     H5Gclose(group_id);
                     throw e;
@@ -247,7 +247,7 @@ namespace splash
                     dc_datatype = tmp_dataset.getDCDataType();
 
                     tmp_dataset.close();
-                } catch (DCException e)
+                } catch (const DCException& e)
                 {
                     H5Gclose(group_id);
                     throw e;

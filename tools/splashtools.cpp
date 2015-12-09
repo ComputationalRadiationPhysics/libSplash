@@ -320,7 +320,7 @@ int detectFileMPISize(Options& options, Dimensions &fileMPISizeDim)
         dc->open(options.filename.c_str(), fileCAttr);
         dc->getMPISize(fileMPISizeDim);
         dc->close();
-    } catch (DCException e)
+    } catch (const DCException& e)
     {
         std::cerr << "[0] Detecting file MPI size failed!" << std::endl <<
                 e.what() << std::endl;
@@ -446,7 +446,7 @@ int deleteFromIteration(Options& options, DataCollector *dc, const char *filenam
         dc->open(filename, fileCAttr);
         deleteFromIterationInFile(dc, options.iteration);
         dc->close();
-    } catch (DCException e)
+    } catch (const DCException& e)
     {
         std::cerr << "[" << options.mpiRank << "] " <<
                 "Deleting in file " << filename << " failed!" << std::endl <<

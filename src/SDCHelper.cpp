@@ -69,7 +69,7 @@ namespace splash
                         group_header, mpiSize->getPointer());
             }
 
-        } catch (DCException attr_exception) {
+        } catch (const DCException&) {
             H5Fclose(reference_file);
             throw DCException(getExceptionString(
                     std::string("Failed to read attributes from reference file ") +
@@ -128,7 +128,7 @@ namespace splash
             DCAttribute::writeAttribute(SDC_ATTR_FORMAT, ctStringFormat.getDataType(),
                     group_header, splashFormat.str().c_str());
 
-        } catch (DCException attr_error) {
+        } catch (const DCException& attr_error) {
             throw DCException(getExceptionString(
                 std::string("Failed to write header attribute in reference file. Error was: ") +
                 std::string(attr_error.what())));
