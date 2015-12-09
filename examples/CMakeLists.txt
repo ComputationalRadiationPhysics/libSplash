@@ -2,20 +2,20 @@
  #
  # This file is part of libSplash.
  #
- # libSplash is free software: you can redistribute it and/or modify 
- # it under the terms of of either the GNU General Public License or 
- # the GNU Lesser General Public License as published by 
- # the Free Software Foundation, either version 3 of the License, or 
+ # libSplash is free software: you can redistribute it and/or modify
+ # it under the terms of of either the GNU General Public License or
+ # the GNU Lesser General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # libSplash is distributed in the hope that it will be useful, 
- # but WITHOUT ANY WARRANTY; without even the implied warranty of 
- # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- # GNU General Public License and the GNU Lesser General Public License 
- # for more details. 
+ # libSplash is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License and the GNU Lesser General Public License
+ # for more details.
  #
- # You should have received a copy of the GNU General Public License 
- # and the GNU Lesser General Public License along with libSplash. 
+ # You should have received a copy of the GNU General Public License
+ # and the GNU Lesser General Public License along with libSplash.
  # If not, see <http://www.gnu.org/licenses/>.
 
 cmake_minimum_required(VERSION 2.8.5)
@@ -70,8 +70,8 @@ INCLUDE_DIRECTORIES("${SPLASH_ROOT_DIR}/include")
 
 # link static
 ADD_LIBRARY(splash_static STATIC IMPORTED)
-SET_TARGET_PROPERTIES(splash_static PROPERTIES 
-	IMPORTED_LOCATION "${SPLASH_ROOT_DIR}/lib/libsplash.a")
+SET_TARGET_PROPERTIES(splash_static PROPERTIES
+    IMPORTED_LOCATION "${SPLASH_ROOT_DIR}/lib/libsplash.a")
 SET(LIBS splash_static ${LIBS})
 
 # link dynamic

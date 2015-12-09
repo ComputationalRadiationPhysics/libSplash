@@ -1,22 +1,22 @@
  #
  # Copyright 2013-2015 Felix Schmitt, Axel Huebl
  #
- # This file is part of libSplash. 
- # 
- # libSplash is free software: you can redistribute it and/or modify 
- # it under the terms of of either the GNU General Public License or 
- # the GNU Lesser General Public License as published by 
- # the Free Software Foundation, either version 3 of the License, or 
+ # This file is part of libSplash.
+ #
+ # libSplash is free software: you can redistribute it and/or modify
+ # it under the terms of of either the GNU General Public License or
+ # the GNU Lesser General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # libSplash is distributed in the hope that it will be useful, 
- # but WITHOUT ANY WARRANTY; without even the implied warranty of 
- # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- # GNU General Public License and the GNU Lesser General Public License 
- # for more details. 
- # 
- # You should have received a copy of the GNU General Public License 
- # and the GNU Lesser General Public License along with libSplash. 
+ # libSplash is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License and the GNU Lesser General Public License
+ # for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # and the GNU Lesser General Public License along with libSplash.
  # If not, see <http://www.gnu.org/licenses/>.
 
 cmake_minimum_required(VERSION 2.8.5)
@@ -48,7 +48,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ ${CMAKE_MODULE_PATH})
 IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     SET(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}" CACHE PATH "install prefix"
         FORCE)
-ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT) 
+ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 #-------------------------------------------------------------------------------
 
@@ -113,7 +113,7 @@ SET(SPLASH_LIBS z ${HDF5_LIBRARIES})
 # serial or parallel version of libSplash
 SET(SPLASH_CLASSES logging DCAttribute DCDataSet DCGroup HandleMgr SerialDataCollector DomainCollector SDCHelper)
 IF(HDF5_IS_PARALLEL)
-    #parallel version 
+    #parallel version
     MESSAGE(STATUS "Parallel HDF5 found. Building parallel version")
 
     OPTION(COLLECTIVE_IO "use HDF5 collective IO" ON)
@@ -361,7 +361,7 @@ ELSE(HDF5_IS_PARALLEL)
   SET(CPACK_DEBIAN_PACKAGE_DEPENDS
       "libhdf5-serial-dev (>= 1.8.6)"
      )
-  IF(TOOLS_MPI)	
+  IF(TOOLS_MPI)
     SET(CPACK_DEBIAN_PACKAGE_DEPENDS
         "${CPACK_DEBIAN_PACKAGE_DEPENDS}, lib${MPI_FLAVOR}-dev (>= ${MPI_FLAVOR_MINVERSION})"
        )
