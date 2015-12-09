@@ -2,18 +2,19 @@
  * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash. 
- * 
+ *
  * libSplash is free software: you can redistribute it and/or modify 
  * it under the terms of of either the GNU General Public License or 
  * the GNU Lesser General Public License as published by 
  * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
+ * (at your option) any later version.
+ *
  * libSplash is distributed in the hope that it will be useful, 
  * but WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * GNU General Public License and the GNU Lesser General Public License 
  * for more details. 
- * 
+ *
  * You should have received a copy of the GNU General Public License 
  * and the GNU Lesser General Public License along with libSplash. 
  * If not, see <http://www.gnu.org/licenses/>. 
@@ -26,11 +27,11 @@
  *
  * libSplash is a combined project of the Center for Information Services and HPC (ZIH)
  * of the Technical University of Dresden and the Helmholtz-Zentrum Dresden-Rossendorf (HZDR).
- * 
+ *
  * The project aims at developing a HDF5-based I/O library for HPC simulations.
  * It is created as an easy-to-use frontend for the standard HDF5 library with 
  * support for MPI processes in a cluster environment.
- * 
+ *
  * While the standard HDF5 library provides detailed low-level control,
  * libSplash simplifies tasks commonly found in large-scale
  * HPC simulations, such as iterative computations and MPI distributed processes.
@@ -44,8 +45,8 @@
  * @authors René Widera
  */
 
-#ifndef _DATACOLLECTOR_H
-#define	_DATACOLLECTOR_H
+#ifndef DATACOLLECTOR_HPP
+#define DATACOLLECTOR_HPP
 
 #include <stdint.h>
 
@@ -452,5 +453,4 @@ namespace splash
 
 }
 
-#endif	/* _DATACOLLECTOR_H */
-
+#endif	/* DATACOLLECTOR_HPP */
