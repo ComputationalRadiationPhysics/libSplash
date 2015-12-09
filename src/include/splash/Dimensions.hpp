@@ -22,8 +22,8 @@
 
 
 
-#ifndef _DIMENSIONS_H
-#define	_DIMENSIONS_H
+#ifndef DIMENSIONS_HPP
+#define DIMENSIONS_HPP
 
 #include <sstream>
 #include <hdf5.h>
@@ -292,5 +292,4 @@ namespace splash
 
 }
 
-#endif	/* _DIMENSIONS_H */
-
+#endif	/* DIMENSIONS_HPP */
