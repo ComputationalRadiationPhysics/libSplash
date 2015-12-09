@@ -330,7 +330,7 @@ namespace splash
         try
         {
             DCAttribute::readAttribute(name, group_custom.getHandle(), data);
-        } catch (DCException e)
+        } catch (const DCException& e)
         {
             log_msg(0, "Exception: %s", e.what());
             throw DCException(getExceptionString("readGlobalAttribute", "failed to open attribute", name));
@@ -370,7 +370,7 @@ namespace splash
         try
         {
             DCAttribute::writeAttribute(name, type.getDataType(), group_custom.getHandle(), ndims, dims, data);
-        } catch (DCException e)
+        } catch (const DCException& e)
         {
             log_msg(0, "Exception: %s", e.what());
             throw DCException(getExceptionString("writeGlobalAttribute", "failed to write attribute", name));
@@ -420,7 +420,7 @@ namespace splash
             try
             {
                 DCAttribute::readAttribute(attrName, obj_id, data);
-            } catch (DCException)
+            } catch (const DCException&)
             {
                 H5Oclose(obj_id);
                 throw;
@@ -491,7 +491,7 @@ namespace splash
             try
             {
                 DCAttribute::writeAttribute(attrName, type.getDataType(), obj_id, ndims, dims, data);
-            } catch (DCException)
+            } catch (const DCException&)
             {
                 H5Oclose(obj_id);
                 throw;
