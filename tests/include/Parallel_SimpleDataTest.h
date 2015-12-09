@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * libSplash is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,10 +20,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 #ifndef PARALLEL_SIMPLEDATATEST_H
-#define	PARALLEL_SIMPLEDATATEST_H
+#define PARALLEL_SIMPLEDATATEST_H
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -76,5 +75,4 @@ private:
     int myMpiRank;
 };
 
-#endif	/* PARALLEL_SIMPLEDATATEST_H */
-
+#endif /* PARALLEL_SIMPLEDATATEST_H */

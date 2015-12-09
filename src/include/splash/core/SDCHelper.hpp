@@ -71,4 +71,4 @@ namespace splash
     };
 }
 
-#endif	/* SDCHELPER_H */
+#endif /* SDCHELPER_H */

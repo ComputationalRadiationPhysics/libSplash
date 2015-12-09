@@ -1,28 +1,27 @@
 /**
  * Copyright 2013 Felix Schmitt
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 #ifndef HANDLEMGR_HPP
-#define	HANDLEMGR_HPP
+#define HANDLEMGR_HPP
 
 #include <map>
 #include <set>
@@ -39,7 +38,7 @@ namespace splash
      * \cond HIDDEN_SYMBOLS
      */
     typedef hid_t H5Handle;
-    
+
     static const H5Handle INVALID_HANDLE = -1;
 
     /**
@@ -65,7 +64,7 @@ namespace splash
         } IndexCtrStr;
 
         typedef std::map<uint32_t, HandleCtrStr> HandleMap;
-        
+
     public:
         /**
          * File naming schemes
@@ -76,12 +75,12 @@ namespace splash
         {
             FNS_MPI = 0, FNS_ITERATIONS
         };
-        
+
         // callback function types
         typedef void (*FileCreateCallback)(H5Handle handle, uint32_t index, void *userData);
         typedef void (*FileOpenCallback)(H5Handle handle, uint32_t index, void *userData);
         typedef void (*FileCloseCallback)(H5Handle handle, uint32_t index, void *userData);
-        
+
         /**
          * Constructor
          * @param maxHandles maximum number of allowed open file handles
@@ -131,7 +130,7 @@ namespace splash
          * @return file handle
          */
         H5Handle get(Dimensions mpiPos) throw (DCException);
-        
+
         /**
          * Register callback for after file has been created
          * @param callback callback function
@@ -160,7 +159,7 @@ namespace splash
         Dimensions mpiSize;
         std::string filename;
         FileNameScheme fileNameScheme;
-        
+
         hid_t fileAccProperties;
         unsigned fileFlags;
         bool singleFile;
@@ -168,7 +167,7 @@ namespace splash
         HandleMap handles;
         IndexCtrStr leastAccIndex;
         std::set<uint32_t> createdFiles;
-        
+
         // callback handles
         FileCreateCallback fileCreateCallback;
         void *fileCreateUserData;
@@ -189,5 +188,4 @@ namespace splash
 
 }
 
-#endif	/* HANDLEMGR_HPP */
-
+#endif /* HANDLEMGR_HPP */

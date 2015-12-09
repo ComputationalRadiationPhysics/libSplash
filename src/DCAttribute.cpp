@@ -1,22 +1,23 @@
 /**
  * Copyright 2013, 2015 Felix Schmitt, Axel Huebl
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 
@@ -44,20 +45,20 @@ namespace splash
         hid_t attr = H5Aopen(parent, name, H5P_DEFAULT);
         if (attr < 0)
             throw DCException(getExceptionString(name, "Attribute could not be opened for reading"));
-        
+
         hid_t attr_type = H5Aget_type(attr);
         if (attr_type < 0)
         {
             H5Aclose(attr);
             throw DCException(getExceptionString(name, "Could not get type of attribute"));
         }
-        
+
         if (H5Aread(attr, attr_type, dst) < 0)
         {
             H5Aclose(attr);
             throw DCException(getExceptionString(name, "Attribute could not be read"));
         }
-        
+
         H5Aclose(attr);
     }
 

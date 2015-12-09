@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * libSplash is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,9 +20,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #ifndef PARALLEL_LISTFILESTEST_H
-#define	PARALLEL_LISTFILESTEST_H
+#define PARALLEL_LISTFILESTEST_H
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -41,10 +41,9 @@ public:
     virtual ~Parallel_ListFilesTest();
 private:
     void testListFiles();
-    
+
     ColTypeInt32 ctInt;
     int mpiRank;
 };
 
-#endif	/* PARALLEL_LISTFILESTEST_H */
-
+#endif /* PARALLEL_LISTFILESTEST_H */

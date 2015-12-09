@@ -1,22 +1,23 @@
 /**
  * Copyright 2013-2014 Felix Schmitt
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 
@@ -92,7 +93,7 @@ namespace splash
     {
         H5Pclose(dsetProperties);
     }
-    
+
     Dimensions DCDataSet::getSize() const
     {
         return logicalSize;
@@ -497,7 +498,7 @@ namespace splash
                         H5Sselect_valid(dataspace) <= 0)
                     throw DCException(getExceptionString("read: Source dataspace hyperslab selection is not valid!"));
             }
-            
+
             if (H5Dread(dataset, this->datatype, dst_dataspace, dataspace, dsetReadProperties, dst) < 0)
                 throw DCException(getExceptionString("read: Failed to read dataset"));
 
@@ -551,7 +552,7 @@ namespace splash
                 throw DCException(getExceptionString("write: Failed to create source dataspace"));
 
             // select hyperslap only if necessary
-            if ((srcSelect.offset.getScalarSize() != 0) || (srcSelect.count != srcSelect.size) || 
+            if ((srcSelect.offset.getScalarSize() != 0) || (srcSelect.count != srcSelect.size) ||
                     (srcSelect.stride.getScalarSize() != 1))
             {
                 if (H5Sselect_hyperslab(dsp_src, H5S_SELECT_SET, srcSelect.offset.getPointer(),

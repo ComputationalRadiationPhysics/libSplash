@@ -1,23 +1,23 @@
 /**
  * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
+ * This file is part of libSplash.
  *
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <cassert>
@@ -176,7 +176,7 @@ namespace splash
         options.mpiSize = topology.getScalarSize();
         options.mpiTopology.set(topology);
         options.maxID = -1;
-        
+
         setLogMpiRank(options.mpiRank);
 
         if (H5open() < 0)
@@ -203,11 +203,11 @@ namespace splash
     {
         H5Pclose(fileAccProperties);
     }
-    
+
     void ParallelDataCollector::finalize()
     {
         log_msg(1, "finalizing data collector");
-        
+
         if (options.mpiComm != MPI_COMM_NULL)
         {
             MPI_Comm_free(&options.mpiComm);
@@ -585,7 +585,7 @@ namespace splash
 
     void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
             const Dimensions globalOffset,
-            const CollectionType& type, uint32_t ndims, 
+            const CollectionType& type, uint32_t ndims,
             const Selection select, const char* name, const void* buf)
     {
         if (name == NULL)

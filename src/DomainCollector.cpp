@@ -1,23 +1,23 @@
 /**
  * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
+ * This file is part of libSplash.
  *
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 
@@ -98,9 +98,9 @@ namespace splash
     {
         ColTypeInt32 int_t;
         ColTypeDim dim_t;
-        
+
         hid_t dset_handle = openDatasetHandle(id, name, NULL);
-        
+
         DCAttribute::writeAttribute(DOMCOL_ATTR_CLASS, int_t.getDataType(),
                 dset_handle, &dataClass);
         DCAttribute::writeAttribute(DOMCOL_ATTR_SIZE, dim_t.getDataType(),
@@ -111,7 +111,7 @@ namespace splash
                 dset_handle, globalDomain.getSize().getPointer());
         DCAttribute::writeAttribute(DOMCOL_ATTR_GLOBAL_OFFSET, dim_t.getDataType(),
                 dset_handle, globalDomain.getOffset().getPointer());
-        
+
         closeDatasetHandle(dset_handle);
     }
 
@@ -132,10 +132,10 @@ namespace splash
 
             DCAttribute::readAttribute(DOMCOL_ATTR_SIZE, dset_handle,
                     fileDomain.getSize().getPointer());
-            
+
             DCAttribute::readAttribute(DOMCOL_ATTR_GLOBAL_OFFSET, dset_handle,
                     global_domain_offset.getPointer());
-            
+
             fileDomain.getOffset() += global_domain_offset;
 
             closeDatasetHandle(dset_handle);
@@ -160,7 +160,7 @@ namespace splash
     {
         log_msg(3, "dataclass = Grid");
 
-        // When the first intersection is found, the whole destination 
+        // When the first intersection is found, the whole destination
         // buffer is allocated and added to the container.
         if (dataContainer->getNumSubdomains() == 0)
         {
@@ -373,7 +373,7 @@ namespace splash
 
             DCAttribute::readAttribute(DOMCOL_ATTR_SIZE, dset_handle,
                     local_client_domain.getSize().getPointer());
-            
+
             DCAttribute::readAttribute(DOMCOL_ATTR_GLOBAL_OFFSET, dset_handle,
                     global_client_domain.getOffset().getPointer());
 
@@ -385,7 +385,7 @@ namespace splash
 
             closeDatasetHandle(dset_handle);
         }
-        
+
         Domain client_domain(
                 local_client_domain.getOffset() + global_client_domain.getOffset(),
                 local_client_domain.getSize());
@@ -427,7 +427,7 @@ namespace splash
             switch (*dataClass)
             {
                 case PolyType:
-                    // Poly data has no internal grid structure, 
+                    // Poly data has no internal grid structure,
                     // so the whole chunk has to be read and is added to the DataContainer.
                     readPolyInternal(dataContainer, mpiPosition, id, name,
                             data_size, client_domain, lazyLoad);
