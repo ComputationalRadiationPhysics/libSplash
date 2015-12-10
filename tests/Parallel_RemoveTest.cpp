@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * libSplash is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -18,7 +19,6 @@
  * and the GNU Lesser General Public License along with libSplash.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-
 
 #include <mpi.h>
 #include <time.h>
@@ -85,50 +85,50 @@ void Parallel_RemoveTest::testRemove()
 
     dataCollector->write(0, ctInt, 1, gridSize, "data", dataWrite);
     dataCollector->write(0, ctInt, 1, gridSize, "folder/data2", dataWrite);
-    
+
     dataCollector->write(1, ctInt, 1, gridSize, "data3", dataWrite);
-    
+
     delete[] dataWrite;
     dataWrite = NULL;
 
     dataCollector->close();
-    
-    
+
+
     // removing must not be possible in FAT_READ mode
     fileCAttr.fileAccType = DataCollector::FAT_READ;
     dataCollector->open(HDF5_FILE, fileCAttr);
-    
+
     CPPUNIT_ASSERT_THROW(dataCollector->remove(0), DCException);
-    
+
     dataCollector->close();
-    
+
     // reopen file for writing and remove datasets/groups
     fileCAttr.fileAccType = DataCollector::FAT_WRITE;
     dataCollector->open(HDF5_FILE, fileCAttr);
-    
+
     int *dataRead = new int[bufferSize];
-    
+
     dataCollector->read(0, "data", gridSize, dataRead);
     dataCollector->remove(0, "data");
     CPPUNIT_ASSERT_THROW(dataCollector->read(0, "data", gridSize, dataRead),
             DCException);
-    
+
     dataCollector->read(0, "folder/data2", gridSize, dataRead);
     dataCollector->remove(0, "folder/data2");
     CPPUNIT_ASSERT_THROW(dataCollector->read(0, "data2", gridSize, dataRead),
             DCException);
     CPPUNIT_ASSERT_THROW(dataCollector->read(0, "folder/data2", gridSize, dataRead),
             DCException);
-    
+
     dataCollector->read(1, "data3", gridSize, dataRead);
     dataCollector->remove(1);
     CPPUNIT_ASSERT_THROW(dataCollector->read(1, "data3", gridSize, dataRead),
             DCException);
-    
+
     delete[] dataRead;
     dataRead = NULL;
-    
+
     dataCollector->close();
-    
+
     CPPUNIT_ASSERT(true);
 }

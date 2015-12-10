@@ -1,25 +1,24 @@
 /**
  * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 
 #ifndef SERIALDATACOLLECTOR_H
 #define SERIALDATACOLLECTOR_H
@@ -53,7 +52,7 @@ namespace splash
 
         /**
          * Test if a file exists.
-         * 
+         *
          * @param filename file to test
          * @return if the file exists
          */
@@ -62,7 +61,7 @@ namespace splash
         /**
          * Constructs a filename from a base filename and the process' mpi position
          * such as baseFilename+mpiPos+.h5
-         * 
+         *
          * @param mpiPos MPI position of the process
          * @param baseFilename base filename for the new file
          * @return newly constructed filename iucluding file exitension
@@ -71,7 +70,7 @@ namespace splash
 
         /**
          * Internal function for formatting exception messages.
-         * 
+         *
          * @param func name of the throwing function
          * @param msg exception message
          * @param info optional info text to be appended, e.g. the group name
@@ -205,7 +204,7 @@ namespace splash
 
         /**
          * Basic method for appending data to a 1-dimensional DataSet.
-         * 
+         *
          * The targeted DataSet is created or extended if necessary.
          */
         void appendDataSet(
@@ -343,4 +342,4 @@ namespace splash
 
 } // namespace DataCollector
 
-#endif	/* SERIALDATACOLLECTOR_H */
+#endif  /* SERIALDATACOLLECTOR_H */

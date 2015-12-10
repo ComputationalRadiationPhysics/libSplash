@@ -1,28 +1,27 @@
 /**
  * Copyright 2013-2014 Felix Schmitt
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 #ifndef DCDATASET_HPP
-#define	DCDATASET_HPP
+#define DCDATASET_HPP
 
 #include <stdint.h>
 #include <string>
@@ -165,8 +164,8 @@ namespace splash
          *
          * @param count number of elements to append
          * @param offset the offset to be used for reading from the data buffer.
-         * @param stride size of striding to be used for reading from the data buffer. 
-         * data must contain at least (striding * count) elements. 
+         * @param stride size of striding to be used for reading from the data buffer.
+         * data must contain at least (striding * count) elements.
          * 1 means 'no stride'
          * @param data data for appending
          */
@@ -186,14 +185,14 @@ namespace splash
          * Returns the DataSpace associated with this DataSet.
          * A DCException is thrown if the DataSet has not been
          * properly opened/created.
-         * 
+         *
          * @return the DataSpace
          */
         hid_t getDataSpace() throw (DCException);
-        
+
         /**
          * Returns the size of the dataset.
-         * 
+         *
          * @return size of the dataset
          */
         Dimensions getSize() const;
@@ -202,7 +201,7 @@ namespace splash
          * Returns the \p DCDataType associated with this DataSet.
          * A DCException is thrown if the DataSet has not been
          * properly opened/created.
-         * 
+         *
          * @return the DataType
          */
         DCDataType getDCDataType() throw (DCException);
@@ -216,7 +215,7 @@ namespace splash
 
         /**
          * Returns the name of the dataset.
-         * 
+         *
          * @return dataset name
          */
         std::string getName();
@@ -261,5 +260,4 @@ namespace splash
 
 }
 
-#endif	/* DCDATASET_HPP */
-
+#endif /* DCDATASET_HPP */

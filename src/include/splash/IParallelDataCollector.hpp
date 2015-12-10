@@ -1,26 +1,27 @@
 /**
  * Copyright 2013-2014 Felix Schmitt
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef IPARALLELDATACOLLECTOR_HPP
-#define	IPARALLELDATACOLLECTOR_HPP
+#define IPARALLELDATACOLLECTOR_HPP
 
 #include "splash/DataCollector.hpp"
 
@@ -67,10 +68,10 @@ namespace splash
                 const Selection select,
                 const char* name,
                 const void* buf) = 0;
-        
+
         /**
-         * Reserves a dataset for parallel access. 
-         * 
+         * Reserves a dataset for parallel access.
+         *
          * @param id ID for iteration.
          * @param globalSize Size to reserve for global data.
          * @param rank Number of dimensions (1-3).
@@ -84,8 +85,8 @@ namespace splash
                 const char* name) = 0;
 
         /**
-         * Reserves a dataset for parallel access. 
-         * 
+         * Reserves a dataset for parallel access.
+         *
          * @param id ID for iteration.
          * @param size Size to reserve for local data.
          * @param globalSize Returns the global size of the dataset, can be NULL.
@@ -164,7 +165,7 @@ namespace splash
                 const Dimensions globalOffset,
                 const char *name,
                 const void *buf) = 0;
-        
+
         virtual void append(int32_t id,
                 const CollectionType& type,
                 size_t count,
@@ -178,7 +179,7 @@ namespace splash
                 size_t stride,
                 const char *name,
                 const void *buf) = 0;
-        
+
         /**
          * Finalizes by freeing all MPI resources.
          * Must be called before MPI_Finalize.
@@ -189,5 +190,4 @@ namespace splash
     };
 }
 
-#endif	/* IPARALLELDATACOLLECTOR_HPP */
-
+#endif /* IPARALLELDATACOLLECTOR_HPP */

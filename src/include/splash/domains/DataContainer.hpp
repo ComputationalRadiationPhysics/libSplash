@@ -1,29 +1,27 @@
 /**
  * Copyright 2013, 2015 Felix Schmitt, Axel Huebl
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 #ifndef DATACONTAINER_HPP
-#define	DATACONTAINER_HPP
+#define DATACONTAINER_HPP
 
 #include <vector>
 
@@ -54,7 +52,7 @@ namespace splash
 
         /**
          * Destructor.
-         * 
+         *
          * Deletes all subdomains it contains.
          */
         virtual ~DataContainer()
@@ -94,7 +92,7 @@ namespace splash
 
         /**
          * Returns the number of subdomain partitions in the container.
-         * 
+         *
          * @return Number of subdomain partitions.
          */
         size_t getNumSubdomains()
@@ -104,7 +102,7 @@ namespace splash
 
         /**
          * Returns the total number of elements in all subdomains of this container.
-         * 
+         *
          * @return Total number of elements in this container.
          */
         size_t getNumElements()
@@ -122,28 +120,28 @@ namespace splash
 
         /**
          * Returns the size of the partition represented by this container.
-         * 
+         *
          * @return Size of total domain partition in this container.
          */
         Dimensions getSize() const
         {
             return size;
         }
-        
+
         /**
          * Returns the offset of the partition represented by this container.
-         * 
+         *
          * @return Offset of total domain partition in this container.
          */
         Dimensions getOffset() const
         {
             return offset;
         }
-        
+
         /**
          * Returns the end of the partition represented by this container
          * which is the combination of its offset and size - 1.
-         * 
+         *
          * @return Last index of the total domain partition in this container.
          */
         Dimensions getBack() const
@@ -153,7 +151,7 @@ namespace splash
 
         /**
          * Returns the pointer to the DomainData with the specified index.
-         * 
+         *
          * @param index Index of subdomain partition.
          * @return Subdomain partition.
          */
@@ -167,7 +165,7 @@ namespace splash
 
         /**
          * Returns a pointer to the DomainData with index (x) for 1-dimensional domains.
-         * 
+         *
          * @param x Index of subdomain partition.
          * @return Subdomain partition.
          */
@@ -181,7 +179,7 @@ namespace splash
 
         /**
          * Returns a pointer to the DomainData with index (x, y) for 2-dimensional domains.
-         * 
+         *
          * @param x First dimension index of subdomain partition.
          * @param y Second dimension index of subdomain partition.
          * @return Subdomain partition.
@@ -196,7 +194,7 @@ namespace splash
 
         /**
          * Returns a pointer to the DomainData with index (x, y, z) for 3-dimensional domains.
-         * 
+         *
          * @param x First dimension index of subdomain partition.
          * @param y Second dimension index of subdomain partition.
          * @param z Third dimension index of subdomain partition.
@@ -212,7 +210,7 @@ namespace splash
 
         /**
          * Returns a pointer to the data element with global index.
-         * 
+         *
          * @param index Index among all elements in this container,
          * see \ref DataContainer::getNumElements.
          * @return Pointer to element.
@@ -254,5 +252,4 @@ namespace splash
 
 }
 
-#endif	/* DATACONTAINER_HPP */
-
+#endif /* DATACONTAINER_HPP */

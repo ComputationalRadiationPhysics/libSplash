@@ -1,22 +1,23 @@
 /**
  * Copyright 2013-2014 Felix Schmitt
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "splash/basetypes/basetypes.hpp"
@@ -40,7 +41,7 @@ namespace splash
 
         return full_msg.str();
     }
-    
+
     void ParallelDomainCollector::writeDomainAttributes(
             int32_t id,
             const char *name,
@@ -109,12 +110,12 @@ namespace splash
     throw (DCException)
     {
         Domain local_client_domain, global_client_domain;
-        
+
         readAttribute(id, name, DOMCOL_ATTR_OFFSET, local_client_domain.getOffset().getPointer());
         readAttribute(id, name, DOMCOL_ATTR_SIZE, local_client_domain.getSize().getPointer());
         readAttribute(id, name, DOMCOL_ATTR_GLOBAL_OFFSET, global_client_domain.getOffset().getPointer());
         readAttribute(id, name, DOMCOL_ATTR_GLOBAL_SIZE, global_client_domain.getSize().getPointer());
-        
+
         Domain client_domain(
                 local_client_domain.getOffset() + global_client_domain.getOffset(),
                 local_client_domain.getSize());
@@ -146,7 +147,7 @@ namespace splash
         if ((requestDomain.getSize().getScalarSize() > 0) && !Domain::testIntersection(requestDomain, client_domain))
             return false;
 
-        // Poly data has no internal grid structure, 
+        // Poly data has no internal grid structure,
         // so the whole chunk has to be read and is added to the DataContainer.
         if (*dataClass == PolyType)
         {
@@ -222,7 +223,7 @@ namespace splash
         {
             log_msg(3, "dataclass = Grid");
 
-            // When the first intersection is found, the whole destination 
+            // When the first intersection is found, the whole destination
             // buffer is allocated and added to the container.
             if (dataContainer->getNumSubdomains() == 0)
             {

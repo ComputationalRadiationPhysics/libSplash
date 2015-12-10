@@ -1,25 +1,24 @@
 /**
  * Copyright 2013 Felix Schmitt
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 
 #include <time.h>
 #include <stdlib.h>
@@ -264,7 +263,7 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize,
                                             total_grid_position[0];
 
 #if defined TESTS_DEBUG
-                                    std::cout << "tgp = " << total_grid_position.toString() << 
+                                    std::cout << "tgp = " << total_grid_position.toString() <<
                                             ", index = " << index << ", subdomain_data[index] = " << subdomain_data[index] <<
                                             ", expected_value = " << expected_value << std::endl;
 #endif
@@ -344,7 +343,7 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
 {
     Dimensions local_grid_size(20, 10, 5);
     Dimensions global_grid_size = local_grid_size * mpiSize;
-    
+
     const Dimensions global_domain_offset(15, 0, 7);
         const Dimensions global_domain_size = mpiSize * local_grid_size;
 
@@ -389,7 +388,7 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
 #endif
 
         dataCollector->writeDomain(iteration, ctFloat, 1, Dimensions(mpi_elements, 1, 1),
-                "poly_data", 
+                "poly_data",
                 Domain(local_domain_offset, local_domain_size),
                 Domain(global_domain_offset, global_domain_size),
                 DomainCollector::PolyType, data_write);
@@ -457,12 +456,12 @@ void DomainsTest::subTestPolyDomains(const Dimensions mpiSize, uint32_t numEleme
                 Dimensions subdomain_elements = subdomain->getElements();
                 Dimensions subdomain_offset = subdomain->getOffset();
 
-                // Find out the expected value (original mpi rank) 
+                // Find out the expected value (original mpi rank)
                 // for this subdomain.
                 Dimensions subdomain_mpi_pos = (subdomain_offset - global_domain_offset) / local_grid_size;
                 int subdomain_mpi_rank = subdomain_mpi_pos[2] * mpiSize[1] * mpiSize[0] +
                         subdomain_mpi_pos[1] * mpiSize[0] + subdomain_mpi_pos[0];
-                
+
 #if defined TESTS_DEBUG
                 std::cout << "subdomain->getElements() = " << subdomain->getElements().toString() << std::endl;
                 std::cout << "subdomain->getSize()     = " << subdomain->getSize().toString() << std::endl;

@@ -1,27 +1,27 @@
 /**
  * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef DOMAIN_HPP
-#define	DOMAIN_HPP
+#define DOMAIN_HPP
 
 #include <string>
 #include <sstream>
@@ -65,7 +65,7 @@ namespace splash
 
         /**
          * Returns the number of dimensions of this domain.
-         * 
+         *
          * @return Number of dimensions (1-3).
          */
         uint32_t getDims() const
@@ -75,7 +75,7 @@ namespace splash
 
         /**
          * Returns the size of this domain in every dimension.
-         * 
+         *
          * @return Size of this domain.
          */
         Dimensions &getSize()
@@ -85,7 +85,7 @@ namespace splash
 
         /**
          * Returns the size of this domain in every dimension.
-         * 
+         *
          * @return Size of this domain.
          */
         const Dimensions getSize() const
@@ -95,7 +95,7 @@ namespace splash
 
         /**
          * Returns the offset/offset of this domain in the parent domain.
-         * 
+         *
          * @return Offset of this domain.
          */
         Dimensions &getOffset()
@@ -105,7 +105,7 @@ namespace splash
 
         /**
          * Returns the offset/offset of this domain in the parent domain.
-         * 
+         *
          * @return Offset of this domain.
          */
         const Dimensions getOffset() const
@@ -136,7 +136,7 @@ namespace splash
 
         /**
          * Returns a string representation.
-         * 
+         *
          * @return String representation.
          */
         std::string toString() const
@@ -148,7 +148,7 @@ namespace splash
 
         /**
          * Tests if two domains intersect.
-         * 
+         *
          * @param d1 First domain.
          * @param d2 Decond domain.
          * @return True if domains overlap, false otherwise.
@@ -175,4 +175,4 @@ namespace splash
 
 }
 
-#endif	/* DOMAIN_HPP */
+#endif /* DOMAIN_HPP */

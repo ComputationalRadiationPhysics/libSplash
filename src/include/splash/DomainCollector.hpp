@@ -1,28 +1,27 @@
 /**
  * Copyright 2013-2014 Felix Schmitt
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 #ifndef DOMAINCOLLECTOR_HPP
-#define	DOMAINCOLLECTOR_HPP
+#define DOMAINCOLLECTOR_HPP
 
 #include "splash/domains/IDomainCollector.hpp"
 #include "splash/SerialDataCollector.hpp"
@@ -39,7 +38,7 @@ namespace splash
      * physical/memory view.
      * DomainCollector allows to efficiently read subdomains (sub-partitions) from
      * multi-process HDF5 files with entries annotated with domain information.
-     * 
+     *
      * The following concept is used:
      * Each process (of the MPI topology) annotates its local data with
      * local and global domain information when writing.
@@ -112,7 +111,7 @@ namespace splash
                 DomDataClass dataClass,
                 const Domain localDomain,
                 const Domain globalDomain) throw (DCException);
-        
+
         bool readDomainInfoForRank(
                 Dimensions mpiPosition,
                 int32_t id,
@@ -159,5 +158,4 @@ namespace splash
 
 }
 
-#endif	/* DOMAINCOLLECTOR_HPP */
-
+#endif /* DOMAINCOLLECTOR_HPP */

@@ -1,27 +1,27 @@
 /**
  * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef DOMAINDATA_HPP
-#define	DOMAINDATA_HPP
+#define DOMAINDATA_HPP
 
 #include <sstream>
 #include <cassert>
@@ -96,7 +96,7 @@ namespace splash
 
         /**
          * Returns the number of data elements in this domain.
-         * 
+         *
          * @return number of data elements
          */
         Dimensions &getElements()
@@ -107,7 +107,7 @@ namespace splash
         /**
          * Returns a pointer to the internal buffer.
          * The pointer has to be casted to the actual data type.
-         * 
+         *
          * @return pointer to internal buffer.
          */
         void* getData()
@@ -129,7 +129,7 @@ namespace splash
 
         /**
          * Returns the size in bytes of the buffer's data type.
-         * 
+         *
          * @return size of data type in bytes
          */
         size_t getTypeSize()
@@ -139,7 +139,7 @@ namespace splash
 
         /**
          * Returns the DCDataType of this DomainData.
-         * 
+         *
          * @return the datatype
          */
         DCDataType getDataType()
@@ -174,7 +174,7 @@ namespace splash
 
         /**
          * Rteurns the internal loading reference for lazy loading.
-         * 
+         *
          * @return internal loading reference
          */
         DomainH5Ref *getLoadingReference()
@@ -186,7 +186,7 @@ namespace splash
          * Returns the format string for the data type, e.g. %lu or %f.
          * If no format string can be generated, e.g. if the data type is
          * a compound type, an exception is thrown.
-         * 
+         *
          * @return format string for the data type
          */
         std::string getFormatString() throw (DCException)
@@ -230,4 +230,4 @@ namespace splash
 
 }
 
-#endif	/* DOMAINDATA_HPP */
+#endif /* DOMAINDATA_HPP */

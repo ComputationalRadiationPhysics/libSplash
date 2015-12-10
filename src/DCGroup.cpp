@@ -2,22 +2,23 @@
  * Copyright 2013 Felix Schmitt
  *           2015 Carlchristian Eckert
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 
@@ -81,12 +82,12 @@ namespace splash
                 {
                     if (checkExistence)
                         throw DCException(getExceptionString("Failed to create group", path));
-                    
+
                     currentHandle = H5Gcreate(currentHandle, token, H5P_LINK_CREATE_DEFAULT,
                         H5P_GROUP_CREATE_DEFAULT, H5P_GROUP_ACCESS_DEFAULT);
                     if (currentHandle < 0)
                         throw DCException(getExceptionString("Failed to create group", path));
-                    
+
                     mustCreate = true;
                 }
             }
@@ -156,7 +157,7 @@ namespace splash
         else
             return INVALID_HANDLE;
     }
-    
+
     void DCGroup::getEntriesInternal(H5Handle base, const std::string baseGroup,
             std::string baseName, VisitObjCBType *param)
     throw (DCException)
