@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2016 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash.
  *
@@ -29,6 +29,7 @@
 #include <set>
 #include <string>
 #include <cstring>
+#include <typeinfo>
 
 #include "SimpleDataTest.h"
 
@@ -178,7 +179,20 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
     }
 
     Dimensions resultSize;
+
     dataCollector->read(10, "deep/folders/data", resultSize, dataRead);
+
+    Dimensions dstBuffer(resultSize);
+    Dimensions dstOffset(0, 0, 0);
+    Dimensions sizeRead(0, 0, 0);
+    CollectionType* colType = dataCollector->readMeta(10, "deep/folders/data_bool", dstBuffer, dstOffset, sizeRead);
+
+    std::cout << colType->toString() << std::endl;
+
+    CPPUNIT_ASSERT(typeid(*colType) == typeid(ColTypeBool));
+    CPPUNIT_ASSERT(typeid(*colType) != typeid(ColTypeUInt64));
+    CPPUNIT_ASSERT(typeid(*colType) != typeid(ColTypeInt64));
+    CPPUNIT_ASSERT(typeid(*colType) != typeid(ColTypeDouble));
 
     for (uint32_t i = 0; i < 3; i++)
         CPPUNIT_ASSERT(resultSize[i] == gridSize[i]);

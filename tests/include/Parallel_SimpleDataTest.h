@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2016 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash.
  *
@@ -53,7 +53,7 @@ private:
     void testFill();
 
     bool testData(const Dimensions mpiSize, const Dimensions gridSize,
-            int *data);
+            int32_t *data);
 
     /**
      * sub function for testWriteRead to allow several data sizes to be tested.
@@ -68,7 +68,7 @@ private:
     bool subtestFill(int32_t iteration, int currentMpiRank, const Dimensions mpiSize,
             const Dimensions mpiPos, uint32_t elements, MPI_Comm mpiComm);
 
-    ColTypeInt ctInt;
+    ColTypeInt32 ctInt32;
     IParallelDataCollector *parallelDataCollector;
 
     int totalMpiSize;
