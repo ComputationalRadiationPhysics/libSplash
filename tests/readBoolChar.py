@@ -52,7 +52,7 @@ f.close()
 f = h5py.File("h5/attributes_array_0_0_0.h5", "r")
 
 # array attributes
-dg = f["custom"].attrs["testposition"]
+dg = f.attrs["testposition"]
 print(dg, type(dg), dg.dtype)
 
 ref_dg = np.array([17, 12, -99], dtype="int")
