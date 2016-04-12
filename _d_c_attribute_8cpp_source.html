@@ -41,7 +41,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_ff8b3fbff67eae59a5cdb6053b12e472.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_495554a1fd736a2c4c820d9868ad8a1e.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_7f43f2fa6de9079c3d096eeaca63db9e.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_572463fbe5ea63cad2e062ebf0483565.html">src</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -50,94 +50,94 @@
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;splash/core/DCAttribute.hpp&quot;</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
-<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="namespacesplash.html">   28</a></span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacesplash.html">splash</a></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;{</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    DCAttribute::DCAttribute()</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    {</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    }</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    std::string DCAttribute::getExceptionString(<span class="keyword">const</span> <span class="keywordtype">char</span> *name, std::string msg)</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    {</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keywordflow">return</span> (std::string(<span class="stringliteral">&quot;Exception for DCAttribute [&quot;</span>) + std::string(name) +</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                std::string(<span class="stringliteral">&quot;] &quot;</span>) + msg);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    }</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">void</span> DCAttribute::readAttribute(<span class="keyword">const</span> <span class="keywordtype">char</span>* name, hid_t parent, <span class="keywordtype">void</span>* dst)</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordflow">throw</span> (<a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>)</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    {</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        hid_t attr = H5Aopen(parent, name, H5P_DEFAULT);</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordflow">if</span> (attr &lt; 0)</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            <span class="keywordflow">throw</span> <a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>(getExceptionString(name, <span class="stringliteral">&quot;Attribute could not be opened for reading&quot;</span>));</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        hid_t attr_type = H5Aget_type(attr);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordflow">if</span> (attr_type &lt; 0)</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        {</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            H5Aclose(attr);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            <span class="keywordflow">throw</span> <a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>(getExceptionString(name, <span class="stringliteral">&quot;Could not get type of attribute&quot;</span>));</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        }</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordflow">if</span> (H5Aread(attr, attr_type, dst) &lt; 0)</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        {</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            H5Aclose(attr);</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            <span class="keywordflow">throw</span> <a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>(getExceptionString(name, <span class="stringliteral">&quot;Attribute could not be read&quot;</span>));</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        }</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        H5Aclose(attr);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    }</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordtype">void</span> DCAttribute::writeAttribute(<span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keyword">const</span> hid_t type, hid_t parent,</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                                     uint32_t ndims, <span class="keyword">const</span> <a class="code" href="classsplash_1_1_dimensions.html">Dimensions</a> dims, <span class="keyword">const</span> <span class="keywordtype">void</span>* src)</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordflow">throw</span> (<a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>)</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    {</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        hid_t attr = -1;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keywordflow">if</span> (H5Aexists(parent, name))</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            attr = H5Aopen(parent, name, H5P_DEFAULT);</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        {</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            hid_t dsp;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            <span class="keywordflow">if</span>( ndims == 1 &amp;&amp; dims.<a class="code" href="classsplash_1_1_dimensions.html#a4fde837baabd0ab13294ed96005be9b6">getScalarSize</a>() == 1 )</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                dsp = H5Screate(H5S_SCALAR);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                dsp = H5Screate_simple( ndims, dims.<a class="code" href="classsplash_1_1_dimensions.html#ae1e6c7ed0f8e00f14cb9108f299387dd">getPointer</a>(), dims.<a class="code" href="classsplash_1_1_dimensions.html#ae1e6c7ed0f8e00f14cb9108f299387dd">getPointer</a>() );</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            attr = H5Acreate(parent, name, type, dsp, H5P_DEFAULT, H5P_DEFAULT);</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            H5Sclose(dsp);</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        }</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordflow">if</span> (attr &lt; 0)</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <span class="keywordflow">throw</span> <a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>(getExceptionString(name, <span class="stringliteral">&quot;Attribute could not be opened or created&quot;</span>));</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">if</span> (H5Awrite(attr, type, src) &lt; 0)</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        {</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            H5Aclose(attr);</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            <span class="keywordflow">throw</span> <a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>(getExceptionString(name, <span class="stringliteral">&quot;Attribute could not be written&quot;</span>));</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        }</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        H5Aclose(attr);</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    }</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordtype">void</span> DCAttribute::writeAttribute(<span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keyword">const</span> hid_t type, hid_t parent, <span class="keyword">const</span> <span class="keywordtype">void</span>* src)</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keywordflow">throw</span> (<a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>)</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    {</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="keyword">const</span> <a class="code" href="classsplash_1_1_dimensions.html">Dimensions</a> dims(1, 1, 1);</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        writeAttribute(name, type, parent, 1u, dims, src);</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    }</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;}</div>
-<div class="ttc" id="classsplash_1_1_dimensions_html_ae1e6c7ed0f8e00f14cb9108f299387dd"><div class="ttname"><a href="classsplash_1_1_dimensions.html#ae1e6c7ed0f8e00f14cb9108f299387dd">splash::Dimensions::getPointer</a></div><div class="ttdeci">hsize_t * getPointer()</div><div class="ttdef"><b>Definition:</b> <a href="_dimensions_8hpp_source.html#l00194">Dimensions.hpp:194</a></div></div>
-<div class="ttc" id="classsplash_1_1_d_c_exception_html"><div class="ttname"><a href="classsplash_1_1_d_c_exception.html">splash::DCException</a></div><div class="ttdef"><b>Definition:</b> <a href="_d_c_exception_8hpp_source.html#l00036">DCException.hpp:36</a></div></div>
-<div class="ttc" id="namespacesplash_html"><div class="ttname"><a href="namespacesplash.html">splash</a></div><div class="ttdef"><b>Definition:</b> <a href="_d_c_attribute_8cpp_source.html#l00028">DCAttribute.cpp:28</a></div></div>
-<div class="ttc" id="classsplash_1_1_dimensions_html_a4fde837baabd0ab13294ed96005be9b6"><div class="ttname"><a href="classsplash_1_1_dimensions.html#a4fde837baabd0ab13294ed96005be9b6">splash::Dimensions::getScalarSize</a></div><div class="ttdeci">size_t getScalarSize() const </div><div class="ttdef"><b>Definition:</b> <a href="_dimensions_8hpp_source.html#l00221">Dimensions.hpp:221</a></div></div>
-<div class="ttc" id="classsplash_1_1_dimensions_html"><div class="ttname"><a href="classsplash_1_1_dimensions.html">splash::Dimensions</a></div><div class="ttdef"><b>Definition:</b> <a href="_dimensions_8hpp_source.html#l00040">Dimensions.hpp:40</a></div></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;splash/core/DCAttribute.hpp&quot;</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="namespacesplash.html">   29</a></span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacesplash.html">splash</a></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;{</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    DCAttribute::DCAttribute()</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    }</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    std::string DCAttribute::getExceptionString(<span class="keyword">const</span> <span class="keywordtype">char</span> *name, std::string msg)</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordflow">return</span> (std::string(<span class="stringliteral">&quot;Exception for DCAttribute [&quot;</span>) + std::string(name) +</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                std::string(<span class="stringliteral">&quot;] &quot;</span>) + msg);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    }</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">void</span> DCAttribute::readAttribute(<span class="keyword">const</span> <span class="keywordtype">char</span>* name, hid_t parent, <span class="keywordtype">void</span>* dst)</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordflow">throw</span> (<a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>)</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    {</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        hid_t attr = H5Aopen(parent, name, H5P_DEFAULT);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordflow">if</span> (attr &lt; 0)</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            <span class="keywordflow">throw</span> <a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>(getExceptionString(name, <span class="stringliteral">&quot;Attribute could not be opened for reading&quot;</span>));</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        hid_t attr_type = H5Aget_type(attr);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordflow">if</span> (attr_type &lt; 0)</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        {</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            H5Aclose(attr);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            <span class="keywordflow">throw</span> <a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>(getExceptionString(name, <span class="stringliteral">&quot;Could not get type of attribute&quot;</span>));</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        }</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordflow">if</span> (H5Aread(attr, attr_type, dst) &lt; 0)</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            H5Aclose(attr);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            <span class="keywordflow">throw</span> <a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>(getExceptionString(name, <span class="stringliteral">&quot;Attribute could not be read&quot;</span>));</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        }</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        H5Aclose(attr);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    }</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordtype">void</span> DCAttribute::writeAttribute(<span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keyword">const</span> hid_t type, hid_t parent,</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                                     uint32_t ndims, <span class="keyword">const</span> <a class="code" href="classsplash_1_1_dimensions.html">Dimensions</a> dims, <span class="keyword">const</span> <span class="keywordtype">void</span>* src)</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordflow">throw</span> (<a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>)</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    {</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        hid_t attr = -1;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">if</span> (H5Aexists(parent, name))</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            attr = H5Aopen(parent, name, H5P_DEFAULT);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        {</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            hid_t dsp;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <span class="keywordflow">if</span>( ndims == 1 &amp;&amp; dims.<a class="code" href="classsplash_1_1_dimensions.html#a4fde837baabd0ab13294ed96005be9b6">getScalarSize</a>() == 1 )</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                dsp = H5Screate(H5S_SCALAR);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                dsp = H5Screate_simple( ndims, dims.<a class="code" href="classsplash_1_1_dimensions.html#ae1e6c7ed0f8e00f14cb9108f299387dd">getPointer</a>(), dims.<a class="code" href="classsplash_1_1_dimensions.html#ae1e6c7ed0f8e00f14cb9108f299387dd">getPointer</a>() );</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            attr = H5Acreate(parent, name, type, dsp, H5P_DEFAULT, H5P_DEFAULT);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            H5Sclose(dsp);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        }</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keywordflow">if</span> (attr &lt; 0)</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            <span class="keywordflow">throw</span> <a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>(getExceptionString(name, <span class="stringliteral">&quot;Attribute could not be opened or created&quot;</span>));</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordflow">if</span> (H5Awrite(attr, type, src) &lt; 0)</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        {</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            H5Aclose(attr);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            <span class="keywordflow">throw</span> <a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>(getExceptionString(name, <span class="stringliteral">&quot;Attribute could not be written&quot;</span>));</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        }</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        H5Aclose(attr);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    }</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keywordtype">void</span> DCAttribute::writeAttribute(<span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keyword">const</span> hid_t type, hid_t parent, <span class="keyword">const</span> <span class="keywordtype">void</span>* src)</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordflow">throw</span> (<a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>)</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    {</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        <span class="keyword">const</span> <a class="code" href="classsplash_1_1_dimensions.html">Dimensions</a> dims(1, 1, 1);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        writeAttribute(name, type, parent, 1u, dims, src);</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    }</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;}</div>
+<div class="ttc" id="classsplash_1_1_dimensions_html_ae1e6c7ed0f8e00f14cb9108f299387dd"><div class="ttname"><a href="classsplash_1_1_dimensions.html#ae1e6c7ed0f8e00f14cb9108f299387dd">splash::Dimensions::getPointer</a></div><div class="ttdeci">hsize_t * getPointer()</div><div class="ttdef"><b>Definition:</b> <a href="_dimensions_8hpp_source.html#l00192">Dimensions.hpp:192</a></div></div>
+<div class="ttc" id="classsplash_1_1_d_c_exception_html"><div class="ttname"><a href="classsplash_1_1_d_c_exception.html">splash::DCException</a></div><div class="ttdef"><b>Definition:</b> <a href="_d_c_exception_8hpp_source.html#l00035">DCException.hpp:35</a></div></div>
+<div class="ttc" id="namespacesplash_html"><div class="ttname"><a href="namespacesplash.html">splash</a></div><div class="ttdef"><b>Definition:</b> <a href="_d_c_attribute_8cpp_source.html#l00029">DCAttribute.cpp:29</a></div></div>
+<div class="ttc" id="classsplash_1_1_dimensions_html_a4fde837baabd0ab13294ed96005be9b6"><div class="ttname"><a href="classsplash_1_1_dimensions.html#a4fde837baabd0ab13294ed96005be9b6">splash::Dimensions::getScalarSize</a></div><div class="ttdeci">size_t getScalarSize() const </div><div class="ttdef"><b>Definition:</b> <a href="_dimensions_8hpp_source.html#l00219">Dimensions.hpp:219</a></div></div>
+<div class="ttc" id="classsplash_1_1_dimensions_html"><div class="ttname"><a href="classsplash_1_1_dimensions.html">splash::Dimensions</a></div><div class="ttdef"><b>Definition:</b> <a href="_dimensions_8hpp_source.html#l00038">Dimensions.hpp:38</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Nov 12 2015 18:10:39 for libSplash by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 12 2016 15:25:01 for libSplash by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

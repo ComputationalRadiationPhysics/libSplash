@@ -41,7 +41,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_ff8b3fbff67eae59a5cdb6053b12e472.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_495554a1fd736a2c4c820d9868ad8a1e.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_7f43f2fa6de9079c3d096eeaca63db9e.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_572463fbe5ea63cad2e062ebf0483565.html">src</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -206,7 +206,7 @@
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        options.mpiSize = topology.<a class="code" href="classsplash_1_1_dimensions.html#a4fde837baabd0ab13294ed96005be9b6">getScalarSize</a>();</div>
 <div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        options.mpiTopology.set(topology);</div>
 <div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        options.maxID = -1;</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        </div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;</div>
 <div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        <a class="code" href="namespacesplash.html#a8ab0f59ba81055cb4e12c7dea6e454a6">setLogMpiRank</a>(options.mpiRank);</div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;</div>
 <div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        <span class="keywordflow">if</span> (H5open() &lt; 0)</div>
@@ -233,11 +233,11 @@
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    {</div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;        H5Pclose(fileAccProperties);</div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    }</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    </div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;</div>
 <div class="line"><a name="l00207"></a><span class="lineno"><a class="line" href="classsplash_1_1_parallel_data_collector.html#a5de5d6fa5346590fafcde4a6f075f8fb">  207</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsplash_1_1_parallel_data_collector.html#a5de5d6fa5346590fafcde4a6f075f8fb">ParallelDataCollector::finalize</a>()</div>
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    {</div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;        <a class="code" href="namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55">log_msg</a>(1, <span class="stringliteral">&quot;finalizing data collector&quot;</span>);</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        </div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;</div>
 <div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        <span class="keywordflow">if</span> (options.mpiComm != MPI_COMM_NULL)</div>
 <div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;        {</div>
 <div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;            MPI_Comm_free(&amp;options.mpiComm);</div>
@@ -360,7 +360,7 @@
 <div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;        <span class="keywordflow">try</span></div>
 <div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;        {</div>
 <div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;            DCAttribute::readAttribute(name, group_custom.getHandle(), data);</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        } <span class="keywordflow">catch</span> (<a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a> e)</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        } <span class="keywordflow">catch</span> (<span class="keyword">const</span> <a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>&amp; e)</div>
 <div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;        {</div>
 <div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;            <a class="code" href="namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55">log_msg</a>(0, <span class="stringliteral">&quot;Exception: %s&quot;</span>, e.what());</div>
 <div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;            <span class="keywordflow">throw</span> <a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>(getExceptionString(<span class="stringliteral">&quot;readGlobalAttribute&quot;</span>, <span class="stringliteral">&quot;failed to open attribute&quot;</span>, name));</div>
@@ -400,7 +400,7 @@
 <div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;        <span class="keywordflow">try</span></div>
 <div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;        {</div>
 <div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;            DCAttribute::writeAttribute(name, type.getDataType(), group_custom.getHandle(), ndims, dims, data);</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        } <span class="keywordflow">catch</span> (DCException e)</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        } <span class="keywordflow">catch</span> (<span class="keyword">const</span> DCException&amp; e)</div>
 <div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;        {</div>
 <div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;            <a class="code" href="namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55">log_msg</a>(0, <span class="stringliteral">&quot;Exception: %s&quot;</span>, e.what());</div>
 <div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;            <span class="keywordflow">throw</span> DCException(getExceptionString(<span class="stringliteral">&quot;writeGlobalAttribute&quot;</span>, <span class="stringliteral">&quot;failed to write attribute&quot;</span>, name));</div>
@@ -450,7 +450,7 @@
 <div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;            <span class="keywordflow">try</span></div>
 <div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;            {</div>
 <div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;                DCAttribute::readAttribute(attrName, obj_id, data);</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;            } <span class="keywordflow">catch</span> (DCException)</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;            } <span class="keywordflow">catch</span> (<span class="keyword">const</span> DCException&amp;)</div>
 <div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;            {</div>
 <div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;                H5Oclose(obj_id);</div>
 <div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;                <span class="keywordflow">throw</span>;</div>
@@ -521,7 +521,7 @@
 <div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;            <span class="keywordflow">try</span></div>
 <div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;            {</div>
 <div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;                DCAttribute::writeAttribute(attrName, type.getDataType(), obj_id, ndims, dims, data);</div>
-<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;            } <span class="keywordflow">catch</span> (<a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>)</div>
+<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;            } <span class="keywordflow">catch</span> (<span class="keyword">const</span> <a class="code" href="classsplash_1_1_d_c_exception.html">DCException</a>&amp;)</div>
 <div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;            {</div>
 <div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;                H5Oclose(obj_id);</div>
 <div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;                <span class="keywordflow">throw</span>;</div>
@@ -615,7 +615,7 @@
 <div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160;</div>
 <div class="line"><a name="l00586"></a><span class="lineno"><a class="line" href="classsplash_1_1_parallel_data_collector.html#a69510ea306fa45aedcbaa940200a1cce">  586</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsplash_1_1_parallel_data_collector.html#a5745e7eab935d2de1452a84af8a32445">ParallelDataCollector::write</a>(int32_t <span class="keywordtype">id</span>, <span class="keyword">const</span> <a class="code" href="classsplash_1_1_dimensions.html">Dimensions</a> globalSize,</div>
 <div class="line"><a name="l00587"></a><span class="lineno">  587</span>&#160;            <span class="keyword">const</span> <a class="code" href="classsplash_1_1_dimensions.html">Dimensions</a> globalOffset,</div>
-<div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160;            <span class="keyword">const</span> <a class="code" href="classsplash_1_1_collection_type.html">CollectionType</a>&amp; type, uint32_t ndims, </div>
+<div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160;            <span class="keyword">const</span> <a class="code" href="classsplash_1_1_collection_type.html">CollectionType</a>&amp; type, uint32_t ndims,</div>
 <div class="line"><a name="l00589"></a><span class="lineno">  589</span>&#160;            <span class="keyword">const</span> <a class="code" href="classsplash_1_1_selection.html">Selection</a> select, <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keyword">const</span> <span class="keywordtype">void</span>* buf)</div>
 <div class="line"><a name="l00590"></a><span class="lineno">  590</span>&#160;    {</div>
 <div class="line"><a name="l00591"></a><span class="lineno">  591</span>&#160;        <span class="keywordflow">if</span> (name == NULL)</div>
@@ -1028,148 +1028,165 @@
 <div class="line"><a name="l00998"></a><span class="lineno">  998</span>&#160;</div>
 <div class="line"><a name="l00999"></a><span class="lineno">  999</span>&#160;        getEntriesForID(<span class="keywordtype">id</span>, &amp;(*entries.begin()), NULL);</div>
 <div class="line"><a name="l01000"></a><span class="lineno"> 1000</span>&#160;</div>
-<div class="line"><a name="l01001"></a><span class="lineno"> 1001</span>&#160;        Dimensions src_size(dataset.getSize() - srcOffset);</div>
-<div class="line"><a name="l01002"></a><span class="lineno"> 1002</span>&#160;        dataset.read(dstBuffer, dstOffset, src_size, srcOffset, sizeRead, srcDims, NULL);</div>
-<div class="line"><a name="l01003"></a><span class="lineno"> 1003</span>&#160;        dataset.close();</div>
-<div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160;</div>
-<div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160;        <span class="keywordflow">return</span> entries[0].colType;</div>
-<div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160;    }</div>
-<div class="line"><a name="l01007"></a><span class="lineno"> 1007</span>&#160;</div>
-<div class="line"><a name="l01008"></a><span class="lineno"> 1008</span>&#160;    <span class="keywordtype">void</span> ParallelDataCollector::writeDataSet(H5Handle group,</div>
-<div class="line"><a name="l01009"></a><span class="lineno"> 1009</span>&#160;            <span class="keyword">const</span> Dimensions globalSize,</div>
-<div class="line"><a name="l01010"></a><span class="lineno"> 1010</span>&#160;            <span class="keyword">const</span> Dimensions globalOffset,</div>
-<div class="line"><a name="l01011"></a><span class="lineno"> 1011</span>&#160;            <span class="keyword">const</span> CollectionType&amp; datatype,</div>
-<div class="line"><a name="l01012"></a><span class="lineno"> 1012</span>&#160;            uint32_t ndims,</div>
-<div class="line"><a name="l01013"></a><span class="lineno"> 1013</span>&#160;            <span class="keyword">const</span> Selection srcSelect,</div>
-<div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">char</span>* name,</div>
-<div class="line"><a name="l01015"></a><span class="lineno"> 1015</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">void</span>* data) <span class="keywordflow">throw</span> (DCException)</div>
-<div class="line"><a name="l01016"></a><span class="lineno"> 1016</span>&#160;    {</div>
-<div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160;        <a class="code" href="namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55">log_msg</a>(2, <span class="stringliteral">&quot;writeDataSet&quot;</span>);</div>
-<div class="line"><a name="l01018"></a><span class="lineno"> 1018</span>&#160;</div>
-<div class="line"><a name="l01019"></a><span class="lineno"> 1019</span>&#160;        DCParallelDataSet dataset(name);</div>
-<div class="line"><a name="l01020"></a><span class="lineno"> 1020</span>&#160;        <span class="comment">// always create dataset but write data only if all dimensions &gt; 0</span></div>
-<div class="line"><a name="l01021"></a><span class="lineno"> 1021</span>&#160;        <span class="comment">// not extensible</span></div>
-<div class="line"><a name="l01022"></a><span class="lineno"> 1022</span>&#160;        dataset.create(datatype, group, globalSize, ndims,</div>
-<div class="line"><a name="l01023"></a><span class="lineno"> 1023</span>&#160;                this-&gt;options.enableCompression, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l01024"></a><span class="lineno"> 1024</span>&#160;        dataset.write(srcSelect, globalOffset, data);</div>
-<div class="line"><a name="l01025"></a><span class="lineno"> 1025</span>&#160;        dataset.close();</div>
-<div class="line"><a name="l01026"></a><span class="lineno"> 1026</span>&#160;    }</div>
-<div class="line"><a name="l01027"></a><span class="lineno"> 1027</span>&#160;</div>
-<div class="line"><a name="l01028"></a><span class="lineno"> 1028</span>&#160;    <span class="keywordtype">void</span> ParallelDataCollector::gatherMPIWrites(<span class="keywordtype">int</span> ndims, <span class="keyword">const</span> Dimensions localSize,</div>
-<div class="line"><a name="l01029"></a><span class="lineno"> 1029</span>&#160;            Dimensions &amp;globalSize, Dimensions &amp;globalOffset)</div>
-<div class="line"><a name="l01030"></a><span class="lineno"> 1030</span>&#160;    <span class="keywordflow">throw</span> (DCException)</div>
-<div class="line"><a name="l01031"></a><span class="lineno"> 1031</span>&#160;    {</div>
-<div class="line"><a name="l01032"></a><span class="lineno"> 1032</span>&#160;        uint64_t write_sizes[options.mpiSize * DSP_DIM_MAX];</div>
-<div class="line"><a name="l01033"></a><span class="lineno"> 1033</span>&#160;        uint64_t local_write_size[DSP_DIM_MAX] = {localSize[0], localSize[1], localSize[2]};</div>
-<div class="line"><a name="l01034"></a><span class="lineno"> 1034</span>&#160;</div>
-<div class="line"><a name="l01035"></a><span class="lineno"> 1035</span>&#160;        globalSize.set(1, 1, 1);</div>
-<div class="line"><a name="l01036"></a><span class="lineno"> 1036</span>&#160;        globalOffset.set(0, 0, 0);</div>
-<div class="line"><a name="l01037"></a><span class="lineno"> 1037</span>&#160;</div>
-<div class="line"><a name="l01038"></a><span class="lineno"> 1038</span>&#160;        <span class="keywordflow">if</span> (MPI_Allgather(local_write_size, DSP_DIM_MAX, MPI_UNSIGNED_LONG_LONG,</div>
-<div class="line"><a name="l01039"></a><span class="lineno"> 1039</span>&#160;                write_sizes, DSP_DIM_MAX, MPI_UNSIGNED_LONG_LONG, options.mpiComm) != MPI_SUCCESS)</div>
-<div class="line"><a name="l01040"></a><span class="lineno"> 1040</span>&#160;            <span class="keywordflow">throw</span> DCException(getExceptionString(<span class="stringliteral">&quot;gatherMPIWrites&quot;</span>,</div>
-<div class="line"><a name="l01041"></a><span class="lineno"> 1041</span>&#160;                <span class="stringliteral">&quot;MPI_Allgather failed&quot;</span>, NULL));</div>
-<div class="line"><a name="l01042"></a><span class="lineno"> 1042</span>&#160;</div>
-<div class="line"><a name="l01043"></a><span class="lineno"> 1043</span>&#160;        Dimensions tmp_mpi_topology(options.mpiTopology);</div>
-<div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160;        Dimensions tmp_mpi_pos(options.mpiPos);</div>
-<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;        <span class="keywordflow">if</span> (ndims == 1)</div>
-<div class="line"><a name="l01046"></a><span class="lineno"> 1046</span>&#160;        {</div>
-<div class="line"><a name="l01047"></a><span class="lineno"> 1047</span>&#160;            tmp_mpi_topology.set(options.mpiTopology.getScalarSize(), 1, 1);</div>
-<div class="line"><a name="l01048"></a><span class="lineno"> 1048</span>&#160;            tmp_mpi_pos.set(options.mpiRank, 0, 0);</div>
-<div class="line"><a name="l01049"></a><span class="lineno"> 1049</span>&#160;        }</div>
-<div class="line"><a name="l01050"></a><span class="lineno"> 1050</span>&#160;</div>
-<div class="line"><a name="l01051"></a><span class="lineno"> 1051</span>&#160;        <span class="keywordflow">if</span> ((ndims == 2) &amp;&amp; (tmp_mpi_topology[2] &gt; 1))</div>
-<div class="line"><a name="l01052"></a><span class="lineno"> 1052</span>&#160;        {</div>
-<div class="line"><a name="l01053"></a><span class="lineno"> 1053</span>&#160;            <span class="keywordflow">throw</span> DCException(getExceptionString(<span class="stringliteral">&quot;gatherMPIWrites&quot;</span>,</div>
-<div class="line"><a name="l01054"></a><span class="lineno"> 1054</span>&#160;                    <span class="stringliteral">&quot;cannot auto-detect global size/offset for 2D data when writing with 3D topology&quot;</span>, NULL));</div>
-<div class="line"><a name="l01055"></a><span class="lineno"> 1055</span>&#160;        }</div>
-<div class="line"><a name="l01056"></a><span class="lineno"> 1056</span>&#160;</div>
-<div class="line"><a name="l01057"></a><span class="lineno"> 1057</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; ndims; ++i)</div>
-<div class="line"><a name="l01058"></a><span class="lineno"> 1058</span>&#160;        {</div>
-<div class="line"><a name="l01059"></a><span class="lineno"> 1059</span>&#160;            globalSize[i] = 0;</div>
-<div class="line"><a name="l01060"></a><span class="lineno"> 1060</span>&#160;            <span class="keywordtype">size_t</span> index;</div>
-<div class="line"><a name="l01061"></a><span class="lineno"> 1061</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> dim = 0; dim &lt; tmp_mpi_topology[i]; ++dim)</div>
-<div class="line"><a name="l01062"></a><span class="lineno"> 1062</span>&#160;            {</div>
-<div class="line"><a name="l01063"></a><span class="lineno"> 1063</span>&#160;                <span class="keywordflow">switch</span> (i)</div>
-<div class="line"><a name="l01064"></a><span class="lineno"> 1064</span>&#160;                {</div>
-<div class="line"><a name="l01065"></a><span class="lineno"> 1065</span>&#160;                    <span class="keywordflow">case</span> 0:</div>
-<div class="line"><a name="l01066"></a><span class="lineno"> 1066</span>&#160;                        index = dim;</div>
-<div class="line"><a name="l01067"></a><span class="lineno"> 1067</span>&#160;                        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l01068"></a><span class="lineno"> 1068</span>&#160;                    <span class="keywordflow">case</span> 1:</div>
-<div class="line"><a name="l01069"></a><span class="lineno"> 1069</span>&#160;                        index = dim * tmp_mpi_topology[0];</div>
-<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;                        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l01071"></a><span class="lineno"> 1071</span>&#160;                    <span class="keywordflow">default</span>:</div>
-<div class="line"><a name="l01072"></a><span class="lineno"> 1072</span>&#160;                        index = dim * tmp_mpi_topology[0] * tmp_mpi_topology[1];</div>
-<div class="line"><a name="l01073"></a><span class="lineno"> 1073</span>&#160;                }</div>
-<div class="line"><a name="l01074"></a><span class="lineno"> 1074</span>&#160;</div>
-<div class="line"><a name="l01075"></a><span class="lineno"> 1075</span>&#160;                globalSize[i] += write_sizes[index * DSP_DIM_MAX + i];</div>
-<div class="line"><a name="l01076"></a><span class="lineno"> 1076</span>&#160;                <span class="keywordflow">if</span> (dim &lt; tmp_mpi_pos[i])</div>
-<div class="line"><a name="l01077"></a><span class="lineno"> 1077</span>&#160;                    globalOffset[i] += write_sizes[index * DSP_DIM_MAX + i];</div>
-<div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160;            }</div>
-<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;        }</div>
-<div class="line"><a name="l01080"></a><span class="lineno"> 1080</span>&#160;    }</div>
-<div class="line"><a name="l01081"></a><span class="lineno"> 1081</span>&#160;</div>
-<div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;    <span class="keywordtype">size_t</span> ParallelDataCollector::getNDims(H5Handle h5File,</div>
-<div class="line"><a name="l01083"></a><span class="lineno"> 1083</span>&#160;            int32_t <span class="keywordtype">id</span>, <span class="keyword">const</span> <span class="keywordtype">char</span>* name)</div>
-<div class="line"><a name="l01084"></a><span class="lineno"> 1084</span>&#160;    {</div>
-<div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160;        <span class="keywordflow">if</span> (h5File &lt; 0 || name == NULL)</div>
-<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;            <span class="keywordflow">throw</span> DCException(getExceptionString(<span class="stringliteral">&quot;getNDims&quot;</span>, <span class="stringliteral">&quot;invalid parameters&quot;</span>));</div>
-<div class="line"><a name="l01087"></a><span class="lineno"> 1087</span>&#160;</div>
-<div class="line"><a name="l01088"></a><span class="lineno"> 1088</span>&#160;        std::string group_path, dset_name;</div>
-<div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160;        DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, <span class="keywordtype">id</span>, group_path, dset_name);</div>
-<div class="line"><a name="l01090"></a><span class="lineno"> 1090</span>&#160;</div>
-<div class="line"><a name="l01091"></a><span class="lineno"> 1091</span>&#160;        DCParallelGroup group;</div>
-<div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;        group.open(h5File, group_path);</div>
-<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;</div>
-<div class="line"><a name="l01094"></a><span class="lineno"> 1094</span>&#160;        <span class="keywordtype">size_t</span> ndims = 0;</div>
-<div class="line"><a name="l01095"></a><span class="lineno"> 1095</span>&#160;</div>
-<div class="line"><a name="l01096"></a><span class="lineno"> 1096</span>&#160;        DCParallelDataSet dataset(dset_name.c_str());</div>
-<div class="line"><a name="l01097"></a><span class="lineno"> 1097</span>&#160;        dataset.open(group.getHandle());</div>
+<div class="line"><a name="l01001"></a><span class="lineno"> 1001</span>&#160;        <span class="comment">// find entry by name</span></div>
+<div class="line"><a name="l01002"></a><span class="lineno"> 1002</span>&#160;        int32_t entry_id = -1;</div>
+<div class="line"><a name="l01003"></a><span class="lineno"> 1003</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; entrySize; ++i)</div>
+<div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160;            <span class="keywordflow">if</span>(std::string(name) == entries[i].name)</div>
+<div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160;            {</div>
+<div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160;                entry_id = int32_t(i);</div>
+<div class="line"><a name="l01007"></a><span class="lineno"> 1007</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l01008"></a><span class="lineno"> 1008</span>&#160;            }</div>
+<div class="line"><a name="l01009"></a><span class="lineno"> 1009</span>&#160;</div>
+<div class="line"><a name="l01010"></a><span class="lineno"> 1010</span>&#160;        <span class="keywordflow">if</span>(entry_id &lt; 0)</div>
+<div class="line"><a name="l01011"></a><span class="lineno"> 1011</span>&#160;            <span class="keywordflow">throw</span> DCException(getExceptionString(<span class="stringliteral">&quot;readDataSetMeta&quot;</span>, <span class="stringliteral">&quot;Entry not found by name&quot;</span>));</div>
+<div class="line"><a name="l01012"></a><span class="lineno"> 1012</span>&#160;</div>
+<div class="line"><a name="l01013"></a><span class="lineno"> 1013</span>&#160;        Dimensions src_size(dataset.getSize() - srcOffset);</div>
+<div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160;        dataset.read(dstBuffer, dstOffset, src_size, srcOffset, sizeRead, srcDims, NULL);</div>
+<div class="line"><a name="l01015"></a><span class="lineno"> 1015</span>&#160;        dataset.close();</div>
+<div class="line"><a name="l01016"></a><span class="lineno"> 1016</span>&#160;</div>
+<div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160;        <a class="code" href="namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55">log_msg</a>(3, <span class="stringliteral">&quot;Entry &#39;%s&#39; (%d) is of type: %s&quot;</span>,</div>
+<div class="line"><a name="l01018"></a><span class="lineno"> 1018</span>&#160;                entries[entry_id].name.c_str(),</div>
+<div class="line"><a name="l01019"></a><span class="lineno"> 1019</span>&#160;                entry_id,</div>
+<div class="line"><a name="l01020"></a><span class="lineno"> 1020</span>&#160;                entries[entry_id].colType-&gt;toString().c_str());</div>
+<div class="line"><a name="l01021"></a><span class="lineno"> 1021</span>&#160;</div>
+<div class="line"><a name="l01022"></a><span class="lineno"> 1022</span>&#160;        <span class="keywordflow">return</span> entries[entry_id].colType;</div>
+<div class="line"><a name="l01023"></a><span class="lineno"> 1023</span>&#160;    }</div>
+<div class="line"><a name="l01024"></a><span class="lineno"> 1024</span>&#160;</div>
+<div class="line"><a name="l01025"></a><span class="lineno"> 1025</span>&#160;    <span class="keywordtype">void</span> ParallelDataCollector::writeDataSet(H5Handle group,</div>
+<div class="line"><a name="l01026"></a><span class="lineno"> 1026</span>&#160;            <span class="keyword">const</span> Dimensions globalSize,</div>
+<div class="line"><a name="l01027"></a><span class="lineno"> 1027</span>&#160;            <span class="keyword">const</span> Dimensions globalOffset,</div>
+<div class="line"><a name="l01028"></a><span class="lineno"> 1028</span>&#160;            <span class="keyword">const</span> CollectionType&amp; datatype,</div>
+<div class="line"><a name="l01029"></a><span class="lineno"> 1029</span>&#160;            uint32_t ndims,</div>
+<div class="line"><a name="l01030"></a><span class="lineno"> 1030</span>&#160;            <span class="keyword">const</span> Selection srcSelect,</div>
+<div class="line"><a name="l01031"></a><span class="lineno"> 1031</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">char</span>* name,</div>
+<div class="line"><a name="l01032"></a><span class="lineno"> 1032</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">void</span>* data) <span class="keywordflow">throw</span> (DCException)</div>
+<div class="line"><a name="l01033"></a><span class="lineno"> 1033</span>&#160;    {</div>
+<div class="line"><a name="l01034"></a><span class="lineno"> 1034</span>&#160;        <a class="code" href="namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55">log_msg</a>(2, <span class="stringliteral">&quot;writeDataSet&quot;</span>);</div>
+<div class="line"><a name="l01035"></a><span class="lineno"> 1035</span>&#160;</div>
+<div class="line"><a name="l01036"></a><span class="lineno"> 1036</span>&#160;        DCParallelDataSet dataset(name);</div>
+<div class="line"><a name="l01037"></a><span class="lineno"> 1037</span>&#160;        <span class="comment">// always create dataset but write data only if all dimensions &gt; 0</span></div>
+<div class="line"><a name="l01038"></a><span class="lineno"> 1038</span>&#160;        <span class="comment">// not extensible</span></div>
+<div class="line"><a name="l01039"></a><span class="lineno"> 1039</span>&#160;        dataset.create(datatype, group, globalSize, ndims,</div>
+<div class="line"><a name="l01040"></a><span class="lineno"> 1040</span>&#160;                this-&gt;options.enableCompression, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l01041"></a><span class="lineno"> 1041</span>&#160;        dataset.write(srcSelect, globalOffset, data);</div>
+<div class="line"><a name="l01042"></a><span class="lineno"> 1042</span>&#160;        dataset.close();</div>
+<div class="line"><a name="l01043"></a><span class="lineno"> 1043</span>&#160;    }</div>
+<div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160;</div>
+<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;    <span class="keywordtype">void</span> ParallelDataCollector::gatherMPIWrites(<span class="keywordtype">int</span> ndims, <span class="keyword">const</span> Dimensions localSize,</div>
+<div class="line"><a name="l01046"></a><span class="lineno"> 1046</span>&#160;            Dimensions &amp;globalSize, Dimensions &amp;globalOffset)</div>
+<div class="line"><a name="l01047"></a><span class="lineno"> 1047</span>&#160;    <span class="keywordflow">throw</span> (DCException)</div>
+<div class="line"><a name="l01048"></a><span class="lineno"> 1048</span>&#160;    {</div>
+<div class="line"><a name="l01049"></a><span class="lineno"> 1049</span>&#160;        uint64_t write_sizes[options.mpiSize * DSP_DIM_MAX];</div>
+<div class="line"><a name="l01050"></a><span class="lineno"> 1050</span>&#160;        uint64_t local_write_size[DSP_DIM_MAX] = {localSize[0], localSize[1], localSize[2]};</div>
+<div class="line"><a name="l01051"></a><span class="lineno"> 1051</span>&#160;</div>
+<div class="line"><a name="l01052"></a><span class="lineno"> 1052</span>&#160;        globalSize.set(1, 1, 1);</div>
+<div class="line"><a name="l01053"></a><span class="lineno"> 1053</span>&#160;        globalOffset.set(0, 0, 0);</div>
+<div class="line"><a name="l01054"></a><span class="lineno"> 1054</span>&#160;</div>
+<div class="line"><a name="l01055"></a><span class="lineno"> 1055</span>&#160;        <span class="keywordflow">if</span> (MPI_Allgather(local_write_size, DSP_DIM_MAX, MPI_UNSIGNED_LONG_LONG,</div>
+<div class="line"><a name="l01056"></a><span class="lineno"> 1056</span>&#160;                write_sizes, DSP_DIM_MAX, MPI_UNSIGNED_LONG_LONG, options.mpiComm) != MPI_SUCCESS)</div>
+<div class="line"><a name="l01057"></a><span class="lineno"> 1057</span>&#160;            <span class="keywordflow">throw</span> DCException(getExceptionString(<span class="stringliteral">&quot;gatherMPIWrites&quot;</span>,</div>
+<div class="line"><a name="l01058"></a><span class="lineno"> 1058</span>&#160;                <span class="stringliteral">&quot;MPI_Allgather failed&quot;</span>, NULL));</div>
+<div class="line"><a name="l01059"></a><span class="lineno"> 1059</span>&#160;</div>
+<div class="line"><a name="l01060"></a><span class="lineno"> 1060</span>&#160;        Dimensions tmp_mpi_topology(options.mpiTopology);</div>
+<div class="line"><a name="l01061"></a><span class="lineno"> 1061</span>&#160;        Dimensions tmp_mpi_pos(options.mpiPos);</div>
+<div class="line"><a name="l01062"></a><span class="lineno"> 1062</span>&#160;        <span class="keywordflow">if</span> (ndims == 1)</div>
+<div class="line"><a name="l01063"></a><span class="lineno"> 1063</span>&#160;        {</div>
+<div class="line"><a name="l01064"></a><span class="lineno"> 1064</span>&#160;            tmp_mpi_topology.set(options.mpiTopology.getScalarSize(), 1, 1);</div>
+<div class="line"><a name="l01065"></a><span class="lineno"> 1065</span>&#160;            tmp_mpi_pos.set(options.mpiRank, 0, 0);</div>
+<div class="line"><a name="l01066"></a><span class="lineno"> 1066</span>&#160;        }</div>
+<div class="line"><a name="l01067"></a><span class="lineno"> 1067</span>&#160;</div>
+<div class="line"><a name="l01068"></a><span class="lineno"> 1068</span>&#160;        <span class="keywordflow">if</span> ((ndims == 2) &amp;&amp; (tmp_mpi_topology[2] &gt; 1))</div>
+<div class="line"><a name="l01069"></a><span class="lineno"> 1069</span>&#160;        {</div>
+<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;            <span class="keywordflow">throw</span> DCException(getExceptionString(<span class="stringliteral">&quot;gatherMPIWrites&quot;</span>,</div>
+<div class="line"><a name="l01071"></a><span class="lineno"> 1071</span>&#160;                    <span class="stringliteral">&quot;cannot auto-detect global size/offset for 2D data when writing with 3D topology&quot;</span>, NULL));</div>
+<div class="line"><a name="l01072"></a><span class="lineno"> 1072</span>&#160;        }</div>
+<div class="line"><a name="l01073"></a><span class="lineno"> 1073</span>&#160;</div>
+<div class="line"><a name="l01074"></a><span class="lineno"> 1074</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; ndims; ++i)</div>
+<div class="line"><a name="l01075"></a><span class="lineno"> 1075</span>&#160;        {</div>
+<div class="line"><a name="l01076"></a><span class="lineno"> 1076</span>&#160;            globalSize[i] = 0;</div>
+<div class="line"><a name="l01077"></a><span class="lineno"> 1077</span>&#160;            <span class="keywordtype">size_t</span> index;</div>
+<div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> dim = 0; dim &lt; tmp_mpi_topology[i]; ++dim)</div>
+<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;            {</div>
+<div class="line"><a name="l01080"></a><span class="lineno"> 1080</span>&#160;                <span class="keywordflow">switch</span> (i)</div>
+<div class="line"><a name="l01081"></a><span class="lineno"> 1081</span>&#160;                {</div>
+<div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;                    <span class="keywordflow">case</span> 0:</div>
+<div class="line"><a name="l01083"></a><span class="lineno"> 1083</span>&#160;                        index = dim;</div>
+<div class="line"><a name="l01084"></a><span class="lineno"> 1084</span>&#160;                        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160;                    <span class="keywordflow">case</span> 1:</div>
+<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;                        index = dim * tmp_mpi_topology[0];</div>
+<div class="line"><a name="l01087"></a><span class="lineno"> 1087</span>&#160;                        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l01088"></a><span class="lineno"> 1088</span>&#160;                    <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160;                        index = dim * tmp_mpi_topology[0] * tmp_mpi_topology[1];</div>
+<div class="line"><a name="l01090"></a><span class="lineno"> 1090</span>&#160;                }</div>
+<div class="line"><a name="l01091"></a><span class="lineno"> 1091</span>&#160;</div>
+<div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;                globalSize[i] += write_sizes[index * DSP_DIM_MAX + i];</div>
+<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;                <span class="keywordflow">if</span> (dim &lt; tmp_mpi_pos[i])</div>
+<div class="line"><a name="l01094"></a><span class="lineno"> 1094</span>&#160;                    globalOffset[i] += write_sizes[index * DSP_DIM_MAX + i];</div>
+<div class="line"><a name="l01095"></a><span class="lineno"> 1095</span>&#160;            }</div>
+<div class="line"><a name="l01096"></a><span class="lineno"> 1096</span>&#160;        }</div>
+<div class="line"><a name="l01097"></a><span class="lineno"> 1097</span>&#160;    }</div>
 <div class="line"><a name="l01098"></a><span class="lineno"> 1098</span>&#160;</div>
-<div class="line"><a name="l01099"></a><span class="lineno"> 1099</span>&#160;        ndims = dataset.getNDims();</div>
-<div class="line"><a name="l01100"></a><span class="lineno"> 1100</span>&#160;</div>
-<div class="line"><a name="l01101"></a><span class="lineno"> 1101</span>&#160;        dataset.close();</div>
-<div class="line"><a name="l01102"></a><span class="lineno"> 1102</span>&#160;</div>
-<div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160;        <span class="keywordflow">return</span> ndims;</div>
-<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160;    }</div>
-<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160;</div>
-<div class="line"><a name="l01106"></a><span class="lineno"> 1106</span>&#160;    <span class="keywordtype">void</span> ParallelDataCollector::reserveInternal(int32_t <span class="keywordtype">id</span>,</div>
-<div class="line"><a name="l01107"></a><span class="lineno"> 1107</span>&#160;            <span class="keyword">const</span> Dimensions globalSize,</div>
-<div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160;            uint32_t ndims,</div>
-<div class="line"><a name="l01109"></a><span class="lineno"> 1109</span>&#160;            <span class="keyword">const</span> CollectionType&amp; type,</div>
-<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">char</span>* name)</div>
-<div class="line"><a name="l01111"></a><span class="lineno"> 1111</span>&#160;    <span class="keywordflow">throw</span> (DCException)</div>
-<div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;    {</div>
-<div class="line"><a name="l01113"></a><span class="lineno"> 1113</span>&#160;        <a class="code" href="namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55">log_msg</a>(2, <span class="stringliteral">&quot;reserveInternal&quot;</span>);</div>
-<div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160;</div>
-<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160;        <span class="comment">// create group for this id/iteration</span></div>
-<div class="line"><a name="l01116"></a><span class="lineno"> 1116</span>&#160;        std::string group_path, dset_name;</div>
-<div class="line"><a name="l01117"></a><span class="lineno"> 1117</span>&#160;        DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, <span class="keywordtype">id</span>, group_path, dset_name);</div>
-<div class="line"><a name="l01118"></a><span class="lineno"> 1118</span>&#160;</div>
-<div class="line"><a name="l01119"></a><span class="lineno"> 1119</span>&#160;        DCParallelGroup group;</div>
-<div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;        group.openCreate(handles.get(<span class="keywordtype">id</span>), group_path);</div>
-<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;</div>
-<div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;        DCParallelDataSet dataset(dset_name.c_str());</div>
-<div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;        <span class="comment">// create the empty extensible dataset</span></div>
-<div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;        dataset.create(type, group.getHandle(), globalSize, ndims,</div>
-<div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160;                this-&gt;options.enableCompression, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l01126"></a><span class="lineno"> 1126</span>&#160;        dataset.close();</div>
-<div class="line"><a name="l01127"></a><span class="lineno"> 1127</span>&#160;    }</div>
-<div class="line"><a name="l01128"></a><span class="lineno"> 1128</span>&#160;</div>
-<div class="line"><a name="l01129"></a><span class="lineno"> 1129</span>&#160;}</div>
-<div class="ttc" id="namespacesplash_html_a8ab0f59ba81055cb4e12c7dea6e454a6"><div class="ttname"><a href="namespacesplash.html#a8ab0f59ba81055cb4e12c7dea6e454a6">splash::setLogMpiRank</a></div><div class="ttdeci">EXTERN void setLogMpiRank(int rank)</div><div class="ttdef"><b>Definition:</b> <a href="logging_8cpp_source.html#l00050">logging.cpp:50</a></div></div>
+<div class="line"><a name="l01099"></a><span class="lineno"> 1099</span>&#160;    <span class="keywordtype">size_t</span> ParallelDataCollector::getNDims(H5Handle h5File,</div>
+<div class="line"><a name="l01100"></a><span class="lineno"> 1100</span>&#160;            int32_t <span class="keywordtype">id</span>, <span class="keyword">const</span> <span class="keywordtype">char</span>* name)</div>
+<div class="line"><a name="l01101"></a><span class="lineno"> 1101</span>&#160;    {</div>
+<div class="line"><a name="l01102"></a><span class="lineno"> 1102</span>&#160;        <span class="keywordflow">if</span> (h5File &lt; 0 || name == NULL)</div>
+<div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160;            <span class="keywordflow">throw</span> DCException(getExceptionString(<span class="stringliteral">&quot;getNDims&quot;</span>, <span class="stringliteral">&quot;invalid parameters&quot;</span>));</div>
+<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160;</div>
+<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160;        std::string group_path, dset_name;</div>
+<div class="line"><a name="l01106"></a><span class="lineno"> 1106</span>&#160;        DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, <span class="keywordtype">id</span>, group_path, dset_name);</div>
+<div class="line"><a name="l01107"></a><span class="lineno"> 1107</span>&#160;</div>
+<div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160;        DCParallelGroup group;</div>
+<div class="line"><a name="l01109"></a><span class="lineno"> 1109</span>&#160;        group.open(h5File, group_path);</div>
+<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160;</div>
+<div class="line"><a name="l01111"></a><span class="lineno"> 1111</span>&#160;        <span class="keywordtype">size_t</span> ndims = 0;</div>
+<div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;</div>
+<div class="line"><a name="l01113"></a><span class="lineno"> 1113</span>&#160;        DCParallelDataSet dataset(dset_name.c_str());</div>
+<div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160;        dataset.open(group.getHandle());</div>
+<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160;</div>
+<div class="line"><a name="l01116"></a><span class="lineno"> 1116</span>&#160;        ndims = dataset.getNDims();</div>
+<div class="line"><a name="l01117"></a><span class="lineno"> 1117</span>&#160;</div>
+<div class="line"><a name="l01118"></a><span class="lineno"> 1118</span>&#160;        dataset.close();</div>
+<div class="line"><a name="l01119"></a><span class="lineno"> 1119</span>&#160;</div>
+<div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;        <span class="keywordflow">return</span> ndims;</div>
+<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;    }</div>
+<div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;</div>
+<div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;    <span class="keywordtype">void</span> ParallelDataCollector::reserveInternal(int32_t <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;            <span class="keyword">const</span> Dimensions globalSize,</div>
+<div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160;            uint32_t ndims,</div>
+<div class="line"><a name="l01126"></a><span class="lineno"> 1126</span>&#160;            <span class="keyword">const</span> CollectionType&amp; type,</div>
+<div class="line"><a name="l01127"></a><span class="lineno"> 1127</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">char</span>* name)</div>
+<div class="line"><a name="l01128"></a><span class="lineno"> 1128</span>&#160;    <span class="keywordflow">throw</span> (DCException)</div>
+<div class="line"><a name="l01129"></a><span class="lineno"> 1129</span>&#160;    {</div>
+<div class="line"><a name="l01130"></a><span class="lineno"> 1130</span>&#160;        <a class="code" href="namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55">log_msg</a>(2, <span class="stringliteral">&quot;reserveInternal&quot;</span>);</div>
+<div class="line"><a name="l01131"></a><span class="lineno"> 1131</span>&#160;</div>
+<div class="line"><a name="l01132"></a><span class="lineno"> 1132</span>&#160;        <span class="comment">// create group for this id/iteration</span></div>
+<div class="line"><a name="l01133"></a><span class="lineno"> 1133</span>&#160;        std::string group_path, dset_name;</div>
+<div class="line"><a name="l01134"></a><span class="lineno"> 1134</span>&#160;        DCDataSet::getFullDataPath(name, SDC_GROUP_DATA, <span class="keywordtype">id</span>, group_path, dset_name);</div>
+<div class="line"><a name="l01135"></a><span class="lineno"> 1135</span>&#160;</div>
+<div class="line"><a name="l01136"></a><span class="lineno"> 1136</span>&#160;        DCParallelGroup group;</div>
+<div class="line"><a name="l01137"></a><span class="lineno"> 1137</span>&#160;        group.openCreate(handles.get(<span class="keywordtype">id</span>), group_path);</div>
+<div class="line"><a name="l01138"></a><span class="lineno"> 1138</span>&#160;</div>
+<div class="line"><a name="l01139"></a><span class="lineno"> 1139</span>&#160;        DCParallelDataSet dataset(dset_name.c_str());</div>
+<div class="line"><a name="l01140"></a><span class="lineno"> 1140</span>&#160;        <span class="comment">// create the empty extensible dataset</span></div>
+<div class="line"><a name="l01141"></a><span class="lineno"> 1141</span>&#160;        dataset.create(type, group.getHandle(), globalSize, ndims,</div>
+<div class="line"><a name="l01142"></a><span class="lineno"> 1142</span>&#160;                this-&gt;options.enableCompression, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l01143"></a><span class="lineno"> 1143</span>&#160;        dataset.close();</div>
+<div class="line"><a name="l01144"></a><span class="lineno"> 1144</span>&#160;    }</div>
+<div class="line"><a name="l01145"></a><span class="lineno"> 1145</span>&#160;</div>
+<div class="line"><a name="l01146"></a><span class="lineno"> 1146</span>&#160;}</div>
+<div class="ttc" id="namespacesplash_html_a8ab0f59ba81055cb4e12c7dea6e454a6"><div class="ttname"><a href="namespacesplash.html#a8ab0f59ba81055cb4e12c7dea6e454a6">splash::setLogMpiRank</a></div><div class="ttdeci">EXTERN void setLogMpiRank(int rank)</div><div class="ttdef"><b>Definition:</b> <a href="logging_8cpp_source.html#l00051">logging.cpp:51</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_a335f10e134d2b94e50d420de2a5e14d9"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#a335f10e134d2b94e50d420de2a5e14d9">splash::ParallelDataCollector::createReference</a></div><div class="ttdeci">void createReference(int32_t srcID, const char *srcName, int32_t dstID, const char *dstName)</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00736">ParallelDataCollector.cpp:736</a></div></div>
-<div class="ttc" id="structsplash_1_1_data_collector_1_1___file_creation_attr_html"><div class="ttname"><a href="structsplash_1_1_data_collector_1_1___file_creation_attr.html">splash::DataCollector::_FileCreationAttr</a></div><div class="ttdef"><b>Definition:</b> <a href="_data_collector_8hpp_source.html#l00075">DataCollector.hpp:75</a></div></div>
+<div class="ttc" id="structsplash_1_1_data_collector_1_1___file_creation_attr_html"><div class="ttname"><a href="structsplash_1_1_data_collector_1_1___file_creation_attr.html">splash::DataCollector::_FileCreationAttr</a></div><div class="ttdef"><b>Definition:</b> <a href="_data_collector_8hpp_source.html#l00074">DataCollector.hpp:74</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_a246f7ce7ad4878303c6e391c40ee4684"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#a246f7ce7ad4878303c6e391c40ee4684">splash::ParallelDataCollector::readAttribute</a></div><div class="ttdeci">void readAttribute(int32_t id, const char *dataName, const char *attrName, void *buf, Dimensions *mpiPosition=NULL)</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00380">ParallelDataCollector.cpp:380</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_a260c66f709875d5ec893bcbe9826f7e1"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#a260c66f709875d5ec893bcbe9826f7e1">splash::ParallelDataCollector::open</a></div><div class="ttdeci">void open(const char *filename, FileCreationAttr &amp;attr)</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00218">ParallelDataCollector.cpp:218</a></div></div>
-<div class="ttc" id="structsplash_1_1_data_collector_1_1___d_c_entry_html"><div class="ttname"><a href="structsplash_1_1_data_collector_1_1___d_c_entry.html">splash::DataCollector::_DCEntry</a></div><div class="ttdef"><b>Definition:</b> <a href="_data_collector_8hpp_source.html#l00111">DataCollector.hpp:111</a></div></div>
+<div class="ttc" id="structsplash_1_1_data_collector_1_1___d_c_entry_html"><div class="ttname"><a href="structsplash_1_1_data_collector_1_1___d_c_entry.html">splash::DataCollector::_DCEntry</a></div><div class="ttdef"><b>Definition:</b> <a href="_data_collector_8hpp_source.html#l00110">DataCollector.hpp:110</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_afb6f82e863677ae70fa5a0642b365a68"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#afb6f82e863677ae70fa5a0642b365a68">splash::ParallelDataCollector::readMeta</a></div><div class="ttdeci">CollectionType * readMeta(int32_t id, const char *name, const Dimensions dstBuffer, const Dimensions dstOffset, Dimensions &amp;sizeRead)</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00561">ParallelDataCollector.cpp:561</a></div></div>
-<div class="ttc" id="classsplash_1_1_collection_type_html"><div class="ttname"><a href="classsplash_1_1_collection_type.html">splash::CollectionType</a></div><div class="ttdef"><b>Definition:</b> <a href="_collection_type_8hpp_source.html#l00039">CollectionType.hpp:39</a></div></div>
-<div class="ttc" id="classsplash_1_1_d_c_exception_html"><div class="ttname"><a href="classsplash_1_1_d_c_exception.html">splash::DCException</a></div><div class="ttdef"><b>Definition:</b> <a href="_d_c_exception_8hpp_source.html#l00036">DCException.hpp:36</a></div></div>
+<div class="ttc" id="classsplash_1_1_collection_type_html"><div class="ttname"><a href="classsplash_1_1_collection_type.html">splash::CollectionType</a></div><div class="ttdef"><b>Definition:</b> <a href="_collection_type_8hpp_source.html#l00040">CollectionType.hpp:40</a></div></div>
+<div class="ttc" id="classsplash_1_1_d_c_exception_html"><div class="ttname"><a href="classsplash_1_1_d_c_exception.html">splash::DCException</a></div><div class="ttdef"><b>Definition:</b> <a href="_d_c_exception_8hpp_source.html#l00035">DCException.hpp:35</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_a907085897c2e956da074e3c7db738f2f"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#a907085897c2e956da074e3c7db738f2f">splash::ParallelDataCollector::append</a></div><div class="ttdeci">void append(int32_t id, const Dimensions size, uint32_t rank, const Dimensions globalOffset, const char *name, const void *buf)</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00659">ParallelDataCollector.cpp:659</a></div></div>
-<div class="ttc" id="classsplash_1_1_dimensions_html_aacded30f48b262936a9f9fa4fa621680"><div class="ttname"><a href="classsplash_1_1_dimensions.html#aacded30f48b262936a9f9fa4fa621680">splash::Dimensions::set</a></div><div class="ttdeci">void set(hsize_t x, hsize_t y, hsize_t z)</div><div class="ttdef"><b>Definition:</b> <a href="_dimensions_8hpp_source.html#l00232">Dimensions.hpp:232</a></div></div>
+<div class="ttc" id="classsplash_1_1_dimensions_html_aacded30f48b262936a9f9fa4fa621680"><div class="ttname"><a href="classsplash_1_1_dimensions.html#aacded30f48b262936a9f9fa4fa621680">splash::Dimensions::set</a></div><div class="ttdeci">void set(hsize_t x, hsize_t y, hsize_t z)</div><div class="ttdef"><b>Definition:</b> <a href="_dimensions_8hpp_source.html#l00230">Dimensions.hpp:230</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_a1ee9fd425adccb804dcd90e2c57cfdd8"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#a1ee9fd425adccb804dcd90e2c57cfdd8">splash::ParallelDataCollector::getMaxID</a></div><div class="ttdeci">int32_t getMaxID()</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00258">ParallelDataCollector.cpp:258</a></div></div>
-<div class="ttc" id="namespacesplash_html"><div class="ttname"><a href="namespacesplash.html">splash</a></div><div class="ttdef"><b>Definition:</b> <a href="_d_c_attribute_8cpp_source.html#l00028">DCAttribute.cpp:28</a></div></div>
+<div class="ttc" id="namespacesplash_html"><div class="ttname"><a href="namespacesplash.html">splash</a></div><div class="ttdef"><b>Definition:</b> <a href="_d_c_attribute_8cpp_source.html#l00029">DCAttribute.cpp:29</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_a716a0977d3d8802d6ef3164437ff51a8"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#a716a0977d3d8802d6ef3164437ff51a8">splash::ParallelDataCollector::readGlobalAttribute</a></div><div class="ttdeci">void readGlobalAttribute(int32_t id, const char *name, void *buf)</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00316">ParallelDataCollector.cpp:316</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_a630bfc10784f353ba5bf560573c0e28d"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#a630bfc10784f353ba5bf560573c0e28d">splash::ParallelDataCollector::writeGlobalAttribute</a></div><div class="ttdeci">void writeGlobalAttribute(int32_t id, const CollectionType &amp;type, const char *name, const void *buf)</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00340">ParallelDataCollector.cpp:340</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_a13139734b3eab0490188c0d8e27ce505"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#a13139734b3eab0490188c0d8e27ce505">splash::ParallelDataCollector::getEntriesForID</a></div><div class="ttdeci">void getEntriesForID(int32_t id, DCEntry *entries, size_t *count)</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00295">ParallelDataCollector.cpp:295</a></div></div>
@@ -1177,22 +1194,22 @@
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_a5745e7eab935d2de1452a84af8a32445"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#a5745e7eab935d2de1452a84af8a32445">splash::ParallelDataCollector::write</a></div><div class="ttdeci">void write(int32_t id, const CollectionType &amp;type, uint32_t rank, const Selection select, const char *name, const void *buf)</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00575">ParallelDataCollector.cpp:575</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_a5de5d6fa5346590fafcde4a6f075f8fb"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#a5de5d6fa5346590fafcde4a6f075f8fb">splash::ParallelDataCollector::finalize</a></div><div class="ttdeci">void finalize(void)</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00207">ParallelDataCollector.cpp:207</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_a7fca4de4e321de9f368db18e0cff1c0b"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#a7fca4de4e321de9f368db18e0cff1c0b">splash::ParallelDataCollector::read</a></div><div class="ttdeci">void read(int32_t id, const char *name, Dimensions &amp;sizeRead, void *buf)</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00508">ParallelDataCollector.cpp:508</a></div></div>
-<div class="ttc" id="namespacesplash_html_a25814150ab7b3bf2777217442cddfe44"><div class="ttname"><a href="namespacesplash.html#a25814150ab7b3bf2777217442cddfe44">splash::parseEnvVars</a></div><div class="ttdeci">EXTERN void parseEnvVars(void)</div><div class="ttdef"><b>Definition:</b> <a href="logging_8cpp_source.html#l00040">logging.cpp:40</a></div></div>
-<div class="ttc" id="classsplash_1_1_dimensions_html_a4fde837baabd0ab13294ed96005be9b6"><div class="ttname"><a href="classsplash_1_1_dimensions.html#a4fde837baabd0ab13294ed96005be9b6">splash::Dimensions::getScalarSize</a></div><div class="ttdeci">size_t getScalarSize() const </div><div class="ttdef"><b>Definition:</b> <a href="_dimensions_8hpp_source.html#l00221">Dimensions.hpp:221</a></div></div>
-<div class="ttc" id="namespacesplash_html_a2f6d74daf521e2d4d1f23729da93eb55"><div class="ttname"><a href="namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55">splash::log_msg</a></div><div class="ttdeci">EXTERN void log_msg(int level, const char *fmt,...)</div><div class="ttdef"><b>Definition:</b> <a href="logging_8cpp_source.html#l00055">logging.cpp:55</a></div></div>
+<div class="ttc" id="namespacesplash_html_a25814150ab7b3bf2777217442cddfe44"><div class="ttname"><a href="namespacesplash.html#a25814150ab7b3bf2777217442cddfe44">splash::parseEnvVars</a></div><div class="ttdeci">EXTERN void parseEnvVars(void)</div><div class="ttdef"><b>Definition:</b> <a href="logging_8cpp_source.html#l00041">logging.cpp:41</a></div></div>
+<div class="ttc" id="classsplash_1_1_dimensions_html_a4fde837baabd0ab13294ed96005be9b6"><div class="ttname"><a href="classsplash_1_1_dimensions.html#a4fde837baabd0ab13294ed96005be9b6">splash::Dimensions::getScalarSize</a></div><div class="ttdeci">size_t getScalarSize() const </div><div class="ttdef"><b>Definition:</b> <a href="_dimensions_8hpp_source.html#l00219">Dimensions.hpp:219</a></div></div>
+<div class="ttc" id="namespacesplash_html_a2f6d74daf521e2d4d1f23729da93eb55"><div class="ttname"><a href="namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55">splash::log_msg</a></div><div class="ttdeci">EXTERN void log_msg(int level, const char *fmt,...)</div><div class="ttdef"><b>Definition:</b> <a href="logging_8cpp_source.html#l00056">logging.cpp:56</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_abe3f814adcf8e6254a992cc7b49283f3"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#abe3f814adcf8e6254a992cc7b49283f3">splash::ParallelDataCollector::remove</a></div><div class="ttdeci">void remove(int32_t id)</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00696">ParallelDataCollector.cpp:696</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_a163072d211feae64e96eb46a2cdd2fdf"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#a163072d211feae64e96eb46a2cdd2fdf">splash::ParallelDataCollector::ParallelDataCollector</a></div><div class="ttdeci">ParallelDataCollector(MPI_Comm comm, MPI_Info info, const Dimensions topology, uint32_t maxFileHandles)</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00162">ParallelDataCollector.cpp:162</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_ab05c42a64b6a8eebbb1f697b491a35e7"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#ab05c42a64b6a8eebbb1f697b491a35e7">splash::ParallelDataCollector::reserve</a></div><div class="ttdeci">void reserve(int32_t id, const Dimensions globalSize, uint32_t rank, const CollectionType &amp;type, const char *name)</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00612">ParallelDataCollector.cpp:612</a></div></div>
 <div class="ttc" id="classsplash_1_1_selection_html"><div class="ttname"><a href="classsplash_1_1_selection.html">splash::Selection</a></div><div class="ttdef"><b>Definition:</b> <a href="_selection_8hpp_source.html#l00037">Selection.hpp:37</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_a61c57dbaa8494b142c129fe6ffb860b6"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#a61c57dbaa8494b142c129fe6ffb860b6">splash::ParallelDataCollector::getMPISize</a></div><div class="ttdeci">void getMPISize(Dimensions &amp;mpiSize)</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00269">ParallelDataCollector.cpp:269</a></div></div>
-<div class="ttc" id="classsplash_1_1_dimensions_html"><div class="ttname"><a href="classsplash_1_1_dimensions.html">splash::Dimensions</a></div><div class="ttdef"><b>Definition:</b> <a href="_dimensions_8hpp_source.html#l00040">Dimensions.hpp:40</a></div></div>
+<div class="ttc" id="classsplash_1_1_dimensions_html"><div class="ttname"><a href="classsplash_1_1_dimensions.html">splash::Dimensions</a></div><div class="ttdef"><b>Definition:</b> <a href="_dimensions_8hpp_source.html#l00038">Dimensions.hpp:38</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_a834c63d632fb9ea6e593e3e0d848241d"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#a834c63d632fb9ea6e593e3e0d848241d">splash::ParallelDataCollector::close</a></div><div class="ttdeci">void close()</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00246">ParallelDataCollector.cpp:246</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_aec870707cb20bfb2dae5e2a3a98ed0fa"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#aec870707cb20bfb2dae5e2a3a98ed0fa">splash::ParallelDataCollector::writeAttribute</a></div><div class="ttdeci">void writeAttribute(int32_t id, const CollectionType &amp;type, const char *dataName, const char *attrName, const void *buf)</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00436">ParallelDataCollector.cpp:436</a></div></div>
 <div class="ttc" id="classsplash_1_1_parallel_data_collector_html_aebbf1ffd6e1d70034aee68626b6311fa"><div class="ttname"><a href="classsplash_1_1_parallel_data_collector.html#aebbf1ffd6e1d70034aee68626b6311fa">splash::ParallelDataCollector::~ParallelDataCollector</a></div><div class="ttdeci">virtual ~ParallelDataCollector()</div><div class="ttdef"><b>Definition:</b> <a href="_parallel_data_collector_8cpp_source.html#l00202">ParallelDataCollector.cpp:202</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Nov 12 2015 18:10:39 for libSplash by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 12 2016 15:25:01 for libSplash by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>
