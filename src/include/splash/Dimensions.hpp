@@ -20,10 +20,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
-#ifndef _DIMENSIONS_H
-#define	_DIMENSIONS_H
+#ifndef DIMENSIONS_HPP
+#define DIMENSIONS_HPP
 
 #include <sstream>
 #include <hdf5.h>
@@ -65,7 +63,7 @@ namespace splash
 
         /**
          * Returns element \p t
-         * 
+         *
          * @param t element index (1-3)
          * @return element
          */
@@ -76,7 +74,7 @@ namespace splash
 
         /**
          * Returns element \p t
-         * 
+         *
          * @param t element index (1-3)
          * @return element
          */
@@ -87,7 +85,7 @@ namespace splash
 
         /**
          * Element-wise addition of two Dimensions
-         * 
+         *
          * @param other other Dimensions
          * @return new added Dimensions
          */
@@ -98,7 +96,7 @@ namespace splash
 
         /**
          * Element-wise substraction of two Dimensions
-         * 
+         *
          * @param other other Dimensions
          * @return new substracted Dimensions
          */
@@ -109,7 +107,7 @@ namespace splash
 
         /**
          * Element-wise multiplication of two Dimensions
-         * 
+         *
          * @param other other Dimensions
          * @return new multiplied Dimensions
          */
@@ -120,7 +118,7 @@ namespace splash
 
         /**
          * Element-wise division of two Dimensions
-         * 
+         *
          * @param other other Dimensions
          * @return new divided Dimensions
          */
@@ -131,7 +129,7 @@ namespace splash
 
         /**
          * Element-wise addition of Dimensions \p rhs to this Dimensions
-         * 
+         *
          * @param rhs other Dimensions
          * @return this Dimensions
          */
@@ -143,7 +141,7 @@ namespace splash
 
         /**
          * Element-wise substraction of Dimensions \p rhs from this Dimensions
-         * 
+         *
          * @param rhs other Dimensions
          * @return this Dimensions
          */
@@ -155,7 +153,7 @@ namespace splash
 
         /**
          * Element-wise comparison of two Dimensions
-         * 
+         *
          * @param other other Dimensions
          * @return true if equal, false otherwise
          */
@@ -166,7 +164,7 @@ namespace splash
 
         /**
          * Element-wise comparison of two Dimensions
-         * 
+         *
          * @param other other Dimensions
          * @return false if equal, true otherwise
          */
@@ -177,7 +175,7 @@ namespace splash
 
         /**
          * Returns the string representation of this object
-         * 
+         *
          * @return string representation
          */
         std::string toString() const
@@ -195,7 +193,7 @@ namespace splash
         {
             return s;
         }
-        
+
         /**
          * Get pointer to internal data array.
          * @return Pointer to the internal data array.
@@ -246,7 +244,7 @@ namespace splash
             s[1] = d[1];
             s[2] = d[2];
         }
-        
+
         /**
          * Get the number of dimensions.
          * @return Number of dimensions.
@@ -260,7 +258,7 @@ namespace splash
                 if (s[1] == 1)
                     dims = 1;
             }
-            
+
             return dims;
         }
 
@@ -292,5 +290,4 @@ namespace splash
 
 }
 
-#endif	/* _DIMENSIONS_H */
-
+#endif /* DIMENSIONS_HPP */

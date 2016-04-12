@@ -1,36 +1,35 @@
 /**
  * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 
 /**
  * @mainpage libSplash
  *
  * libSplash is a combined project of the Center for Information Services and HPC (ZIH)
  * of the Technical University of Dresden and the Helmholtz-Zentrum Dresden-Rossendorf (HZDR).
- * 
+ *
  * The project aims at developing a HDF5-based I/O library for HPC simulations.
- * It is created as an easy-to-use frontend for the standard HDF5 library with 
+ * It is created as an easy-to-use frontend for the standard HDF5 library with
  * support for MPI processes in a cluster environment.
- * 
+ *
  * While the standard HDF5 library provides detailed low-level control,
  * libSplash simplifies tasks commonly found in large-scale
  * HPC simulations, such as iterative computations and MPI distributed processes.
@@ -44,8 +43,8 @@
  * @authors René Widera
  */
 
-#ifndef _DATACOLLECTOR_H
-#define	_DATACOLLECTOR_H
+#ifndef DATACOLLECTOR_HPP
+#define DATACOLLECTOR_HPP
 
 #include <stdint.h>
 
@@ -88,17 +87,17 @@ namespace splash
              * File access mode.
              */
             FileAccType fileAccType;
-            
+
             /**
              * MPI topology.
              */
             Dimensions mpiSize;
-            
+
             /**
              * MPi position.
              */
             Dimensions mpiPosition;
-            
+
             /**
              * Enable compression, if supported.
              */
@@ -123,7 +122,7 @@ namespace splash
         /**
          * Initializes FileCreationAttr with default values.
          * (compression = false, access type = FAT_CREATE, position = (0, 0, 0), size = (1, 1, 1))
-         * 
+         *
          * @param attr file attributes to initialize
          */
         static void initFileCreationAttr(FileCreationAttr& attr)
@@ -183,7 +182,7 @@ namespace splash
          * Returns all datasets for an ID.
          * The caller must ensure that there is enough space in \p entries
          * to hold \p count elements.
-         * 
+         *
          * @param id ID for iteration.
          * @param entries Pointer to an array with at least \p count elements, can be NULL.
          * @param count Returns the number of elements in \p entries, can be NULL.
@@ -237,7 +236,7 @@ namespace splash
          * @param count Number of elements to append.
          * @param offset Offset in elements to start reading from in \p buf.
          * @param stride Striding to be used for reading from \p buf, 1 means 'no striding'.
-         * \p buf must contain at least (striding * count) elements. 
+         * \p buf must contain at least (striding * count) elements.
          * @param name Name for the dataset to create/append.
          * @param buf Buffer to append.
          */
@@ -344,7 +343,7 @@ namespace splash
 
         /**
          * Reads an attribute from a single dataset.
-         * 
+         *
          * @param id ID for iteration.
          * @param dataName Name of the dataset in group \p id to read attribute from.
          * If dataName is NULL, the attribute is read from the iteration group.
@@ -362,7 +361,7 @@ namespace splash
 
         /**
          * Writes an attribute to a single dataset.
-         * 
+         *
          * @param id ID for iteration.
          * @param type Type information for data.
          * @param dataName Name of the dataset in group \p id to write attribute to.
@@ -452,5 +451,4 @@ namespace splash
 
 }
 
-#endif	/* _DATACOLLECTOR_H */
-
+#endif /* DATACOLLECTOR_HPP */

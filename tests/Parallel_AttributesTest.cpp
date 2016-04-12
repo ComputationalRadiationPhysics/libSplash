@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * libSplash is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -124,7 +125,7 @@ void Parallel_AttributesTest::testDataAttributes()
     c = 'A';
     dataCollector->readAttribute(0, "attr/attr2/attr3/data", "sum", &sum);
     dataCollector->readAttribute(0, "attr/attr2/attr3/data", "neg_sum", &neg_sum);
-    
+
     CPPUNIT_ASSERT_THROW(dataCollector->readAttribute(0, "data", "sum", &sum), DCException);
 
     CPPUNIT_ASSERT(sum == old_sum);

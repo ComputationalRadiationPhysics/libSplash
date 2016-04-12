@@ -1,24 +1,24 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2016 Felix Schmitt, Axel Huebl
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
-
 
 #include <mpi.h>
 #include <time.h>
@@ -26,6 +26,7 @@
 #include <string.h>
 #include <set>
 #include <string>
+#include <typeinfo>
 
 #include "Parallel_SimpleDataTest.h"
 
@@ -45,7 +46,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(Parallel_SimpleDataTest);
 using namespace splash;
 
 Parallel_SimpleDataTest::Parallel_SimpleDataTest() :
-ctInt(),
+ctInt32(),
 parallelDataCollector(NULL)
 {
     srand(10);
@@ -68,7 +69,7 @@ Parallel_SimpleDataTest::~Parallel_SimpleDataTest()
 }
 
 bool Parallel_SimpleDataTest::testData(const Dimensions mpiSize,
-        const Dimensions gridSize, int *data)
+        const Dimensions gridSize, int32_t *data)
 {
     for (size_t z = 0; z < mpiSize[2]; ++z)
         for (size_t y = 0; y < mpiSize[1]; ++y)
@@ -124,18 +125,18 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
     fileCAttr.enableCompression = false;
     parallelDataCollector->open(HDF5_FILE, fileCAttr);
 
-    int *dataWrite = new int[bufferSize];
+    int32_t *dataWrite = new int32_t[bufferSize];
 
     for (uint32_t i = 0; i < bufferSize; i++)
         dataWrite[i] = currentMpiRank + 1;
 
-    parallelDataCollector->write(iteration, ctInt, dimensions, gridSize,
+    parallelDataCollector->write(iteration, ctInt32, dimensions, gridSize,
             "deep/folder/data", dataWrite);
     datasetNames.insert("deep/folder/data");
-    parallelDataCollector->write(iteration, ctInt, dimensions, gridSize,
+    parallelDataCollector->write(iteration, ctInt32, dimensions, gridSize,
             "deep/folder/data2", dataWrite);
     datasetNames.insert("deep/folder/data2");
-    parallelDataCollector->write(iteration, ctInt, dimensions, gridSize,
+    parallelDataCollector->write(iteration, ctInt32, dimensions, gridSize,
             "another_dataset", dataWrite);
     datasetNames.insert("another_dataset");
     parallelDataCollector->close();
@@ -153,8 +154,8 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
 
     Dimensions size_read;
     Dimensions full_grid_size = gridSize * mpiSize;
-    int *data_read = new int[full_grid_size.getScalarSize()];
-    memset(data_read, 0, sizeof (int) * full_grid_size.getScalarSize());
+    int32_t *data_read = new int32_t[full_grid_size.getScalarSize()];
+    memset(data_read, 0, sizeof (int32_t) * full_grid_size.getScalarSize());
 
     // test using SerialDataCollector
     if (currentMpiRank == 0)
@@ -173,12 +174,12 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
     MPI_CHECK(MPI_Barrier(mpiComm));
 
     // test using full read per process
-    memset(data_read, 0, sizeof (int) * full_grid_size.getScalarSize());
+    memset(data_read, 0, sizeof (int32_t) * full_grid_size.getScalarSize());
     ParallelDataCollector *readCollector = new ParallelDataCollector(mpiComm,
             MPI_INFO_NULL, mpiSize, 1);
 
     readCollector->open(HDF5_FILE, fileCAttr);
-    
+
     /* test entries listing */
     {
         DataCollector::DCEntry *entries = NULL;
@@ -202,13 +203,26 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
         {
             /* test that listed datasets match expected dataset names*/
             CPPUNIT_ASSERT(datasetNames.find(entries[i].name) != datasetNames.end());
+            CPPUNIT_ASSERT(typeid(*entries[i].colType) == typeid(ColTypeInt32));
         }
 
         delete[] entries;
         delete[] ids;
     }
-    
+
     readCollector->read(iteration, "deep/folder/data", size_read, data_read);
+
+    Dimensions dstBuffer(size_read);
+    Dimensions dstOffset(0, 0, 0);
+    Dimensions sizeRead(0, 0, 0);
+    CollectionType* colType = readCollector->readMeta(iteration,
+        "deep/folder/data", dstBuffer, dstOffset, sizeRead);
+
+    CPPUNIT_ASSERT(typeid(*colType) == typeid(ColTypeInt32));
+    CPPUNIT_ASSERT(typeid(*colType) != typeid(ColTypeUInt32));
+    CPPUNIT_ASSERT(typeid(*colType) != typeid(ColTypeUInt64));
+    CPPUNIT_ASSERT(typeid(*colType) != typeid(ColTypeDouble));
+
     readCollector->close();
 
     CPPUNIT_ASSERT(size_read == full_grid_size);
@@ -218,8 +232,8 @@ bool Parallel_SimpleDataTest::subtestWriteRead(int32_t iteration,
     MPI_CHECK(MPI_Barrier(mpiComm));
 
     // test using parallel read
-    data_read = new int[gridSize.getScalarSize()];
-    memset(data_read, 0, sizeof (int) * gridSize.getScalarSize());
+    data_read = new int32_t[gridSize.getScalarSize()];
+    memset(data_read, 0, sizeof (int32_t) * gridSize.getScalarSize());
 
     const Dimensions globalOffset = gridSize * mpiPos;
     readCollector->open(HDF5_FILE, fileCAttr);
@@ -379,7 +393,7 @@ bool Parallel_SimpleDataTest::subtestFill(int32_t iteration,
     fileCAttr.enableCompression = false;
     parallelDataCollector->open(HDF5_FILE, fileCAttr);
 
-    int dataWrite = currentMpiRank + 1;
+    int32_t dataWrite = currentMpiRank + 1;
     uint32_t num_elements = (currentMpiRank + 1) * elements;
     Dimensions grid_size(num_elements, 1, 1);
 
@@ -389,10 +403,10 @@ bool Parallel_SimpleDataTest::subtestFill(int32_t iteration,
 
     Dimensions globalOffset, globalSize;
     parallelDataCollector->reserve(iteration, grid_size,
-            &globalSize, &globalOffset, 1, ctInt, "reserved/reserved_data");
+            &globalSize, &globalOffset, 1, ctInt32, "reserved/reserved_data");
 
-    int attrVal = currentMpiRank;
-    parallelDataCollector->writeAttribute(iteration, ctInt, "reserved/reserved_data",
+    int32_t attrVal = currentMpiRank;
+    parallelDataCollector->writeAttribute(iteration, ctInt32, "reserved/reserved_data",
             "reserved_attr", &attrVal);
 
     uint32_t elements_written = 0;
@@ -437,8 +451,8 @@ bool Parallel_SimpleDataTest::subtestFill(int32_t iteration,
     // test using SerialDataCollector
     if (currentMpiRank == 0)
     {
-        int *data_read = new int[full_grid_size.getScalarSize()];
-        memset(data_read, 0, sizeof (int) * full_grid_size.getScalarSize());
+        int32_t *data_read = new int32_t[full_grid_size.getScalarSize()];
+        memset(data_read, 0, sizeof (int32_t) * full_grid_size.getScalarSize());
 
         DataCollector *dataCollector = new SerialDataCollector(1);
         dataCollector->open(filename_stream.str().c_str(), fileCAttr);

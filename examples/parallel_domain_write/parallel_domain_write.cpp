@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash.
  *
@@ -31,9 +31,8 @@
 using namespace splash;
 
 /**
- * This libSplash example demonstrates on how to use the DomainCollector class
- * to write multiple, domain-annotated libSplash files of a single file set.
- * The output of this example can be read with the domain_read and domain_read_mpi examples.
+ * This libSplash example demonstrates on how to use the ParallelDomainCollector class
+ * to write a single, aggregated libSplash file with parallel HDF5.
  *
  * The program expects the base part to a libSplash filename and the MPI process topology.
  */
@@ -73,18 +72,18 @@ int main(int argc, char **argv)
 
     indexToPos(mpi_rank, mpiTopology, mpiPosition);
 
-    /* create DomainCollector */
-    DomainCollector dc(100);
+    /* create ParallelDomainCollector */
+    {
+    ParallelDomainCollector pdc(MPI_COMM_WORLD, MPI_INFO_NULL,
+        mpiTopology, 100 );
     DataCollector::FileCreationAttr fAttr;
     DataCollector::initFileCreationAttr(fAttr);
 
-    fAttr.fileAccType = DataCollector::FAT_CREATE;
     fAttr.mpiPosition.set(mpiPosition);
 
-    dc.open(filename.c_str(), fAttr);
+    pdc.open(filename.c_str(), fAttr);
 
     /* create data for writing */
-
     Dimensions localGridSize(10, 20, 5);
 
     ColTypeFloat ctFloat;
@@ -98,25 +97,26 @@ int main(int argc, char **argv)
 
     /**
      * See your local Doxygen documentation or online at
-     * http://computationalradiationphysics.github.io/libSplash/classsplash_1_1_domain_collector.html
+     * https://computationalradiationphysics.github.io/libSplash/classsplash_1_1_parallel_domain_collector.html
      * for more information on this interface.
      **/
-    dc.writeDomain(10,                    /* iteration */
+    pdc.writeDomain(10,                   /* iteration */
             ctFloat,                      /* data type */
             localGridSize.getDims(),      /* number of dimensions (here 3) */
             Selection(localGridSize),     /* data size of this process */
             "float_data",                 /* name of dataset */
-            Domain(localDomainOffset,           /* logical offset of the data of this process */
+            Domain(localDomainOffset,     /* logical offset of the data of this process */
             localGridSize),               /* logical size of the data of this process
                                            * must match actual data size for grids */
-            Domain(globalDomainOffset,                /* logical start of the data of all processes */
+            Domain(globalDomainOffset,    /* logical start of the data of all processes */
             localGridSize * mpiTopology), /* logical size of the data of all processes */
             DomainCollector::GridType,    /* we are writing grid (not poly) data here */
             data);                        /* the actual data buffer (pointer) */
 
-    dc.close();
+    pdc.close();
 
     delete[] data;
+    } /* destroy ParallelDomainCollector */
 
     MPI_Finalize();
 

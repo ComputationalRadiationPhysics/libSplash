@@ -1,21 +1,21 @@
+ # Copyright 2013-2015 Felix Schmitt, Axel Huebl
  #
- # Copyright 2013 Felix Schmitt
+ # This file is part of libSplash.
  #
- # This file is part of libSplash. 
- # 
- # libSplash is free software: you can redistribute it and/or modify 
- # it under the terms of of either the GNU General Public License or 
- # the GNU Lesser General Public License as published by 
- # the Free Software Foundation, either version 3 of the License, or 
- # (at your option) any later version. 
- # libSplash is distributed in the hope that it will be useful, 
- # but WITHOUT ANY WARRANTY; without even the implied warranty of 
- # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- # GNU General Public License and the GNU Lesser General Public License 
- # for more details. 
- # 
- # You should have received a copy of the GNU General Public License 
- # and the GNU Lesser General Public License along with libSplash. 
+ # libSplash is free software: you can redistribute it and/or modify
+ # it under the terms of of either the GNU General Public License or
+ # the GNU Lesser General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # libSplash is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License and the GNU Lesser General Public License
+ # for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # and the GNU Lesser General Public License along with libSplash.
  # If not, see <http://www.gnu.org/licenses/>.
 
 cmake_minimum_required(VERSION 2.8.5)
@@ -40,6 +40,7 @@ OPTION(WITH_MPI "build MPI examples" OFF)
 
 SET(EXAMPLES domain_read/domain_read)
 SET(MPI_EXAMPLES domain_read/domain_read_mpi domain_write/domain_write_mpi)
+SET(PARALLEL_EXAMPLES parallel_domain_write/parallel_domain_write)
 
 FOREACH(EXAMPLE_NAME ${EXAMPLES})
     SET(EXAMPLE_FILES "${EXAMPLE_FILES};${EXAMPLE_NAME}.cpp")
@@ -47,6 +48,9 @@ ENDFOREACH()
 
 FOREACH(EXAMPLE_NAME ${MPI_EXAMPLES})
     SET(MPI_EXAMPLE_FILES "${MPI_EXAMPLE_FILES};${EXAMPLE_NAME}.cpp")
+ENDFOREACH()
+FOREACH(PARALLEL_EXAMPLE_NAME ${PARALLEL_EXAMPLES})
+    SET(PARALLEL_EXAMPLE_FILES "${PARALLEL_EXAMPLE_FILES};${PARALLEL_EXAMPLE_NAME}.cpp")
 ENDFOREACH()
 
 #-------------------------------------------------------------------------------
@@ -66,8 +70,8 @@ INCLUDE_DIRECTORIES("${SPLASH_ROOT_DIR}/include")
 
 # link static
 ADD_LIBRARY(splash_static STATIC IMPORTED)
-SET_TARGET_PROPERTIES(splash_static PROPERTIES 
-	IMPORTED_LOCATION "${SPLASH_ROOT_DIR}/lib/libsplash.a")
+SET_TARGET_PROPERTIES(splash_static PROPERTIES
+    IMPORTED_LOCATION "${SPLASH_ROOT_DIR}/lib/libsplash.a")
 SET(LIBS splash_static ${LIBS})
 
 # link dynamic
@@ -102,6 +106,10 @@ ENDFOREACH()
 
 # build all MPI examples
 IF(WITH_MPI)
+    # add parallel examples
+    IF(HDF5_IS_PARALLEL)
+        SET(MPI_EXAMPLE_FILES ${MPI_EXAMPLE_FILES} ${PARALLEL_EXAMPLE_FILES})
+    ENDIF(HDF5_IS_PARALLEL)
     MESSAGE(STATUS "Building MPI examples")
     FOREACH(EXAMPLE_FILE ${MPI_EXAMPLE_FILES})
         GET_FILENAME_COMPONENT(FILE ${EXAMPLE_FILE} NAME)

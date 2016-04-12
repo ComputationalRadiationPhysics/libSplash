@@ -1,23 +1,23 @@
 /**
  * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
+ * This file is part of libSplash.
  *
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <cassert>
@@ -176,7 +176,7 @@ namespace splash
         options.mpiSize = topology.getScalarSize();
         options.mpiTopology.set(topology);
         options.maxID = -1;
-        
+
         setLogMpiRank(options.mpiRank);
 
         if (H5open() < 0)
@@ -203,11 +203,11 @@ namespace splash
     {
         H5Pclose(fileAccProperties);
     }
-    
+
     void ParallelDataCollector::finalize()
     {
         log_msg(1, "finalizing data collector");
-        
+
         if (options.mpiComm != MPI_COMM_NULL)
         {
             MPI_Comm_free(&options.mpiComm);
@@ -330,7 +330,7 @@ namespace splash
         try
         {
             DCAttribute::readAttribute(name, group_custom.getHandle(), data);
-        } catch (DCException e)
+        } catch (const DCException& e)
         {
             log_msg(0, "Exception: %s", e.what());
             throw DCException(getExceptionString("readGlobalAttribute", "failed to open attribute", name));
@@ -370,7 +370,7 @@ namespace splash
         try
         {
             DCAttribute::writeAttribute(name, type.getDataType(), group_custom.getHandle(), ndims, dims, data);
-        } catch (DCException e)
+        } catch (const DCException& e)
         {
             log_msg(0, "Exception: %s", e.what());
             throw DCException(getExceptionString("writeGlobalAttribute", "failed to write attribute", name));
@@ -420,7 +420,7 @@ namespace splash
             try
             {
                 DCAttribute::readAttribute(attrName, obj_id, data);
-            } catch (DCException)
+            } catch (const DCException&)
             {
                 H5Oclose(obj_id);
                 throw;
@@ -491,7 +491,7 @@ namespace splash
             try
             {
                 DCAttribute::writeAttribute(attrName, type.getDataType(), obj_id, ndims, dims, data);
-            } catch (DCException)
+            } catch (const DCException&)
             {
                 H5Oclose(obj_id);
                 throw;
@@ -585,7 +585,7 @@ namespace splash
 
     void ParallelDataCollector::write(int32_t id, const Dimensions globalSize,
             const Dimensions globalOffset,
-            const CollectionType& type, uint32_t ndims, 
+            const CollectionType& type, uint32_t ndims,
             const Selection select, const char* name, const void* buf)
     {
         if (name == NULL)
@@ -998,11 +998,28 @@ namespace splash
 
         getEntriesForID(id, &(*entries.begin()), NULL);
 
+        // find entry by name
+        int32_t entry_id = -1;
+        for(size_t i = 0; i < entrySize; ++i)
+            if(std::string(name) == entries[i].name)
+            {
+                entry_id = int32_t(i);
+                break;
+            }
+
+        if(entry_id < 0)
+            throw DCException(getExceptionString("readDataSetMeta", "Entry not found by name"));
+
         Dimensions src_size(dataset.getSize() - srcOffset);
         dataset.read(dstBuffer, dstOffset, src_size, srcOffset, sizeRead, srcDims, NULL);
         dataset.close();
 
-        return entries[0].colType;
+        log_msg(3, "Entry '%s' (%d) is of type: %s",
+                entries[entry_id].name.c_str(),
+                entry_id,
+                entries[entry_id].colType->toString().c_str());
+
+        return entries[entry_id].colType;
     }
 
     void ParallelDataCollector::writeDataSet(H5Handle group,

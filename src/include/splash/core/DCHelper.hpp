@@ -1,29 +1,27 @@
 /**
  * Copyright 2013, 2015 Felix Schmitt, Axel Huebl
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
+ * This file is part of libSplash.
  *
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 #ifndef DCHELPER_H
-#define	DCHELPER_H
+#define DCHELPER_H
 
 #include <map>
 #include <cmath>
@@ -90,14 +88,14 @@ namespace splash
 
         /**
          * Computes the chunk dimensions for a dataset.
-         * 
+         *
          * Chunk dimensions are selected to create chunks sizes between
          * 64KByte and 4MB. Smaller chunk sizes are inefficient due to overhead,
          * larger chunks do not map well to file system blocks and striding.
-         * 
+         *
          * Chunk dimensions are less or equal to dataset dimensions and do
          * not need to be a factor of the respective dataset dimension.
-         * 
+         *
          * @param dims dimensions of dataset to get chunk dims for
          * @param ndims number of dimensions for dims and chunkDims
          * @param typeSize size of each element in bytes
@@ -109,7 +107,7 @@ namespace splash
             const size_t NUM_CHUNK_SIZES = 7;
             // chunk sizes in KByte
             const size_t CHUNK_SIZES_KB[] = {4096, 2048, 1024, 512, 256, 128, 64};
-            
+
             size_t total_data_size = typeSize;
             size_t max_chunk_size = typeSize;
             size_t target_chunk_size = 0;
@@ -119,20 +117,20 @@ namespace splash
             std::multimap<hsize_t, uint32_t> dims_order;
             for (uint32_t i = 0; i < ndims; ++i)
                 dims_order.insert(std::make_pair(dims[i], i));
-            
+
             for (uint32_t i = 0; i < ndims; ++i)
             {
                 // initial number of chunks per dimension
                 chunkDims[i] = 1;
-                
+
                 // try to make at least two chunks for each dimension
                 size_t half_dim = dims[i] / 2;
-                
+
                 // compute sizes
                 max_chunk_size *= (half_dim > 0) ? half_dim : 1;
                 total_data_size *= dims[i];
             }
-            
+
             // compute the target chunk size
             for (uint32_t i = 0; i < NUM_CHUNK_SIZES; ++i)
             {
@@ -140,10 +138,10 @@ namespace splash
                 if (target_chunk_size <= max_chunk_size)
                     break;
             }
-            
+
             size_t current_chunk_size = typeSize;
             size_t last_chunk_diff = target_chunk_size;
-            std::multimap<hsize_t, uint32_t>::const_iterator current_index = 
+            std::multimap<hsize_t, uint32_t>::const_iterator current_index =
                     dims_order.begin();
 
             while (current_chunk_size < target_chunk_size)
@@ -158,7 +156,7 @@ namespace splash
                 for (uint32_t d = 0; d < ndims; ++d)
                 {
                     int current_dim = current_index->second;
-                    
+
                     // increasing chunk size possible
                     if (chunkDims[current_dim] * 2 <= dims[current_dim])
                     {
@@ -208,4 +206,4 @@ namespace splash
 
 } // namespace DataCollector
 
-#endif	/* DCHELPER_H */
+#endif /* DCHELPER_H */

@@ -1,22 +1,23 @@
 /**
  * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 
@@ -169,7 +170,7 @@ namespace splash
                 ColTypeInt32 ctInt32;
                 DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, ctInt32.getDataType(),
                         group.getHandle(), &maxID);
-            } catch (DCException e)
+            } catch (const DCException& e)
             {
                 log_msg(0, "Exception: %s", e.what());
                 log_msg(1, "continuing...");
@@ -223,7 +224,7 @@ namespace splash
         try
         {
             DCAttribute::readAttribute(name, group_custom.getHandle(), data);
-        } catch (DCException e)
+        } catch (const DCException&)
         {
             throw DCException(getExceptionString("readGlobalAttribute", "failed to open attribute", name));
         }
@@ -260,7 +261,7 @@ namespace splash
         try
         {
             DCAttribute::writeAttribute(name, type.getDataType(), group_custom.getHandle(), ndims, dims, data);
-        } catch (DCException e)
+        } catch (const DCException& e)
         {
             std::cerr << e.what() << std::endl;
             throw DCException(getExceptionString("writeGlobalAttribute", "failed to write attribute", name));
@@ -313,7 +314,7 @@ namespace splash
                 try
                 {
                     DCAttribute::readAttribute(attrName, obj_id, data);
-                } catch (DCException)
+                } catch (const DCException&)
                 {
                     H5Oclose(obj_id);
                     throw;
@@ -390,7 +391,7 @@ namespace splash
             try
             {
                 DCAttribute::writeAttribute(attrName, type.getDataType(), obj_id, ndims, dims, data);
-            } catch (DCException)
+            } catch (const DCException&)
             {
                 H5Oclose(obj_id);
                 throw;
@@ -470,7 +471,7 @@ namespace splash
         try
         {
             writeDataSet(group.getHandle(), type, ndims, select, dset_name.c_str(), data);
-        } catch (DCException)
+        } catch (const DCException&)
         {
             throw;
         }
@@ -507,7 +508,7 @@ namespace splash
         {
             appendDataSet(group.getHandle(), type, count, offset,
                     stride, dset_name.c_str(), data);
-        } catch (DCException)
+        } catch (const DCException&)
         {
             throw;
         }
@@ -610,7 +611,7 @@ namespace splash
             dst_dataset.close();
             src_dataset.close();
 
-        } catch (DCException e)
+        } catch (const DCException& e)
         {
             throw e;
         }
@@ -663,7 +664,7 @@ namespace splash
             dst_dataset.close();
             src_dataset.close();
 
-        } catch (DCException e)
+        } catch (const DCException& e)
         {
             throw e;
         }
@@ -916,7 +917,7 @@ namespace splash
             ndims = dataset.getNDims();
 
             dataset.close();
-        } catch (DCException e)
+        } catch (const DCException& e)
         {
             throw e;
         }
@@ -1003,11 +1004,28 @@ namespace splash
 
         getEntriesForID(id, &(*entries.begin()), NULL);
 
+        // find entry by name
+        int32_t entry_id = -1;
+        for(size_t i = 0; i < entrySize; ++i)
+            if(std::string(name) == entries[i].name)
+            {
+                entry_id = int32_t(i);
+                break;
+            }
+
+        if(entry_id < 0)
+            throw DCException(getExceptionString("readDataSetMeta", "Entry not found by name"));
+
         Dimensions src_size(dataset.getSize() - srcOffset);
         dataset.read(dstBuffer, dstOffset, src_size, srcOffset, sizeRead, srcDims, NULL);
         dataset.close();
 
-        return entries[0].colType;
+        log_msg(3, "Entry '%s' (%d) is of type: %s",
+                entries[entry_id].name.c_str(),
+                entry_id,
+                entries[entry_id].colType->toString().c_str());
+
+        return entries[entry_id].colType;
     }
 
     void SerialDataCollector::readSizeInternal(H5Handle h5File,
@@ -1030,7 +1048,7 @@ namespace splash
             dataset.open(group.getHandle());
             sizeRead.set(dataset.getSize());
             dataset.close();
-        } catch (DCException e)
+        } catch (const DCException& e)
         {
             throw e;
         }

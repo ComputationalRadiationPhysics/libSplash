@@ -44,4 +44,4 @@ namespace splash
     };
 }
 
-#endif	/* COLTYPEUNKNOWN_H */
+#endif /* COLTYPEUNKNOWN_H */

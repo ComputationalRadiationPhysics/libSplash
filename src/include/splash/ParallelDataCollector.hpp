@@ -1,26 +1,27 @@
 /**
  * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef PARALLELDATACOLLECTOR_HPP
-#define	PARALLELDATACOLLECTOR_HPP
+#define PARALLELDATACOLLECTOR_HPP
 
 #include <mpi.h>
 #include <sstream>
@@ -56,7 +57,7 @@ namespace splash
         /**
          * Constructs a filename from a base filename and the current id
          * such as baseFilename+id+.h5
-         * 
+         *
          * @param id Iteration ID.
          * @param baseFilename Base filename for the new file.
          * @return newly Constructed filename including file extension.
@@ -65,7 +66,7 @@ namespace splash
 
         /**
          * Internal function for formatting exception messages.
-         * 
+         *
          * @param func name of the throwing function
          * @param msg exception message
          * @param info optional info text to be appended, e.g. the group name
@@ -189,7 +190,7 @@ namespace splash
     public:
         /**
          * Constructor
-         * 
+         *
          * @param comm The communicator.
          * All processes in this communicator must participate in accessing data.
          * @param info The MPI_Info object.
@@ -359,7 +360,7 @@ namespace splash
                 const Dimensions dstOffset,
                 Dimensions &sizeRead,
                 void* buf) throw (DCException);
-        
+
         void finalize(void);
 
     private:
@@ -432,5 +433,4 @@ namespace splash
 
 }
 
-#endif	/* PARALLELDATACOLLECTOR_HPP */
-
+#endif /* PARALLELDATACOLLECTOR_HPP */

@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * libSplash is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -20,7 +21,7 @@
  */
 
 #ifndef COLTYPESTRING_H
-#define	COLTYPESTRING_H
+#define COLTYPESTRING_H
 
 #include "splash/CollectionType.hpp"
 
@@ -105,4 +106,4 @@ namespace splash
 
 }
 
-#endif	/* COLTYPESTRING_H */
+#endif /* COLTYPESTRING_H */

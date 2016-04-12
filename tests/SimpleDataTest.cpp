@@ -1,22 +1,23 @@
 /**
- * Copyright 2013-2014 Felix Schmitt
+ * Copyright 2013-2016 Felix Schmitt, Axel Huebl
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 #define __STDC_LIMIT_MACROS
@@ -28,6 +29,7 @@
 #include <set>
 #include <string>
 #include <cstring>
+#include <typeinfo>
 
 #include "SimpleDataTest.h"
 
@@ -177,7 +179,20 @@ bool SimpleDataTest::subtestWriteRead(Dimensions gridSize, Dimensions borderSize
     }
 
     Dimensions resultSize;
+
     dataCollector->read(10, "deep/folders/data", resultSize, dataRead);
+
+    Dimensions dstBuffer(resultSize);
+    Dimensions dstOffset(0, 0, 0);
+    Dimensions sizeRead(0, 0, 0);
+    CollectionType* colType = dataCollector->readMeta(10, "deep/folders/data_bool", dstBuffer, dstOffset, sizeRead);
+
+    std::cout << colType->toString() << std::endl;
+
+    CPPUNIT_ASSERT(typeid(*colType) == typeid(ColTypeBool));
+    CPPUNIT_ASSERT(typeid(*colType) != typeid(ColTypeUInt64));
+    CPPUNIT_ASSERT(typeid(*colType) != typeid(ColTypeInt64));
+    CPPUNIT_ASSERT(typeid(*colType) != typeid(ColTypeDouble));
 
     for (uint32_t i = 0; i < 3; i++)
         CPPUNIT_ASSERT(resultSize[i] == gridSize[i]);

@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * libSplash is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -18,7 +19,6 @@
  * and the GNU Lesser General Public License along with libSplash.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-
 
 #include <mpi.h>
 #include <time.h>
@@ -184,7 +184,7 @@ void Parallel_DomainsTest::subTestGridDomains(int32_t iteration,
 
         for (int j = 0; j < subdomain_elements.getScalarSize(); ++j)
         {
-            // Find out the expected value (original mpi rank) 
+            // Find out the expected value (original mpi rank)
             // for exactly this data element.
             Dimensions j_grid_position(j % subdomain_elements[0],
                     (j / subdomain_elements[0]) % subdomain_elements[1],
@@ -345,7 +345,7 @@ void Parallel_DomainsTest::subTestPolyDomains(int32_t iteration,
 #endif
 
     parallelDomainCollector->writeDomain(iteration, ctFloat, 1,
-            Selection(poly_size), "poly_data", 
+            Selection(poly_size), "poly_data",
             Domain(local_domain_offset, local_domain_size),
             Domain(global_domain_offset, global_domain_size),
             IDomainCollector::PolyType, data_write);
@@ -550,7 +550,7 @@ void Parallel_DomainsTest::testAppendDomains()
 
     pdc->reserveDomain(10, global_grid_size, 3, ctInt, "append/data",
             Domain(global_domain_offset, global_grid_size), DomainCollector::GridType);
-    
+
     MPI_CHECK(MPI_Barrier(MPI_COMM_WORLD));
 
     if (mpi_position[0] % 2 == 0)
@@ -564,7 +564,7 @@ void Parallel_DomainsTest::testAppendDomains()
 
             Dimensions write_offset = Dimensions(mpi_position[0] + m,
                     mpi_position[1], mpi_position[2]) * local_grid_size;
-            
+
             pdc->append(10, local_grid_size, 3, write_offset, "append/data", buffer);
         }
     }
@@ -574,22 +574,22 @@ void Parallel_DomainsTest::testAppendDomains()
     // test data
     fAttr.fileAccType = DataCollector::FAT_READ;
     pdc->open(hdf5_file_append, fAttr);
-            
+
     DataContainer *container = pdc->readDomain(10, "append/data",
             Domain(global_domain_offset + mpi_position * local_grid_size, local_grid_size),
             NULL, false);
-    
+
     CPPUNIT_ASSERT(container);
     CPPUNIT_ASSERT(container->getNumSubdomains() == 1);
-    
+
     int *data = (int*)(container->getIndex(0)->getData());
     for (size_t i = 0; i < container->getIndex(0)->getSize().getScalarSize(); ++i)
         CPPUNIT_ASSERT(data[i] == mpi_position[0]);
-    
+
     delete container;
-    
+
     pdc->close();
-    
+
     delete pdc;
     pdc = NULL;
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2013-2016 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash.
  *
@@ -8,6 +8,7 @@
  * the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * libSplash is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,10 +20,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 #ifndef PARALLEL_SIMPLEDATATEST_H
-#define	PARALLEL_SIMPLEDATATEST_H
+#define PARALLEL_SIMPLEDATATEST_H
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -54,7 +53,7 @@ private:
     void testFill();
 
     bool testData(const Dimensions mpiSize, const Dimensions gridSize,
-            int *data);
+            int32_t *data);
 
     /**
      * sub function for testWriteRead to allow several data sizes to be tested.
@@ -69,12 +68,11 @@ private:
     bool subtestFill(int32_t iteration, int currentMpiRank, const Dimensions mpiSize,
             const Dimensions mpiPos, uint32_t elements, MPI_Comm mpiComm);
 
-    ColTypeInt ctInt;
+    ColTypeInt32 ctInt32;
     IParallelDataCollector *parallelDataCollector;
 
     int totalMpiSize;
     int myMpiRank;
 };
 
-#endif	/* PARALLEL_SIMPLEDATATEST_H */
-
+#endif /* PARALLEL_SIMPLEDATATEST_H */

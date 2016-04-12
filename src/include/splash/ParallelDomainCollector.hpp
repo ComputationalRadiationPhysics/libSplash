@@ -1,26 +1,27 @@
 /**
  * Copyright 2013-2014 Felix Schmitt
  *
- * This file is part of libSplash. 
- * 
- * libSplash is free software: you can redistribute it and/or modify 
- * it under the terms of of either the GNU General Public License or 
- * the GNU Lesser General Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * libSplash is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU General Public License and the GNU Lesser General Public License 
- * for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * and the GNU Lesser General Public License along with libSplash. 
- * If not, see <http://www.gnu.org/licenses/>. 
+ * This file is part of libSplash.
+ *
+ * libSplash is free software: you can redistribute it and/or modify
+ * it under the terms of of either the GNU General Public License or
+ * the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libSplash is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License and the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * and the GNU Lesser General Public License along with libSplash.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef PARALLELDOMAINCOLLECTOR_HPP
-#define	PARALLELDOMAINCOLLECTOR_HPP
+#define PARALLELDOMAINCOLLECTOR_HPP
 
 #include "splash/domains/IParallelDomainCollector.hpp"
 #include "splash/ParallelDataCollector.hpp"
@@ -36,7 +37,7 @@ namespace splash
     private:
         /**
          * Internal function for formatting exception messages.
-         * 
+         *
          * @param func name of the throwing function
          * @param msg exception message
          * @param info optional info text to be appended, e.g. the group name
@@ -55,7 +56,7 @@ namespace splash
     public:
         /**
          * Constructor
-         * 
+         *
          * @param comm The communicator.
          * All processes in this communicator must participate in accessing data.
          * @param info The MPI_Info object.
@@ -72,7 +73,7 @@ namespace splash
 
         /**
          * Returns the global domain information for a dataset.
-         * 
+         *
          * @param id dataset iteration
          * @param name dataset name
          * @return global domain
@@ -82,7 +83,7 @@ namespace splash
 
         /**
          * Returns the local domain information for a dataset.
-         * 
+         *
          * @param id dataset iteration
          * @param name dataset name
          * @return global domain
@@ -169,5 +170,4 @@ namespace splash
 
 }
 
-#endif	/* PARALLELDOMAINCOLLECTOR_HPP */
-
+#endif /* PARALLELDOMAINCOLLECTOR_HPP */

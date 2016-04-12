@@ -21,7 +21,7 @@
  */
 
 #ifndef SELECTION_HPP
-#define	SELECTION_HPP
+#define SELECTION_HPP
 
 #include <string>
 #include <sstream>
@@ -100,18 +100,18 @@ namespace splash
 
         /**
          * Create a string representation of this selection
-         * 
+         *
          * @return string representation
          */
         std::string toString(void) const
         {
             std::stringstream stream;
-            stream << 
-                    "{size=" << size.toString() << 
+            stream <<
+                    "{size=" << size.toString() <<
                     ", count=" << count.toString() <<
                     ", offset=" << offset.toString() <<
                     ", stride=" << stride.toString() << "}";
-            return stream.str(); 
+            return stream.str();
         }
 
         Dimensions size;
@@ -122,4 +122,4 @@ namespace splash
 
 }
 
-#endif	/* SELECTION_HPP */
+#endif /* SELECTION_HPP */
