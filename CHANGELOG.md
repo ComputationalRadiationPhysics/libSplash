@@ -11,7 +11,8 @@ clean-ups.
 **Bug Fixes**
 
  - `readMeta` now returns the correct `CollectionType` if more then
-   one entry was used per iteration #224
+   one entry was used per iteration, detection for `ColTypeBool` was
+   broken #224
  - exception parameters are now catched consequently by const
    reference #213
 
