@@ -1,6 +1,19 @@
 Change Log for libSplash
 ================================================================
 
+Release 1.4.0
+-------------
+**Date:** 2016-04-12
+
+The `SerialDataCollector` now also writes global attributes
+to `/`, allowing serial files to fulfill the openPMD standard.
+
+**Interface Changes**
+
+ - `SerialDataCollector::writeGlobalAttribute` now writes to `/`
+   instead of `/custom` (follow-up to #182) #229
+
+
 Release 1.3.1
 -------------
 **Date:** 2016-04-12

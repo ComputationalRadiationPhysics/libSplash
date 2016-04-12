@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2015 Felix Schmitt, Axel Huebl
+ * Copyright 2013-2016 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash.
  *
@@ -25,14 +25,14 @@
 
 /** the splash version reflects the changes in API */
 #define SPLASH_VERSION_MAJOR 1
-#define SPLASH_VERSION_MINOR 3
-#define SPLASH_VERSION_PATCH 1
+#define SPLASH_VERSION_MINOR 4
+#define SPLASH_VERSION_PATCH 0
 
 /** we can always handle files from the same major release
  *  changes in the minor number have to be backwards compatible
  */
-#define SPLASH_FILE_FORMAT_MAJOR 3
-#define SPLASH_FILE_FORMAT_MINOR 3
+#define SPLASH_FILE_FORMAT_MAJOR 4
+#define SPLASH_FILE_FORMAT_MINOR 0
 
 /** The version of HDF5 that was used to compile splash */
 #define SPLASH_HDF5_VERSION "${HDF5_VERSION}"
