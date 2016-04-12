@@ -1,6 +1,30 @@
 Change Log for libSplash
 ================================================================
 
+Release 1.3.1
+-------------
+**Date:** 2016-04-12
+
+This release contains bug fixes and serveral internal code
+clean-ups.
+
+**Bug Fixes**
+
+ - `readMeta` now returns the correct `CollectionType` if more then
+   one entry was used per iteration #224
+ - exception parameters are now catched consequently by const
+   reference #213
+
+
+**Misc**
+
+ - remove tabs and EOL white spaces #216 #217 #218
+ - remove `_` prefixes from a few include guards #214
+ - add example for the `ParallelDataCollector` class #14
+ - remove beta notice for parallel HDF5 support #209
+ - update travis-ci script #212
+
+
 Release 1.3.0
 -------------
 **Date:** 2015-11-12
