@@ -1004,11 +1004,28 @@ namespace splash
 
         getEntriesForID(id, &(*entries.begin()), NULL);
 
+        // find entry by name
+        int32_t entry_id = -1;
+        for(size_t i = 0; i < entrySize; ++i)
+            if(std::string(name) == entries[i].name)
+            {
+                entry_id = int32_t(i);
+                break;
+            }
+
+        if(entry_id < 0)
+            throw DCException(getExceptionString("readDataSetMeta", "Entry not found by name"));
+
         Dimensions src_size(dataset.getSize() - srcOffset);
         dataset.read(dstBuffer, dstOffset, src_size, srcOffset, sizeRead, srcDims, NULL);
         dataset.close();
 
-        return entries[0].colType;
+        log_msg(3, "Entry '%s' (%d) is of type: %s",
+                entries[entry_id].name.c_str(),
+                entry_id,
+                entries[entry_id].colType->toString().c_str());
+
+        return entries[entry_id].colType;
     }
 
     void SerialDataCollector::readSizeInternal(H5Handle h5File,
