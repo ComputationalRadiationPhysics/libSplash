@@ -28,7 +28,7 @@ namespace splash
 #define SDC_GROUP_HEADER "/header"
 #define SDC_GROUP_DATA "/data"
 #define SDC_GROUP_ITERATION "iteration"
-#define SDC_GROUP_CUSTOM "/custom"
+#define SDC_GROUP_CUSTOM "/"
 #define SDC_ATTR_DIM_LOCAL "dim_local"
 #define SDC_ATTR_DIM_GLOBAL "dim_global"
 #define SDC_ATTR_MAX_ID "max_id"
