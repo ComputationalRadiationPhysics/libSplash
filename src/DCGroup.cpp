@@ -103,8 +103,10 @@ namespace splash
     throw (DCException)
     {
         H5Handle newHandle;
+        const bool is_basepath(path == std::string("/"));
 
-        if (checkExistence && !H5Lexists(base, path.c_str(), H5P_DEFAULT))
+        if (checkExistence && !H5Lexists(base, path.c_str(), H5P_DEFAULT) &&
+            !is_basepath)
             throw DCException(getExceptionString("Failed to open group", path));
 
         newHandle = H5Gopen(base, path.c_str(), H5P_DEFAULT);
