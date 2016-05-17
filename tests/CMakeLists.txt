@@ -61,7 +61,7 @@ INCLUDE_DIRECTORIES(include ../src/include $ENV{MPI_INC} )
 #-------------------------------------------------------------------------------
 
 FILE(GLOB SRCFILESOTHER "dependencies/*.cpp")
-SET(TESTS Append Attributes FileAccess References Remove SimpleData Striding)
+SET(TESTS Append Attributes FileAccess Filename References Remove SimpleData Striding)
 
 IF(WITH_MPI)
     SET(TESTS ${TESTS} Benchmark Domains)
@@ -75,7 +75,7 @@ IF(PARALLEL)
         INCLUDE_DIRECTORIES(${MPI_C_INCLUDE_PATH} ${MPI_CXX_INCLUDE_PATH})
     ENDIF(NOT WITH_MPI)
 
-    SET(TESTS ${TESTS} Parallel_Attributes Parallel_Domains Parallel_ListFiles Parallel_References Parallel_Remove Parallel_SimpleData Parallel_ZeroAccess)
+    SET(TESTS ${TESTS} Parallel_Attributes Parallel_Filename Parallel_Domains Parallel_ListFiles Parallel_References Parallel_Remove Parallel_SimpleData Parallel_ZeroAccess)
 ELSE(PARALLEL)
     SET(TESTS ${TESTS})
 ENDIF(PARALLEL)

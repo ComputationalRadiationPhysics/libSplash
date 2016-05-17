@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2015 Felix Schmitt, Axel Huebl
+ * Copyright 2013-2016 Felix Schmitt, Axel Huebl, Alexander Grund
  *
  * This file is part of libSplash.
  *
@@ -72,6 +72,9 @@ namespace splash
 
     std::string SerialDataCollector::getFullFilename(const Dimensions mpiPos, std::string baseFilename) const
     {
+        if (baseFilename.find(".h5") != std::string::npos)
+            return baseFilename;
+
         std::stringstream serial_filename;
         serial_filename << baseFilename << "_" << mpiPos[0] << "_" << mpiPos[1] <<
                 "_" << mpiPos[2] << ".h5";
@@ -746,7 +749,6 @@ namespace splash
     {
         this->fileStatus = FST_CREATING;
 
-        // appends the mpiPosition to the filename (e.g. myfile_0_1_0.h5)
         std::string full_filename = getFullFilename(attr.mpiPosition, filename);
         DCHelper::testFilename(full_filename);
 
@@ -779,10 +781,7 @@ namespace splash
     {
         fileStatus = FST_WRITING;
 
-        std::string full_filename = filename;
-        if (full_filename.find(".h5") == std::string::npos)
-            full_filename = getFullFilename(attr.mpiPosition, filename);
-
+        std::string full_filename = getFullFilename(attr.mpiPosition, filename);
         DCHelper::testFilename(full_filename);
 
         this->enableCompression = attr.enableCompression;
@@ -806,7 +805,6 @@ namespace splash
 
         // open reference file to get mpi information
         std::string full_filename = getFullFilename(Dimensions(0, 0, 0), filename);
-
         DCHelper::testFilename(full_filename);
 
         if (!fileExists(full_filename))
@@ -829,10 +827,7 @@ namespace splash
     {
         this->fileStatus = FST_READING;
 
-        std::string full_filename = filename;
-        if (full_filename.find(".h5") == std::string::npos)
-            full_filename = getFullFilename(attr.mpiPosition, filename);
-
+        std::string full_filename = getFullFilename(attr.mpiPosition, filename);
         DCHelper::testFilename(full_filename);
 
         if (!fileExists(full_filename))

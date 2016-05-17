@@ -70,10 +70,11 @@ namespace splash
          * File naming schemes
          * FNS_MPI: use MPI position, e.g. file_0_2_1.h5
          * FNS_ITERATIONS: use current iteration, e.g. file_132.h5
+         * FNS_FULLNAME: use full name as passed to file functions (already contains .h5)
          */
         enum FileNameScheme
         {
-            FNS_MPI = 0, FNS_ITERATIONS
+            FNS_MPI = 0, FNS_ITERATIONS, FNS_FULLNAME
         };
 
         // callback function types

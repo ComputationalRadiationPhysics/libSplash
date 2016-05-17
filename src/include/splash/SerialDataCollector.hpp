@@ -61,10 +61,11 @@ namespace splash
         /**
          * Constructs a filename from a base filename and the process' mpi position
          * such as baseFilename+mpiPos+.h5
+         * Does nothing if the filename already contains a ".h5"
          *
          * @param mpiPos MPI position of the process
          * @param baseFilename base filename for the new file
-         * @return newly constructed filename iucluding file exitension
+         * @return newly constructed filename including file extension
          */
         std::string getFullFilename(const Dimensions mpiPos, std::string baseFilename) const;
 

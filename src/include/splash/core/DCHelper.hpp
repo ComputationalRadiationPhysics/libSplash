@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2015 Felix Schmitt, Axel Huebl
+ * Copyright 2013-2016 Felix Schmitt, Axel Huebl, Alexander Grund
  *
  * This file is part of libSplash.
  *
@@ -192,6 +192,13 @@ namespace splash
             if (filename.rfind(".h5.h5") == filename.length() - 6)
             {
                 std::cerr << std::endl << "\tWarning: DCHelper: Do you really want to access "
+                        << filename.c_str() << "?" << std::endl;
+                return false;
+            }
+
+            if (filename.find(".h5") != filename.length() - 3)
+            {
+                std::cerr << std::endl << "\tWarning: DCHelper: Duplicate or missing extension. Do you really want to access "
                         << filename.c_str() << "?" << std::endl;
                 return false;
             }
