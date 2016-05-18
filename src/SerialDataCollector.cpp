@@ -35,7 +35,6 @@
 #include "splash/core/DCAttribute.hpp"
 #include "splash/core/DCDataSet.hpp"
 #include "splash/core/DCGroup.hpp"
-#include "splash/core/DCHelper.hpp"
 #include "splash/core/SDCHelper.hpp"
 #include "splash/core/logging.hpp"
 #include "splash/basetypes/basetypes.hpp"
@@ -100,7 +99,7 @@ namespace splash
      *******************************************************************************/
 
     SerialDataCollector::SerialDataCollector(uint32_t maxFileHandles) :
-    handles(maxFileHandles, HandleMgr::FNS_MPI),
+    handles(maxFileHandles, HandleMgr::FNS_FULLNAME),
     fileStatus(FST_CLOSED),
     maxID(-1),
     mpiTopology(1, 1, 1)
@@ -116,7 +115,7 @@ namespace splash
                 "failed to initialize/open HDF5 library"));
 
 #ifndef SPLASH_VERBOSE_HDF5
-        // surpress automatic output of HDF5 exception messages
+        // Suppress automatic output of HDF5 exception messages
         if (H5Eset_auto2(H5E_DEFAULT, NULL, NULL) < 0)
             throw DCException(getExceptionString("SerialDataCollector",
                 "failed to disable error printing"));
@@ -750,7 +749,6 @@ namespace splash
         this->fileStatus = FST_CREATING;
 
         std::string full_filename = getFullFilename(attr.mpiPosition, filename);
-        DCHelper::testFilename(full_filename);
 
         this->enableCompression = attr.enableCompression;
 
@@ -782,7 +780,6 @@ namespace splash
         fileStatus = FST_WRITING;
 
         std::string full_filename = getFullFilename(attr.mpiPosition, filename);
-        DCHelper::testFilename(full_filename);
 
         this->enableCompression = attr.enableCompression;
 
@@ -805,7 +802,6 @@ namespace splash
 
         // open reference file to get mpi information
         std::string full_filename = getFullFilename(Dimensions(0, 0, 0), filename);
-        DCHelper::testFilename(full_filename);
 
         if (!fileExists(full_filename))
         {
@@ -828,7 +824,6 @@ namespace splash
         this->fileStatus = FST_READING;
 
         std::string full_filename = getFullFilename(attr.mpiPosition, filename);
-        DCHelper::testFilename(full_filename);
 
         if (!fileExists(full_filename))
         {

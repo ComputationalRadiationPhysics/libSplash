@@ -111,7 +111,7 @@ namespace splash
          * @param flags from SerialDataCollector
          */
         void open(const std::string fullFilename,
-                hid_t fileAccProperties, unsigned flags);
+                hid_t fileAccProperties, unsigned flags) throw (DCException);
 
         /**
          * Closes the handle manager, closes all open file handles.
@@ -155,7 +155,6 @@ namespace splash
 
     private:
         uint32_t maxHandles;
-        uint32_t numHandles;
 
         Dimensions mpiSize;
         std::string filename;
@@ -163,7 +162,6 @@ namespace splash
 
         hid_t fileAccProperties;
         unsigned fileFlags;
-        bool singleFile;
 
         HandleMap handles;
         IndexCtrStr leastAccIndex;

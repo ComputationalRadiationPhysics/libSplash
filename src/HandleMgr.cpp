@@ -28,17 +28,16 @@
 
 #include "splash/core/HandleMgr.hpp"
 #include "splash/core/logging.hpp"
+#include "splash/core/DCHelper.hpp"
 
 namespace splash
 {
 
     HandleMgr::HandleMgr(uint32_t maxHandles, FileNameScheme fileNameScheme) :
     maxHandles(maxHandles),
-    numHandles(0),
     mpiSize(1, 1, 1),
     fileNameScheme(fileNameScheme),
     fileFlags(0),
-    singleFile(true),
     fileCreateCallback(NULL),
     fileCreateUserData(NULL),
     fileOpenCallback(NULL),
@@ -73,12 +72,10 @@ namespace splash
     void HandleMgr::open(Dimensions mpiSize, const std::string baseFilename,
             hid_t fileAccProperties, unsigned flags)
     {
-        this->numHandles = mpiSize.getScalarSize();
         this->mpiSize.set(mpiSize);
         this->filename = baseFilename;
         this->fileAccProperties = fileAccProperties;
         this->fileFlags = flags;
-        this->singleFile = false;
         // Validation: For parallel files we normally append MPI rank or iteration number.
         //             This is disabled by using FNS_FULLNAME
         //             or when the filename already contains an h5-extension.
@@ -93,13 +90,17 @@ namespace splash
 
     void HandleMgr::open(const std::string fullFilename,
             hid_t fileAccProperties, unsigned flags)
+    throw (DCException)
     {
-        this->numHandles = 1;
         this->mpiSize.set(1, 1, 1);
         this->filename = fullFilename;
         this->fileAccProperties = fileAccProperties;
         this->fileFlags = flags;
-        this->singleFile = true;
+        if (fileNameScheme != FNS_FULLNAME)
+        {
+            throw DCException(getExceptionString("open", "Must use FNS_FULLNAME when passing full filename",
+                                        fullFilename.c_str()));
+        }
     }
 
     uint32_t HandleMgr::indexFromPos(Dimensions& mpiPos)
@@ -136,7 +137,7 @@ namespace splash
     throw (DCException)
     {
         uint32_t index = 0;
-        if (!singleFile)
+        if (fileNameScheme != FNS_FULLNAME)
             index = indexFromPos(mpiPos);
 
         HandleMap::iterator iter = handles.find(index);
@@ -163,7 +164,7 @@ namespace splash
 
             // Append prefix and extension if we don't have a full filename (extension)
             std::string fullFilename;
-            if (!singleFile && filename.find(".h5") == std::string::npos)
+            if (fileNameScheme != FNS_FULLNAME && filename.find(".h5") == std::string::npos)
             {
                 std::stringstream filenameStream;
                 filenameStream << filename;
@@ -182,6 +183,8 @@ namespace splash
             // serve requests to create files once as create and as read/write afterwards
             if ((fileFlags & H5F_ACC_TRUNC) && (createdFiles.find(index) == createdFiles.end()))
             {
+                DCHelper::testFilename(fullFilename);
+
                 newHandle = H5Fcreate(fullFilename.c_str(), fileFlags,
                         H5P_FILE_CREATE_DEFAULT, fileAccProperties);
                 if (newHandle < 0)
@@ -239,8 +242,6 @@ namespace splash
         leastAccIndex.ctr = 0;
         leastAccIndex.index = 0;
         mpiSize.set(1, 1, 1);
-        numHandles = 0;
-        singleFile = true;
 
         // close all remaining handles
         HandleMap::const_iterator iter = handles.begin();
