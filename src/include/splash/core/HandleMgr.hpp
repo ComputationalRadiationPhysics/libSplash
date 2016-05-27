@@ -95,6 +95,13 @@ namespace splash
         virtual ~HandleMgr();
 
         /**
+         * Changes the file naming scheme used for newly opened files
+         * Can only be changed when no file is currently open
+         * @param fileNameScheme new file name scheme
+         */
+        void setFileNameScheme(FileNameScheme fileNameScheme) throw (DCException);
+
+        /**
          * Opens the handle manager for multiple files/handles
          * @param mpiSize MPI size
          * @param baseFilename base filename part (w/o MPI/ext)
@@ -106,6 +113,7 @@ namespace splash
 
         /**
          * Opens the handle manager for a single file/handle
+         * Changes the fileNameScheme to FNS_FULLNAME if necessary
          * @param fullFilename full filename (w/ MPI/ext)
          * @param fileAccProperties from SerialDataCollector
          * @param flags from SerialDataCollector

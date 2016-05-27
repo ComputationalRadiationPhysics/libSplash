@@ -69,6 +69,16 @@ namespace splash
         return full_msg.str();
     }
 
+    void HandleMgr::setFileNameScheme(FileNameScheme fileNameScheme) throw (DCException)
+    {
+        if (this->fileNameScheme == fileNameScheme)
+            return;
+        if (!filename.empty())
+            throw DCException(getExceptionString("setFileNameScheme",
+                                    "Tried to change scheme while file(s) were still open", ""));
+        this->fileNameScheme = fileNameScheme;
+    }
+
     void HandleMgr::open(Dimensions mpiSize, const std::string baseFilename,
             hid_t fileAccProperties, unsigned flags)
     throw (DCException)
@@ -101,15 +111,11 @@ namespace splash
             hid_t fileAccProperties, unsigned flags)
     throw (DCException)
     {
+        setFileNameScheme(FNS_FULLNAME);
         this->mpiSize.set(1, 1, 1);
         this->filename = fullFilename;
         this->fileAccProperties = fileAccProperties;
         this->fileFlags = flags;
-        if (fileNameScheme != FNS_FULLNAME)
-        {
-            throw DCException(getExceptionString("open", "Must use FNS_FULLNAME when passing full filename",
-                                        fullFilename.c_str()));
-        }
     }
 
     uint32_t HandleMgr::indexFromPos(Dimensions& mpiPos)
@@ -173,7 +179,7 @@ namespace splash
 
             // Append prefix and extension if we don't have a full filename (extension)
             std::string fullFilename;
-            if (fileNameScheme != FNS_FULLNAME && filename.find(".h5") == filename.length() - 3)
+            if (fileNameScheme != FNS_FULLNAME && filename.find(".h5") != filename.length() - 3)
             {
                 std::stringstream filenameStream;
                 filenameStream << filename;

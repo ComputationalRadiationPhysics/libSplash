@@ -816,6 +816,7 @@ namespace splash
         // no compression for in-memory datasets
         this->enableCompression = false;
 
+        handles.setFileNameScheme(HandleMgr::FNS_MPI);
         handles.open(mpiTopology, filename, fileAccProperties, H5F_ACC_RDONLY);
     }
 
