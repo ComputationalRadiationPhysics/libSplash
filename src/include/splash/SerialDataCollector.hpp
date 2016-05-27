@@ -60,8 +60,9 @@ namespace splash
 
         /**
          * Constructs a filename from a base filename and the process' mpi position
-         * such as baseFilename+mpiPos+.h5
-         * Does nothing if the filename already contains a ".h5"
+         * such as myfile_0_1_0.h5
+         * Does nothing if the filename already ends with ".h5" (only allowed
+         * for Prod(mpiSize)==1).
          *
          * @param mpiPos MPI position of the process
          * @param baseFilename base filename for the new file

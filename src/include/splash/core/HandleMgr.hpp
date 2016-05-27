@@ -102,7 +102,7 @@ namespace splash
          * @param flags from SerialDataCollector
          */
         void open(Dimensions mpiSize, const std::string baseFilename,
-                hid_t fileAccProperties, unsigned flags);
+                hid_t fileAccProperties, unsigned flags) throw (DCException);
 
         /**
          * Opens the handle manager for a single file/handle

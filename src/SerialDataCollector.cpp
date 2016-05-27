@@ -71,7 +71,8 @@ namespace splash
 
     std::string SerialDataCollector::getFullFilename(const Dimensions mpiPos, std::string baseFilename) const
     {
-        if (baseFilename.find(".h5") != std::string::npos)
+        // Check for existing extension
+        if (baseFilename.find(".h5") == baseFilename.length() - 3)
             return baseFilename;
 
         std::stringstream serial_filename;

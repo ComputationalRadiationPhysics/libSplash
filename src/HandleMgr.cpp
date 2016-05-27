@@ -71,6 +71,7 @@ namespace splash
 
     void HandleMgr::open(Dimensions mpiSize, const std::string baseFilename,
             hid_t fileAccProperties, unsigned flags)
+    throw (DCException)
     {
         this->mpiSize.set(mpiSize);
         this->filename = baseFilename;
@@ -79,12 +80,20 @@ namespace splash
         // Validation: For parallel files we normally append MPI rank or iteration number.
         //             This is disabled by using FNS_FULLNAME
         //             or when the filename already contains an h5-extension.
-        if (fileNameScheme != FNS_FULLNAME && baseFilename.find(".h5") != std::string::npos)
+        if (fileNameScheme != FNS_FULLNAME && baseFilename.find(".h5") == baseFilename.length() - 3)
         {
-            log_msg(1, "\n"
-                    "\tWarning: Passed full filename for parallel file operations: %s\n"
-                    "It is recommended to pass only the base name (no extension)"
-                    "and let the implementation choose a filename.\n", filename.c_str());
+            if (mpiSize.getScalarSize() > 1)
+            {
+                throw DCException(getExceptionString("open",
+                        "Passed full filename for parallel file operations",
+                        baseFilename.c_str()));
+            } else
+            {
+                log_msg(1, "\n"
+                        "\tWarning: Passed full filename for parallel file operations: %s\n"
+                        "It is recommended to pass only the base name (no extension)"
+                        "and let the implementation choose a filename.\n", filename.c_str());
+            }
         }
     }
 
@@ -164,7 +173,7 @@ namespace splash
 
             // Append prefix and extension if we don't have a full filename (extension)
             std::string fullFilename;
-            if (fileNameScheme != FNS_FULLNAME && filename.find(".h5") == std::string::npos)
+            if (fileNameScheme != FNS_FULLNAME && filename.find(".h5") == filename.length() - 3)
             {
                 std::stringstream filenameStream;
                 filenameStream << filename;
