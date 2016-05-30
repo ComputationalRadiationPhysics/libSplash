@@ -70,7 +70,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(FilenameTest);
 
 #define HDF5_FILE "h5/testParallelFilename"
 #define HDF5_BASE_FILE HDF5_FILE "_2.h5"
-#define HDF5_FULL_FILE HDF5_FILE ".h5"
+#define HDF5_FULL_FILE HDF5_FILE "Full.h5"
 
 #define MPI_SIZE_X 1
 #define MPI_SIZE_Y 1
@@ -193,7 +193,4 @@ void FilenameTest::runTest(const char* filename, const char* fullFilename)
     CPPUNIT_ASSERT(data_size.getScalarSize() == 1);
     CPPUNIT_ASSERT(data == data3);
     dataCollector->close();
-
-    // Cleanup
-    unlink(fullFilename);
 }

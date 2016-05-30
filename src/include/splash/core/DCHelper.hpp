@@ -198,7 +198,9 @@ namespace splash
 
             if (filename.find(".h5") != filename.length() - 3)
             {
-                std::cerr << std::endl << "\tWarning: DCHelper: Duplicate or missing extension. Do you really want to access "
+                std::cerr << std::endl << "\tWarning: DCHelper: "
+                        << "Duplicate or missing file name extension. "
+                        << "Do you really want to access "
                         << filename.c_str() << "?" << std::endl;
                 return false;
             }

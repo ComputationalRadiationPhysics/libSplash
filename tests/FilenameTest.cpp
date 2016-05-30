@@ -65,7 +65,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(FilenameTest);
 
 #define HDF5_FILE "h5/testFilename"
 #define HDF5_BASE_FILE HDF5_FILE "_0_0_0.h5"
-#define HDF5_FULL_FILE HDF5_FILE ".h5"
+#define HDF5_FULL_FILE HDF5_FILE "Full.h5"
 
 FilenameTest::FilenameTest()
 {
@@ -167,7 +167,4 @@ void FilenameTest::runTest(const char* filename, const char* fullFilename)
     CPPUNIT_ASSERT(data_size.getScalarSize() == 1);
     CPPUNIT_ASSERT(data == data3);
     dataCollector->close();
-
-    // Cleanup
-    unlink(fullFilename);
 }
