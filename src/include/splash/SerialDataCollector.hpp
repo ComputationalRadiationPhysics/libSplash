@@ -62,13 +62,15 @@ namespace splash
          * Constructs a filename from a base filename and the process' mpi position
          * such as myfile_0_1_0.h5
          * Does nothing if the filename already ends with ".h5" (only allowed
-         * for Prod(mpiSize)==1).
+         * for Prod(mpiSize)==1 or reading).
          *
          * @param mpiPos MPI position of the process
          * @param baseFilename base filename for the new file
+         * @param isFullNameAllowed If false, an exception is raised when a full name is passed
          * @return newly constructed filename including file extension
          */
-        std::string getFullFilename(const Dimensions mpiPos, std::string baseFilename) const;
+        std::string getFullFilename(const Dimensions mpiPos, std::string baseFilename,
+                bool isFullNameAllowed) const throw (DCException);
 
         /**
          * Internal function for formatting exception messages.

@@ -69,11 +69,17 @@ namespace splash
         return (stat(filename.c_str(), &fileInfo) == 0);
     }
 
-    std::string SerialDataCollector::getFullFilename(const Dimensions mpiPos, std::string baseFilename) const
+    std::string SerialDataCollector::getFullFilename(const Dimensions mpiPos, std::string baseFilename,
+            bool isFullNameAllowed) const throw (DCException)
     {
         // Check for existing extension
         if (baseFilename.find(".h5") == baseFilename.length() - 3)
-            return baseFilename;
+        {
+            if (isFullNameAllowed)
+                return baseFilename;
+            else
+                throw DCException("Full filename is not allowed!");
+        }
 
         std::stringstream serial_filename;
         serial_filename << baseFilename << "_" << mpiPos[0] << "_" << mpiPos[1] <<
@@ -166,14 +172,14 @@ namespace splash
 
         log_msg(1, "closing serial data collector");
 
-        if (fileStatus == FST_CREATING || fileStatus == FST_WRITING)
+        if ((fileStatus == FST_CREATING || fileStatus == FST_WRITING) &&
+            maxID >= 0)
         {
-            DCGroup group;
-            group.open(handles.get(0), SDC_GROUP_HEADER);
-
             // write number of iterations
             try
             {
+                DCGroup group;
+                group.open(handles.get(0), SDC_GROUP_HEADER);
                 ColTypeInt32 ctInt32;
                 DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, ctInt32.getDataType(),
                         group.getHandle(), &maxID);
@@ -753,7 +759,8 @@ namespace splash
     {
         this->fileStatus = FST_CREATING;
 
-        std::string full_filename = getFullFilename(attr.mpiPosition, filename);
+        std::string full_filename = getFullFilename(attr.mpiPosition, filename,
+                attr.mpiSize.getScalarSize() == 1);
 
         this->enableCompression = attr.enableCompression;
 
@@ -784,7 +791,8 @@ namespace splash
     {
         fileStatus = FST_WRITING;
 
-        std::string full_filename = getFullFilename(attr.mpiPosition, filename);
+        std::string full_filename = getFullFilename(attr.mpiPosition, filename,
+                attr.mpiSize.getScalarSize() == 1);
 
         this->enableCompression = attr.enableCompression;
 
@@ -806,7 +814,7 @@ namespace splash
         this->fileStatus = FST_MERGING;
 
         // open reference file to get mpi information
-        std::string full_filename = getFullFilename(Dimensions(0, 0, 0), filename);
+        std::string full_filename = getFullFilename(Dimensions(0, 0, 0), filename, true);
 
         if (!fileExists(full_filename))
         {
@@ -829,7 +837,7 @@ namespace splash
     {
         this->fileStatus = FST_READING;
 
-        std::string full_filename = getFullFilename(attr.mpiPosition, filename);
+        std::string full_filename = getFullFilename(attr.mpiPosition, filename, true);
 
         if (!fileExists(full_filename))
         {
