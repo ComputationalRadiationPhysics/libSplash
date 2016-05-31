@@ -193,15 +193,16 @@ namespace splash
 
     ParallelDataCollector::~ParallelDataCollector()
     {
+        finalize();
         H5Pclose(fileAccProperties);
     }
 
     void ParallelDataCollector::finalize()
     {
-        log_msg(1, "finalizing data collector");
-
+        close();
         if (options.mpiComm != MPI_COMM_NULL)
         {
+            log_msg(1, "finalizing data collector");
             MPI_Comm_free(&options.mpiComm);
             options.mpiComm = MPI_COMM_NULL;
         }
@@ -237,6 +238,9 @@ namespace splash
 
     void ParallelDataCollector::close()
     {
+        if (fileStatus == FST_CLOSED)
+            return;
+
         log_msg(1, "closing parallel data collector");
 
         // close opened hdf5 file handles

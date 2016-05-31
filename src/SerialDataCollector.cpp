@@ -128,6 +128,7 @@ namespace splash
 
     SerialDataCollector::~SerialDataCollector()
     {
+        close();
     }
 
     void SerialDataCollector::open(const char* filename, FileCreationAttr &attr)
@@ -160,6 +161,9 @@ namespace splash
 
     void SerialDataCollector::close()
     {
+        if (fileStatus == FST_CLOSED)
+            return;
+
         log_msg(1, "closing serial data collector");
 
         if (fileStatus == FST_CREATING || fileStatus == FST_WRITING)
