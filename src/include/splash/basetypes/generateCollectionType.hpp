@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Carlchristian Eckert
+ * Copyright 2015-2016 Carlchristian Eckert, Alexander Grund
  *
  * This file is part of libSplash.
  *
@@ -32,7 +32,7 @@ namespace splash
 
 /**
  * Checks if a datatype_id (from an outer scope) can be used to generate a
- * specific CollectionType derivate.
+ * specific CollectionType instance.
  *
  * If the call to the genType member function of a specific collection type
  * is successful, it will return the pointer to an instance of this type.
@@ -44,6 +44,7 @@ namespace splash
 {                                                                              \
     CollectionType* t = ColType##_name::genType(datatype_id);                  \
     if(t != NULL && typeid(*t) == typeid(ColType##_name)) return t;            \
+    delete t;                                                                  \
 }                                                                              \
 
 
@@ -53,10 +54,11 @@ namespace splash
  * @param datatype_id the H5 datatype_id that should be converted into a
  *                    CollectionType
  *
- * @return A pointer to a heap-allocated CollectionType, if a matching
- *         CollectionType could be determined. The allocated object must be
- *         freed by the caller at the end of its lifetime.
- *         If no matching CollectionType was found, returns NULL.
+ * @return A pointer to a heap-allocated CollectionType.
+ *         The allocated object must be freed by the caller at the end of its
+ *         lifetime.
+ *         If no matching CollectionType was found, returns a ColTypeUnknown
+ *         instance.
  */
 CollectionType* generateCollectionType(hid_t datatype_id)
 {
@@ -123,6 +125,7 @@ CollectionType* generateCollectionType(hid_t datatype_id)
     return new ColTypeUnknown;
 }
 
+#undef TRY_COLTYPE
 
 } /* namespace splash */
 
