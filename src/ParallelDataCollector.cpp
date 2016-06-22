@@ -193,13 +193,13 @@ namespace splash
 
     ParallelDataCollector::~ParallelDataCollector()
     {
-        finalize();
+        close();
         H5Pclose(fileAccProperties);
+        finalize();
     }
 
     void ParallelDataCollector::finalize()
     {
-        close();
         if (options.mpiComm != MPI_COMM_NULL)
         {
             log_msg(1, "finalizing data collector");
