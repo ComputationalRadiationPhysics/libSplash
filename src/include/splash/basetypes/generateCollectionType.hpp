@@ -43,8 +43,8 @@ namespace splash
 #define TRY_COLTYPE(_name)                                                     \
 {                                                                              \
     CollectionType* t = ColType##_name::genType(datatype_id);                  \
-    if(t != NULL && typeid(*t) == typeid(ColType##_name)) return t;            \
-    delete t;                                                                  \
+    assert(t == NULL || typeid(*t) == typeid(ColType##_name));                 \
+    if(t) return t;                                                            \
 }                                                                              \
 
 
