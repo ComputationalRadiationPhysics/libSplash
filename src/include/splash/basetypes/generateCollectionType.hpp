@@ -44,7 +44,7 @@ namespace splash
 {                                                                              \
     CollectionType* t = ColType##_name::genType(datatype_id);                  \
     assert(t == NULL || typeid(*t) == typeid(ColType##_name));                 \
-    if(t) return t;                                                            \
+    if(t != NULL) return t;                                                    \
 }                                                                              \
 
 
