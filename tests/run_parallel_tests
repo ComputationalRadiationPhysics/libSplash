@@ -53,9 +53,6 @@ function testMPI()
 }
 
 testMPI ./Parallel_SimpleDataTest.cpp.out 8 "Testing simple data read/write (parallel)..."
-testMPI ./Parallel_FilenameTest.cpp.out 1 "Testing file naming (parallel)..."
-
-testMPI ./Parallel_SerialDC.cpp.out 8 "Testing SerialDataCollector (parallel)..."
 
 testMPI ./Parallel_ListFilesTest.cpp.out 1 "Testing list files (parallel)..."
 
