@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2016 Felix Schmitt, Axel Huebl, Alexander Grund
+ * Copyright 2013-2015 Felix Schmitt, Axel Huebl
  *
  * This file is part of libSplash.
  *
@@ -65,6 +65,14 @@ namespace splash
         H5Pset_cache(fileAccProperties, metaCacheElements, rawCacheElements, rawCacheSize, policy);
 
         log_msg(3, "Raw Data Cache (File) = %llu KiB", (long long unsigned) (rawCacheSize / 1024));
+    }
+
+    std::string ParallelDataCollector::getFullFilename(uint32_t id, std::string baseFilename)
+    {
+        std::stringstream serial_filename;
+        serial_filename << baseFilename << "_" << id << ".h5";
+
+        return serial_filename.str();
     }
 
     std::string ParallelDataCollector::getExceptionString(std::string func, std::string msg,
@@ -193,16 +201,15 @@ namespace splash
 
     ParallelDataCollector::~ParallelDataCollector()
     {
-        close();
         H5Pclose(fileAccProperties);
-        finalize();
     }
 
     void ParallelDataCollector::finalize()
     {
+        log_msg(1, "finalizing data collector");
+
         if (options.mpiComm != MPI_COMM_NULL)
         {
-            log_msg(1, "finalizing data collector");
             MPI_Comm_free(&options.mpiComm);
             options.mpiComm = MPI_COMM_NULL;
         }
@@ -238,9 +245,6 @@ namespace splash
 
     void ParallelDataCollector::close()
     {
-        if (fileStatus == FST_CLOSED)
-            return;
-
         log_msg(1, "closing parallel data collector");
 
         // close opened hdf5 file handles

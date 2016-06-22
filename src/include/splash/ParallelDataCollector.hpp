@@ -55,6 +55,16 @@ namespace splash
         void setFileAccessParams(hid_t& fileAccProperties);
 
         /**
+         * Constructs a filename from a base filename and the current id
+         * such as baseFilename+id+.h5
+         *
+         * @param id Iteration ID.
+         * @param baseFilename Base filename for the new file.
+         * @return newly Constructed filename including file extension.
+         */
+        static std::string getFullFilename(uint32_t id, std::string baseFilename);
+
+        /**
          * Internal function for formatting exception messages.
          *
          * @param func name of the throwing function

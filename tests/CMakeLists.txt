@@ -61,13 +61,13 @@ INCLUDE_DIRECTORIES(include ../src/include $ENV{MPI_INC} )
 #-------------------------------------------------------------------------------
 
 FILE(GLOB SRCFILESOTHER "dependencies/*.cpp")
-SET(TESTS Append Attributes FileAccess Filename References Remove SimpleData Striding)
+SET(TESTS Append Attributes FileAccess References Remove SimpleData Striding)
 
 IF(WITH_MPI)
     SET(TESTS ${TESTS} Benchmark Domains)
 ENDIF(WITH_MPI)
 
-OPTION(PARALLEL "enable tests for parallel libSplash" ${HDF5_IS_PARALLEL})
+OPTION(PARALLEL "enable tests for parallel libSplash" @HDF5_IS_PARALLEL@)
 IF(PARALLEL)
     IF(NOT WITH_MPI)
         # MPI is required package
@@ -75,7 +75,7 @@ IF(PARALLEL)
         INCLUDE_DIRECTORIES(${MPI_C_INCLUDE_PATH} ${MPI_CXX_INCLUDE_PATH})
     ENDIF(NOT WITH_MPI)
 
-    SET(TESTS ${TESTS} Parallel_Attributes Parallel_Filename Parallel_Domains Parallel_ListFiles Parallel_References Parallel_Remove Parallel_SerialDC Parallel_SimpleData Parallel_ZeroAccess)
+    SET(TESTS ${TESTS} Parallel_Attributes Parallel_Domains Parallel_ListFiles Parallel_References Parallel_Remove Parallel_SimpleData Parallel_ZeroAccess)
 ELSE(PARALLEL)
     SET(TESTS ${TESTS})
 ENDIF(PARALLEL)

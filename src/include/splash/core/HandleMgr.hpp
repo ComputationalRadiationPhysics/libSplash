@@ -70,11 +70,10 @@ namespace splash
          * File naming schemes
          * FNS_MPI: use MPI position, e.g. file_0_2_1.h5
          * FNS_ITERATIONS: use current iteration, e.g. file_132.h5
-         * FNS_FULLNAME: use full name as passed to file functions (already contains .h5)
          */
         enum FileNameScheme
         {
-            FNS_MPI = 0, FNS_ITERATIONS, FNS_FULLNAME
+            FNS_MPI = 0, FNS_ITERATIONS
         };
 
         // callback function types
@@ -95,13 +94,6 @@ namespace splash
         virtual ~HandleMgr();
 
         /**
-         * Changes the file naming scheme used for newly opened files
-         * Can only be changed when no file is currently open
-         * @param fileNameScheme new file name scheme
-         */
-        void setFileNameScheme(FileNameScheme fileNameScheme) throw (DCException);
-
-        /**
          * Opens the handle manager for multiple files/handles
          * @param mpiSize MPI size
          * @param baseFilename base filename part (w/o MPI/ext)
@@ -109,17 +101,16 @@ namespace splash
          * @param flags from SerialDataCollector
          */
         void open(Dimensions mpiSize, const std::string baseFilename,
-                hid_t fileAccProperties, unsigned flags) throw (DCException);
+                hid_t fileAccProperties, unsigned flags);
 
         /**
          * Opens the handle manager for a single file/handle
-         * Changes the fileNameScheme to FNS_FULLNAME if necessary
          * @param fullFilename full filename (w/ MPI/ext)
          * @param fileAccProperties from SerialDataCollector
          * @param flags from SerialDataCollector
          */
         void open(const std::string fullFilename,
-                hid_t fileAccProperties, unsigned flags) throw (DCException);
+                hid_t fileAccProperties, unsigned flags);
 
         /**
          * Closes the handle manager, closes all open file handles.
@@ -163,6 +154,7 @@ namespace splash
 
     private:
         uint32_t maxHandles;
+        uint32_t numHandles;
 
         Dimensions mpiSize;
         std::string filename;
@@ -170,6 +162,7 @@ namespace splash
 
         hid_t fileAccProperties;
         unsigned fileFlags;
+        bool singleFile;
 
         HandleMap handles;
         IndexCtrStr leastAccIndex;
