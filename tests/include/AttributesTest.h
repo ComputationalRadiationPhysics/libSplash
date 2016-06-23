@@ -34,7 +34,9 @@ class AttributesTest  : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST_SUITE(AttributesTest);
 
     CPPUNIT_TEST(testDataAttributes);
+    CPPUNIT_TEST(testAttributesMeta);
     CPPUNIT_TEST(testArrayTypes);
+    CPPUNIT_TEST(testArrayAttributesMeta);
 
     CPPUNIT_TEST_SUITE_END();
 public:
@@ -43,6 +45,8 @@ public:
 private:
     void testDataAttributes();
     void testArrayTypes();
+    void testAttributesMeta();
+    void testArrayAttributesMeta();
 
     ColTypeChar ctChar;
     ColTypeDouble ctDouble;

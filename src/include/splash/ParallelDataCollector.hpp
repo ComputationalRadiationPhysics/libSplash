@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2015 Felix Schmitt, Axel Huebl
+ * Copyright 2013-2016 Felix Schmitt, Axel Huebl, Alexander Grund
  *
  * This file is part of libSplash.
  *
@@ -40,6 +40,8 @@
 namespace splash
 {
 
+    class DCGroup;
+
     /**
      * Realizes an IParallelDataCollector which creates a single HDF5 file per iteration
      * for all MPI processes and accesses the file using collective MPI I/O.
@@ -69,6 +71,8 @@ namespace splash
 
         static void listFilesInDir(const std::string baseFilename, std::set<int32_t> &ids)
         throw (DCException);
+        /** @return H5 object id if name!=NULL, else -1 */
+        hid_t openGroup(DCGroup& group, int32_t id, const char* dataName) throw (DCException);
     protected:
 
         typedef struct
@@ -255,6 +259,10 @@ namespace splash
                 int32_t dstID,
                 const char *dstName) throw (DCException);
 
+        DCAttributeInfo* readGlobalAttributeMeta(int32_t id,
+                const char* name,
+                Dimensions *mpiPosition = NULL) throw (DCException);
+
         void readGlobalAttribute(int32_t id,
                 const char* name,
                 void* buf) throw (DCException);
@@ -270,6 +278,11 @@ namespace splash
                 uint32_t ndims,
                 const Dimensions dims,
                 const void* buf) throw (DCException);
+
+        DCAttributeInfo* readAttributeMeta(int32_t id,
+                const char *dataName,
+                const char *attrName,
+                Dimensions *mpiPosition = NULL) throw (DCException);
 
         void readAttribute(int32_t id,
                 const char *dataName,

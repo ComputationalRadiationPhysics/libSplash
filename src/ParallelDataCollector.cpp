@@ -34,6 +34,7 @@
 #include "splash/core/DCAttribute.hpp"
 #include "splash/core/DCParallelGroup.hpp"
 #include "splash/core/logging.hpp"
+#include "splash/core/H5IdWrapper.hpp"
 
 namespace splash
 {
@@ -309,6 +310,31 @@ namespace splash
             *count = param.count;
     }
 
+    DCAttributeInfo* ParallelDataCollector::readGlobalAttributeMeta(
+            int32_t id,
+            const char* name,
+            Dimensions */*mpiPosition*/)
+    throw (DCException)
+    {
+        if (name == NULL)
+            throw DCException(getExceptionString("readGlobalAttributeMeta", "a parameter was null"));
+
+        if (fileStatus == FST_CLOSED || fileStatus == FST_CREATING)
+            throw DCException(getExceptionString("readGlobalAttributeMeta", "this access is not permitted"));
+
+        DCParallelGroup group_custom;
+        group_custom.open(handles.get(id), PDC_GROUP_CUSTOM);
+
+        try
+        {
+            return DCAttribute::readAttributeInfo(name, group_custom.getHandle());
+        } catch (const DCException& e)
+        {
+            log_msg(0, "Exception: %s", e.what());
+            throw;
+        }
+    }
+
     void ParallelDataCollector::readGlobalAttribute(int32_t id,
             const char* name,
             void *data)
@@ -373,23 +399,12 @@ namespace splash
         }
     }
 
-    void ParallelDataCollector::readAttribute(int32_t id,
-            const char *dataName,
-            const char *attrName,
-            void* data,
-            Dimensions* /*mpiPosition*/)
-    throw (DCException)
+    hid_t ParallelDataCollector::openGroup(DCGroup& group, int32_t id, const char* dataName) throw (DCException)
     {
         // mpiPosition is ignored
-        if (attrName == NULL || data == NULL)
-            throw DCException(getExceptionString("readAttribute", "a parameter was null"));
-
         // dataName may be NULL, attribute is read from iteration group in that case
         if (dataName && strlen(dataName) == 0)
             throw DCException(getExceptionString("readAttribute", "empty dataset name"));
-
-        if (strlen(attrName) == 0)
-            throw DCException(getExceptionString("readAttribute", "empty attribute name"));
 
         if (fileStatus == FST_CLOSED)
             throw DCException(getExceptionString("readAttribute", "this access is not permitted"));
@@ -400,7 +415,6 @@ namespace splash
             dataNameInternal.assign(dataName);
         DCDataSet::getFullDataPath(dataNameInternal, SDC_GROUP_DATA, id, group_path, obj_name);
 
-        DCParallelGroup group;
         group.open(handles.get(id), group_path);
 
         if (dataName)
@@ -412,21 +426,54 @@ namespace splash
                 throw DCException(getExceptionString("readAttribute",
                         "dataset not found", obj_name.c_str()));
             }
-
-            try
-            {
-                DCAttribute::readAttribute(attrName, obj_id, data);
-            } catch (const DCException&)
-            {
-                H5Oclose(obj_id);
-                throw;
-            }
-            H5Oclose(obj_id);
+            return obj_id;
         } else
-        {
-            // read attribute from the iteration
+            return -1;
+    }
+
+    DCAttributeInfo* ParallelDataCollector::readAttributeMeta(int32_t id,
+            const char *dataName,
+            const char *attrName,
+            Dimensions* /*mpiPosition*/)
+    throw (DCException)
+    {
+        // mpiPosition is ignored
+        if (attrName == NULL)
+            throw DCException(getExceptionString("readAttributeMeta", "a parameter was null"));
+
+        if (strlen(attrName) == 0)
+            throw DCException(getExceptionString("readAttributeMeta", "empty attribute name"));
+
+        DCParallelGroup group;
+        H5ObjectId objId(openGroup(group, id, dataName));
+        // If objId is not set, then read from iteration
+        if(!objId)
+            return DCAttribute::readAttributeInfo(attrName, group.getHandle());
+        else
+            return DCAttribute::readAttributeInfo(attrName, objId);
+    }
+
+    void ParallelDataCollector::readAttribute(int32_t id,
+            const char *dataName,
+            const char *attrName,
+            void* data,
+            Dimensions* /*mpiPosition*/)
+    throw (DCException)
+    {
+        // mpiPosition is ignored
+        if (attrName == NULL || data == NULL)
+            throw DCException(getExceptionString("readAttribute", "a parameter was null"));
+
+        if (strlen(attrName) == 0)
+            throw DCException(getExceptionString("readAttribute", "empty attribute name"));
+
+        DCParallelGroup group;
+        H5ObjectId objId(openGroup(group, id, dataName));
+        // If objId is not set, then read from iteration
+        if(!objId)
             DCAttribute::readAttribute(attrName, group.getHandle(), data);
-        }
+        else
+            DCAttribute::readAttribute(attrName, objId, data);
     }
 
     void ParallelDataCollector::writeAttribute(int32_t id,

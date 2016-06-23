@@ -30,6 +30,8 @@
 
 namespace splash
 {
+    class DCAttributeInfo;
+
     /**
      * Class for static convenience attribute operations.
      * \cond HIDDEN_SYMBOLS
@@ -47,6 +49,19 @@ namespace splash
         static void readAttribute(const char *name,
                 hid_t parent,
                 void *dst) throw (DCException);
+
+        /**
+         * Static method for reading the attribute meta info
+         *
+         * @param name name of the attribute
+         * @param parent parent object to get attribute from
+         * @return Pointer to heap allocated DCAttributeInfo instance
+         *         or NULL if not found.
+         *         Must be freed by the caller.
+         *
+         */
+        static DCAttributeInfo* readAttributeInfo(const char *name,
+                hid_t parent) throw (DCException);
 
         /**
          * Basic static method for writing an attribute.

@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2016 Alexander Grund
  *
  * This file is part of libSplash.
  *
@@ -20,17 +20,18 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SPLASH_H
-#define SPLASH_H
-
-#define SPLASH_SUPPORTED_SERIAL 1
-
-#include "splash/version.hpp"
-
-#include "splash/SerialDataCollector.hpp"
-#include "splash/DomainCollector.hpp"
-
-#include "splash/basetypes/basetypes.hpp"
 #include "splash/DCAttributeInfo.hpp"
+#include "splash/CollectionType.hpp"
 
-#endif /* SPLASH_H */
+namespace splash
+{
+
+    DCAttributeInfo::DCAttributeInfo(): colType_(NULL)
+    {
+    }
+
+    DCAttributeInfo::~DCAttributeInfo()
+    {
+        delete colType_;
+    }
+}

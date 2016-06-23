@@ -34,7 +34,9 @@ class Parallel_AttributesTest  : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST_SUITE(Parallel_AttributesTest);
 
     CPPUNIT_TEST(testDataAttributes);
+    CPPUNIT_TEST(testAttributesMeta);
     CPPUNIT_TEST(testArrayTypes);
+    CPPUNIT_TEST(testArrayAttributesMeta);
 
     CPPUNIT_TEST_SUITE_END();
 public:
@@ -43,9 +45,12 @@ public:
 private:
     void testDataAttributes();
     void testArrayTypes();
+    void testAttributesMeta();
+    void testArrayAttributesMeta();
 
     ColTypeChar ctChar;
     ColTypeInt ctInt;
+    ColTypeDouble ctDouble;
     ColTypeInt2 ctInt2;
     ColTypeInt3Array ctInt3Array;
     ColTypeDimArray ctDimArray;
