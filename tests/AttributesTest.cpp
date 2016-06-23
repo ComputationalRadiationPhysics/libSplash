@@ -186,7 +186,7 @@ void AttributesTest::testDataAttributes()
 }
 
 // Delete old info, read new info and check validity (reduce noise in test code)
-#define READ_ATTR_META(name, group) delete info; info = NULL;                                 \
+#define READ_ATTR_META(name, group) delete info; info = NULL;                           \
                              info = dataCollector->readAttributeMeta(10, group, #name); \
                              CPPUNIT_ASSERT(info);
 
@@ -226,34 +226,40 @@ void AttributesTest::testAttributesMeta()
     CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info->getMemSize());
     // Note: This is the file saved type. ColTypeInt will resolve to the generic variant
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
+    CPPUNIT_ASSERT(!info->isVarSize());
 
     READ_ATTR_META(intVal, NULL);
     CPPUNIT_ASSERT(info->isScalar());
     CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info->getMemSize());
     // Note: This is the file saved type. ColTypeInt will resolve to the generic variant
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
+    CPPUNIT_ASSERT(!info->isVarSize());
 
     READ_ATTR_META(varLenStr, NULL);
     CPPUNIT_ASSERT(info->isScalar());
     CPPUNIT_ASSERT_EQUAL(sizeof(varLenStr), info->getMemSize());
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ctString));
+    CPPUNIT_ASSERT(info->isVarSize());
 
     READ_ATTR_META(fixedLenStr, NULL);
     CPPUNIT_ASSERT(info->isScalar());
     CPPUNIT_ASSERT_EQUAL(sizeof(fixedLenStr), info->getMemSize());
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ctString4));
+    CPPUNIT_ASSERT(!info->isVarSize());
 
     READ_ATTR_META(intVal, "group");
     CPPUNIT_ASSERT(info->isScalar());
     CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info->getMemSize());
     // Note: This is the file saved type. ColTypeInt will resolve to the generic variant
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
+    CPPUNIT_ASSERT(!info->isVarSize());
 
     READ_ATTR_META(charVal, "group");
     CPPUNIT_ASSERT(info->isScalar());
     CPPUNIT_ASSERT_EQUAL(sizeof(charVal), info->getMemSize());
     // Note: Native char resolves to either Int8 or UInt8
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt8) || typeid(info->getType()) == typeid(ColTypeUInt8));
+    CPPUNIT_ASSERT(!info->isVarSize());
 
     delete info;
     dataCollector->close();
@@ -304,6 +310,7 @@ void AttributesTest::testArrayAttributesMeta()
     double doubleArray[7] = {-3.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0};
     Dimensions dim(104, 0, 2);
     const int intVal= 42;
+    const char strArray[6] = {"x\0y\0z"};
 
     dataCollector->writeAttribute(10, ctInt, NULL, "intVal", 1u, Dimensions(1, 1, 1), &intVal);
     dataCollector->writeAttribute(10, ctInt, NULL, "intVal2", 3u, Dimensions(1, 1, 1), &intVal);
@@ -312,6 +319,7 @@ void AttributesTest::testArrayAttributesMeta()
     dataCollector->writeAttribute(10, ctInt, NULL, "int3Array3", 3u, Dimensions(1, 1, 3), int3Array);
     dataCollector->writeAttribute(10, ctDimArray, NULL, "dim", dim.getPointer());
     dataCollector->writeAttribute(10, ctDouble, NULL, "doubleArray", 1u, Dimensions(7,1,1), doubleArray);
+    dataCollector->writeAttribute(10, ColTypeString(1), NULL, "strArray", 1u, Dimensions(3,1,1), strArray);
 
     // Reopen in read mode
     dataCollector->close();
@@ -325,6 +333,7 @@ void AttributesTest::testArrayAttributesMeta()
     CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info->getMemSize());
     // Note: This is the file saved type. ColTypeInt will resolve to the generic variant
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
+    CPPUNIT_ASSERT(!info->isVarSize());
 
     READ_ATTR_META(intVal2, NULL);
     CPPUNIT_ASSERT(!info->isScalar());
@@ -333,11 +342,13 @@ void AttributesTest::testArrayAttributesMeta()
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
     CPPUNIT_ASSERT_EQUAL(3u, info->getNDims());
     CPPUNIT_ASSERT_EQUAL(Dimensions(1, 1, 1), info->getDims());
+    CPPUNIT_ASSERT(!info->isVarSize());
 
     READ_ATTR_META(int3Array1, NULL);
     CPPUNIT_ASSERT(info->isScalar());
     CPPUNIT_ASSERT_EQUAL(sizeof(int3Array), info->getMemSize());
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ctInt3Array));
+    CPPUNIT_ASSERT(!info->isVarSize());
 
     READ_ATTR_META(int3Array2, NULL);
     CPPUNIT_ASSERT(!info->isScalar());
@@ -346,6 +357,7 @@ void AttributesTest::testArrayAttributesMeta()
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
     CPPUNIT_ASSERT_EQUAL(1u, info->getNDims());
     CPPUNIT_ASSERT_EQUAL(Dimensions(3, 1, 1), info->getDims());
+    CPPUNIT_ASSERT(!info->isVarSize());
 
     READ_ATTR_META(int3Array3, NULL);
     CPPUNIT_ASSERT(!info->isScalar());
@@ -354,6 +366,7 @@ void AttributesTest::testArrayAttributesMeta()
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
     CPPUNIT_ASSERT_EQUAL(3u, info->getNDims());
     CPPUNIT_ASSERT_EQUAL(Dimensions(1, 1, 3), info->getDims());
+    CPPUNIT_ASSERT(!info->isVarSize());
 
     READ_ATTR_META(dim, NULL);
     CPPUNIT_ASSERT(info->isScalar());
@@ -361,6 +374,7 @@ void AttributesTest::testArrayAttributesMeta()
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ctDimArray));
     CPPUNIT_ASSERT_EQUAL(1u, info->getNDims());
     CPPUNIT_ASSERT_EQUAL(Dimensions(1, 1, 1), info->getDims());
+    CPPUNIT_ASSERT(!info->isVarSize());
 
     READ_ATTR_META(doubleArray, NULL);
     CPPUNIT_ASSERT(!info->isScalar());
@@ -368,6 +382,15 @@ void AttributesTest::testArrayAttributesMeta()
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ctDouble));
     CPPUNIT_ASSERT_EQUAL(1u, info->getNDims());
     CPPUNIT_ASSERT_EQUAL(Dimensions(7, 1, 1), info->getDims());
+    CPPUNIT_ASSERT(!info->isVarSize());
+
+    READ_ATTR_META(strArray, NULL);
+    CPPUNIT_ASSERT(!info->isScalar());
+    CPPUNIT_ASSERT_EQUAL(sizeof(strArray), info->getMemSize());
+    CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeString));
+    CPPUNIT_ASSERT_EQUAL(1u, info->getNDims());
+    CPPUNIT_ASSERT_EQUAL(Dimensions(3, 1, 1), info->getDims());
+    CPPUNIT_ASSERT(!info->isVarSize());
 
     delete info;
     dataCollector->close();

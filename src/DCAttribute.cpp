@@ -50,7 +50,7 @@ namespace splash
         if (!attrSpace)
             throw DCException(getExceptionString(name, "Could not get dataspace of attribute"));
         // Currently only simple dataspaces exist and are supported by this library
-        if (!H5Sis_simple(attrSpace) > 0)
+        if (H5Sis_simple(attrSpace) <= 0)
             throw DCException(getExceptionString(name, "Dataspace is not simple"));
 
         // For scalars we don't need more info on the dataspace
@@ -74,6 +74,7 @@ namespace splash
         // There is also H5Aget_storage_size(attr), but that returns the size of 2 pointers
         // for variable length strings instead of 1
         result->memSize_ = H5Tget_size(attrType);
+        result->isVarSize_ = H5Tis_variable_str(attrType);
 
         if (spaceClass == H5S_SCALAR)
         {

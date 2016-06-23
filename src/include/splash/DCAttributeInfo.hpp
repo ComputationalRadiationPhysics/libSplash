@@ -38,6 +38,7 @@ namespace splash
         CollectionType* colType_;
         Dimensions dims_;
         uint32_t ndims_;
+        bool isVarSize_;
 
         friend class DCAttribute;
         // Don't copy
@@ -57,6 +58,9 @@ namespace splash
         uint32_t getNDims() const { return ndims_; }
         /** Return whether this is a scalar value */
         bool isScalar() const { return ndims_ == 1 && dims_.getScalarSize() == 1; }
+        /** Return true, if the attribute has a variable size in which case reading
+         *  it will only return its pointer */
+        bool isVarSize() const { return isVarSize_; }
     };
 }
 
