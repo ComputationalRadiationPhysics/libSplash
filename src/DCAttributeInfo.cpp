@@ -22,7 +22,6 @@
 
 #include "splash/DCAttributeInfo.hpp"
 #include "splash/CollectionType.hpp"
-#include "splash/DCException.hpp"
 #include "splash/basetypes/generateCollectionType.hpp"
 #include <cassert>
 
@@ -38,26 +37,32 @@ DCAttributeInfo::~DCAttributeInfo()
     delete colType_;
 }
 
-inline void DCAttributeInfo::loadType()
+std::string DCAttributeInfo::getExceptionString(const std::string& msg)
+{
+    return (std::string("Exception for DCAttribute [") + readName() +
+            std::string("] ") + msg);
+}
+
+inline void DCAttributeInfo::loadType() throw(DCException)
 {
     if(!type_)
     {
         type_.reset(H5Aget_type(attr_));
         if (!type_)
-            throw DCException("Could not get type of attribute");
+            throw DCException(getExceptionString("Could not get type"));
     }
 }
 
-inline void DCAttributeInfo::loadSpace()
+inline void DCAttributeInfo::loadSpace() throw(DCException)
 {
     if(!space_)
     {
         space_.reset(H5Aget_space(attr_));
         if (!space_)
-            throw DCException("Could not get dataspace of attribute");
+            throw DCException(getExceptionString("Could not get dataspace"));
         // Currently only simple dataspaces exist and are supported by this library
         if (H5Sis_simple(space_) <= 0)
-            throw DCException("Dataspace is not simple");
+            throw DCException(getExceptionString("Dataspace is not simple"));
         H5S_class_t spaceClass = H5Sget_simple_extent_type(space_);
         if (spaceClass == H5S_SCALAR)
             nDims_ = 0;
@@ -65,13 +70,27 @@ inline void DCAttributeInfo::loadSpace()
         {
             int nDims = H5Sget_simple_extent_ndims(space_);
             if (nDims < 0)
-                throw DCException("Could not get dimensionality of dataspace");
+                throw DCException(getExceptionString("Could not get dimensionality of dataspace"));
             nDims_ = static_cast<uint32_t>(nDims);
         }
     }
 }
 
-size_t DCAttributeInfo::getMemSize()
+std::string DCAttributeInfo::readName()
+{
+    ssize_t nameLen = H5Aget_name(attr_, 0, NULL);
+    if(nameLen <= 0)
+        return std::string();
+    char* name = new char[nameLen + 1];
+    // Read and in error case (unlikely) just store a zero-len string
+    if(H5Aget_name(attr_, nameLen + 1, name) < 0)
+        name[0] = 0;
+    std::string strName(name);
+    delete[] name;
+    return strName;
+}
+
+size_t DCAttributeInfo::getMemSize() throw(DCException)
 {
     loadType();
     // For variable length strings the storage size is always the size of 2 pointers
@@ -87,7 +106,7 @@ size_t DCAttributeInfo::getMemSize()
     }
 }
 
-const CollectionType& DCAttributeInfo::getType()
+const CollectionType& DCAttributeInfo::getType() throw(DCException)
 {
     if(!colType_)
     {
@@ -97,7 +116,7 @@ const CollectionType& DCAttributeInfo::getType()
     return *colType_;
 }
 
-Dimensions DCAttributeInfo::getDims()
+Dimensions DCAttributeInfo::getDims() throw(DCException)
 {
     loadSpace();
     Dimensions dims(1, 1, 1);
@@ -105,26 +124,46 @@ Dimensions DCAttributeInfo::getDims()
     if (nDims_ > 0)
     {
         if (nDims_ > DSP_DIM_MAX)
-            throw DCException("Dimensionality of dataspace is greater than the maximum supported value");
+            throw DCException(getExceptionString("Dimensionality of dataspace is greater than the maximum supported value"));
         int nDims2 = H5Sget_simple_extent_dims(space_, dims.getPointer(), NULL);
         // Conversion to int is save due to limited range
         if (nDims2 != static_cast<int>(nDims_))
-            throw DCException("Could not get dimensions of dataspace");
+            throw DCException(getExceptionString("Could not get dimensions of dataspace"));
     }
     return dims;
 }
 
-uint32_t DCAttributeInfo::getNDims()
+uint32_t DCAttributeInfo::getNDims() throw(DCException)
 {
     loadSpace();
     // A value of 0 means a scalar, treat as 1D
     return nDims_ == 0 ? 1 : nDims_;
 }
 
-bool DCAttributeInfo::isVarSize()
+bool DCAttributeInfo::isVarSize() throw(DCException)
 {
     loadType();
     return H5Tis_variable_str(type_);
+}
+
+void DCAttributeInfo::read(const CollectionType& colType, void* buf) throw(DCException)
+{
+    if(!readNoThrow(colType, buf))
+        throw DCException(getExceptionString("Could not read or convert data"));
+}
+
+bool DCAttributeInfo::readNoThrow(const CollectionType& colType, void* buf)
+{
+    return H5Aread(attr_, colType.getDataType(), buf) >= 0;
+}
+
+void DCAttributeInfo::read(void* buf, size_t bufSize) throw(DCException)
+{
+    loadType();
+    if(getMemSize() != bufSize)
+        throw DCException(getExceptionString("Buffer size does not match attribute size"));
+    if(H5Aread(attr_, type_, buf) < 0)
+        throw DCException(getExceptionString("Could not read data"));
 }
 
 }

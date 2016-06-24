@@ -32,7 +32,7 @@ namespace splash
      *
      * All calls to DataCollector should handle these exceptions.
      */
-    class DCException : virtual public std::runtime_error
+    class DCException : public std::runtime_error
     {
     public:
 

@@ -24,7 +24,9 @@
 #define DCATTRIBUTE_INFO_H
 
 #include "splash/Dimensions.hpp"
+#include "splash/DCException.hpp"
 #include "splash/core/H5IdWrapper.hpp"
+#include <string>
 
 namespace splash
 {
@@ -42,25 +44,59 @@ namespace splash
         ~DCAttributeInfo();
 
         /** Return the size of the required memory in bytes when querying the value */
-        size_t getMemSize();
+        size_t getMemSize() throw(DCException);
         /** Return the CollectionType. Might be ColTypeUnknown */
-        const CollectionType& getType();
+        const CollectionType& getType() throw(DCException);
         /** Return the size in each dimension */
-        Dimensions getDims();
+        Dimensions getDims() throw(DCException);
         /** Return the number of dimensions */
-        uint32_t getNDims();
+        uint32_t getNDims() throw(DCException);
         /** Return whether this is a scalar value */
-        bool isScalar() { return getNDims() == 1 && getDims().getScalarSize() == 1; }
+        bool isScalar()  throw(DCException){ return getNDims() == 1 && getDims().getScalarSize() == 1; }
         /** Return true, if the attribute has a variable size in which case reading
          *  it will only return its pointer */
-        bool isVarSize();
+        bool isVarSize() throw(DCException);
+        /** Read the name of the attribute. Returns an empty string on error */
+        std::string readName();
 
+        /**
+         * Read the data of this attribute into the buffer of the given type.
+         * Data conversion may occur, if required. See the HDF5 manual for details
+         * Throws an exception if the attribute could not be read or converted
+         *
+         * @param colType Type of the buffer
+         * @param buf     Pointer to buffer. Size must be equal to \ref getMemSize
+         */
+        void read(const CollectionType& colType, void* buf) throw(DCException);
+
+        /**
+         * Read the data of this attribute into the buffer of the given type.
+         * Data conversion may occur, if required. See the HDF5 manual for details
+         * Does not throw exception, so it can be used for trying different types
+         *
+         * @param colType Type of the buffer
+         * @param buf     Pointer to buffer. Size must be equal to \ref getMemSize
+         * @return True on success, else false
+         */
+        bool readNoThrow(const CollectionType& colType, void* buf);
+
+        /**
+         * Read the data of this attribute into the buffer of the given size.
+         * No data conversion occurs, so the type as found in the file is used.
+         * Throws an exception if the attribute could not be read or the buffer is to small.
+         *
+         * @param buf     Pointer to buffer
+         * @param bufSize Size of the buffer
+         */
+        void read(void* buf, size_t bufSize) throw(DCException);
     private:
         // Don't copy
         DCAttributeInfo(const DCAttributeInfo&);
         DCAttributeInfo& operator=(const DCAttributeInfo&);
-        void loadType();
-        void loadSpace();
+
+        std::string getExceptionString(const std::string& msg);
+        void loadType() throw(DCException);
+        void loadSpace() throw(DCException);
 
         // Those values are lazy loaded on access
         CollectionType* colType_;

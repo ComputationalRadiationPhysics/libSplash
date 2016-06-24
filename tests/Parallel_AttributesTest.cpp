@@ -29,10 +29,15 @@
 #include <cstring>
 #include <cppunit/TestAssert.h>
 
-std::ostream& operator<<(std::ostream& s, const splash::Dimensions& dim)
+namespace splash {
+
+// Declare this in namespace splash (required for ADL)
+std::ostream& operator<<(std::ostream& s, const Dimensions& dim)
 {
     return s << dim.toString();
 }
+
+}  // namespace splash
 
 CPPUNIT_TEST_SUITE_REGISTRATION(Parallel_AttributesTest);
 
@@ -180,8 +185,9 @@ void Parallel_AttributesTest::testAttributesMeta()
 
     dataCollector->open(TEST_FILE_META, attr);
 
-    int intVal = rand();
-    dataCollector->writeGlobalAttribute(10, ctInt, "intVal", &intVal);
+    const int intValGlob = rand();
+    const int intVal = rand();
+    dataCollector->writeGlobalAttribute(10, ctInt, "intValGlob", &intValGlob);
     dataCollector->writeAttribute(10, ctInt, NULL, "intVal", &intVal);
 
     /* variable length string, '\0' terminated */
@@ -194,8 +200,9 @@ void Parallel_AttributesTest::testAttributesMeta()
     // Create a group
     dataCollector->write(10, ctInt, 1, Selection(Dimensions()), "group", &intVal);
 
-    char charVal = 'Y';
-    dataCollector->writeAttribute(10, ctInt, "group", "intVal", &intVal);
+    const int intValGroup = rand();
+    const char charVal = 'Y';
+    dataCollector->writeAttribute(10, ctInt, "group", "intValGroup", &intValGroup);
     dataCollector->writeAttribute(10, ctChar, "group", "charVal", &charVal);
 
     // Reopen in read mode
@@ -204,12 +211,15 @@ void Parallel_AttributesTest::testAttributesMeta()
     dataCollector->open(TEST_FILE_META, attr);
 
     DCAttributeInfo* info = NULL;
-    info = dataCollector->readGlobalAttributeMeta(10, "intVal");
+    info = dataCollector->readGlobalAttributeMeta(10, "intValGlob");
     CPPUNIT_ASSERT(info->isScalar());
     CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info->getMemSize());
     // Note: This is the file saved type. ColTypeInt will resolve to the generic variant
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
     CPPUNIT_ASSERT(!info->isVarSize());
+    int intValRead = 0;
+    info->read(ctInt, &intValRead);
+    CPPUNIT_ASSERT_EQUAL(intValGlob, intValRead);
 
     READ_ATTR_META(intVal, NULL);
     CPPUNIT_ASSERT(info->isScalar());
@@ -217,25 +227,39 @@ void Parallel_AttributesTest::testAttributesMeta()
     // Note: This is the file saved type. ColTypeInt will resolve to the generic variant
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
     CPPUNIT_ASSERT(!info->isVarSize());
+    intValRead = 0;
+    info->read(ctInt, &intValRead);
+    CPPUNIT_ASSERT_EQUAL(intVal, intValRead);
 
     READ_ATTR_META(varLenStr, NULL);
     CPPUNIT_ASSERT(info->isScalar());
     CPPUNIT_ASSERT_EQUAL(sizeof(varLenStr), info->getMemSize());
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ctString));
     CPPUNIT_ASSERT(info->isVarSize());
+    // Note: API returns a pointer to the string!
+    const char* varLenStrRead = NULL;
+    info->read(ctString, &varLenStrRead);
+    CPPUNIT_ASSERT(strcmp(varLenStr, varLenStrRead) == 0);
 
     READ_ATTR_META(fixedLenStr, NULL);
     CPPUNIT_ASSERT(info->isScalar());
     CPPUNIT_ASSERT_EQUAL(sizeof(fixedLenStr), info->getMemSize());
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ctString4));
     CPPUNIT_ASSERT(!info->isVarSize());
+    // Note: API returns string data
+    std::vector<char> fixedLenStrRead(info->getMemSize());
+    info->read(ctString4, &fixedLenStrRead[0]);
+    CPPUNIT_ASSERT(strcmp(fixedLenStr, &fixedLenStrRead[0]) == 0);
 
-    READ_ATTR_META(intVal, "group");
+    READ_ATTR_META(intValGroup, "group");
     CPPUNIT_ASSERT(info->isScalar());
     CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info->getMemSize());
     // Note: This is the file saved type. ColTypeInt will resolve to the generic variant
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
     CPPUNIT_ASSERT(!info->isVarSize());
+    int intValGroupRead = 0;
+    info->read(ctInt, &intValGroupRead);
+    CPPUNIT_ASSERT_EQUAL(intValGroup, intValGroupRead);
 
     READ_ATTR_META(charVal, "group");
     CPPUNIT_ASSERT(info->isScalar());
@@ -243,6 +267,9 @@ void Parallel_AttributesTest::testAttributesMeta()
     // Note: Native char resolves to either Int8 or UInt8
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt8) || typeid(info->getType()) == typeid(ColTypeUInt8));
     CPPUNIT_ASSERT(!info->isVarSize());
+    char charValRead = 0;
+    info->read(ctChar, &charValRead);
+    CPPUNIT_ASSERT_EQUAL(charVal, charValRead);
 
     delete info;
     dataCollector->close();
@@ -300,17 +327,20 @@ void Parallel_AttributesTest::testArrayAttributesMeta()
 
     dataCollector->open(TEST_FILE_ARRAYMETA, attr);
 
-    const int int3Array[3] = { 17, 12, -99 };
-    double doubleArray[7] = {-3.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0};
-    Dimensions dim(104, 0, 2);
-    const int intVal= 42;
+    const int intVal  = rand();
+    const int intVal2 = rand();
+    const int int3Array[3] = { rand(), rand(), -rand() };
+    const int int3Array2[3] = { rand(), rand(), -rand() };
+    const int int3Array3[3] = { rand(), rand(), -rand() };
+    const double doubleArray[7] = {-(rand() * 10.)/RAND_MAX, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0};
+    const Dimensions dim(rand(), rand(), rand());
     const char strArray[6] = {"x\0y\0z"};
 
     dataCollector->writeAttribute(10, ctInt, NULL, "intVal", 1u, Dimensions(1, 1, 1), &intVal);
-    dataCollector->writeAttribute(10, ctInt, NULL, "intVal2", 3u, Dimensions(1, 1, 1), &intVal);
+    dataCollector->writeAttribute(10, ctInt, NULL, "intVal2", 3u, Dimensions(1, 1, 1), &intVal2);
     dataCollector->writeAttribute(10, ctInt3Array, NULL, "int3Array1", int3Array);
-    dataCollector->writeAttribute(10, ctInt, NULL, "int3Array2", 1u, Dimensions(3, 1, 1), int3Array);
-    dataCollector->writeAttribute(10, ctInt, NULL, "int3Array3", 3u, Dimensions(1, 1, 3), int3Array);
+    dataCollector->writeAttribute(10, ctInt, NULL, "int3Array2", 1u, Dimensions(3, 1, 1), int3Array2);
+    dataCollector->writeAttribute(10, ctInt, NULL, "int3Array3", 3u, Dimensions(1, 1, 3), int3Array3);
     dataCollector->writeAttribute(10, ctDimArray, NULL, "dim", dim.getPointer());
     dataCollector->writeAttribute(10, ctDouble, NULL, "doubleArray", 1u, Dimensions(7,1,1), doubleArray);
     dataCollector->writeAttribute(10, ColTypeString(1), NULL, "strArray", 1u, Dimensions(3,1,1), strArray);
@@ -320,6 +350,12 @@ void Parallel_AttributesTest::testArrayAttributesMeta()
     attr.fileAccType = DataCollector::FAT_READ;
     dataCollector->open(TEST_FILE_ARRAYMETA, attr);
 
+    int intValRead  = 0;
+    int int3ArrayRead[3] = { 0,0,0 };
+    double doubleArrayRead[7] = {0, 0, 0, 0, 0, 0, 0};
+    Dimensions dimRead(0,0,0);
+    char strArrayRead[6] = "\0\0\0\0\0";
+
     DCAttributeInfo* info = NULL;
 
     READ_ATTR_META(intVal, NULL);
@@ -328,6 +364,8 @@ void Parallel_AttributesTest::testArrayAttributesMeta()
     // Note: This is the file saved type. ColTypeInt will resolve to the generic variant
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
     CPPUNIT_ASSERT(!info->isVarSize());
+    info->read(&intValRead, sizeof(intValRead));
+    CPPUNIT_ASSERT_EQUAL(intVal, intValRead);
 
     READ_ATTR_META(intVal2, NULL);
     CPPUNIT_ASSERT(!info->isScalar());
@@ -337,12 +375,16 @@ void Parallel_AttributesTest::testArrayAttributesMeta()
     CPPUNIT_ASSERT_EQUAL(3u, info->getNDims());
     CPPUNIT_ASSERT_EQUAL(Dimensions(1, 1, 1), info->getDims());
     CPPUNIT_ASSERT(!info->isVarSize());
+    info->read(&intValRead, sizeof(intValRead));
+    CPPUNIT_ASSERT_EQUAL(intVal2, intValRead);
 
     READ_ATTR_META(int3Array1, NULL);
     CPPUNIT_ASSERT(info->isScalar());
     CPPUNIT_ASSERT_EQUAL(sizeof(int3Array), info->getMemSize());
     CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ctInt3Array));
     CPPUNIT_ASSERT(!info->isVarSize());
+    info->read(&int3ArrayRead, sizeof(int3ArrayRead));
+    CPPUNIT_ASSERT(memcmp(int3Array, int3ArrayRead, sizeof(int3ArrayRead)) == 0);
 
     READ_ATTR_META(int3Array2, NULL);
     CPPUNIT_ASSERT(!info->isScalar());
@@ -352,6 +394,8 @@ void Parallel_AttributesTest::testArrayAttributesMeta()
     CPPUNIT_ASSERT_EQUAL(1u, info->getNDims());
     CPPUNIT_ASSERT_EQUAL(Dimensions(3, 1, 1), info->getDims());
     CPPUNIT_ASSERT(!info->isVarSize());
+    info->read(&int3ArrayRead, sizeof(int3ArrayRead));
+    CPPUNIT_ASSERT(memcmp(int3Array2, int3ArrayRead, sizeof(int3ArrayRead)) == 0);
 
     READ_ATTR_META(int3Array3, NULL);
     CPPUNIT_ASSERT(!info->isScalar());
@@ -361,6 +405,8 @@ void Parallel_AttributesTest::testArrayAttributesMeta()
     CPPUNIT_ASSERT_EQUAL(3u, info->getNDims());
     CPPUNIT_ASSERT_EQUAL(Dimensions(1, 1, 3), info->getDims());
     CPPUNIT_ASSERT(!info->isVarSize());
+    info->read(&int3ArrayRead, sizeof(int3ArrayRead));
+    CPPUNIT_ASSERT(memcmp(int3Array3, int3ArrayRead, sizeof(int3ArrayRead)) == 0);
 
     READ_ATTR_META(dim, NULL);
     CPPUNIT_ASSERT(info->isScalar());
@@ -369,6 +415,8 @@ void Parallel_AttributesTest::testArrayAttributesMeta()
     CPPUNIT_ASSERT_EQUAL(1u, info->getNDims());
     CPPUNIT_ASSERT_EQUAL(Dimensions(1, 1, 1), info->getDims());
     CPPUNIT_ASSERT(!info->isVarSize());
+    info->read(&dimRead, dimRead.getSize());
+    CPPUNIT_ASSERT_EQUAL(dim, dimRead);
 
     READ_ATTR_META(doubleArray, NULL);
     CPPUNIT_ASSERT(!info->isScalar());
@@ -377,6 +425,8 @@ void Parallel_AttributesTest::testArrayAttributesMeta()
     CPPUNIT_ASSERT_EQUAL(1u, info->getNDims());
     CPPUNIT_ASSERT_EQUAL(Dimensions(7, 1, 1), info->getDims());
     CPPUNIT_ASSERT(!info->isVarSize());
+    info->read(&doubleArrayRead, sizeof(doubleArrayRead));
+    CPPUNIT_ASSERT(memcmp(doubleArray, doubleArrayRead, sizeof(doubleArrayRead)) == 0);
 
     READ_ATTR_META(strArray, NULL);
     CPPUNIT_ASSERT(!info->isScalar());
@@ -385,6 +435,8 @@ void Parallel_AttributesTest::testArrayAttributesMeta()
     CPPUNIT_ASSERT_EQUAL(1u, info->getNDims());
     CPPUNIT_ASSERT_EQUAL(Dimensions(3, 1, 1), info->getDims());
     CPPUNIT_ASSERT(!info->isVarSize());
+    info->read(&strArrayRead, sizeof(strArrayRead));
+    CPPUNIT_ASSERT(memcmp(strArray, strArrayRead, sizeof(strArrayRead)) == 0);
 
     delete info;
     dataCollector->close();
