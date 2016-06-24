@@ -23,7 +23,6 @@
 #include "splash/core/DCAttribute.hpp"
 #include "splash/core/H5IdWrapper.hpp"
 #include "splash/DCAttributeInfo.hpp"
-#include "splash/basetypes/generateCollectionType.hpp"
 
 #include <cassert>
 
@@ -38,60 +37,10 @@ namespace splash
     DCAttributeInfo* DCAttribute::readAttributeInfo(const char* name, hid_t parent)
     throw (DCException)
     {
-        H5AttributeId attr(H5Aopen(parent, name, H5P_DEFAULT));
+        hid_t attr = H5Aopen(parent, name, H5P_DEFAULT);
         if (!attr)
             throw DCException(getExceptionString(name, "Attribute could not be opened for reading"));
-
-        H5TypeId attrType(H5Aget_type(attr));
-        if (!attrType)
-            throw DCException(getExceptionString(name, "Could not get type of attribute"));
-
-        H5DataspaceId attrSpace(H5Aget_space(attr));
-        if (!attrSpace)
-            throw DCException(getExceptionString(name, "Could not get dataspace of attribute"));
-        // Currently only simple dataspaces exist and are supported by this library
-        if (H5Sis_simple(attrSpace) <= 0)
-            throw DCException(getExceptionString(name, "Dataspace is not simple"));
-
-        // For scalars we don't need more info on the dataspace
-        H5S_class_t spaceClass = H5Sget_simple_extent_type(attrSpace);
-        int nDims = 1;
-        hsize_t dims[DSP_DIM_MAX];
-        if (spaceClass != H5S_SCALAR)
-        {
-            nDims = H5Sget_simple_extent_ndims(attrSpace);
-            if (nDims < 0)
-                throw DCException(getExceptionString(name, "Could not get dimensionality of dataspace"));
-            if (nDims > DSP_DIM_MAX)
-                throw DCException(getExceptionString(name, "Dimensionality of dataspace is greater than the maximum supported value"));
-            int nDims2 = H5Sget_simple_extent_dims(attrSpace, dims, NULL);
-            if (nDims2 != nDims)
-                throw DCException(getExceptionString(name, "Could not get dimensions of dataspace"));
-        }
-
-        DCAttributeInfo* result = new DCAttributeInfo;
-        result->colType_ = generateCollectionType(attrType);
-        // There is also H5Aget_storage_size(attr), but that returns the size of 2 pointers
-        // for variable length strings instead of 1
-        result->memSize_ = H5Tget_size(attrType);
-        result->isVarSize_ = H5Tis_variable_str(attrType);
-
-        if (spaceClass == H5S_SCALAR)
-        {
-            result->ndims_ = 1;
-        }else
-        {
-            result->ndims_ = nDims;
-            for (int i = 0; i < nDims; i++)
-                result->dims_[i] = dims[i];
-            // Each element takes up the storage of the type
-            result->memSize_ *= result->dims_.getScalarSize();
-            // Normally this should be the same as the storage size.
-            // So we can probably use that if this works for all cases
-            assert(result->memSize_ == H5Aget_storage_size(attr));
-        }
-
-        return result;
+        return new DCAttributeInfo(attr);
     }
 
     void DCAttribute::readAttribute(const char* name, hid_t parent, void* dst)

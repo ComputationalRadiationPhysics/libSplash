@@ -24,6 +24,7 @@
 #define DCATTRIBUTE_INFO_H
 
 #include "splash/Dimensions.hpp"
+#include "splash/core/H5IdWrapper.hpp"
 
 namespace splash
 {
@@ -34,34 +35,39 @@ namespace splash
      */
     class DCAttributeInfo
     {
-        size_t memSize_;
-        CollectionType* colType_;
-        Dimensions dims_;
-        uint32_t ndims_;
-        bool isVarSize_;
+        H5AttributeId attr_;
 
-        friend class DCAttribute;
-        // Don't copy
-        DCAttributeInfo(const DCAttributeInfo&);
-        DCAttributeInfo& operator=(const DCAttributeInfo&);
-    public:
-        DCAttributeInfo();
+   public:
+        DCAttributeInfo(hid_t attr);
         ~DCAttributeInfo();
 
         /** Return the size of the required memory in bytes when querying the value */
-        size_t getMemSize() const { return memSize_; }
+        size_t getMemSize();
         /** Return the CollectionType. Might be ColTypeUnknown */
-        const CollectionType& getType() const { return *colType_; }
+        const CollectionType& getType();
         /** Return the size in each dimension */
-        const Dimensions& getDims() const { return dims_; }
+        Dimensions getDims();
         /** Return the number of dimensions */
-        uint32_t getNDims() const { return ndims_; }
+        uint32_t getNDims();
         /** Return whether this is a scalar value */
-        bool isScalar() const { return ndims_ == 1 && dims_.getScalarSize() == 1; }
+        bool isScalar() { return getNDims() == 1 && getDims().getScalarSize() == 1; }
         /** Return true, if the attribute has a variable size in which case reading
          *  it will only return its pointer */
-        bool isVarSize() const { return isVarSize_; }
-    };
+        bool isVarSize();
+
+    private:
+        // Don't copy
+        DCAttributeInfo(const DCAttributeInfo&);
+        DCAttributeInfo& operator=(const DCAttributeInfo&);
+        void loadType();
+        void loadSpace();
+
+        // Those values are lazy loaded on access
+        CollectionType* colType_;
+        H5TypeId type_;
+        H5DataspaceId space_;
+        uint32_t nDims_;
+};
 }
 
 #endif /* DCATTRIBUTE_INFO_H */
