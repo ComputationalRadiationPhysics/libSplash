@@ -59,7 +59,7 @@ namespace splash
     }
 
     void DCAttribute::writeAttribute(const char* name, const hid_t type, hid_t parent,
-                                     uint32_t ndims, const Dimensions dims, const void* src)
+                                     uint32_t ndims, Dimensions dims, const void* src)
     throw (DCException)
     {
         H5AttributeId attr;
@@ -67,6 +67,7 @@ namespace splash
             attr.reset(H5Aopen(parent, name, H5P_DEFAULT));
         else
         {
+            dims.swapDims(ndims);
             H5DataspaceId dsp;
             if( ndims == 1 && dims.getScalarSize() == 1 )
                 dsp.reset(H5Screate(H5S_SCALAR));

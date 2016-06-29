@@ -91,7 +91,7 @@ namespace splash
                 const hid_t type,
                 hid_t parent,
                 uint32_t ndims,
-                const Dimensions dims,
+                Dimensions dims,
                 const void *src) throw (DCException);
 
     private:

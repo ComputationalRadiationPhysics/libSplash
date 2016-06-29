@@ -129,6 +129,7 @@ Dimensions DCAttributeInfo::getDims() throw(DCException)
         // Conversion to int is save due to limited range
         if (nDims2 != static_cast<int>(nDims_))
             throw DCException(getExceptionString("Could not get dimensions of dataspace"));
+        dims.swapDims(nDims_);
     }
     return dims;
 }
