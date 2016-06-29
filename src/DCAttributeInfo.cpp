@@ -24,6 +24,7 @@
 #include "splash/CollectionType.hpp"
 #include "splash/basetypes/generateCollectionType.hpp"
 #include <cassert>
+#include <sstream>
 
 namespace splash
 {
@@ -162,7 +163,11 @@ void DCAttributeInfo::read(void* buf, size_t bufSize) throw(DCException)
 {
     loadType();
     if(getMemSize() != bufSize)
-        throw DCException(getExceptionString("Buffer size does not match attribute size"));
+    {
+        std::stringstream ss;
+        ss << "Buffer size (" << bufSize << ") does not match attribute size (" << getMemSize() << ")";
+        throw DCException(getExceptionString(ss.str()));
+    }
     if(H5Aread(attr_, type_, buf) < 0)
         throw DCException(getExceptionString("Could not read data"));
 }

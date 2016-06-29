@@ -1037,7 +1037,7 @@ namespace splash
             }
 
         if(entry_id < 0)
-            throw DCException(getExceptionString("readDataSetMeta", "Entry not found by name"));
+            throw DCException(getExceptionString("readDataSetMeta", "Entry not found by name", name));
 
         Dimensions src_size(dataset.getSize() - srcOffset);
         dataset.read(dstBuffer, dstOffset, src_size, srcOffset, sizeRead, srcDims, NULL);
