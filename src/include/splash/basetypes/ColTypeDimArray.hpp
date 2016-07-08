@@ -36,7 +36,7 @@ namespace splash
 
         ColTypeDimArray()
         {
-            const hsize_t dim[] = {3};
+            const hsize_t dim[] = {DSP_DIM_MAX};
             this->type = H5Tarray_create(H5T_NATIVE_HSIZE, 1, dim);
         }
 

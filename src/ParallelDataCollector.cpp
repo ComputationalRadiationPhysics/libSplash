@@ -770,33 +770,6 @@ namespace splash
         src_dataset.close();
     }
 
-    void ParallelDataCollector::createReference(int32_t srcID,
-            const char *srcName,
-            int32_t dstID,
-            const char *dstName,
-            Dimensions /*count*/,
-            Dimensions /*offset*/,
-            Dimensions /*stride*/)
-    throw (DCException)
-    {
-        if (srcName == NULL || dstName == NULL)
-            throw DCException(getExceptionString("createReference", "a parameter was NULL"));
-
-        if (fileStatus == FST_CLOSED || fileStatus == FST_READING)
-            throw DCException(getExceptionString("createReference", "this access is not permitted"));
-
-        if (srcID != dstID)
-            throw DCException(getExceptionString("createReference",
-                "source and destination ID must be identical", NULL));
-
-        if (srcName == dstName)
-            throw DCException(getExceptionString("createReference",
-                "a reference must not be identical to the referenced data", srcName));
-
-        throw DCException(getExceptionString("createReference",
-                "feature currently not supported by Parallel HDF5", NULL));
-    }
-
     /*******************************************************************************
      * PROTECTED FUNCTIONS
      *******************************************************************************/
@@ -1137,6 +1110,58 @@ namespace splash
         dataset.create(type, group.getHandle(), globalSize, ndims,
                 this->options.enableCompression, true);
         dataset.close();
+    }
+
+    /* UNIMPLEMENTED METHODS FROM DATACOLLECTOR. TODO: Unify interface to remove those */
+    void ParallelDataCollector::readGlobalAttribute(const char*, void*, Dimensions*)
+    throw (DCException)
+    {
+        throw DCException(getExceptionString("readGlobalAttribute",
+                "feature currently not supported by Parallel HDF5"));
+    }
+
+    void ParallelDataCollector::writeGlobalAttribute(const CollectionType& /*type*/,
+            const char* /*name*/, const void* /*data*/) throw (DCException)
+    {
+        throw DCException(getExceptionString("readGlobalAttribute",
+                "feature currently not supported by Parallel HDF5"));
+    }
+
+    void ParallelDataCollector::writeGlobalAttribute(const CollectionType& /*type*/,
+            const char* /*name*/, uint32_t /*ndims*/, const Dimensions /*dims*/,
+            const void* /*data*/) throw (DCException)
+    {
+        throw DCException(getExceptionString("readGlobalAttribute",
+                "feature currently not supported by Parallel HDF5"));
+    }
+
+    void ParallelDataCollector::append(int32_t /*id*/, const CollectionType& /*type*/,
+            size_t /*count*/, const char* /*name*/, const void* /*data*/)
+    throw (DCException)
+    {
+        throw DCException(getExceptionString("readGlobalAttribute",
+                "feature currently not supported by Parallel HDF5"));
+    }
+
+    void ParallelDataCollector::append(int32_t /*id*/, const CollectionType& /*type*/,
+            size_t /*count*/, size_t /*offset*/, size_t /*stride*/, const char* /*name*/,
+            const void* /*data*/) throw (DCException)
+    {
+        throw DCException(getExceptionString("readGlobalAttribute",
+                "feature currently not supported by Parallel HDF5"));
+    }
+
+    void ParallelDataCollector::createReference(int32_t /*srcID*/,
+            const char */*srcName*/,
+            int32_t /*dstID*/,
+            const char */*dstName*/,
+            Dimensions /*count*/,
+            Dimensions /*offset*/,
+            Dimensions /*stride*/)
+    throw (DCException)
+    {
+        throw DCException(getExceptionString("readGlobalAttribute",
+                "feature currently not supported by Parallel HDF5"));
     }
 
 }
