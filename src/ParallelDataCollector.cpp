@@ -310,17 +310,17 @@ namespace splash
             *count = param.count;
     }
 
-    DCAttributeInfo* ParallelDataCollector::readGlobalAttributeMeta(
+    AttributeInfo* ParallelDataCollector::readGlobalAttributeInfo(
             int32_t id,
             const char* name,
             Dimensions */*mpiPosition*/)
     throw (DCException)
     {
         if (name == NULL)
-            throw DCException(getExceptionString("readGlobalAttributeMeta", "a parameter was null"));
+            throw DCException(getExceptionString("readGlobalAttributeInfo", "a parameter was null"));
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_CREATING)
-            throw DCException(getExceptionString("readGlobalAttributeMeta", "this access is not permitted"));
+            throw DCException(getExceptionString("readGlobalAttributeInfo", "this access is not permitted"));
 
         DCParallelGroup group_custom;
         group_custom.open(handles.get(id), PDC_GROUP_CUSTOM);
@@ -431,7 +431,7 @@ namespace splash
             return -1;
     }
 
-    DCAttributeInfo* ParallelDataCollector::readAttributeMeta(int32_t id,
+    AttributeInfo* ParallelDataCollector::readAttributeInfo(int32_t id,
             const char *dataName,
             const char *attrName,
             Dimensions* /*mpiPosition*/)
@@ -439,10 +439,10 @@ namespace splash
     {
         // mpiPosition is ignored
         if (attrName == NULL)
-            throw DCException(getExceptionString("readAttributeMeta", "a parameter was null"));
+            throw DCException(getExceptionString("readAttributeInfo", "a parameter was null"));
 
         if (strlen(attrName) == 0)
-            throw DCException(getExceptionString("readAttributeMeta", "empty attribute name"));
+            throw DCException(getExceptionString("readAttributeInfo", "empty attribute name"));
 
         DCParallelGroup group;
         H5ObjectId objId(openGroup(group, id, dataName));

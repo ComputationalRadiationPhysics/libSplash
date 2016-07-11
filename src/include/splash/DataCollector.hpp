@@ -56,7 +56,7 @@
 namespace splash
 {
 
-    class DCAttributeInfo;
+    class AttributeInfo;
 
     class DataCollector
     {
@@ -315,7 +315,7 @@ namespace splash
          * @return Pointer to heap allocated DCAttributeInfo instance or NULL if not found.
          *         Must be freed by the caller.
          */
-        virtual DCAttributeInfo* readGlobalAttributeMeta(
+        virtual AttributeInfo* readGlobalAttributeInfo(
                 int32_t id,
                 const char *name,
                 Dimensions *mpiPosition = NULL) = 0;
@@ -374,7 +374,7 @@ namespace splash
          * @return Pointer to heap allocated DCAttributeInfo instance or NULL if not found.
          *         Must be freed by the caller.
          */
-        virtual DCAttributeInfo* readAttributeMeta(int32_t id,
+        virtual AttributeInfo* readAttributeInfo(int32_t id,
                 const char *dataName,
                 const char *attrName,
                 Dimensions *mpiPosition = NULL) = 0;

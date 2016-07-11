@@ -20,10 +20,9 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "splash/AttributeInfo.hpp"
 #include "splash/core/DCAttribute.hpp"
 #include "splash/core/H5IdWrapper.hpp"
-#include "splash/DCAttributeInfo.hpp"
-
 #include <cassert>
 
 namespace splash
@@ -34,13 +33,13 @@ namespace splash
                 std::string("] ") + msg);
     }
 
-    DCAttributeInfo* DCAttribute::readAttributeInfo(const char* name, hid_t parent)
+    AttributeInfo* DCAttribute::readAttributeInfo(const char* name, hid_t parent)
     throw (DCException)
     {
         H5AttributeId attr(H5Aopen(parent, name, H5P_DEFAULT));
         if (!attr)
             throw DCException(getExceptionString(name, "Attribute could not be opened for reading"));
-        return new DCAttributeInfo(attr.release());
+        return new AttributeInfo(attr.release());
     }
 
     void DCAttribute::readAttribute(const char* name, hid_t parent, void* dst)

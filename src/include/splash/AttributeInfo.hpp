@@ -47,13 +47,13 @@ namespace splash
      * delete info;
      * \endcode
      */
-    class DCAttributeInfo
+    class AttributeInfo
     {
         H5AttributeId attr_;
 
    public:
-        explicit DCAttributeInfo(hid_t attr);
-        ~DCAttributeInfo();
+        explicit AttributeInfo(hid_t attr);
+        ~AttributeInfo();
 
         /** Return the size of the required memory in bytes when querying the value */
         size_t getMemSize() throw(DCException);
@@ -107,8 +107,8 @@ namespace splash
         void read(void* buf, size_t bufSize) throw(DCException);
     private:
         // Don't copy
-        DCAttributeInfo(const DCAttributeInfo&);
-        DCAttributeInfo& operator=(const DCAttributeInfo&);
+        AttributeInfo(const AttributeInfo&);
+        AttributeInfo& operator=(const AttributeInfo&);
 
         std::string getExceptionString(const std::string& msg);
         void loadType() throw(DCException);

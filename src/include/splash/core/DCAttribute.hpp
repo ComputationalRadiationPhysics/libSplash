@@ -30,7 +30,7 @@
 
 namespace splash
 {
-    class DCAttributeInfo;
+    class AttributeInfo;
 
     /**
      * Class for static convenience attribute operations.
@@ -60,7 +60,7 @@ namespace splash
          *         Must be freed by the caller.
          *
          */
-        static DCAttributeInfo* readAttributeInfo(const char *name,
+        static AttributeInfo* readAttributeInfo(const char *name,
                 hid_t parent) throw (DCException);
 
         /**

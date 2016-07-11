@@ -267,7 +267,7 @@ namespace splash
             return -1;
     }
 
-    DCAttributeInfo* SerialDataCollector::readGlobalAttributeMeta(
+    AttributeInfo* SerialDataCollector::readGlobalAttributeInfo(
             int32_t /*id*/,
             const char* name,
             Dimensions *mpiPosition)
@@ -275,7 +275,7 @@ namespace splash
     {
         // mpiPosition is allowed to be NULL here
         if (name == NULL)
-            throw DCException(getExceptionString("readGlobalAttributeMeta", "a parameter was null"));
+            throw DCException(getExceptionString("readGlobalAttributeInfo", "a parameter was null"));
 
         DCGroup group_custom;
         openCustomGroup(group_custom, mpiPosition);
@@ -343,7 +343,7 @@ namespace splash
         }
     }
 
-    DCAttributeInfo* SerialDataCollector::readAttributeMeta(int32_t id,
+    AttributeInfo* SerialDataCollector::readAttributeInfo(int32_t id,
             const char *dataName,
             const char *attrName,
             Dimensions *mpiPosition)
@@ -351,10 +351,10 @@ namespace splash
     {
         // mpiPosition is allowed to be NULL here
         if (attrName == NULL)
-            throw DCException(getExceptionString("readAttributeMeta", "a parameter was null"));
+            throw DCException(getExceptionString("readAttributeInfo", "a parameter was null"));
 
         if (strlen(attrName) == 0)
-            throw DCException(getExceptionString("readAttributeMeta", "empty attribute name"));
+            throw DCException(getExceptionString("readAttributeInfo", "empty attribute name"));
 
         DCGroup group;
         H5ObjectId objId(openGroup(group, id, dataName, mpiPosition));

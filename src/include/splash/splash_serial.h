@@ -31,6 +31,6 @@
 #include "splash/DomainCollector.hpp"
 
 #include "splash/basetypes/basetypes.hpp"
-#include "splash/DCAttributeInfo.hpp"
+#include "splash/AttributeInfo.hpp"
 
 #endif /* SPLASH_H */

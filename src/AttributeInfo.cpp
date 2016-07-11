@@ -20,7 +20,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "splash/DCAttributeInfo.hpp"
+#include "splash/AttributeInfo.hpp"
 #include "splash/CollectionType.hpp"
 #include "splash/basetypes/generateCollectionType.hpp"
 #include <cassert>
@@ -29,22 +29,22 @@
 namespace splash
 {
 
-DCAttributeInfo::DCAttributeInfo(hid_t attr): attr_(attr), colType_(NULL)
+AttributeInfo::AttributeInfo(hid_t attr): attr_(attr), colType_(NULL)
 {
 }
 
-DCAttributeInfo::~DCAttributeInfo()
+AttributeInfo::~AttributeInfo()
 {
     delete colType_;
 }
 
-std::string DCAttributeInfo::getExceptionString(const std::string& msg)
+std::string AttributeInfo::getExceptionString(const std::string& msg)
 {
     return (std::string("Exception for DCAttribute [") + readName() +
             std::string("] ") + msg);
 }
 
-inline void DCAttributeInfo::loadType() throw(DCException)
+inline void AttributeInfo::loadType() throw(DCException)
 {
     if(!type_)
     {
@@ -54,7 +54,7 @@ inline void DCAttributeInfo::loadType() throw(DCException)
     }
 }
 
-inline void DCAttributeInfo::loadSpace() throw(DCException)
+inline void AttributeInfo::loadSpace() throw(DCException)
 {
     if(!space_)
     {
@@ -77,7 +77,7 @@ inline void DCAttributeInfo::loadSpace() throw(DCException)
     }
 }
 
-std::string DCAttributeInfo::readName()
+std::string AttributeInfo::readName()
 {
     ssize_t nameLen = H5Aget_name(attr_, 0, NULL);
     if(nameLen <= 0)
@@ -91,7 +91,7 @@ std::string DCAttributeInfo::readName()
     return strName;
 }
 
-size_t DCAttributeInfo::getMemSize() throw(DCException)
+size_t AttributeInfo::getMemSize() throw(DCException)
 {
     loadType();
     // For variable length strings the storage size is always the size of 2 pointers
@@ -107,7 +107,7 @@ size_t DCAttributeInfo::getMemSize() throw(DCException)
     }
 }
 
-const CollectionType& DCAttributeInfo::getType() throw(DCException)
+const CollectionType& AttributeInfo::getType() throw(DCException)
 {
     if(!colType_)
     {
@@ -117,7 +117,7 @@ const CollectionType& DCAttributeInfo::getType() throw(DCException)
     return *colType_;
 }
 
-Dimensions DCAttributeInfo::getDims() throw(DCException)
+Dimensions AttributeInfo::getDims() throw(DCException)
 {
     loadSpace();
     Dimensions dims(1, 1, 1);
@@ -135,31 +135,31 @@ Dimensions DCAttributeInfo::getDims() throw(DCException)
     return dims;
 }
 
-uint32_t DCAttributeInfo::getNDims() throw(DCException)
+uint32_t AttributeInfo::getNDims() throw(DCException)
 {
     loadSpace();
     // A value of 0 means a scalar, treat as 1D
     return nDims_ == 0 ? 1 : nDims_;
 }
 
-bool DCAttributeInfo::isVarSize() throw(DCException)
+bool AttributeInfo::isVarSize() throw(DCException)
 {
     loadType();
     return H5Tis_variable_str(type_);
 }
 
-void DCAttributeInfo::read(const CollectionType& colType, void* buf) throw(DCException)
+void AttributeInfo::read(const CollectionType& colType, void* buf) throw(DCException)
 {
     if(!readNoThrow(colType, buf))
         throw DCException(getExceptionString("Could not read or convert data"));
 }
 
-bool DCAttributeInfo::readNoThrow(const CollectionType& colType, void* buf)
+bool AttributeInfo::readNoThrow(const CollectionType& colType, void* buf)
 {
     return H5Aread(attr_, colType.getDataType(), buf) >= 0;
 }
 
-void DCAttributeInfo::read(void* buf, size_t bufSize) throw(DCException)
+void AttributeInfo::read(void* buf, size_t bufSize) throw(DCException)
 {
     loadType();
     if(getMemSize() != bufSize)

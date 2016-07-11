@@ -259,7 +259,7 @@ namespace splash
                 int32_t dstID,
                 const char *dstName) throw (DCException);
 
-        DCAttributeInfo* readGlobalAttributeMeta(int32_t id,
+        AttributeInfo* readGlobalAttributeInfo(int32_t id,
                 const char* name,
                 Dimensions *mpiPosition = NULL) throw (DCException);
 
@@ -279,7 +279,7 @@ namespace splash
                 const Dimensions dims,
                 const void* buf) throw (DCException);
 
-        DCAttributeInfo* readAttributeMeta(int32_t id,
+        AttributeInfo* readAttributeInfo(int32_t id,
                 const char *dataName,
                 const char *attrName,
                 Dimensions *mpiPosition = NULL) throw (DCException);

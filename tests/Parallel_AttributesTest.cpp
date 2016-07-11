@@ -172,7 +172,7 @@ void Parallel_AttributesTest::testDataAttributes()
 
 // Delete old info, read new info and check validity (reduce noise in test code)
 #define READ_ATTR_META(name, group) delete info; info = NULL;                           \
-                             info = dataCollector->readAttributeMeta(10, group, #name); \
+                             info = dataCollector->readAttributeInfo(10, group, #name); \
                              CPPUNIT_ASSERT(info);
 
 void Parallel_AttributesTest::testAttributesMeta()
@@ -210,8 +210,8 @@ void Parallel_AttributesTest::testAttributesMeta()
     attr.fileAccType = DataCollector::FAT_READ;
     dataCollector->open(TEST_FILE_META, attr);
 
-    DCAttributeInfo* info = NULL;
-    info = dataCollector->readGlobalAttributeMeta(10, "intValGlob");
+    AttributeInfo* info = NULL;
+    info = dataCollector->readGlobalAttributeInfo(10, "intValGlob");
     CPPUNIT_ASSERT(info->isScalar());
     CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info->getMemSize());
     // Note: This is the file saved type. ColTypeInt will resolve to the generic variant
@@ -356,7 +356,7 @@ void Parallel_AttributesTest::testArrayAttributesMeta()
     Dimensions dimRead(0,0,0);
     char strArrayRead[6] = "\0\0\0\0\0";
 
-    DCAttributeInfo* info = NULL;
+    AttributeInfo* info = NULL;
 
     READ_ATTR_META(intVal, NULL);
     CPPUNIT_ASSERT(info->isScalar());
