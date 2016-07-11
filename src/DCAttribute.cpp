@@ -37,10 +37,10 @@ namespace splash
     DCAttributeInfo* DCAttribute::readAttributeInfo(const char* name, hid_t parent)
     throw (DCException)
     {
-        hid_t attr = H5Aopen(parent, name, H5P_DEFAULT);
+        H5AttributeId attr(H5Aopen(parent, name, H5P_DEFAULT));
         if (!attr)
             throw DCException(getExceptionString(name, "Attribute could not be opened for reading"));
-        return new DCAttributeInfo(attr);
+        return new DCAttributeInfo(attr.release());
     }
 
     void DCAttribute::readAttribute(const char* name, hid_t parent, void* dst)
