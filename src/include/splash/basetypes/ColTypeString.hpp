@@ -1,5 +1,6 @@
 /**
- * Copyright 2013-2015 Felix Schmitt, Axel Huebl, Carlchristian Eckert
+ * Copyright 2013-2016 Felix Schmitt, Axel Huebl, Carlchristian Eckert,
+ * Alexander Grund
  *
  * This file is part of libSplash.
  *
@@ -67,11 +68,13 @@ namespace splash
             size_t myElements = H5Tget_size(this->type);
 
             /* for variable length string the size is first known after reading
-             * the actual data or attribute, so we forward HDF5's behaviour */
-            if( H5Tis_variable_str(this->type) )
+             * the actual data or attribute, so we forward HDF5's behavior */
+            if(isVariableLength())
                return myElements; /* == sizeof(char*) see H5Tget_size description */
-            else
+            else if( isNullTerminated() )
                return sizeof(char) * (myElements - 1); /* just as strlen() */
+            else
+                return sizeof(char) * myElements;
         }
 
         static CollectionType* genType(hid_t datatype_id)
@@ -80,14 +83,7 @@ namespace splash
 
             if(h5_class == H5T_STRING)
             {
-                if( H5Tis_variable_str(datatype_id) )
-                {
-                    return new ColTypeString;
-                } else
-                {
-                    size_t size = H5Tget_size(datatype_id);
-                    return new ColTypeString(size);
-                }
+                return new ColTypeString(datatype_id, true);
             } else
             {
                 return NULL;
@@ -96,12 +92,27 @@ namespace splash
 
         std::string toString() const
         {
-            if( H5Tis_variable_str(this->type) )
+            if(isVariableLength())
                 return "VLString";
             else
                 return "String";
         }
 
+        bool isVariableLength() const
+        {
+            return H5Tis_variable_str(this->type);
+        }
+
+        bool isNullTerminated() const
+        {
+            return H5Tget_strpad(type) == H5T_STR_NULLTERM;
+        }
+
+    private:
+        explicit ColTypeString(H5DataType inType, bool /*dummy*/):
+        CollectionType(H5Tcopy(inType))
+        {
+        }
     };
 
 }

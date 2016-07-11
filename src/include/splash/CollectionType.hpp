@@ -70,8 +70,12 @@ namespace splash
          */
         virtual ~CollectionType()
         {
-        };
+        }
     protected:
+        explicit CollectionType(H5DataType inType = -1): type(inType)
+        {
+        }
+
         H5DataType type;
     };
 

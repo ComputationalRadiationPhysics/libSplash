@@ -40,10 +40,10 @@ namespace splash
 
         ColTypeDim()
         {
-            this->type = H5Tcreate(H5T_COMPOUND, Dimensions::getSize());
+            this->type = H5Tcreate(H5T_COMPOUND, getSize());
             H5Tinsert(this->type, "x", 0, H5T_NATIVE_HSIZE);
-            H5Tinsert(this->type, "y", sizeof (hsize_t), H5T_NATIVE_HSIZE);
-            H5Tinsert(this->type, "z", sizeof (hsize_t) * 2, H5T_NATIVE_HSIZE);
+            H5Tinsert(this->type, "y", sizeof(hsize_t), H5T_NATIVE_HSIZE);
+            H5Tinsert(this->type, "z", sizeof(hsize_t) * 2, H5T_NATIVE_HSIZE);
         }
 
         ~ColTypeDim()
@@ -53,7 +53,7 @@ namespace splash
 
         size_t getSize() const
         {
-            return Dimensions::getSize();
+            return sizeof(hsize_t) * 3;
         }
 
         std::string toString() const
@@ -69,7 +69,7 @@ namespace splash
             {
                 if(H5Tget_nmembers(datatype_id) == 3)
                 {
-                    if(H5Tget_size(datatype_id) == Dimensions::getSize())
+                    if(H5Tget_size(datatype_id) == getSize())
                     {
                         char* m0 = H5Tget_member_name(datatype_id, 0);
                         char* m1 = H5Tget_member_name(datatype_id, 1);
