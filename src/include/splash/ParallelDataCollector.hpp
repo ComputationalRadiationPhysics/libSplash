@@ -263,6 +263,7 @@ namespace splash
                 const char* name,
                 Dimensions *mpiPosition = NULL) throw (DCException);
 
+        SPLASH_DEPRECATED("Use safer readGlobalAttributeInfo")
         void readGlobalAttribute(int32_t id,
                 const char* name,
                 void* buf) throw (DCException);
@@ -279,11 +280,13 @@ namespace splash
                 const Dimensions dims,
                 const void* buf) throw (DCException);
 
+        SPLASH_DEPRECATED("Use safer readAttributeInfo")
         AttributeInfo* readAttributeInfo(int32_t id,
                 const char *dataName,
                 const char *attrName,
                 Dimensions *mpiPosition = NULL) throw (DCException);
 
+        SPLASH_DEPRECATED("Use safer readAttributeInfo")
         void readAttribute(int32_t id,
                 const char *dataName,
                 const char *attrName,
@@ -370,6 +373,7 @@ namespace splash
 
         /* Invalid methods from DataCollector. Do NOT call! */
 
+        SPLASH_DEPRECATED("Use safer readGlobalAttributeInfo")
         void readGlobalAttribute(const char*,
                 void*,
                 Dimensions*) throw (DCException);

@@ -87,7 +87,7 @@ UNSET(HDF5_HAS_SHARED_POS)
 
 #-------------------------------------------------------------------------------
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Woverloaded-virtual")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Woverloaded-virtual -Wno-deprecated-declarations")
 
 # options
 OPTION(DEBUG_VERBOSE "Enable verbose HDF5 debug output" OFF)

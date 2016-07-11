@@ -52,6 +52,7 @@
 #include "splash/Dimensions.hpp"
 #include "splash/Selection.hpp"
 #include "splash/core/DCDataSet.hpp"
+#include "splash/core/splashMacros.hpp"
 
 namespace splash
 {
@@ -329,6 +330,7 @@ namespace splash
          * Identifies MPI-position-specific custom group.
          * Use NULL to read from default group.
          */
+        SPLASH_DEPRECATED("Use safer readGlobalAttributeInfo")
         virtual void readGlobalAttribute(
                 const char *name,
                 void* buf,
@@ -391,6 +393,7 @@ namespace splash
          * Identifies MPI-position-specific file while in FAT_READ_MERGED mode.
          * Use NULL to read from default file index.
          */
+        SPLASH_DEPRECATED("Use safer readAttributeInfo")
         virtual void readAttribute(int32_t id,
                 const char *dataName,
                 const char *attrName,

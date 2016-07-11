@@ -26,6 +26,7 @@
 #include "splash/Dimensions.hpp"
 #include "splash/DCException.hpp"
 #include "splash/core/H5IdWrapper.hpp"
+#include "splash/core/splashMacros.hpp"
 #include <string>
 
 namespace splash
@@ -99,11 +100,10 @@ namespace splash
          * No data conversion occurs, so the type as found in the file is used.
          * Throws an exception if the attribute could not be read or the buffer is to small.
          *
-         * Deprecated!
-         *
          * @param buf     Pointer to buffer
          * @param bufSize Size of the buffer
          */
+        SPLASH_DEPRECATED("Pass CollectionType")
         void read(void* buf, size_t bufSize) throw(DCException);
     private:
         // Don't copy

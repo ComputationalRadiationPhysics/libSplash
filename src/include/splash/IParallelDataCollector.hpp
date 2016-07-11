@@ -110,6 +110,7 @@ namespace splash
          * @param name Name of the attribute.
          * @param buf Destination buffer for attribute.
          */
+        SPLASH_DEPRECATED("Use safer readGlobalAttributeInfo")
         virtual void readGlobalAttribute(int32_t id,
                 const char* name,
                 void* buf) = 0;
@@ -134,7 +135,8 @@ namespace splash
                 const Dimensions dims,
                 const void* buf) = 0;
 
-        virtual void readGlobalAttribute(const char *name,
+       SPLASH_DEPRECATED("Use safer readGlobalAttributeInfo")
+       virtual void readGlobalAttribute(const char *name,
                 void* buf,
                 Dimensions *mpiPosition = NULL) = 0;
 

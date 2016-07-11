@@ -302,6 +302,7 @@ namespace splash
                 const char *name,
                 Dimensions *mpiPosition = NULL) throw (DCException);
 
+        SPLASH_DEPRECATED("Use safer readGlobalAttributeInfo")
         void readGlobalAttribute(
                 const char *name,
                 void* data,
@@ -322,6 +323,7 @@ namespace splash
                 const char *attrName,
                 Dimensions *mpiPosition = NULL) throw (DCException);
 
+        SPLASH_DEPRECATED("Use safer readAttributeInfo")
         void readAttribute(int32_t id,
                 const char *dataName,
                 const char *attrName,
