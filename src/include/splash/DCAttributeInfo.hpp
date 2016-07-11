@@ -34,13 +34,25 @@ namespace splash
 
     /**
      * Class holding information about an attribute.
+     *
+     * Usage example:
+     * \code{.cpp}
+     * AttributeInfo* info = dc.readAttribute(iterationId, "groupName", "attrName");
+     * // Check that extents are as expected
+     * if(!info->isScalar()) throw error(...);
+     * // Optionally further checks
+     * ...
+     * int result;
+     * info->read(ColTypeInt(), &result);
+     * delete info;
+     * \endcode
      */
     class DCAttributeInfo
     {
         H5AttributeId attr_;
 
    public:
-        DCAttributeInfo(hid_t attr);
+        explicit DCAttributeInfo(hid_t attr);
         ~DCAttributeInfo();
 
         /** Return the size of the required memory in bytes when querying the value */
@@ -61,7 +73,8 @@ namespace splash
 
         /**
          * Read the data of this attribute into the buffer of the given type.
-         * Data conversion may occur, if required. See the HDF5 manual for details
+         * Data conversion may occur, if required.
+         * See the HDF5 manual for details (6.10. Data Transfer: Datatype Conversion and Selection)
          * Throws an exception if the attribute could not be read or converted
          *
          * @param colType Type of the buffer
@@ -71,7 +84,8 @@ namespace splash
 
         /**
          * Read the data of this attribute into the buffer of the given type.
-         * Data conversion may occur, if required. See the HDF5 manual for details
+         * Data conversion may occur, if required.
+         * See the HDF5 manual for details (6.10. Data Transfer: Datatype Conversion and Selection)
          * Does not throw exception, so it can be used for trying different types
          *
          * @param colType Type of the buffer
@@ -84,6 +98,8 @@ namespace splash
          * Read the data of this attribute into the buffer of the given size.
          * No data conversion occurs, so the type as found in the file is used.
          * Throws an exception if the attribute could not be read or the buffer is to small.
+         *
+         * Deprecated!
          *
          * @param buf     Pointer to buffer
          * @param bufSize Size of the buffer
