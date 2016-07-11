@@ -33,7 +33,7 @@ namespace splash
     struct H5IdWrapper
     {
         H5IdWrapper(): id_(-1){}
-        H5IdWrapper(hid_t id): id_(id){}
+        explicit H5IdWrapper(hid_t id): id_(id){}
         ~H5IdWrapper()
         {
             close();
@@ -65,7 +65,7 @@ namespace splash
         }
 
         operator hid_t() const { return id_; }
-        bool operator!() const { return id_ < 0; }
+        operator bool() const { return id_ >= 0; }
 
     private:
         // Don't copy!
@@ -82,6 +82,17 @@ namespace splash
     typedef H5IdWrapper<H5Tclose> H5TypeId;
     /** Wrapper for HDF5 type identifiers */
     typedef H5IdWrapper<H5Oclose> H5ObjectId;
+
+    template<H5_DLL herr_t (*T_CloseMethod)(hid_t)>
+    inline bool operator==(const H5IdWrapper<T_CloseMethod>& lhs, const H5IdWrapper<T_CloseMethod>& rhs)
+    {
+        return static_cast<hid_t>(lhs) == static_cast<hid_t>(rhs);
+    }
+    template<H5_DLL herr_t (*T_CloseMethod)(hid_t)>
+    inline bool operator!=(const H5IdWrapper<T_CloseMethod>& lhs, const H5IdWrapper<T_CloseMethod>& rhs)
+    {
+        return !(lhs == rhs);
+    }
 }
 
 #endif /* H5ID_WRAPPER_HPP */
