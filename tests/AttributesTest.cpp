@@ -78,6 +78,10 @@ void AttributesTest::testDataAttributes()
 
     dataCollector->writeAttribute(10, ctInt, NULL, "iteration", &sum2);
 
+    int groupNotExistsTestValue = 42;
+    /* check if it is possible to add an attribute to a not existing group */
+    dataCollector->writeAttribute(0, ctInt, "notExistingGroup/", "magic_number", &groupNotExistsTestValue);
+
     /* variable length string, '\0' terminated */
     const char *string_attr = {"My first c-string."};
     dataCollector->writeAttribute(10, ctString, NULL, "my_string", &string_attr);
@@ -123,6 +127,10 @@ void AttributesTest::testDataAttributes()
     attr.fileAccType = DataCollector::FAT_READ;
 
     dataCollector->open(TEST_FILE, attr);
+
+    int readGroupNotExistsTestValue = 0;
+    dataCollector->readAttribute(0, "notExistingGroup/", "magic_number", &readGroupNotExistsTestValue);
+    CPPUNIT_ASSERT(groupNotExistsTestValue == readGroupNotExistsTestValue);
 
     dataCollector->readAttribute(10, NULL, "iteration", &sum2);
 

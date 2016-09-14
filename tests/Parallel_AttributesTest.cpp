@@ -87,6 +87,10 @@ void Parallel_AttributesTest::testDataAttributes()
         dummy_data[2 * i + 1] = val_y;
     }
 
+    int groupNotExistsTestValue = 42;
+    /* check if it is possible to add an attribute to a not existing group */
+    dataCollector->writeAttribute(0, ctInt, "notExistingGroup/", "magic_number", &groupNotExistsTestValue);
+
     dataCollector->write(0, ctInt2, 1, Selection(Dimensions(BUF_SIZE, 1, 1)),
             "attr/attr2/attr3/data", dummy_data);
 
@@ -120,6 +124,10 @@ void Parallel_AttributesTest::testDataAttributes()
 
     dataCollector->open(TEST_FILE, attr);
 
+    int readGroupNotExistsTestValue = 0;
+    dataCollector->readAttribute(0, "notExistingGroup/", "magic_number", &readGroupNotExistsTestValue);
+    CPPUNIT_ASSERT(groupNotExistsTestValue == readGroupNotExistsTestValue);
+    
     sum = 0;
     neg_sum = 0;
     c = 'A';

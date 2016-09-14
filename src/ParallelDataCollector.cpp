@@ -466,6 +466,9 @@ namespace splash
         if (ndims < 1u || ndims > DSP_DIM_MAX)
             throw DCException(getExceptionString("writeAttribute", "maximum dimension `ndims` is invalid"));
 
+        /* group_path: absolute path to the last inode
+         * obj_name: last inode, can be a group or a dataset
+         */
         std::string group_path, obj_name;
         std::string dataNameInternal = "";
         if (dataName)
@@ -475,6 +478,16 @@ namespace splash
         DCParallelGroup group;
         if (dataName)
         {
+            /* if the specified inode (obj_name) does not exist
+             * (as dataset or group), create all missing groups along group_path
+             * and even create an empty group for obj_name itself
+             *
+             * group_path + "/" + obj_name is the absolute path of dataName
+             */
+            std::string pathAndName(group_path + "/" + obj_name);
+            if(!DCParallelGroup::exists(handles.get(id), pathAndName))
+                group.create(handles.get(id), pathAndName);
+
             // attach attribute to the dataset or group
             group.open(handles.get(id), group_path);
             hid_t obj_id = H5Oopen(group.getHandle(), obj_name.c_str(), H5P_DEFAULT);
