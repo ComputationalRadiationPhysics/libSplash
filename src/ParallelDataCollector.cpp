@@ -313,7 +313,7 @@ namespace splash
     AttributeInfo* ParallelDataCollector::readGlobalAttributeInfo(
             int32_t id,
             const char* name,
-            Dimensions */*mpiPosition*/)
+            Dimensions* /*mpiPosition*/)
     throw (DCException)
     {
         if (name == NULL)
@@ -1212,9 +1212,9 @@ namespace splash
     }
 
     void ParallelDataCollector::createReference(int32_t /*srcID*/,
-            const char */*srcName*/,
+            const char* /*srcName*/,
             int32_t /*dstID*/,
-            const char */*dstName*/,
+            const char* /*dstName*/,
             Dimensions /*count*/,
             Dimensions /*offset*/,
             Dimensions /*stride*/)
