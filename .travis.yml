@@ -20,17 +20,17 @@ env:
 script:
   - cd $BUILD
 # compile libSplash and install
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DTOOLS_MPI=$SPLASHMPI $SRC
+  - CXXFLAGS="-Werror" cmake -DCMAKE_BUILD_TYPE=Debug -DTOOLS_MPI=$SPLASHMPI $SRC
   - make package
   - sudo dpkg -i libsplash*.deb
   - ls -hal /usr/share/pyshared/
   - rm -rf $BUILD/*
 # compile examples/
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_MPI=$SPLASHMPI $SRC/examples
+  - CXXFLAGS="-Werror" cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_MPI=$SPLASHMPI $SRC/examples
   - make
   - rm -rf $BUILD/*
 # compile and run tests/
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_MPI=$SPLASHMPI $SRC/tests
+  - CXXFLAGS="-Werror" cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_MPI=$SPLASHMPI $SRC/tests
   - make
 # run tests
   - $SRC/tests/run_tests $BUILD
