@@ -59,6 +59,12 @@ namespace splash
         H5Handle openCreate(H5Handle base, std::string path) throw (DCException);
         void close() throw (DCException);
 
+        /** Check if a Group or Dataset Within a Group exist
+         *
+         * @param base open file handle
+         * @param path to either a group or data set
+         * @return true if either a dataset or a group exists at path
+         */
         static bool exists(H5Handle base, std::string path);
         static void remove(H5Handle base, std::string path) throw (DCException);
 
