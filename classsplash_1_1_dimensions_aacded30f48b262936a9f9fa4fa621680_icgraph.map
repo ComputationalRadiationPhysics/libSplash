@@ -7,10 +7,11 @@
 <area shape="rect" id="node11" href="$classsplash_1_1_domain_data.html#ad05556610dba5f945662ee87d2de0b34" title="splash::DomainData\l::setLoadingReference" alt="" coords="230,332,381,373"/>
 <area shape="rect" id="node12" href="$classsplash_1_1_parallel_data_collector.html#a61c57dbaa8494b142c129fe6ffb860b6" title="splash::ParallelDataCollector\l::getMPISize" alt="" coords="212,397,399,439"/>
 <area shape="rect" id="node13" href="$classsplash_1_1_serial_data_collector.html#a59ca72ddd5e11d0a7e38197bbe724802" title="splash::SerialDataCollector\l::close" alt="" coords="217,463,394,504"/>
-<area shape="rect" id="node14" href="$classsplash_1_1_serial_data_collector.html#a68a1cfbc17c0d60c4136f7b8c9c4cb0f" title="splash::SerialDataCollector\l::readAttribute" alt="" coords="217,528,394,569"/>
-<area shape="rect" id="node15" href="$classsplash_1_1_serial_data_collector.html#a082b9e44439f1ae87d2036ac6a8a265f" title="splash::SerialDataCollector\l::getMPISize" alt="" coords="217,593,394,635"/>
-<area shape="rect" id="node7" href="$classsplash_1_1_dimensions.html#a8bb8ca79704a53aea0edccd632aa4ba5" title="splash::Dimensions\l::operator+" alt="" coords="447,169,581,211"/>
-<area shape="rect" id="node8" href="$classsplash_1_1_dimensions.html#a06fa6ada7bb143ed442cee29b4f2ea8b" title="splash::Dimensions\l::operator&#45;" alt="" coords="447,235,581,276"/>
-<area shape="rect" id="node9" href="$classsplash_1_1_dimensions.html#a8c8a23627f46ce060cdf1a8b431f4248" title="splash::Dimensions\l::operator*" alt="" coords="447,300,581,341"/>
-<area shape="rect" id="node10" href="$classsplash_1_1_dimensions.html#ac1c8a211ebe53bc0c79612499edc3fa0" title="splash::Dimensions\l::operator/" alt="" coords="447,365,581,407"/>
+<area shape="rect" id="node15" href="$classsplash_1_1_serial_data_collector.html#a68a1cfbc17c0d60c4136f7b8c9c4cb0f" title="splash::SerialDataCollector\l::readAttribute" alt="" coords="217,528,394,569"/>
+<area shape="rect" id="node16" href="$classsplash_1_1_serial_data_collector.html#a082b9e44439f1ae87d2036ac6a8a265f" title="splash::SerialDataCollector\l::getMPISize" alt="" coords="217,593,394,635"/>
+<area shape="rect" id="node7" href="$classsplash_1_1_dimensions.html#a8bb8ca79704a53aea0edccd632aa4ba5" title="splash::Dimensions\l::operator+" alt="" coords="468,169,603,211"/>
+<area shape="rect" id="node8" href="$classsplash_1_1_dimensions.html#a06fa6ada7bb143ed442cee29b4f2ea8b" title="splash::Dimensions\l::operator&#45;" alt="" coords="468,235,603,276"/>
+<area shape="rect" id="node9" href="$classsplash_1_1_dimensions.html#a8c8a23627f46ce060cdf1a8b431f4248" title="splash::Dimensions\l::operator*" alt="" coords="468,300,603,341"/>
+<area shape="rect" id="node10" href="$classsplash_1_1_dimensions.html#ac1c8a211ebe53bc0c79612499edc3fa0" title="splash::Dimensions\l::operator/" alt="" coords="468,365,603,407"/>
+<area shape="rect" id="node14" href="$classsplash_1_1_serial_data_collector.html#a47c87aec5ffae937e635c4031de3cde3" title="splash::SerialDataCollector\l::~SerialDataCollector" alt="" coords="447,463,624,504"/>
 </map>

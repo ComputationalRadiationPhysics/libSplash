@@ -41,7 +41,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_7f43f2fa6de9079c3d096eeaca63db9e.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_572463fbe5ea63cad2e062ebf0483565.html">src</a></li><li class="navelem"><a class="el" href="dir_f3aac7bacbea6f3e80f59a5a158515c5.html">include</a></li><li class="navelem"><a class="el" href="dir_4af036f7b58745c738d73acd90ec60c1.html">splash</a></li><li class="navelem"><a class="el" href="dir_49616db808ed16d6f109eb0d9207d537.html">basetypes</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_299f047a826d8d69b19b905e214c818c.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_3b35ba84cbca3abae5599f9d17517515.html">src</a></li><li class="navelem"><a class="el" href="dir_4d0ba06da671956e64dcc1759d9b964e.html">include</a></li><li class="navelem"><a class="el" href="dir_d1e0325e283a97fcb4d3a1f6895f6adf.html">splash</a></li><li class="navelem"><a class="el" href="dir_8a68c0f22a8bf741f5e071ddc6315fa9.html">basetypes</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -53,98 +53,23 @@
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#ifndef GENERATE_COLLECTION_TYPE_H</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#define GENERATE_COLLECTION_TYPE_H</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;splash/basetypes/basetypes.hpp&quot;</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &quot;splash/CollectionType.hpp&quot;</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacesplash.html">splash</a></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;{</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#define TRY_COLTYPE(_name)                                                     \</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">{                                                                              \</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">    CollectionType* t = ColType##_name::genType(datatype_id);                  \</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">    if(t != NULL &amp;&amp; typeid(*t) == typeid(ColType##_name)) return t;            \</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">}                                                                              \</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="namespacesplash.html#adbe0ae71e3319fd2d1322aca85d1e6c6">   61</a></span>&#160;<a class="code" href="classsplash_1_1_collection_type.html">CollectionType</a>* <a class="code" href="namespacesplash.html#adbe0ae71e3319fd2d1322aca85d1e6c6">generateCollectionType</a>(hid_t datatype_id)</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;{</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="comment">// basetypes atomic</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    TRY_COLTYPE(Int8)</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    TRY_COLTYPE(Int16)</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    TRY_COLTYPE(Int32)</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    TRY_COLTYPE(Int64)</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    TRY_COLTYPE(UInt8)</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    TRY_COLTYPE(UInt16)</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    TRY_COLTYPE(UInt32)</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    TRY_COLTYPE(UInt64)</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    TRY_COLTYPE(Float)</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    TRY_COLTYPE(Double)</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    TRY_COLTYPE(Char)</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    TRY_COLTYPE(Int)</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="comment">// ColType Bool -&gt; must be before the other enum types!</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    TRY_COLTYPE(Bool)</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="comment">// ColType String</span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    TRY_COLTYPE(String)</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="comment">// ColTypeArray()</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    TRY_COLTYPE(Float2Array)</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    TRY_COLTYPE(Float3Array)</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    TRY_COLTYPE(Float4Array)</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    TRY_COLTYPE(Double2Array)</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    TRY_COLTYPE(Double3Array)</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    TRY_COLTYPE(Double4Array)</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    TRY_COLTYPE(Int4Array)</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    TRY_COLTYPE(Int3Array)</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    TRY_COLTYPE(Int2Array)</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="comment">// ColTypeDimArray</span></div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    TRY_COLTYPE(DimArray)</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="comment">// ColType Dim</span></div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    TRY_COLTYPE(Dim)</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="comment">// Coltype Compound</span></div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    TRY_COLTYPE(Float2)</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    TRY_COLTYPE(Float3)</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    TRY_COLTYPE(Float4)</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    TRY_COLTYPE(Double2)</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    TRY_COLTYPE(Double3)</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    TRY_COLTYPE(Double4)</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    TRY_COLTYPE(Int2)</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    TRY_COLTYPE(Int3)</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    TRY_COLTYPE(Int4)</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">new</span> <a class="code" href="classsplash_1_1_col_type_unknown.html">ColTypeUnknown</a>;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;}</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;} <span class="comment">/* namespace splash */</span></div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* GENERATE_COLLECTION_TYPE_H */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="namespacesplash_html_adbe0ae71e3319fd2d1322aca85d1e6c6"><div class="ttname"><a href="namespacesplash.html#adbe0ae71e3319fd2d1322aca85d1e6c6">splash::generateCollectionType</a></div><div class="ttdeci">CollectionType * generateCollectionType(hid_t datatype_id)</div><div class="ttdef"><b>Definition:</b> <a href="generate_collection_type_8hpp_source.html#l00061">generateCollectionType.hpp:61</a></div></div>
-<div class="ttc" id="classsplash_1_1_col_type_unknown_html"><div class="ttname"><a href="classsplash_1_1_col_type_unknown.html">splash::ColTypeUnknown</a></div><div class="ttdef"><b>Definition:</b> <a href="_col_type_unknown_8hpp_source.html#l00031">ColTypeUnknown.hpp:31</a></div></div>
-<div class="ttc" id="classsplash_1_1_collection_type_html"><div class="ttname"><a href="classsplash_1_1_collection_type.html">splash::CollectionType</a></div><div class="ttdef"><b>Definition:</b> <a href="_collection_type_8hpp_source.html#l00040">CollectionType.hpp:40</a></div></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacesplash.html">splash</a></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;{</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">class </span>CollectionType;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;CollectionType* <a class="code" href="namespacesplash.html#ab30ad3e80520a35bc069b86b942ee6c7">generateCollectionType</a>(hid_t datatype_id);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;} <span class="comment">/* namespace splash */</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* GENERATE_COLLECTION_TYPE_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="namespacesplash_html_ab30ad3e80520a35bc069b86b942ee6c7"><div class="ttname"><a href="namespacesplash.html#ab30ad3e80520a35bc069b86b942ee6c7">splash::generateCollectionType</a></div><div class="ttdeci">CollectionType * generateCollectionType(hid_t datatype_id)</div><div class="ttdef"><b>Definition:</b> <a href="generate_collection_type_8cpp_source.html#l00065">generateCollectionType.cpp:65</a></div></div>
 <div class="ttc" id="namespacesplash_html"><div class="ttname"><a href="namespacesplash.html">splash</a></div><div class="ttdef"><b>Definition:</b> <a href="_d_c_attribute_8cpp_source.html#l00029">DCAttribute.cpp:29</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 12 2016 15:25:01 for libSplash by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 26 2016 11:52:24 for libSplash by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

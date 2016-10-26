@@ -41,7 +41,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_7f43f2fa6de9079c3d096eeaca63db9e.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_572463fbe5ea63cad2e062ebf0483565.html">src</a></li><li class="navelem"><a class="el" href="dir_f3aac7bacbea6f3e80f59a5a158515c5.html">include</a></li><li class="navelem"><a class="el" href="dir_4af036f7b58745c738d73acd90ec60c1.html">splash</a></li><li class="navelem"><a class="el" href="dir_740e0ca62fe029e8d2f0cf4e700e50bc.html">core</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_299f047a826d8d69b19b905e214c818c.html">libSplash</a></li><li class="navelem"><a class="el" href="dir_3b35ba84cbca3abae5599f9d17517515.html">src</a></li><li class="navelem"><a class="el" href="dir_4d0ba06da671956e64dcc1759d9b964e.html">include</a></li><li class="navelem"><a class="el" href="dir_d1e0325e283a97fcb4d3a1f6895f6adf.html">splash</a></li><li class="navelem"><a class="el" href="dir_dac9a7f2dd91873a4d3be81f4f80c1a3.html">core</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -86,31 +86,31 @@
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        H5Handle openCreate(H5Handle base, std::string path) <span class="keywordflow">throw</span> (DCException);</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keywordtype">void</span> close() throw (DCException);</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        static <span class="keywordtype">bool</span> exists(H5Handle base, std::<span class="keywordtype">string</span> path);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        static <span class="keywordtype">void</span> remove(H5Handle base, std::<span class="keywordtype">string</span> path) throw (DCException);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        H5Handle getHandle();</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        static <span class="keywordtype">void</span> getEntriesInternal(H5Handle base, const std::<span class="keywordtype">string</span> baseGroup,</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                std::<span class="keywordtype">string</span> baseName, VisitObjCBType *param) throw (DCException);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    protected:</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordtype">bool</span> checkExistence;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        static <span class="keywordtype">bool</span> exists(H5Handle base, std::<span class="keywordtype">string</span> path);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        static <span class="keywordtype">void</span> remove(H5Handle base, std::<span class="keywordtype">string</span> path) throw (DCException);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        H5Handle getHandle();</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    private:</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        HandlesList handles;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        static <span class="keywordtype">void</span> getEntriesInternal(H5Handle base, const std::<span class="keywordtype">string</span> baseGroup,</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                std::<span class="keywordtype">string</span> baseName, VisitObjCBType *param) throw (DCException);</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        static std::<span class="keywordtype">string</span> getExceptionString(std::<span class="keywordtype">string</span> msg, std::<span class="keywordtype">string</span> name);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    };</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;}</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* DCGROUP_HPP */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    protected:</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keywordtype">bool</span> checkExistence;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    private:</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        HandlesList handles;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        static std::<span class="keywordtype">string</span> getExceptionString(std::<span class="keywordtype">string</span> msg, std::<span class="keywordtype">string</span> name);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    };</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;}</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* DCGROUP_HPP */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="namespacesplash_html"><div class="ttname"><a href="namespacesplash.html">splash</a></div><div class="ttdef"><b>Definition:</b> <a href="_d_c_attribute_8cpp_source.html#l00029">DCAttribute.cpp:29</a></div></div>
 <div class="ttc" id="classsplash_1_1_data_collector_html_a5f45b43a195d158c0b1252efc838077b"><div class="ttname"><a href="classsplash_1_1_data_collector.html#a5f45b43a195d158c0b1252efc838077b">splash::DataCollector::DCEntry</a></div><div class="ttdeci">struct splash::DataCollector::_DCEntry DCEntry</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 12 2016 15:25:01 for libSplash by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 26 2016 11:52:24 for libSplash by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>
