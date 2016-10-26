@@ -366,6 +366,7 @@ namespace splash
          * @param type Type information for data.
          * @param dataName Name of the dataset in group \p id to write attribute to.
          * If dataName is NULL, the attribute is written for the iteration group.
+         * If the path dataName does not yet exist, missing groups will be created.
          * @param attrName Name of the attribute.
          * @param buf Buffer to be written as attribute.
          */

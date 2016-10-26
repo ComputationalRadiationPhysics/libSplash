@@ -365,37 +365,27 @@ namespace splash
 
     private:
 
+        /* Invalid methods from DataCollector. Do NOT call! */
+
         void readGlobalAttribute(const char*,
                 void*,
-                Dimensions*)
-        {
-
-        }
+                Dimensions*) throw (DCException);
 
         void writeGlobalAttribute(const CollectionType& /*type*/,
                 const char* /*name*/,
-                const void* /*data*/)
-        {
-
-        }
+                const void* /*data*/) throw (DCException);
 
         void writeGlobalAttribute(const CollectionType& /*type*/,
                 const char* /*name*/,
                 uint32_t /*ndims*/,
                 const Dimensions /*dims*/,
-                const void* /*data*/)
-        {
-
-        }
+                const void* /*data*/) throw (DCException);
 
         void append(int32_t /*id*/,
                 const CollectionType& /*type*/,
                 size_t /*count*/,
                 const char* /*name*/,
-                const void* /*data*/)
-        {
-
-        }
+                const void* /*data*/) throw (DCException);
 
         void append(int32_t /*id*/,
                 const CollectionType& /*type*/,
@@ -403,10 +393,7 @@ namespace splash
                 size_t /*offset*/,
                 size_t /*stride*/,
                 const char* /*name*/,
-                const void* /*data*/)
-        {
-
-        }
+                const void* /*data*/) throw (DCException);
 
         void createReference(int32_t /*srcID*/,
                 const char* /*srcName*/,
@@ -416,6 +403,7 @@ namespace splash
                 Dimensions /*offset*/,
                 Dimensions /*stride*/) throw (DCException);
 
+        /* End invalid methods */
 
         /**
          * Internal meta data reading method.
