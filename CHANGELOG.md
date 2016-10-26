@@ -1,6 +1,30 @@
 Change Log for libSplash
 ================================================================
 
+Release 1.5.0
+-------------
+**Date:** 2016-10-26
+
+Written attributes do now generate their according group path
+recursively if it does not exist and the `SerialDataCollector`
+interface for file names has been changed to be more consistent.
+
+**Interface Changes**
+
+ - `SerialDataCollector` file name interface changed #242
+ - `writeAttribute()` now creates missing groups recursively #231 #250
+
+**Bug Fixes**
+
+ - throw more exceptions on wrong usage of `ParallelDataCollector` #247
+
+**Misc**
+
+ - compiling via `-Werror` is not shipped any more #251
+ - python tools: indentiation cleanup #249
+ - `generateCollectionType` refactored, docs fixed #243 #246
+
+
 Release 1.4.0
 -------------
 **Date:** 2016-04-12
