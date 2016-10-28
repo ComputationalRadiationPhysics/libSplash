@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2015 Felix Schmitt, Axel Huebl
+ * Copyright 2013-2016 Felix Schmitt, Axel Huebl, Alexander Grund
  *
  * This file is part of libSplash.
  *
@@ -24,8 +24,6 @@
 #define DCHELPER_H
 
 #include <map>
-#include <cmath>
-#include <cstdlib>
 #include <sstream>
 #include <iostream>
 #include <hdf5.h>
@@ -147,7 +145,7 @@ namespace splash
             while (current_chunk_size < target_chunk_size)
             {
                 // test if increasing chunk size optimizes towards target chunk size
-                size_t chunk_diff = abs(target_chunk_size - (current_chunk_size * 2));
+                size_t chunk_diff = target_chunk_size - (current_chunk_size * 2u);
                 if (chunk_diff >= last_chunk_diff)
                     break;
 
@@ -192,6 +190,15 @@ namespace splash
             if (filename.rfind(".h5.h5") == filename.length() - 6)
             {
                 std::cerr << std::endl << "\tWarning: DCHelper: Do you really want to access "
+                        << filename.c_str() << "?" << std::endl;
+                return false;
+            }
+
+            if (filename.find(".h5") != filename.length() - 3)
+            {
+                std::cerr << std::endl << "\tWarning: DCHelper: "
+                        << "Duplicate or missing file name extension. "
+                        << "Do you really want to access "
                         << filename.c_str() << "?" << std::endl;
                 return false;
             }

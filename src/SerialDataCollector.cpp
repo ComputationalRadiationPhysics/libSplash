@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2015 Felix Schmitt, Axel Huebl
+ * Copyright 2013-2016 Felix Schmitt, Axel Huebl, Alexander Grund
  *
  * This file is part of libSplash.
  *
@@ -35,7 +35,6 @@
 #include "splash/core/DCAttribute.hpp"
 #include "splash/core/DCDataSet.hpp"
 #include "splash/core/DCGroup.hpp"
-#include "splash/core/DCHelper.hpp"
 #include "splash/core/SDCHelper.hpp"
 #include "splash/core/logging.hpp"
 #include "splash/basetypes/basetypes.hpp"
@@ -70,8 +69,18 @@ namespace splash
         return (stat(filename.c_str(), &fileInfo) == 0);
     }
 
-    std::string SerialDataCollector::getFullFilename(const Dimensions mpiPos, std::string baseFilename) const
+    std::string SerialDataCollector::getFullFilename(const Dimensions mpiPos, std::string baseFilename,
+            bool isFullNameAllowed) const throw (DCException)
     {
+        // Check for existing extension
+        if (baseFilename.find(".h5") == baseFilename.length() - 3)
+        {
+            if (isFullNameAllowed)
+                return baseFilename;
+            else
+                throw DCException("Full filename is not allowed!");
+        }
+
         std::stringstream serial_filename;
         serial_filename << baseFilename << "_" << mpiPos[0] << "_" << mpiPos[1] <<
                 "_" << mpiPos[2] << ".h5";
@@ -97,7 +106,7 @@ namespace splash
      *******************************************************************************/
 
     SerialDataCollector::SerialDataCollector(uint32_t maxFileHandles) :
-    handles(maxFileHandles, HandleMgr::FNS_MPI),
+    handles(maxFileHandles, HandleMgr::FNS_FULLNAME),
     fileStatus(FST_CLOSED),
     maxID(-1),
     mpiTopology(1, 1, 1)
@@ -113,7 +122,7 @@ namespace splash
                 "failed to initialize/open HDF5 library"));
 
 #ifndef SPLASH_VERBOSE_HDF5
-        // surpress automatic output of HDF5 exception messages
+        // Suppress automatic output of HDF5 exception messages
         if (H5Eset_auto2(H5E_DEFAULT, NULL, NULL) < 0)
             throw DCException(getExceptionString("SerialDataCollector",
                 "failed to disable error printing"));
@@ -125,6 +134,7 @@ namespace splash
 
     SerialDataCollector::~SerialDataCollector()
     {
+        close();
     }
 
     void SerialDataCollector::open(const char* filename, FileCreationAttr &attr)
@@ -157,16 +167,19 @@ namespace splash
 
     void SerialDataCollector::close()
     {
+        if (fileStatus == FST_CLOSED)
+            return;
+
         log_msg(1, "closing serial data collector");
 
-        if (fileStatus == FST_CREATING || fileStatus == FST_WRITING)
+        if ((fileStatus == FST_CREATING || fileStatus == FST_WRITING) &&
+            maxID >= 0)
         {
-            DCGroup group;
-            group.open(handles.get(0), SDC_GROUP_HEADER);
-
             // write number of iterations
             try
             {
+                DCGroup group;
+                group.open(handles.get(0), SDC_GROUP_HEADER);
                 ColTypeInt32 ctInt32;
                 DCAttribute::writeAttribute(SDC_ATTR_MAX_ID, ctInt32.getDataType(),
                         group.getHandle(), &maxID);
@@ -759,9 +772,8 @@ namespace splash
     {
         this->fileStatus = FST_CREATING;
 
-        // appends the mpiPosition to the filename (e.g. myfile_0_1_0.h5)
-        std::string full_filename = getFullFilename(attr.mpiPosition, filename);
-        DCHelper::testFilename(full_filename);
+        std::string full_filename = getFullFilename(attr.mpiPosition, filename,
+                attr.mpiSize.getScalarSize() == 1);
 
         this->enableCompression = attr.enableCompression;
 
@@ -792,11 +804,8 @@ namespace splash
     {
         fileStatus = FST_WRITING;
 
-        std::string full_filename = filename;
-        if (full_filename.find(".h5") == std::string::npos)
-            full_filename = getFullFilename(attr.mpiPosition, filename);
-
-        DCHelper::testFilename(full_filename);
+        std::string full_filename = getFullFilename(attr.mpiPosition, filename,
+                attr.mpiSize.getScalarSize() == 1);
 
         this->enableCompression = attr.enableCompression;
 
@@ -818,9 +827,7 @@ namespace splash
         this->fileStatus = FST_MERGING;
 
         // open reference file to get mpi information
-        std::string full_filename = getFullFilename(Dimensions(0, 0, 0), filename);
-
-        DCHelper::testFilename(full_filename);
+        std::string full_filename = getFullFilename(Dimensions(0, 0, 0), filename, true);
 
         if (!fileExists(full_filename))
         {
@@ -834,6 +841,7 @@ namespace splash
         // no compression for in-memory datasets
         this->enableCompression = false;
 
+        handles.setFileNameScheme(HandleMgr::FNS_MPI);
         handles.open(mpiTopology, filename, fileAccProperties, H5F_ACC_RDONLY);
     }
 
@@ -842,11 +850,7 @@ namespace splash
     {
         this->fileStatus = FST_READING;
 
-        std::string full_filename = filename;
-        if (full_filename.find(".h5") == std::string::npos)
-            full_filename = getFullFilename(attr.mpiPosition, filename);
-
-        DCHelper::testFilename(full_filename);
+        std::string full_filename = getFullFilename(attr.mpiPosition, filename, true);
 
         if (!fileExists(full_filename))
         {

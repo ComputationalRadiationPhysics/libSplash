@@ -1,6 +1,26 @@
 Change Log for libSplash
 ================================================================
 
+Release 1.6.0
+-------------
+**Date:** 2016-10-28
+
+`SerialDataCollector` file name interface change: this feature
+was accidentally not included in the `1.5.0` release.
+
+**Interface Changes**
+
+ - `SerialDataCollector` file name interface changed #242
+
+**Bug Fixes**
+
+ - compile with GCC 6.2 was broken: ambiguous `abs` #255
+
+**Misc**
+
+ - tests: remove warning on deprecated CMake usage in 3.1+ #242
+
+
 Release 1.5.0
 -------------
 **Date:** 2016-10-26
