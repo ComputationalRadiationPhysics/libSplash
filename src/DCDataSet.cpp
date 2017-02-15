@@ -162,11 +162,12 @@ namespace splash
     void DCDataSet::setChunking(size_t typeSize)
     throw (DCException)
     {
-        if (getPhysicalSize().getScalarSize() != 0)
+        Dimensions physicalSize(getPhysicalSize());
+        if (physicalSize.getScalarSize() != 0)
         {
             // get chunking dimensions
-            hsize_t chunk_dims[ndims];
-            DCHelper::getOptimalChunkDims(getPhysicalSize().getPointer(), ndims,
+            hsize_t chunk_dims[ndims];      
+            DCHelper::getOptimalChunkDims(physicalSize.getPointer(), ndims,
                     typeSize, chunk_dims);
 
             if (H5Pset_chunk(this->dsetProperties, ndims, chunk_dims) < 0)
@@ -220,7 +221,8 @@ namespace splash
         setChunking(colType.getSize());
         setCompression();
 
-        if (getPhysicalSize().getScalarSize() != 0)
+        Dimensions physicalSize(getPhysicalSize());
+        if (physicalSize.getScalarSize() != 0)
         {
             hsize_t *max_dims = new hsize_t[ndims];
             for (size_t i = 0; i < ndims; ++i)
@@ -228,10 +230,10 @@ namespace splash
                 if (extensible)
                     max_dims[i] = H5F_UNLIMITED;
                 else
-                    max_dims[i] = getPhysicalSize()[i];
+                    max_dims[i] = physicalSize[i];
             }
-
-            dataspace = H5Screate_simple(ndims, getPhysicalSize().getPointer(), max_dims);
+                      
+            dataspace = H5Screate_simple(ndims, physicalSize.getPointer(), max_dims);
 
             delete[] max_dims;
             max_dims = NULL;
