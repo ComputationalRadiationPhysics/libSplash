@@ -29,6 +29,7 @@
 #include <sys/stat.h>
 
 #include "splash/SerialDataCollector.hpp"
+#include "splash/AttributeInfo.hpp"
 #include "splash/core/DCAttribute.hpp"
 #include "splash/core/DCDataSet.hpp"
 #include "splash/core/DCGroup.hpp"
@@ -267,7 +268,7 @@ namespace splash
             return -1;
     }
 
-    AttributeInfo* SerialDataCollector::readGlobalAttributeInfo(
+    AttributeInfo SerialDataCollector::readGlobalAttributeInfo(
             int32_t /*id*/,
             const char* name,
             Dimensions *mpiPosition)
@@ -343,7 +344,7 @@ namespace splash
         }
     }
 
-    AttributeInfo* SerialDataCollector::readAttributeInfo(int32_t id,
+    AttributeInfo SerialDataCollector::readAttributeInfo(int32_t id,
             const char *dataName,
             const char *attrName,
             Dimensions *mpiPosition)

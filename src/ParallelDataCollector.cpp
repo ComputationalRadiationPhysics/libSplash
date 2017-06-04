@@ -29,6 +29,7 @@
 
 #include "splash/version.hpp"
 #include "splash/ParallelDataCollector.hpp"
+#include "splash/AttributeInfo.hpp"
 #include "splash/basetypes/basetypes.hpp"
 #include "splash/core/DCParallelDataSet.hpp"
 #include "splash/core/DCAttribute.hpp"
@@ -310,7 +311,7 @@ namespace splash
             *count = param.count;
     }
 
-    AttributeInfo* ParallelDataCollector::readGlobalAttributeInfo(
+    AttributeInfo ParallelDataCollector::readGlobalAttributeInfo(
             int32_t id,
             const char* name,
             Dimensions* /*mpiPosition*/)
@@ -431,7 +432,7 @@ namespace splash
             return -1;
     }
 
-    AttributeInfo* ParallelDataCollector::readAttributeInfo(int32_t id,
+    AttributeInfo ParallelDataCollector::readAttributeInfo(int32_t id,
             const char *dataName,
             const char *attrName,
             Dimensions* /*mpiPosition*/)

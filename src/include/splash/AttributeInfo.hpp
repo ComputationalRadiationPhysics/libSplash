@@ -38,14 +38,13 @@ namespace splash
      *
      * Usage example:
      * \code{.cpp}
-     * AttributeInfo* info = dc.readAttribute(iterationId, "groupName", "attrName");
+     * AttributeInfo info = dc.readAttribute(iterationId, "groupName", "attrName");
      * // Check that extents are as expected
-     * if(!info->isScalar()) throw error(...);
+     * if(!info.isScalar()) throw error(...);
      * // Optionally further checks
      * ...
      * int result;
-     * info->read(ColTypeInt(), &result);
-     * delete info;
+     * info.read(ColTypeInt(), &result);
      * \endcode
      */
     class AttributeInfo
@@ -54,7 +53,12 @@ namespace splash
 
    public:
         explicit AttributeInfo(hid_t attr);
+        /** Construct from an attribute id, takes over ownership! */
+        explicit AttributeInfo(H5AttributeId& attr);
         ~AttributeInfo();
+
+        AttributeInfo(const AttributeInfo& other);
+        AttributeInfo& operator=(const AttributeInfo& other);
 
         /** Return the size of the required memory in bytes when querying the value */
         size_t getMemSize() throw(DCException);
@@ -106,13 +110,15 @@ namespace splash
         SPLASH_DEPRECATED("Pass CollectionType")
         void read(void* buf, size_t bufSize) throw(DCException);
     private:
-        // Don't copy
-        AttributeInfo(const AttributeInfo&);
-        AttributeInfo& operator=(const AttributeInfo&);
 
         std::string getExceptionString(const std::string& msg);
         void loadType() throw(DCException);
         void loadSpace() throw(DCException);
+        
+        /** Reference counter for the attribute */
+        unsigned* refCt_;
+        /** Decreases the ref counter by 1 and releases the attribute or the ref counter */
+        void releaseReference();
 
         // Those values are lazy loaded on access
         CollectionType* colType_;

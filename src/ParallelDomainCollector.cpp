@@ -23,6 +23,7 @@
 #include "splash/basetypes/basetypes.hpp"
 
 #include "splash/ParallelDomainCollector.hpp"
+#include "splash/AttributeInfo.hpp"
 #include "splash/core/DCParallelDataSet.hpp"
 #include "splash/core/logging.hpp"
 

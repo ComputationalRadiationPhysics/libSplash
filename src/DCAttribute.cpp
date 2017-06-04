@@ -33,13 +33,13 @@ namespace splash
                 std::string("] ") + msg);
     }
 
-    AttributeInfo* DCAttribute::readAttributeInfo(const char* name, hid_t parent)
+    AttributeInfo DCAttribute::readAttributeInfo(const char* name, hid_t parent)
     throw (DCException)
     {
         H5AttributeId attr(H5Aopen(parent, name, H5P_DEFAULT));
         if (!attr)
             throw DCException(getExceptionString(name, "Attribute could not be opened for reading"));
-        return new AttributeInfo(attr.release());
+        return AttributeInfo(attr);
     }
 
     void DCAttribute::readAttribute(const char* name, hid_t parent, void* dst)

@@ -60,7 +60,7 @@ namespace splash
          *         Must be freed by the caller.
          *
          */
-        static AttributeInfo* readAttributeInfo(const char *name,
+        static AttributeInfo readAttributeInfo(const char *name,
                 hid_t parent) throw (DCException);
 
         /**
