@@ -103,11 +103,13 @@ namespace splash
          * Read the data of this attribute into the buffer of the given size.
          * No data conversion occurs, so the type as found in the file is used.
          * Throws an exception if the attribute could not be read or the buffer is to small.
+         * Warning: Might be unsafe if you are not the author of the HDF5 file or the data type
+         *          differs from the expected one. Check the meta-data and/or pass the
+         *          CollectionType to make sure you get what you expect.
          *
          * @param buf     Pointer to buffer
          * @param bufSize Size of the buffer
          */
-        SPLASH_DEPRECATED("Pass CollectionType")
         void read(void* buf, size_t bufSize) throw(DCException);
     private:
 
