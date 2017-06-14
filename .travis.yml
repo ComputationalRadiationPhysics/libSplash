@@ -1,8 +1,8 @@
 language: cpp
+sudo: required
 
-branches:
-  except:
-    - axel
+services:
+  - docker
 
 compiler:
   - gcc
@@ -18,53 +18,36 @@ env:
     - SPLASHPARALLEL=OFF SPLASHMPI=OFF
 
 script:
-  - cd $BUILD
 # compile libSplash and install
-  - CXXFLAGS="-Werror" cmake -DCMAKE_BUILD_TYPE=Debug -DTOOLS_MPI=$SPLASHMPI $SRC
-  - make package
-  - sudo dpkg -i libsplash*.deb
-  - ls -hal /usr/share/pyshared/
-  - rm -rf $BUILD/*
+  - docker exec build /bin/bash -c "cd $BUILD && CXXFLAGS='-Werror' CXX=$CXX CC=$CC cmake -DCMAKE_BUILD_TYPE=Debug -DTOOLS_MPI=$SPLASHMPI $SRC"
+  - docker exec build /bin/bash -c "cd $BUILD && make package"
+  - docker exec build /bin/bash -c "cd $BUILD && dpkg -i libsplash*.deb"
+  - docker exec build ls -hal /usr/share/pyshared/
 # compile examples/
-  - CXXFLAGS="-Werror" cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_MPI=$SPLASHMPI $SRC/examples
-  - make
-  - rm -rf $BUILD/*
+  - docker exec build /bin/bash -c "cd $BUILD && rm -rf * && CXXFLAGS='-Werror' CXX=$CXX CC=$CC cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_MPI=$SPLASHMPI $SRC/examples"
+  - docker exec build /bin/bash -c "cd $BUILD && make"
 # compile and run tests/
-  - CXXFLAGS="-Werror" cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_MPI=$SPLASHMPI $SRC/tests
-  - make
+  - docker exec build /bin/bash -c "cd $BUILD && rm -rf * && CXXFLAGS='-Werror' CXX=$CXX CC=$CC cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_MPI=$SPLASHMPI $SRC/tests"
+  - docker exec build /bin/bash -c "cd $BUILD && make"
 # run tests
-  - $SRC/tests/run_tests $BUILD
-  - $SRC/tests/run_parallel_tests $BUILD
+  - docker exec build $SRC/tests/run_tests $BUILD
+  - docker exec build $SRC/tests/run_parallel_tests $BUILD
 
 before_script:
-  - uname -r
-  - lsb_release -a
-  - echo "$SRC"
-  - ls -hal $SRC
-  - ls -hal /usr/include
-# PPA providing hdf5 >= 1.8.6 and OpenMPI >= 1.5.1
-# -> remove legacy hdf5 and mpi packages/deps from travis
-  - sudo apt-get remove -qq libhdf5*
-  - sudo apt-get remove -qq libopenmpi* openmpi-bin || { echo "OpenMPI not installed"; }
-  - echo "yes" | sudo add-apt-repository ppa:james-page/openmpi
-  - echo "yes" | sudo add-apt-repository ppa:axel-huebl/libsplash
-  - sudo apt-get update -qq
-  - sudo apt-cache policy
-  - sudo apt-cache policy libhdf5-serial-dev
-  - sudo apt-cache policy libopenmpi-dev
+  - docker pull ubuntu:16.04
+  - docker run -it -d --name build ubuntu bash
   - if [ "$SPLASHMPI" == "ON" ]; then export APTMPI="libopenmpi-dev openmpi-bin"; fi
-  - if [ "$SPLASHPARALLEL" == "ON" ]; then export APTHDF5="libhdf5-openmpi-7 libhdf5-openmpi-dev"; else export APTHDF5="libhdf5-serial-dev"; fi
-  - sudo dpkg --get-selections
-  - sudo apt-get install -qq -f libcppunit-dev
-  - sudo apt-get install -qq -f libboost-program-options-dev
-  - sudo apt-get -t o=LP-PPA-james-page-openmpi install -q -f $APTMPI
-  - sudo apt-get -t o=LP-PPA-axel-huebl-libsplash install -q -f $APTHDF5
-  - sudo apt-get install python-numpy cython
-  - sudo -H pip install --upgrade pip
-#   numpy and cython should be already satisfied
-  - export HDF5_DIR=/usr
-  - export C_INCLUDE_PATH=/usr/lib/openmpi/include
-  - pip install --user h5py
-  - python -c "import numpy; print(numpy.version.version)"
-  - python -c "import h5py; print(h5py.version.version)"
-  - mkdir -p $BUILD ~/lib
+  - if [ "$SPLASHPARALLEL" == "ON" ]; then export APTHDF5="libhdf5-openmpi-10 libhdf5-openmpi-dev"; else export APTHDF5="libhdf5-serial-dev"; fi
+  - docker exec build apt-get update
+  - docker exec build apt-get remove -qq libhdf5*
+  - docker exec build apt-get remove -qq libopenmpi* openmpi-bin || { echo "OpenMPI not installed"; }
+  - docker exec build apt-get install -qq -f libcppunit-dev clang cmake
+  - docker exec build apt-get install -qq -f $APTMPI
+  - docker exec build apt-get install -qq -f $APTHDF5
+  - docker exec build apt-get install -qq -f python-numpy cython python-pip
+  - docker exec build /bin/bash -c "HDF5_DIR=/usr C_INCLUDE_PATH=/usr/lib/openmpi/include pip install --user h5py"
+  - docker exec build mkdir -p $BUILD $SRC
+  - docker exec build python -c "import numpy; print(numpy.version.version)"
+  - docker exec build python -c "import h5py; print(h5py.version.version)"
+  - docker cp $SRC build:$SRC/..
+  - docker exec build ls -al $SRC

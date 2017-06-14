@@ -53,9 +53,12 @@ function testSerial()
 }
 function testMPI()
 {
+    if [ $( whoami ) == "root" ]; then
+       APPEND_OK_ROOT_DOCKER="--allow-run-as-root"
+    fi
     if [ -e "$1" ]; then
         echo -e "\n$3\n"
-        mpirun -n $2 $1
+        mpirun $APPEND_OK_ROOT_DOCKER -n $2 $1
         last=$?
         testLast $last $1
         OK=$(( OK + $last ))
