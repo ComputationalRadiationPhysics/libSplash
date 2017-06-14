@@ -46,8 +46,12 @@ before_script:
 # -> remove legacy hdf5 and mpi packages/deps from travis
   - sudo apt-get remove -qq libhdf5*
   - sudo apt-get remove -qq libopenmpi* openmpi-bin || { echo "OpenMPI not installed"; }
+  - sudo apt-get clean
+  - sudo sh -c 'echo "Acquire::http::Pipeline-Depth 0;\nAcquire::http::No-Cache true;\nAcquire::BrokenProxy    true;" > /etc/apt/apt.conf.d/99fixbadproxy'
+  - cat /etc/apt/apt.conf.d/99fixbadproxy
   - echo "yes" | sudo add-apt-repository ppa:james-page/openmpi
   - echo "yes" | sudo add-apt-repository ppa:axel-huebl/libsplash
+  - sudo rm -rf /var/lib/apt/lists/* /var/cache/apt/* /var/lib/apt/lists/partial/*
   - sudo apt-get update -qq
   - sudo apt-cache policy
   - sudo apt-cache policy libhdf5-serial-dev
