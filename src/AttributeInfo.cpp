@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2016 Alexander Grund
  *
  * This file is part of libSplash.
@@ -29,56 +29,34 @@
 namespace splash
 {
 
-AttributeInfo::AttributeInfo(hid_t attr): attr_(attr), refCt_(new unsigned), colType_(NULL)
+AttributeInfo::AttributeInfo(hid_t attr): attr_(attr), colType_(NULL)
 {
-    *refCt_ = 1;
 }
 
-AttributeInfo::AttributeInfo(H5AttributeId& attr): attr_(attr.release()), refCt_(new unsigned), colType_(NULL)
+AttributeInfo::AttributeInfo(H5AttributeId& attr): attr_(attr.release()), colType_(NULL)
 {
-    *refCt_ = 1;
 }
 
 AttributeInfo::~AttributeInfo()
 {
-    releaseReference();
     delete colType_;
 }
 
-AttributeInfo::AttributeInfo(const AttributeInfo& other):  refCt_(other.refCt_), colType_(NULL)
+AttributeInfo::AttributeInfo(const AttributeInfo& other):  attr_(other.attr_), colType_(NULL)
 {
-    attr_.reset(other.attr_);
-    ++(*refCt_);
 }
 
 AttributeInfo& AttributeInfo::operator=(const AttributeInfo& other)
 {
     if(&other == this)
         return *this;
-    releaseReference();
-    attr_.reset(other.attr_);
-    refCt_ = other.refCt_;
-    ++(*refCt_);
+    attr_ = other.attr_;
     // Reset lazy loaded values!
     delete colType_;
     colType_ = NULL;
     type_.release();
     space_.release();
     return *this;
-}
-
-// Note: This method is to be called before the attribute gets closed or replaced
-void AttributeInfo::releaseReference()
-{
-    assert(*refCt_ > 0);
-    --(*refCt_);
-    // If there are still references to the current attribute, stop auto-handling it in here
-    // otherwise delete the ref counter
-    if(*refCt_)
-        attr_.release();
-    else
-        delete refCt_;
-    refCt_ = NULL;
 }
 
 std::string AttributeInfo::getExceptionString(const std::string& msg)
@@ -213,6 +191,16 @@ void AttributeInfo::read(void* buf, size_t bufSize) throw(DCException)
     }
     if(H5Aread(attr_, type_, buf) < 0)
         throw DCException(getExceptionString("Could not read data"));
+}
+
+void swap(AttributeInfo& lhs, AttributeInfo& rhs)
+{
+    using std::swap;
+    swap(lhs.attr_, rhs.attr_);
+    swap(lhs.colType_, rhs.colType_);
+    swap(lhs.type_, rhs.type_);
+    swap(lhs.space_, rhs.space_);
+    swap(lhs.nDims_, rhs.nDims_);
 }
 
 } // namespace splash

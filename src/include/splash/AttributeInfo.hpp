@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2016 Alexander Grund
  *
  * This file is part of libSplash.
@@ -49,7 +49,7 @@ namespace splash
      */
     class AttributeInfo
     {
-        H5AttributeId attr_;
+        H5AttributeIdRefCt attr_;
 
    public:
         explicit AttributeInfo(hid_t attr);
@@ -111,17 +111,15 @@ namespace splash
          * @param bufSize Size of the buffer
          */
         void read(void* buf, size_t bufSize) throw(DCException);
+
+        friend void swap(AttributeInfo& lhs, AttributeInfo& rhs);
+
     private:
 
         std::string getExceptionString(const std::string& msg);
         void loadType() throw(DCException);
         void loadSpace() throw(DCException);
         
-        /** Reference counter for the attribute */
-        unsigned* refCt_;
-        /** Decreases the ref counter by 1 and releases the attribute or the ref counter */
-        void releaseReference();
-
         // Those values are lazy loaded on access
         CollectionType* colType_;
         H5TypeId type_;
