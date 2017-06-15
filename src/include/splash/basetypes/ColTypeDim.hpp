@@ -53,7 +53,7 @@ namespace splash
 
         size_t getSize() const
         {
-            return sizeof(hsize_t) * 3;
+            return getSize_();
         }
 
         std::string toString() const
@@ -69,7 +69,7 @@ namespace splash
             {
                 if(H5Tget_nmembers(datatype_id) == 3)
                 {
-                    if(H5Tget_size(datatype_id) == getSize())
+                    if(H5Tget_size(datatype_id) == getSize_())
                     {
                         char* m0 = H5Tget_member_name(datatype_id, 0);
                         char* m1 = H5Tget_member_name(datatype_id, 1);
@@ -88,7 +88,14 @@ namespace splash
             else
                 return NULL;
         }
-    };
+    
+    private:
+        static size_t getSize_()
+        {
+            return sizeof(hsize_t) * 3;
+        }
+
+   };
 }
 
 #endif /* COLTYPEDIM_H */
