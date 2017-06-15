@@ -385,10 +385,10 @@ namespace splash
         H5ObjectId objId(openGroup(group, id, dataName, mpiPosition));
 
         // When no object is returned read attribute from the iteration group
-        if (!objId)
-            DCAttribute::readAttribute(attrName, group.getHandle(), data);
-        else
+        if (objId)
             DCAttribute::readAttribute(attrName, objId, data);
+        else
+            DCAttribute::readAttribute(attrName, group.getHandle(), data);
     }
 
     void SerialDataCollector::writeAttribute(int32_t id,

@@ -51,13 +51,12 @@
 #include "splash/CollectionType.hpp"
 #include "splash/Dimensions.hpp"
 #include "splash/Selection.hpp"
+#include "splash/AttributeInfo.hpp"
 #include "splash/core/DCDataSet.hpp"
 #include "splash/core/splashMacros.hpp"
 
 namespace splash
 {
-
-    class AttributeInfo;
 
     class DataCollector
     {
