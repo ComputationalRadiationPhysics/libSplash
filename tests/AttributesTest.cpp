@@ -223,66 +223,65 @@ void AttributesTest::testAttributesMeta()
     dataCollector->open(TEST_FILE_META, attr);
 
     AttributeInfo info = dataCollector->readGlobalAttributeInfo(10, "intValGlob");
-    CPPUNIT_ASSERT(info->isScalar());
-    CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info->getMemSize());
+    CPPUNIT_ASSERT(info.isScalar());
+    CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info.getMemSize());
     // Note: This is the file saved type. ColTypeInt will resolve to the generic variant
-    CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
-    CPPUNIT_ASSERT(!info->isVarSize());
+    CPPUNIT_ASSERT(dynamic_cast<const ColTypeInt32*>(&info.getType()));
+    CPPUNIT_ASSERT(!info.isVarSize());
     int intValRead = 0;
-    info->read(ctInt, &intValRead);
+    info.read(ctInt, &intValRead);
     CPPUNIT_ASSERT_EQUAL(intValGlob, intValRead);
 
     info = dataCollector->readAttributeInfo(10, NULL, "intVal");
-    CPPUNIT_ASSERT(info->isScalar());
-    CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info->getMemSize());
+    CPPUNIT_ASSERT(info.isScalar());
+    CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info.getMemSize());
     // Note: This is the file saved type. ColTypeInt will resolve to the generic variant
-    CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
-    CPPUNIT_ASSERT(!info->isVarSize());
+    CPPUNIT_ASSERT(dynamic_cast<const ColTypeInt32*>(&info.getType()));
+    CPPUNIT_ASSERT(!info.isVarSize());
     intValRead = 0;
-    info->read(ctInt, &intValRead);
+    info.read(ctInt, &intValRead);
     CPPUNIT_ASSERT_EQUAL(intVal, intValRead);
 
     info = dataCollector->readAttributeInfo(10, NULL, "varLenStr");
-    CPPUNIT_ASSERT(info->isScalar());
-    CPPUNIT_ASSERT_EQUAL(sizeof(varLenStr), info->getMemSize());
-    CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ctString));
-    CPPUNIT_ASSERT(info->isVarSize());
+    CPPUNIT_ASSERT(info.isScalar());
+    CPPUNIT_ASSERT_EQUAL(sizeof(varLenStr), info.getMemSize());
+    CPPUNIT_ASSERT(dynamic_cast<const ColTypeString*>(&info.getType()));
+    CPPUNIT_ASSERT(info.isVarSize());
     // Note: API returns a pointer to the string!
     const char* varLenStrRead = NULL;
-    info->read(ctString, &varLenStrRead);
+    info.read(ctString, &varLenStrRead);
     CPPUNIT_ASSERT(strcmp(varLenStr, varLenStrRead) == 0);
 
     info = dataCollector->readAttributeInfo(10, NULL, "fixedLenStr");
-    CPPUNIT_ASSERT(info->isScalar());
-    CPPUNIT_ASSERT_EQUAL(sizeof(fixedLenStr), info->getMemSize());
-    CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ctString4));
-    CPPUNIT_ASSERT(!info->isVarSize());
+    CPPUNIT_ASSERT(info.isScalar());
+    CPPUNIT_ASSERT_EQUAL(sizeof(fixedLenStr), info.getMemSize());
+    CPPUNIT_ASSERT(dynamic_cast<const ColTypeString*>(&info.getType()));
+    CPPUNIT_ASSERT(!info.isVarSize());
     // Note: API returns string data
-    std::vector<char> fixedLenStrRead(info->getMemSize());
-    info->read(ctString4, &fixedLenStrRead[0]);
+    std::vector<char> fixedLenStrRead(info.getMemSize());
+    info.read(ctString4, &fixedLenStrRead[0]);
     CPPUNIT_ASSERT(strcmp(fixedLenStr, &fixedLenStrRead[0]) == 0);
 
     info = dataCollector->readAttributeInfo(10, "group", "intValGroup");
-    CPPUNIT_ASSERT(info->isScalar());
-    CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info->getMemSize());
+    CPPUNIT_ASSERT(info.isScalar());
+    CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info.getMemSize());
     // Note: This is the file saved type. ColTypeInt will resolve to the generic variant
-    CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
-    CPPUNIT_ASSERT(!info->isVarSize());
+    CPPUNIT_ASSERT(dynamic_cast<const ColTypeInt32*>(&info.getType()));
+    CPPUNIT_ASSERT(!info.isVarSize());
     int intValGroupRead = 0;
-    info->read(ctInt, &intValGroupRead);
+    info.read(ctInt, &intValGroupRead);
     CPPUNIT_ASSERT_EQUAL(intValGroup, intValGroupRead);
 
     info = dataCollector->readAttributeInfo(10, "group", "charVal");
-    CPPUNIT_ASSERT(info->isScalar());
-    CPPUNIT_ASSERT_EQUAL(sizeof(charVal), info->getMemSize());
+    CPPUNIT_ASSERT(info.isScalar());
+    CPPUNIT_ASSERT_EQUAL(sizeof(charVal), info.getMemSize());
     // Note: Native char resolves to either Int8 or UInt8
-    CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt8) || typeid(info->getType()) == typeid(ColTypeUInt8));
-    CPPUNIT_ASSERT(!info->isVarSize());
+    CPPUNIT_ASSERT(dynamic_cast<const ColTypeInt8*>(&info.getType()) || dynamic_cast<const ColTypeUInt8*>(&info.getType()));
+    CPPUNIT_ASSERT(!info.isVarSize());
     char charValRead = 0;
-    info->read(ctChar, &charValRead);
+    info.read(ctChar, &charValRead);
     CPPUNIT_ASSERT_EQUAL(charVal, charValRead);
 
-    delete info;
     dataCollector->close();
 }
 
@@ -357,85 +356,84 @@ void AttributesTest::testArrayAttributesMeta()
     char strArrayRead[6] = "\0\0\0\0\0";
 
     AttributeInfo info = dataCollector->readAttributeInfo(10, NULL, "intVal");
-    CPPUNIT_ASSERT(info->isScalar());
-    CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info->getMemSize());
+    CPPUNIT_ASSERT(info.isScalar());
+    CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info.getMemSize());
     // Note: This is the file saved type. ColTypeInt will resolve to the generic variant
-    CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
-    CPPUNIT_ASSERT(!info->isVarSize());
-    info->read(&intValRead, sizeof(intValRead));
+    CPPUNIT_ASSERT(dynamic_cast<const ColTypeInt32*>(&info.getType()));
+    CPPUNIT_ASSERT(!info.isVarSize());
+    info.read(&intValRead, sizeof(intValRead));
     CPPUNIT_ASSERT_EQUAL(intVal, intValRead);
 
     info = dataCollector->readAttributeInfo(10, NULL, "intVal2");
-    CPPUNIT_ASSERT(!info->isScalar());
-    CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info->getMemSize());
+    CPPUNIT_ASSERT(!info.isScalar());
+    CPPUNIT_ASSERT_EQUAL(sizeof(intVal), info.getMemSize());
     // Note: This is the file saved type. ColTypeInt will resolve to the generic variant
-    CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
-    CPPUNIT_ASSERT_EQUAL(3u, info->getNDims());
-    CPPUNIT_ASSERT_EQUAL(Dimensions(1, 1, 1), info->getDims());
-    CPPUNIT_ASSERT(!info->isVarSize());
-    info->read(&intValRead, sizeof(intValRead));
+    CPPUNIT_ASSERT(dynamic_cast<const ColTypeInt32*>(&info.getType()));
+    CPPUNIT_ASSERT_EQUAL(3u, info.getNDims());
+    CPPUNIT_ASSERT_EQUAL(Dimensions(1, 1, 1), info.getDims());
+    CPPUNIT_ASSERT(!info.isVarSize());
+    info.read(&intValRead, sizeof(intValRead));
     CPPUNIT_ASSERT_EQUAL(intVal2, intValRead);
 
     info = dataCollector->readAttributeInfo(10, NULL, "int3Array1");
-    CPPUNIT_ASSERT(info->isScalar());
-    CPPUNIT_ASSERT_EQUAL(sizeof(int3Array), info->getMemSize());
-    CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ctInt3Array));
-    CPPUNIT_ASSERT(!info->isVarSize());
-    info->read(&int3ArrayRead, sizeof(int3ArrayRead));
+    CPPUNIT_ASSERT(info.isScalar());
+    CPPUNIT_ASSERT_EQUAL(sizeof(int3Array), info.getMemSize());
+    CPPUNIT_ASSERT(dynamic_cast<const ColTypeInt3Array*>(&info.getType()));
+    CPPUNIT_ASSERT(!info.isVarSize());
+    info.read(&int3ArrayRead, sizeof(int3ArrayRead));
     CPPUNIT_ASSERT(memcmp(int3Array, int3ArrayRead, sizeof(int3ArrayRead)) == 0);
 
     info = dataCollector->readAttributeInfo(10, NULL, "int3Array2");
-    CPPUNIT_ASSERT(!info->isScalar());
-    CPPUNIT_ASSERT_EQUAL(sizeof(int3Array), info->getMemSize());
+    CPPUNIT_ASSERT(!info.isScalar());
+    CPPUNIT_ASSERT_EQUAL(sizeof(int3Array), info.getMemSize());
     // Note: This is the file saved type. ColTypeInt will resolve to the generic variant
-    CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
-    CPPUNIT_ASSERT_EQUAL(1u, info->getNDims());
-    CPPUNIT_ASSERT_EQUAL(Dimensions(3, 1, 1), info->getDims());
-    CPPUNIT_ASSERT(!info->isVarSize());
-    info->read(&int3ArrayRead, sizeof(int3ArrayRead));
+    CPPUNIT_ASSERT(dynamic_cast<const ColTypeInt32*>(&info.getType()));
+    CPPUNIT_ASSERT_EQUAL(1u, info.getNDims());
+    CPPUNIT_ASSERT_EQUAL(Dimensions(3, 1, 1), info.getDims());
+    CPPUNIT_ASSERT(!info.isVarSize());
+    info.read(&int3ArrayRead, sizeof(int3ArrayRead));
     CPPUNIT_ASSERT(memcmp(int3Array2, int3ArrayRead, sizeof(int3ArrayRead)) == 0);
 
     info = dataCollector->readAttributeInfo(10, NULL, "int3Array3");
-    CPPUNIT_ASSERT(!info->isScalar());
-    CPPUNIT_ASSERT_EQUAL(sizeof(int3Array), info->getMemSize());
+    CPPUNIT_ASSERT(!info.isScalar());
+    CPPUNIT_ASSERT_EQUAL(sizeof(int3Array), info.getMemSize());
     // Note: This is the file saved type. ColTypeInt will resolve to the generic variant
-    CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeInt32));
-    CPPUNIT_ASSERT_EQUAL(3u, info->getNDims());
-    CPPUNIT_ASSERT_EQUAL(Dimensions(1, 1, 3), info->getDims());
-    CPPUNIT_ASSERT(!info->isVarSize());
-    info->read(&int3ArrayRead, sizeof(int3ArrayRead));
+    CPPUNIT_ASSERT(dynamic_cast<const ColTypeInt32*>(&info.getType()));
+    CPPUNIT_ASSERT_EQUAL(3u, info.getNDims());
+    CPPUNIT_ASSERT_EQUAL(Dimensions(1, 1, 3), info.getDims());
+    CPPUNIT_ASSERT(!info.isVarSize());
+    info.read(&int3ArrayRead, sizeof(int3ArrayRead));
     CPPUNIT_ASSERT(memcmp(int3Array3, int3ArrayRead, sizeof(int3ArrayRead)) == 0);
 
     info = dataCollector->readAttributeInfo(10, NULL, "dim");
-    CPPUNIT_ASSERT(info->isScalar());
-    CPPUNIT_ASSERT_EQUAL(sizeof(dim), info->getMemSize());
-    CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ctDimArray));
-    CPPUNIT_ASSERT_EQUAL(1u, info->getNDims());
-    CPPUNIT_ASSERT_EQUAL(Dimensions(1, 1, 1), info->getDims());
-    CPPUNIT_ASSERT(!info->isVarSize());
-    info->read(&dimRead, dimRead.getSize());
+    CPPUNIT_ASSERT(info.isScalar());
+    CPPUNIT_ASSERT_EQUAL(sizeof(dim), info.getMemSize());
+    CPPUNIT_ASSERT(dynamic_cast<const ColTypeDimArray*>(&info.getType()));
+    CPPUNIT_ASSERT_EQUAL(1u, info.getNDims());
+    CPPUNIT_ASSERT_EQUAL(Dimensions(1, 1, 1), info.getDims());
+    CPPUNIT_ASSERT(!info.isVarSize());
+    info.read(&dimRead, dimRead.getSize());
     CPPUNIT_ASSERT_EQUAL(dim, dimRead);
 
     info = dataCollector->readAttributeInfo(10, NULL, "doubleArray");
-    CPPUNIT_ASSERT(!info->isScalar());
-    CPPUNIT_ASSERT_EQUAL(sizeof(doubleArray), info->getMemSize());
-    CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ctDouble));
-    CPPUNIT_ASSERT_EQUAL(1u, info->getNDims());
-    CPPUNIT_ASSERT_EQUAL(Dimensions(7, 1, 1), info->getDims());
-    CPPUNIT_ASSERT(!info->isVarSize());
-    info->read(&doubleArrayRead, sizeof(doubleArrayRead));
+    CPPUNIT_ASSERT(!info.isScalar());
+    CPPUNIT_ASSERT_EQUAL(sizeof(doubleArray), info.getMemSize());
+    CPPUNIT_ASSERT(dynamic_cast<const ColTypeDouble*>(&info.getType()));
+    CPPUNIT_ASSERT_EQUAL(1u, info.getNDims());
+    CPPUNIT_ASSERT_EQUAL(Dimensions(7, 1, 1), info.getDims());
+    CPPUNIT_ASSERT(!info.isVarSize());
+    info.read(&doubleArrayRead, sizeof(doubleArrayRead));
     CPPUNIT_ASSERT(memcmp(doubleArray, doubleArrayRead, sizeof(doubleArrayRead)) == 0);
 
     info = dataCollector->readAttributeInfo(10, NULL, "strArray");
-    CPPUNIT_ASSERT(!info->isScalar());
-    CPPUNIT_ASSERT_EQUAL(sizeof(strArray), info->getMemSize());
-    CPPUNIT_ASSERT(typeid(info->getType()) == typeid(ColTypeString));
-    CPPUNIT_ASSERT_EQUAL(1u, info->getNDims());
-    CPPUNIT_ASSERT_EQUAL(Dimensions(3, 1, 1), info->getDims());
-    CPPUNIT_ASSERT(!info->isVarSize());
-    info->read(&strArrayRead, sizeof(strArrayRead));
+    CPPUNIT_ASSERT(!info.isScalar());
+    CPPUNIT_ASSERT_EQUAL(sizeof(strArray), info.getMemSize());
+    CPPUNIT_ASSERT(dynamic_cast<const ColTypeString*>(&info.getType()));
+    CPPUNIT_ASSERT_EQUAL(1u, info.getNDims());
+    CPPUNIT_ASSERT_EQUAL(Dimensions(3, 1, 1), info.getDims());
+    CPPUNIT_ASSERT(!info.isVarSize());
+    info.read(&strArrayRead, sizeof(strArrayRead));
     CPPUNIT_ASSERT(memcmp(strArray, strArrayRead, sizeof(strArrayRead)) == 0);
 
-    delete info;
     dataCollector->close();
 }
