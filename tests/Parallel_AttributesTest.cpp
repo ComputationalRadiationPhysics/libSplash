@@ -264,6 +264,8 @@ void Parallel_AttributesTest::testAttributesMeta()
     char charValRead = 0;
     info.read(ctChar, &charValRead);
     CPPUNIT_ASSERT_EQUAL(charVal, charValRead);
+    
+    info.close();
 
     dataCollector->close();
     dataCollector->finalize();
@@ -428,6 +430,8 @@ void Parallel_AttributesTest::testArrayAttributesMeta()
     CPPUNIT_ASSERT(!info.isVarSize());
     info.read(&strArrayRead, sizeof(strArrayRead));
     CPPUNIT_ASSERT(memcmp(strArray, strArrayRead, sizeof(strArrayRead)) == 0);
+    
+    info.close();
 
     dataCollector->close();
     dataCollector->finalize();

@@ -193,6 +193,12 @@ void AttributeInfo::read(void* buf, size_t bufSize) throw(DCException)
         throw DCException(getExceptionString("Could not read data"));
 }
 
+void AttributeInfo::close()
+{
+    AttributeInfo tmp(-1);
+    swap(*this, tmp);
+}
+
 void swap(AttributeInfo& lhs, AttributeInfo& rhs)
 {
     using std::swap;

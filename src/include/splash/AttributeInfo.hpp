@@ -111,6 +111,13 @@ namespace splash
          * @param bufSize Size of the buffer
          */
         void read(void* buf, size_t bufSize) throw(DCException);
+        
+        /**
+         * Closes the attribute invalidating all future calls to this object
+         * Note: If there are multiple instances relating to the same HDF5-Attribute
+         * all of them must be closed or destroyed
+         */
+        void close();
 
         friend void swap(AttributeInfo& lhs, AttributeInfo& rhs);
 
