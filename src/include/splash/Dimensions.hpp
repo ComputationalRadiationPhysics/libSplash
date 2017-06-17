@@ -204,6 +204,15 @@ namespace splash
         }
 
         /**
+         * Get the size in bytes of the data array.
+         * @return Size in bytes of data array.
+         */
+        inline static size_t getSize()
+        {
+            return DSP_DIM_MAX * sizeof (hsize_t);
+        }
+
+        /**
          * Get the scalar size.
          * @return Scalar number of elements spanned by all dimensions.
          */
