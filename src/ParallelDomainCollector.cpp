@@ -79,8 +79,8 @@ namespace splash
 
         Domain domain;
 
-        readAttribute(id, name, DOMCOL_ATTR_GLOBAL_SIZE, domain.getSize().getPointer());
-        readAttribute(id, name, DOMCOL_ATTR_GLOBAL_OFFSET, domain.getOffset().getPointer());
+        readAttributeInfo(id, name, DOMCOL_ATTR_GLOBAL_SIZE).read(domain.getSize().getPointer(), domain.getSize().getSize());
+        readAttributeInfo(id, name, DOMCOL_ATTR_GLOBAL_OFFSET).read(domain.getOffset().getPointer(), domain.getOffset().getSize());
 
         return domain;
     }
@@ -95,8 +95,8 @@ namespace splash
 
         Domain domain;
 
-        readAttribute(id, name, DOMCOL_ATTR_SIZE, domain.getSize().getPointer());
-        readAttribute(id, name, DOMCOL_ATTR_OFFSET, domain.getOffset().getPointer());
+        readAttributeInfo(id, name, DOMCOL_ATTR_SIZE).read(domain.getSize().getPointer(), domain.getSize().getSize());
+        readAttributeInfo(id, name, DOMCOL_ATTR_OFFSET).read(domain.getOffset().getPointer(), domain.getOffset().getSize());
 
         return domain;
     }
@@ -110,12 +110,8 @@ namespace splash
             bool lazyLoad)
     throw (DCException)
     {
-        Domain local_client_domain, global_client_domain;
-
-        readAttribute(id, name, DOMCOL_ATTR_OFFSET, local_client_domain.getOffset().getPointer());
-        readAttribute(id, name, DOMCOL_ATTR_SIZE, local_client_domain.getSize().getPointer());
-        readAttribute(id, name, DOMCOL_ATTR_GLOBAL_OFFSET, global_client_domain.getOffset().getPointer());
-        readAttribute(id, name, DOMCOL_ATTR_GLOBAL_SIZE, global_client_domain.getSize().getPointer());
+        Domain local_client_domain = getLocalDomain(id, name);
+        Domain global_client_domain = getGlobalDomain(id, name);
 
         Domain client_domain(
                 local_client_domain.getOffset() + global_client_domain.getOffset(),
@@ -125,7 +121,7 @@ namespace splash
         read(id, name, data_elements, NULL);
 
         DomDataClass tmp_data_class = UndefinedType;
-        readAttribute(id, name, DOMCOL_ATTR_CLASS, &tmp_data_class);
+        readAttributeInfo(id, name, DOMCOL_ATTR_CLASS).read(&tmp_data_class, sizeof(tmp_data_class));
 
         if (tmp_data_class == GridType && data_elements != client_domain.getSize())
             throw DCException(getExceptionString("readDomainDataForRank",
