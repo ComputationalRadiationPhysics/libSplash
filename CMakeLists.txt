@@ -112,7 +112,7 @@ SET(SPLASH_LIBS z ${HDF5_LIBRARIES})
 
 # serial or parallel version of libSplash
 SET(SPLASH_CLASSES logging DCAttribute DCDataSet DCGroup HandleMgr SerialDataCollector
-    DomainCollector SDCHelper generateCollectionType)
+    DomainCollector SDCHelper AttributeInfo generateCollectionType)
 IF(HDF5_IS_PARALLEL)
     #parallel version
     MESSAGE(STATUS "Parallel HDF5 found. Building parallel version")

@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2015 Felix Schmitt, Axel Huebl
+ * Copyright 2013-2016 Felix Schmitt, Axel Huebl, Alexander Grund
  *
  * This file is part of libSplash.
  *
@@ -34,6 +34,8 @@
 
 namespace splash
 {
+
+    class DCGroup;
 
     /**
      * Realizes a DataCollector which creates an HDF5 file for each MPI process.
@@ -84,6 +86,11 @@ namespace splash
 
         static herr_t visitObjCallback(hid_t o_id, const char *name,
                 const H5O_info_t *object_info, void *op_data);
+
+        void openCustomGroup(DCGroup& group, Dimensions *mpiPosition = NULL) throw (DCException);
+        /** @return H5 object id if name!=NULL, else -1 */
+        hid_t openGroup(DCGroup& group, int32_t id, const char* name,
+                Dimensions *mpiPosition = NULL) throw (DCException);
 
     protected:
 
@@ -290,6 +297,12 @@ namespace splash
                 Dimensions offset,
                 Dimensions stride) throw (DCException);
 
+        AttributeInfo readGlobalAttributeInfo(
+                int32_t id,
+                const char *name,
+                Dimensions *mpiPosition = NULL) throw (DCException);
+
+        SPLASH_DEPRECATED("Use safer readGlobalAttributeInfo")
         void readGlobalAttribute(
                 const char *name,
                 void* data,
@@ -305,6 +318,12 @@ namespace splash
                 const Dimensions dims,
                 const void* data) throw (DCException);
 
+        AttributeInfo readAttributeInfo(int32_t id,
+                const char *dataName,
+                const char *attrName,
+                Dimensions *mpiPosition = NULL) throw (DCException);
+
+        SPLASH_DEPRECATED("Use safer readAttributeInfo")
         void readAttribute(int32_t id,
                 const char *dataName,
                 const char *attrName,

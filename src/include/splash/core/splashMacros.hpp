@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Felix Schmitt
+ * Copyright 2016 Alexander Grund
  *
  * This file is part of libSplash.
  *
@@ -20,40 +20,18 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DCEXCEPTION_HPP
-#define DCEXCEPTION_HPP
+#ifndef SPLASH_MACROS_HPP
+#define SPLASH_MACROS_HPP
 
-#include <stdexcept>
+// Mark a function as deprecated: `SPLASH_DEPRECATED("Use bar instead") void foo();`
+#ifdef __clang__
+#   define SPLASH_DEPRECATED(msg) __attribute__((deprecated(msg)))
+#elif defined(__GNUC__)
+#   define SPLASH_DEPRECATED(msg) __attribute__((deprecated))
+#elif defined(_MSC_VER)
+#   define SPLASH_DEPRECATED(msg) __declspec(deprecated)
+#else
+#   define SPLASH_DEPRECATED(msg)
+#endif
 
-namespace splash
-{
-    /**
-     * DataCollector Exception.
-     *
-     * All calls to DataCollector should handle these exceptions.
-     */
-    class DCException : public std::runtime_error
-    {
-    public:
-
-        /**
-         * Constructor
-         *
-         * @param message message to be included in the exception
-         */
-        DCException(const char* message) : std::runtime_error(message)
-        {
-        }
-
-        /**
-         * Constructor
-         *
-         * @param message message to be included in the exception
-         */
-        DCException(std::string message) : std::runtime_error(message.c_str())
-        {
-        }
-    };
-}
-
-#endif /* DCEXCEPTION_HPP */
+#endif /* SPLASH_MACROS_HPP */

@@ -82,8 +82,8 @@ namespace splash
         Dimensions domain_size;
         Dimensions domain_offset;
 
-        readAttribute(id, name, DOMCOL_ATTR_SIZE, domain_size.getPointer(), &mpi_position);
-        readAttribute(id, name, DOMCOL_ATTR_OFFSET, domain_offset.getPointer(), &mpi_position);
+        readAttributeInfo(id, name, DOMCOL_ATTR_SIZE, &mpi_position).read(domain_size.getPointer(), domain_size.getSize());
+        readAttributeInfo(id, name, DOMCOL_ATTR_OFFSET, &mpi_position).read(domain_offset.getPointer(), domain_offset.getSize());
 
         return Domain(domain_offset, domain_size);
     }
@@ -792,11 +792,11 @@ namespace splash
     {
         try
         {
-            readAttribute(id, dataName, DOMCOL_ATTR_GLOBAL_SIZE, data, mpiPosition);
+            readAttributeInfo(id, dataName, DOMCOL_ATTR_GLOBAL_SIZE, mpiPosition).read(data, sizeof(*data) * DSP_DIM_MAX);
         } catch (const DCException&)
         {
             hsize_t local_size[DSP_DIM_MAX];
-            readAttribute(id, dataName, DOMCOL_ATTR_SIZE, local_size, mpiPosition);
+            readAttributeInfo(id, dataName, DOMCOL_ATTR_SIZE, mpiPosition).read(local_size, sizeof(local_size));
 
             for (int i = 0; i < DSP_DIM_MAX; ++i)
                 data[i] = mpiTopology[i] * local_size[i];
@@ -811,7 +811,7 @@ namespace splash
     {
         try
         {
-            readAttribute(id, dataName, DOMCOL_ATTR_GLOBAL_OFFSET, data, mpiPosition);
+            readAttributeInfo(id, dataName, DOMCOL_ATTR_GLOBAL_OFFSET, mpiPosition).read(data, sizeof(*data) * DSP_DIM_MAX);
         } catch (const DCException&)
         {
             for (int i = 0; i < DSP_DIM_MAX; ++i)

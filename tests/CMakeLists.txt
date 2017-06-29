@@ -93,6 +93,8 @@ INCLUDE_DIRECTORIES("${CMAKE_CURRENT_BINARY_DIR}/build_libsplash")
 
 #-------------------------------------------------------------------------------
 
+add_definitions(-Wno-deprecated-declarations)
+
 SET(LIBS splash_static m cppunit ${MPI_C_LIBRARIES} ${MPI_CXX_LIBRARIES} ${HDF5_LIBRARIES})
 IF(${vampir})
     SET(LIBS vt-hyb ${LIBS})

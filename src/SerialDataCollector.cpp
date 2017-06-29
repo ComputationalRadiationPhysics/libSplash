@@ -29,14 +29,13 @@
 #include <sys/stat.h>
 
 #include "splash/SerialDataCollector.hpp"
-
-#include "splash/basetypes/basetypes.hpp"
-
+#include "splash/AttributeInfo.hpp"
 #include "splash/core/DCAttribute.hpp"
 #include "splash/core/DCDataSet.hpp"
 #include "splash/core/DCGroup.hpp"
 #include "splash/core/SDCHelper.hpp"
 #include "splash/core/logging.hpp"
+#include "splash/core/H5IdWrapper.hpp"
 #include "splash/basetypes/basetypes.hpp"
 
 namespace splash
@@ -199,18 +198,13 @@ namespace splash
         fileStatus = FST_CLOSED;
     }
 
-    void SerialDataCollector::readGlobalAttribute(
-            const char* name,
-            void* data,
-            Dimensions *mpiPosition)
-    throw (DCException)
+    void SerialDataCollector::openCustomGroup(DCGroup& group,
+                    Dimensions *mpiPosition) throw (DCException)
     {
-        // mpiPosition is allowed to be NULL here
-        if (name == NULL || data == NULL)
-            throw DCException(getExceptionString("readGlobalAttribute", "a parameter was null"));
+        // Note: Factored out from readGlobalAttribute
 
         if (fileStatus == FST_CLOSED || fileStatus == FST_CREATING)
-            throw DCException(getExceptionString("readGlobalAttribute", "this access is not permitted"));
+            throw DCException(getExceptionString("openCustomGroup", "this access is not permitted"));
 
         std::stringstream group_custom_name;
         if (mpiPosition == NULL || fileStatus == FST_MERGING)
@@ -231,8 +225,77 @@ namespace splash
             mpi_rank = mpi_pos[2] * mpiTopology[0] * mpiTopology[1] + mpi_pos[1] * mpiTopology[0] + mpi_pos[0];
         }
 
+        group.open(handles.get(mpi_rank), custom_string.c_str());
+    }
+
+    hid_t SerialDataCollector::openGroup(DCGroup& group, int32_t id, const char* dataName,
+            Dimensions *mpiPosition) throw (DCException)
+    {
+        // Note: Factored out from readAttribute
+
+        // dataName may be NULL, attribute is read to iteration group in that case
+        if (dataName && strlen(dataName) == 0)
+            throw DCException(getExceptionString("openGroup", "empty dataset name"));
+
+        if (fileStatus == FST_CLOSED || fileStatus == FST_CREATING)
+            throw DCException(getExceptionString("openGroup", "this access is not permitted"));
+
+        std::string group_path, obj_name;
+        std::string dataNameInternal = "";
+        if (dataName)
+            dataNameInternal.assign(dataName);
+        DCDataSet::getFullDataPath(dataNameInternal, SDC_GROUP_DATA, id, group_path, obj_name);
+
+        Dimensions mpi_pos(0, 0, 0);
+        if ((fileStatus == FST_MERGING) && (mpiPosition != NULL))
+        {
+            mpi_pos.set(*mpiPosition);
+        }
+
+        group.open(handles.get(mpi_pos), group_path);
+
+        if (dataName)
+        {
+            // read from the dataset or group
+            if (H5Lexists(group.getHandle(), obj_name.c_str(), H5P_LINK_ACCESS_DEFAULT))
+                return H5Oopen(group.getHandle(), obj_name.c_str(), H5P_DEFAULT);
+            else
+            {
+                throw DCException(getExceptionString("openGroup",
+                        "dataset not found", obj_name.c_str()));
+            }
+        } else
+            return -1;
+    }
+
+    AttributeInfo SerialDataCollector::readGlobalAttributeInfo(
+            int32_t /*id*/,
+            const char* name,
+            Dimensions *mpiPosition)
+    throw (DCException)
+    {
+        // mpiPosition is allowed to be NULL here
+        if (name == NULL)
+            throw DCException(getExceptionString("readGlobalAttributeInfo", "a parameter was null"));
+
         DCGroup group_custom;
-        group_custom.open(handles.get(mpi_rank), custom_string.c_str());
+        openCustomGroup(group_custom, mpiPosition);
+
+        return DCAttribute::readAttributeInfo(name, group_custom.getHandle());
+    }
+
+    void SerialDataCollector::readGlobalAttribute(
+            const char* name,
+            void* data,
+            Dimensions *mpiPosition)
+    throw (DCException)
+    {
+        // mpiPosition is allowed to be NULL here
+        if (name == NULL || data == NULL)
+            throw DCException(getExceptionString("readGlobalAttribute", "a parameter was null"));
+
+        DCGroup group_custom;
+        openCustomGroup(group_custom, mpiPosition);
 
         try
         {
@@ -281,6 +344,29 @@ namespace splash
         }
     }
 
+    AttributeInfo SerialDataCollector::readAttributeInfo(int32_t id,
+            const char *dataName,
+            const char *attrName,
+            Dimensions *mpiPosition)
+    throw (DCException)
+    {
+        // mpiPosition is allowed to be NULL here
+        if (attrName == NULL)
+            throw DCException(getExceptionString("readAttributeInfo", "a parameter was null"));
+
+        if (strlen(attrName) == 0)
+            throw DCException(getExceptionString("readAttributeInfo", "empty attribute name"));
+
+        DCGroup group;
+        H5ObjectId objId(openGroup(group, id, dataName, mpiPosition));
+
+        // When no object is returned read attribute from the iteration group
+        if (!objId)
+            return DCAttribute::readAttributeInfo(attrName, group.getHandle());
+        else
+            return DCAttribute::readAttributeInfo(attrName, objId);
+    }
+
     void SerialDataCollector::readAttribute(int32_t id,
             const char *dataName,
             const char *attrName,
@@ -292,57 +378,17 @@ namespace splash
         if (attrName == NULL || data == NULL)
             throw DCException(getExceptionString("readAttribute", "a parameter was null"));
 
-        // dataName may be NULL, attribute is read to iteration group in that case
-        if (dataName && strlen(dataName) == 0)
-            throw DCException(getExceptionString("readAttribute", "empty dataset name"));
-
         if (strlen(attrName) == 0)
             throw DCException(getExceptionString("readAttribute", "empty attribute name"));
 
-        if (fileStatus == FST_CLOSED || fileStatus == FST_CREATING)
-            throw DCException(getExceptionString("readAttribute", "this access is not permitted"));
-
-        std::string group_path, obj_name;
-        std::string dataNameInternal = "";
-        if (dataName)
-            dataNameInternal.assign(dataName);
-        DCDataSet::getFullDataPath(dataNameInternal, SDC_GROUP_DATA, id, group_path, obj_name);
-
-        Dimensions mpi_pos(0, 0, 0);
-        if ((fileStatus == FST_MERGING) && (mpiPosition != NULL))
-        {
-            mpi_pos.set(*mpiPosition);
-        }
-
         DCGroup group;
-        group.open(handles.get(mpi_pos), group_path);
+        H5ObjectId objId(openGroup(group, id, dataName, mpiPosition));
 
-        if (dataName)
-        {
-            // read attribute from the dataset or group
-            hid_t obj_id = -1;
-            if (H5Lexists(group.getHandle(), obj_name.c_str(), H5P_LINK_ACCESS_DEFAULT))
-            {
-                obj_id = H5Oopen(group.getHandle(), obj_name.c_str(), H5P_DEFAULT);
-                try
-                {
-                    DCAttribute::readAttribute(attrName, obj_id, data);
-                } catch (const DCException&)
-                {
-                    H5Oclose(obj_id);
-                    throw;
-                }
-                H5Oclose(obj_id);
-            } else
-            {
-                throw DCException(getExceptionString("readAttribute",
-                        "dataset not found", obj_name.c_str()));
-            }
-        } else
-        {
-            // read attribute from the iteration group
+        // When no object is returned read attribute from the iteration group
+        if (objId)
+            DCAttribute::readAttribute(attrName, objId, data);
+        else
             DCAttribute::readAttribute(attrName, group.getHandle(), data);
-        }
     }
 
     void SerialDataCollector::writeAttribute(int32_t id,
