@@ -25,7 +25,7 @@
 #define COLTYPEDIMARRAY_H
 
 #include "splash/CollectionType.hpp"
-
+#include "splash/Dimensions.hpp"
 #include <string>
 
 namespace splash
