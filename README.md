@@ -3,10 +3,13 @@ libSplash - Simple Parallel file output Library for Accumulating Simulation data
 
 ### Build Status by branch (master/dev)
 
-[![Build Status Master](https://travis-ci.org/ComputationalRadiationPhysics/libSplash.png?branch=master)]
-(https://travis-ci.org/ComputationalRadiationPhysics/libSplash "master")
-[![Build Status Development](https://travis-ci.org/ComputationalRadiationPhysics/libSplash.png?branch=dev)]
-(https://travis-ci.org/ComputationalRadiationPhysics/libSplash "dev")
+[![Build Status master](https://img.shields.io/travis/ComputationalRadiationPhysics/libSplash/master.svg?label=master)](https://travis-ci.org/ComputationalRadiationPhysics/libSplash/branches)
+[![Build Status Development](https://img.shields.io/travis/ComputationalRadiationPhysics/libSplash/dev.svg?label=dev)](https://travis-ci.org/ComputationalRadiationPhysics/libSplash/branches)
+[![Spack Package](https://img.shields.io/badge/spack.io-libsplash-brightgreen.svg)](https://spack.io)
+[![User Manual](https://img.shields.io/badge/manual-pdf-blue.svg)](https://github.com/ComputationalRadiationPhysics/libSplash/blob/master/doc/manual/UserManual.pdf?raw=true)
+[![Doxygen](https://img.shields.io/badge/api-doxygen-blue.svg)](http://computationalradiationphysics.github.io/libSplash/)
+[![Language](https://img.shields.io/badge/language-C%2B%2B98-orange.svg)](https://isocpp.org)
+[![License](https://img.shields.io/badge/license-LGPLv3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0.html)
 
 Introduction
 ------------
