@@ -83,7 +83,10 @@ namespace splash
 
             for (uint32_t i = 0; i < DSP_DIM_MAX; ++i)
             {
-                offset[i] = std::min(entryOffset[i], offset[i]);
+                if (subdomains.empty())
+                    offset[i] = entryOffset[i];
+                else
+                    offset[i] = std::min(entryOffset[i], offset[i]);
                 size[i] = std::max(entryBack[i] + 1 - offset[i], size[i]);
             }
 
