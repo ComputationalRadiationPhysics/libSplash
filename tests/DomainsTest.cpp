@@ -222,9 +222,11 @@ void DomainsTest::subTestGridDomains(const Dimensions mpiSize,
             Dimensions subdomain_offset = subdomain->getOffset();
 
 #if defined TESTS_DEBUG
+            std::cout << "container->getSize() = " << container->getSize().toString() << std::endl;
             std::cout << "subdomain->getOffset() = " << subdomain->getOffset().toString() << std::endl;
             std::cout << "subdomain->getElements() = " << subdomain_elements.toString() << std::endl;
 #endif
+            CPPUNIT_ASSERT(container->getSize() == partition_size);
 
             int *subdomain_data = (int*) (subdomain->getData());
             CPPUNIT_ASSERT(subdomain_elements == global_grid_size - offset);
