@@ -23,6 +23,8 @@
 #ifndef SPLASH_MACROS_HPP
 #define SPLASH_MACROS_HPP
 
+//! @TODO Add macro defines for ICC, XLC, PGI
+
 // Mark a function as deprecated: `SPLASH_DEPRECATED("Use bar instead") void foo();`
 #ifdef __clang__
 #   define SPLASH_DEPRECATED(msg) __attribute__((deprecated(msg)))
@@ -32,6 +34,23 @@
 #   define SPLASH_DEPRECATED(msg) __declspec(deprecated)
 #else
 #   define SPLASH_DEPRECATED(msg)
+#endif
+
+// Suppress a "unused variable" warning: `SPLASH_UNUSED static int i = 42;`
+#ifdef __clang__
+#   define SPLASH_UNUSED __attribute__((unused))
+#elif defined(__GNUC__)
+#   define SPLASH_UNUSED __attribute__((unused))
+#elif defined(_MSC_VER)
+#   define SPLASH_UNUSED
+#elif defined(__xlc__)
+#   define SPLASH_UNUSED __attribute__((unused))
+#elif defined(__INTEL_COMPILER)
+#   define SPLASH_UNUSED
+#elif defined(__PGI)
+#   define SPLASH_UNUSED
+#else
+#   define SPLASH_UNUSED
 #endif
 
 #endif /* SPLASH_MACROS_HPP */
