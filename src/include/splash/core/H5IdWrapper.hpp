@@ -23,11 +23,13 @@
 #ifndef H5ID_WRAPPER_HPP
 #define H5ID_WRAPPER_HPP
 
+#include "splash/core/splashMacros.hpp"
+
 #include <hdf5.h>
+
 
 namespace splash
 {
-    
     namespace policies
     {
         template<typename T>
@@ -36,10 +38,9 @@ namespace splash
             static T copy(const T&)
             {
                 // Make it depend on template parameter
-                static char copyNotAllowed[sizeof(T) ? -1 : 0];
-                (void) copyNotAllowed;
+                SPLASH_UNUSED static char copyNotAllowed[sizeof(T) ? -1 : 0];
             }
-            
+
             static bool release(const T&)
             {
                 return true;
@@ -53,13 +54,13 @@ namespace splash
             {
                 *refCt_ = 1;
             }
-            
+
             T copy(const T& obj)
             {
                 ++*refCt_;
                 return obj;
             }
-            
+
             bool release(const T&)
             {
                 if(!--*refCt_)
@@ -70,7 +71,7 @@ namespace splash
                 }
                 return false;
             }
-            
+
             friend void swap(RefCounted& lhs, RefCounted& rhs)
             {
                 std::swap(lhs.refCt_, rhs.refCt_);
@@ -79,7 +80,7 @@ namespace splash
             unsigned* refCt_;
         };
     }
-    
+
     /** RAII wrapper for a hid_t (HDF5 identifier)
      *  Calls T_CloseMethod on destruction and allows implicit conversion
      *  Calls T_DestructionPolicy::copy on copy which should return the id to store
@@ -89,7 +90,7 @@ namespace splash
     struct H5IdWrapper: public T_DestructionPolicy<hid_t>
     {
         typedef T_DestructionPolicy<hid_t> DestructionPolicy;
-        
+
         H5IdWrapper(): id_(-1){}
         explicit H5IdWrapper(hid_t id): id_(id){}
         H5IdWrapper(const H5IdWrapper& rhs): DestructionPolicy(rhs)
@@ -137,7 +138,7 @@ namespace splash
 
         operator hid_t() const { return id_; }
         operator bool() const { return id_ >= 0; }
-        
+
         friend void swap(H5IdWrapper& lhs, H5IdWrapper& rhs)
         {
             std::swap(lhs.id_, rhs.id_);
