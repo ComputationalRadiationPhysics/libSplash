@@ -18,7 +18,7 @@
  # and the GNU Lesser General Public License along with libSplash.
  # If not, see <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 2.8.5)
+cmake_minimum_required(VERSION 3.3.0)
 
 IF(VAMPIR_ENABLE)
     MESSAGE("Building examples with VampirTrace support")

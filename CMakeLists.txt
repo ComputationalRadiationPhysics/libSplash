@@ -19,7 +19,7 @@
  # and the GNU Lesser General Public License along with libSplash.
  # If not, see <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 2.8.5)
+cmake_minimum_required(VERSION 3.3.0)
 
 IF(VAMPIR_ENABLE)
     MESSAGE("Building libSplash with VampirTrace support")
@@ -38,9 +38,6 @@ PROJECT(libSplash)
 #  self-compiled compilers
 SET(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/" "$ENV{MPI_ROOT}"
                       "$ENV{HDF5_ROOT}")
-
-# own modules for find_packages
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ ${CMAKE_MODULE_PATH})
 
 #-------------------------------------------------------------------------------
 
