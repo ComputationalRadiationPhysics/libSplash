@@ -24,10 +24,10 @@
 if [ $# -eq 0 ]; then
     echo "  WARNING:"
     echo "    No path for build director was given."
-    echo "    Will use \"build\" instead."
+    echo "    Will use \"$(pwd)\" instead."
 fi
 
-dir=${1:-build}
+dir=${1:-$(pwd)}
 
 rm -rf $dir/h5
 mkdir $dir/h5
@@ -49,6 +49,8 @@ function testSerial()
         last=$?
         testLast $last $1
         OK=$(( OK + $last ))
+    else
+        echo -e "\nWarning: Test $1 skipped!\n"
     fi
 }
 function testMPI()
@@ -62,26 +64,28 @@ function testMPI()
         last=$?
         testLast $last $1
         OK=$(( OK + $last ))
+    else
+        echo -e "\nWarning: Test $1 skipped!\n"
     fi
 }
 
-testSerial ./SimpleDataTest.cpp.out "Testing simple data read/write..."
-testSerial ./FilenameTest.cpp.out "Testing file naming..."
+testSerial ./SimpleDataTest "Testing simple data read/write..."
+testSerial ./FilenameTest "Testing file naming..."
 
-testSerial ./AttributesTest.cpp.out "Testing reading/writing attributes..."
+testSerial ./AttributesTest "Testing reading/writing attributes..."
 testSerial ./readBoolChar.py "Testing h5py compatible read..."
 
-testSerial ./AppendTest.cpp.out "Testing append data..."
+testSerial ./AppendTest "Testing append data..."
 
-testSerial ./FileAccessTest.cpp.out "Testing file accesses..."
+testSerial ./FileAccessTest "Testing file accesses..."
 
-testSerial ./StridingTest.cpp.out "Testing striding access..."
+testSerial ./StridingTest "Testing striding access..."
 
-testSerial ./RemoveTest.cpp.out "Testing removing datasets..."
+testSerial ./RemoveTest "Testing removing datasets..."
 
-testSerial ./ReferencesTest.cpp.out "Testing references..."
+testSerial ./ReferencesTest "Testing references..."
 
-testMPI ./DomainsTest.cpp.out 8 "Testing domains..."
+testMPI ./DomainsTest 8 "Testing domains..."
 
 cd ..
 
