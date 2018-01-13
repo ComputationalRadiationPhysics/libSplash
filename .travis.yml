@@ -1,5 +1,5 @@
 language: cpp
-sudo: false
+sudo: required
 dist: trusty
 
 cache:
@@ -109,7 +109,7 @@ script:
       -DCMAKE_INSTALL_PREFIX=$HOME/splash-test-install
       $TRAVIS_BUILD_DIR
   - make -j 2
-  - make test
+  - CTEST_OUTPUT_ON_FAILURE=1 make test
   - make install
   - make package
   # - dpkg -i libsplash*.deb
