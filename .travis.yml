@@ -1,53 +1,116 @@
 language: cpp
 sudo: required
+dist: trusty
 
-services:
-  - docker
+cache:
+  apt: true
+  directories:
+    - $HOME/.cache/spack
+  pip: true
 
-compiler:
-  - gcc
-  - clang
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages: &common_deps
+      - gfortran
+      - libcppunit-dev
 
 env:
   global:
-    - BUILD=~/buildTmp
-    - SRC=$TRAVIS_BUILD_DIR
-  matrix:
-    - SPLASHPARALLEL=ON  SPLASHMPI=ON
-    - SPLASHPARALLEL=OFF SPLASHMPI=ON
-    - SPLASHPARALLEL=OFF SPLASHMPI=OFF
+    - BUILD: ~/buildTmp
+    - CXXFLAGS: "-Wall -Wextra -Woverloaded-virtual -Wshadow"
+    - SPACK_ROOT: $HOME/.cache/spack
+    - PATH: $PATH:$HOME/.cache/spack/bin
+
+matrix:
+  include:
+    # GCC 4.8.5
+    - env:
+        - SPLASHPARALLEL=ON SPLASHMPI=ON
+      compiler: gcc
+      addons: &mpi_deps
+        apt:
+          packages:
+            - *common_deps
+            - libopenmpi-dev
+            - openmpi-bin
+    - env:
+        - SPLASHPARALLEL=OFF SPLASHMPI=ON
+      compiler: gcc
+      addons: *mpi_deps
+    - env:
+        - SPLASHPARALLEL=OFF SPLASHMPI=OFF
+      compiler: gcc
+    # Clang 5.0.0
+    - env:
+        - SPLASHPARALLEL=ON SPLASHMPI=ON
+      compiler: clang
+      addons: *mpi_deps
+    - env:
+        - SPLASHPARALLEL=OFF SPLASHMPI=ON
+      compiler: clang
+      addons: *mpi_deps
+
+    - env:
+        - SPLASHPARALLEL=OFF SPLASHMPI=OFF
+      compiler: clang
+
+install:
+  - SPACK_FOUND=$(which spack >/dev/null && { echo 0; } || { echo 1; })
+  - if [ $SPACK_FOUND -ne 0 ]; then
+      mkdir -p $SPACK_ROOT &&
+      git clone --depth 50 https://github.com/spack/spack.git $SPACK_ROOT &&
+      cp $TRAVIS_BUILD_DIR/.travis/spack/*.yaml
+         $SPACK_ROOT/etc/spack/ &&
+      spack bootstrap;
+    fi
+  - source /etc/profile &&
+    source $SPACK_ROOT/share/spack/setup-env.sh
+  - COMPILERSPEC="%$CC"
+  - travis_wait spack install
+      cmake@3.10.0~openssl~ncurses
+      $COMPILERSPEC
+  - spack load cmake@3.10.0 $COMPILERSPEC
+  - if [ $SPLASHMPI == "ON" ]; then
+      travis_wait spack install
+        openmpi@1.6.5
+        $COMPILERSPEC &&
+      spack load openmpi@1.6.5 $COMPILERSPEC;
+    fi
+  - if [ $SPLASHPARALLEL == "ON" ]; then
+      travis_wait spack install
+        hdf5@1.8.12+mpi ^openmpi@1.6.5
+       $COMPILERSPEC &&
+      spack load hdf5@1.8.12+mpi ^openmpi@1.6.5 $COMPILERSPEC &&
+      spack load zlib $COMPILERSPEC &&
+      pip install urllib3[secure] --user &&
+      pip install h5py --user;
+    else
+      travis_wait spack install
+        hdf5@1.8.12~mpi
+        $COMPILERSPEC &&
+      spack load hdf5@1.8.12~mpi $COMPILERSPEC &&
+      spack load zlib $COMPILERSPEC &&
+      pip install urllib3[secure] --user &&
+      pip install h5py --user;
+    fi
+  - spack clean -a
 
 script:
-# compile libSplash and install
-  - docker exec build /bin/bash -c "cd $BUILD && CXXFLAGS='-Werror' CXX=$CXX CC=$CC cmake -DCMAKE_BUILD_TYPE=Debug -DTOOLS_MPI=$SPLASHMPI $SRC"
-  - docker exec build /bin/bash -c "cd $BUILD && make package"
-  - docker exec build /bin/bash -c "cd $BUILD && dpkg -i libsplash*.deb"
-  - docker exec build ls -hal /usr/share/pyshared/
-# compile examples/
-  - docker exec build /bin/bash -c "cd $BUILD && rm -rf * && CXXFLAGS='-Werror' CXX=$CXX CC=$CC cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_MPI=$SPLASHMPI $SRC/examples"
-  - docker exec build /bin/bash -c "cd $BUILD && make"
-# compile and run tests/
-  - docker exec build /bin/bash -c "cd $BUILD && rm -rf * && CXXFLAGS='-Werror' CXX=$CXX CC=$CC cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_MPI=$SPLASHMPI $SRC/tests"
-  - docker exec build /bin/bash -c "cd $BUILD && make"
-# run tests
-  - docker exec build $SRC/tests/run_tests $BUILD
-  - docker exec build $SRC/tests/run_parallel_tests $BUILD
+  - mkdir -p $HOME/build 
+  - cd $HOME/build
+  - CXXFLAGS=$CXXFLAGS CXX=$CXX CC=$CC
+    cmake
+      -DCMAKE_BUILD_TYPE=Debug
+      -DSplash_USE_MPI=$SPLASHMPI
+      -DSplash_USE_PARALLEL=$SPLASHPARALLEL
+      -DSplash_HAVE_TESTS=ON
+      -DCMAKE_INSTALL_PREFIX=$HOME/splash-test-install
+      $TRAVIS_BUILD_DIR
+  - make -j 2
+  - CTEST_OUTPUT_ON_FAILURE=1 make test
+  - make install
+  - make package
+  # - dpkg -i libsplash*.deb
 
-before_script:
-  - docker pull ubuntu:16.04
-  - docker run -it -d --name build ubuntu bash
-  - if [ "$SPLASHMPI" == "ON" ]; then export APTMPI="libopenmpi-dev openmpi-bin"; fi
-  - if [ "$SPLASHPARALLEL" == "ON" ]; then export APTHDF5="libhdf5-openmpi-10 libhdf5-openmpi-dev"; else export APTHDF5="libhdf5-serial-dev"; fi
-  - docker exec build apt-get update
-  - docker exec build apt-get remove -qq libhdf5*
-  - docker exec build apt-get remove -qq libopenmpi* openmpi-bin || { echo "OpenMPI not installed"; }
-  - docker exec build apt-get install -qq -f libcppunit-dev clang cmake
-  - docker exec build apt-get install -qq -f $APTMPI
-  - docker exec build apt-get install -qq -f $APTHDF5
-  - docker exec build apt-get install -qq -f python-numpy cython python-pip
-  - docker exec build /bin/bash -c "HDF5_DIR=/usr C_INCLUDE_PATH=/usr/lib/openmpi/include pip install --user h5py"
-  - docker exec build mkdir -p $BUILD $SRC
-  - docker exec build python -c "import numpy; print(numpy.version.version)"
-  - docker exec build python -c "import h5py; print(h5py.version.version)"
-  - docker cp $SRC build:$SRC/..
-  - docker exec build ls -al $SRC
