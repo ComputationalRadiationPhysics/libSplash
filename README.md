@@ -27,10 +27,10 @@ libSplash is developed and maintained by the
 ([ZIH](http://tu-dresden.de/die_tu_dresden/zentrale_einrichtungen/zih)) of the
 Technical University Dresden ([TUD](http://www.tu-dresden.de))
 in close collaboration with the
-**[Junior Group Computational Radiation Physics](http://www.hzdr.de/db/Cms?pNid=132&pOid=30354)**
+**[Group Computational Radiation Physics](http://www.hzdr.de/db/Cms?pNid=132&pOid=30354)**
 at the [Institute for Radiation Physics](http://www.hzdr.de/db/Cms?pNid=132)
 at [HZDR](http://www.hzdr.de/)
-We are a member of the [Dresden CUDA Center of Excellence](http://ccoe-dresden.de/) that
+We are a member of the [Dresden GPU Center of Excellence](http://gcoe-dresden.de/) that
 cooperates on a broad range of scientific CUDA applications, workshops and
 teaching efforts.
 libSplash is actively used in the **PIConGPU** project for large-scale GPU-based particle-in-cell
@@ -66,7 +66,7 @@ Active Team
 
 ### Maintainers* and developers
 
-- Axel Huebl
+- Axel Huebl*
 - Felix Schmitt*
 - Rene Widera
 - Alexander Grund
