@@ -1,3 +1,4 @@
 <map id="splash::SerialDataCollector::remove" name="splash::SerialDataCollector::remove">
-<area shape="rect" id="node2" href="$namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55" title="splash::log_msg" alt="" coords="231,13,345,39"/>
+<area shape="rect" id="node2" href="$namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55" title="splash::log_msg" alt="" coords="262,5,377,32"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_serial_data_collector.html#a118b73eab72dd9effee2d27d2590af62" title="splash::SerialDataCollector\l::getEntryIDs" alt="" coords="231,57,408,98"/>
 </map>

@@ -1,3 +1,8 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structsplash_1_1_data_collector_1_1___d_c_entry.html" title="splash::DataCollector\l::_DCEntry" alt="" coords="5,5,149,47"/>
+<area shape="rect" id="node1" href="$classsplash_1_1_collection_type.html" title="splash::CollectionType" alt="" coords="5,107,156,133"/>
+<area shape="rect" id="node2" href="$classsplash_1_1_col_type_bool.html" title="splash::ColTypeBool" alt="" coords="219,5,357,32"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_col_type_dim.html" title="splash::ColTypeDim" alt="" coords="220,56,356,83"/>
+<area shape="rect" id="node4" href="$classsplash_1_1_col_type_dim_array.html" title="splash::ColTypeDimArray" alt="" coords="205,107,371,133"/>
+<area shape="rect" id="node5" href="$classsplash_1_1_col_type_string.html" title="splash::ColTypeString" alt="" coords="215,157,361,184"/>
+<area shape="rect" id="node6" href="$classsplash_1_1_col_type_unknown.html" title="splash::ColTypeUnknown" alt="" coords="204,208,372,235"/>
 </map>

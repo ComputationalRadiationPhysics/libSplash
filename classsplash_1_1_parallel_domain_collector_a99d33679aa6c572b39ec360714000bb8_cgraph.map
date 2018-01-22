@@ -1,3 +1,4 @@
 <map id="splash::ParallelDomainCollector::writeDomain" name="splash::ParallelDomainCollector::writeDomain">
-<area shape="rect" id="node2" href="$classsplash_1_1_dimensions.html#a31bf0a35691ea52128ba12fbc63e1268" title="splash::Dimensions\l::getSize" alt="" coords="257,5,392,47"/>
+<area shape="rect" id="node2" href="$classsplash_1_1_parallel_data_collector.html#a5745e7eab935d2de1452a84af8a32445" title="splash::ParallelDataCollector\l::write" alt="" coords="257,5,444,47"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_dimensions.html#a31bf0a35691ea52128ba12fbc63e1268" title="splash::Dimensions\l::getSize" alt="" coords="283,71,418,112"/>
 </map>

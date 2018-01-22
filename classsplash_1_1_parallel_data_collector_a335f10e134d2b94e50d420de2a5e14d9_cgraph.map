@@ -1,0 +1,13 @@
+<map id="splash::ParallelDataCollector::createReference" name="splash::ParallelDataCollector::createReference">
+<area shape="rect" id="node2" href="$classsplash_1_1_collection_type.html#a53626447fa3040d3762a6295581060f3" title="splash::CollectionType\l::getDataType" alt="" coords="475,45,625,86"/>
+<area shape="rect" id="node5" href="$classsplash_1_1_dimensions.html#ae1e6c7ed0f8e00f14cb9108f299387dd" title="splash::Dimensions\l::getPointer" alt="" coords="266,41,401,82"/>
+<area shape="rect" id="node6" href="$namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55" title="splash::log_msg" alt="" coords="493,353,607,380"/>
+<area shape="rect" id="node7" href="$classsplash_1_1_parallel_data_collector.html#a1ee9fd425adccb804dcd90e2c57cfdd8" title="splash::ParallelDataCollector\l::getMaxID" alt="" coords="240,171,427,213"/>
+<area shape="rect" id="node8" href="$classsplash_1_1_parallel_data_collector.html#a13139734b3eab0490188c0d8e27ce505" title="splash::ParallelDataCollector\l::getEntriesForID" alt="" coords="240,237,427,278"/>
+<area shape="rect" id="node9" href="$classsplash_1_1_dimensions.html#aacded30f48b262936a9f9fa4fa621680" title="splash::Dimensions::set" alt="" coords="254,303,413,329"/>
+<area shape="rect" id="node10" href="$classsplash_1_1_parallel_data_collector.html#a716a0977d3d8802d6ef3164437ff51a8" title="splash::ParallelDataCollector\l::readGlobalAttribute" alt="" coords="240,405,427,446"/>
+<area shape="rect" id="node11" href="$classsplash_1_1_parallel_data_collector.html#a630bfc10784f353ba5bf560573c0e28d" title="splash::ParallelDataCollector\l::writeGlobalAttribute" alt="" coords="240,106,427,147"/>
+<area shape="rect" id="node12" href="$classsplash_1_1_parallel_data_collector.html#a907085897c2e956da074e3c7db738f2f" title="splash::ParallelDataCollector\l::append" alt="" coords="240,470,427,511"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_collection_type.html#aba7c1751cabf9728aea70070fcd21311" title="splash::CollectionType\l::getSize" alt="" coords="673,11,824,53"/>
+<area shape="rect" id="node4" href="$classsplash_1_1_collection_type.html#ad96de0ec7dac2f96d425d03b25700d40" title="splash::CollectionType\l::toString" alt="" coords="673,77,824,118"/>
+</map>

@@ -1,7 +1,9 @@
 <map id="splash::Domain::getOffset" name="splash::Domain::getOffset">
-<area shape="rect" id="node2" href="$classsplash_1_1_domain_collector.html#a676b96ed6d84e0074142eef1cf74440a" title="splash::DomainCollector\l::readDomain" alt="" coords="245,5,407,47"/>
-<area shape="rect" id="node3" href="$classsplash_1_1_data_container.html#a2cbfea058e35f5c584ac5a1edcc879b7" title="splash::DataContainer::add" alt="" coords="239,71,413,98"/>
-<area shape="rect" id="node4" href="$classsplash_1_1_domain.html#a82cee15dc9e3916c2307cd761777b936" title="splash::Domain::testIntersection" alt="" coords="223,122,429,149"/>
-<area shape="rect" id="node5" href="$classsplash_1_1_parallel_domain_collector.html#ac455fb0e104ba4113dc23b955f2763d1" title="splash::ParallelDomainCollector\l::getGlobalDomain" alt="" coords="224,173,428,215"/>
-<area shape="rect" id="node6" href="$classsplash_1_1_parallel_domain_collector.html#af9b976f550cbee7d543724ca6c39339a" title="splash::ParallelDomainCollector\l::getLocalDomain" alt="" coords="224,239,428,280"/>
+<area shape="rect" id="node2" href="$classsplash_1_1_domain_collector.html#a4fc25667675785b9176d4f9570eb2d51" title="splash::DomainCollector\l::getLocalDomain" alt="" coords="751,27,912,68"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_domain_collector.html#a676b96ed6d84e0074142eef1cf74440a" title="splash::DomainCollector\l::readDomain" alt="" coords="497,136,659,177"/>
+<area shape="rect" id="node4" href="$classsplash_1_1_data_container.html#a2cbfea058e35f5c584ac5a1edcc879b7" title="splash::DataContainer::add" alt="" coords="491,34,665,61"/>
+<area shape="rect" id="node5" href="$classsplash_1_1_parallel_domain_collector.html#af9b976f550cbee7d543724ca6c39339a" title="splash::ParallelDomainCollector\l::getLocalDomain" alt="" coords="729,144,933,185"/>
+<area shape="rect" id="node6" href="$classsplash_1_1_domain.html#a231a6546dd6c9317e9f5d146c5462844" title="splash::Domain::getBack" alt="" coords="243,101,407,127"/>
+<area shape="rect" id="node7" href="$classsplash_1_1_domain.html#a82cee15dc9e3916c2307cd761777b936" title="splash::Domain::testIntersection" alt="" coords="475,85,681,111"/>
+<area shape="rect" id="node8" href="$classsplash_1_1_parallel_domain_collector.html#ac455fb0e104ba4113dc23b955f2763d1" title="splash::ParallelDomainCollector\l::getGlobalDomain" alt="" coords="223,253,427,295"/>
 </map>

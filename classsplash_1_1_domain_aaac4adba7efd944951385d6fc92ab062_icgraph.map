@@ -1,0 +1,6 @@
+<map id="splash::Domain::toString" name="splash::Domain::toString">
+<area shape="rect" id="node2" href="$classsplash_1_1_domain_collector.html#a4fc25667675785b9176d4f9570eb2d51" title="splash::DomainCollector\l::getLocalDomain" alt="" coords="236,5,397,47"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_domain_collector.html#a676b96ed6d84e0074142eef1cf74440a" title="splash::DomainCollector\l::readDomain" alt="" coords="236,71,397,112"/>
+<area shape="rect" id="node4" href="$classsplash_1_1_parallel_domain_collector.html#af9b976f550cbee7d543724ca6c39339a" title="splash::ParallelDomainCollector\l::getLocalDomain" alt="" coords="215,136,419,177"/>
+<area shape="rect" id="node5" href="$classsplash_1_1_parallel_domain_collector.html#ace47c19c8fc58a9d077a668e07e4a4dd" title="splash::ParallelDomainCollector\l::readDomain" alt="" coords="215,201,419,243"/>
+</map>

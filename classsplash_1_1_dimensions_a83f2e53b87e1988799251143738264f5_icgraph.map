@@ -1,3 +1,7 @@
 <map id="splash::Dimensions::swapDims" name="splash::Dimensions::swapDims">
-<area shape="rect" id="node2" href="$classsplash_1_1_selection.html#a94d9fb9f8672ca36f633e232f064427d" title="splash::Selection::\lswapDims" alt="" coords="188,5,315,47"/>
+<area shape="rect" id="node2" href="$classsplash_1_1_attribute_info.html#a91f03bcffe321ecc399b455ff9559dec" title="splash::AttributeInfo\l::getDims" alt="" coords="188,37,325,79"/>
+<area shape="rect" id="node6" href="$classsplash_1_1_selection.html#a94d9fb9f8672ca36f633e232f064427d" title="splash::Selection::\lswapDims" alt="" coords="193,103,320,144"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_attribute_info.html#a8806eb77d2d425aa7e2574078268777d" title="splash::AttributeInfo\l::getMemSize" alt="" coords="373,5,511,47"/>
+<area shape="rect" id="node5" href="$classsplash_1_1_attribute_info.html#afdb254fe97e17454dcc4a6f0fe7c8267" title="splash::AttributeInfo\l::isScalar" alt="" coords="373,71,511,112"/>
+<area shape="rect" id="node4" href="$classsplash_1_1_attribute_info.html#a1ebf7ef8e0ac86869f8c6b224d66d2a6" title="splash::AttributeInfo\l::read" alt="" coords="559,5,696,47"/>
 </map>

@@ -1,0 +1,19 @@
+<map id="splash::DataCollector::~DataCollector" name="splash::DataCollector::~DataCollector">
+<area shape="rect" id="node2" href="$classsplash_1_1_data_collector.html#a5041b92d97e4ce6343949ef324414781" title="splash::DataCollector\l::open" alt="" coords="206,5,350,47"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_data_collector.html#ab9f5029cccf6b507f946875696071438" title="splash::DataCollector\l::close" alt="" coords="206,71,350,112"/>
+<area shape="rect" id="node4" href="$classsplash_1_1_data_collector.html#af0183b7614889e91b5d3482691b0c934" title="splash::DataCollector\l::getMaxID" alt="" coords="206,136,350,177"/>
+<area shape="rect" id="node5" href="$classsplash_1_1_data_collector.html#afb017489b8d41807882020c6795c5ce7" title="splash::DataCollector\l::getMPISize" alt="" coords="206,201,350,243"/>
+<area shape="rect" id="node6" href="$classsplash_1_1_data_collector.html#ad086aee6b77c71093c3482f999f5bfac" title="splash::DataCollector\l::getEntryIDs" alt="" coords="206,267,350,308"/>
+<area shape="rect" id="node7" href="$classsplash_1_1_data_collector.html#adb147760cd721e5bda3647eb5fb4cae7" title="splash::DataCollector\l::getEntriesForID" alt="" coords="206,332,350,373"/>
+<area shape="rect" id="node8" href="$classsplash_1_1_data_collector.html#a080d7210069db9ecbd6c9ebf5c597b8c" title="splash::DataCollector\l::write" alt="" coords="206,397,350,439"/>
+<area shape="rect" id="node9" href="$classsplash_1_1_data_collector.html#a7e5649ec8bd9c0726d14a5cd36691c6e" title="splash::DataCollector\l::append" alt="" coords="206,463,350,504"/>
+<area shape="rect" id="node10" href="$classsplash_1_1_data_collector.html#ae61238ea94c00c5b36c7b0c183ecd91f" title="splash::DataCollector\l::createReference" alt="" coords="206,528,350,569"/>
+<area shape="rect" id="node11" href="$classsplash_1_1_data_collector.html#a1a05268806e994a3ae1cc34fd839e822" title="splash::DataCollector\l::readGlobalAttributeInfo" alt="" coords="197,593,359,635"/>
+<area shape="rect" id="node12" href="$classsplash_1_1_data_collector.html#a09239994e60f4a45dd1214eae06d9489" title="splash::DataCollector\l::readGlobalAttribute" alt="" coords="206,659,350,700"/>
+<area shape="rect" id="node13" href="$classsplash_1_1_data_collector.html#a897146e01d44742bd8e21ef55bc855c8" title="splash::DataCollector\l::writeGlobalAttribute" alt="" coords="206,724,350,765"/>
+<area shape="rect" id="node14" href="$classsplash_1_1_data_collector.html#ac58a1cbde5d76bf0b7a8b7073cb81009" title="splash::DataCollector\l::readAttributeInfo" alt="" coords="206,789,350,831"/>
+<area shape="rect" id="node15" href="$classsplash_1_1_data_collector.html#a3d9be07fbc75f6713f17c77099656deb" title="splash::DataCollector\l::readAttribute" alt="" coords="206,855,350,896"/>
+<area shape="rect" id="node16" href="$classsplash_1_1_data_collector.html#a8a717f5e90b7395f6e7e43c4abfbcf07" title="splash::DataCollector\l::writeAttribute" alt="" coords="206,920,350,961"/>
+<area shape="rect" id="node17" href="$classsplash_1_1_data_collector.html#adf26c6bdf8811dce8f259f8b9b11b8ab" title="splash::DataCollector\l::read" alt="" coords="206,985,350,1027"/>
+<area shape="rect" id="node18" href="$classsplash_1_1_data_collector.html#ad8391480356f01cfa93a229df29c43aa" title="splash::DataCollector\l::readMeta" alt="" coords="206,1051,350,1092"/>
+</map>

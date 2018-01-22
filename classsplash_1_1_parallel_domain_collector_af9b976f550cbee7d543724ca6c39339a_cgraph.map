@@ -1,5 +1,26 @@
 <map id="splash::ParallelDomainCollector::getLocalDomain" name="splash::ParallelDomainCollector::getLocalDomain">
-<area shape="rect" id="node2" href="$classsplash_1_1_domain.html#a4e21610c3aa0941f80cd4157220c3bee" title="splash::Domain::getSize" alt="" coords="263,5,421,32"/>
-<area shape="rect" id="node3" href="$classsplash_1_1_dimensions.html#ae1e6c7ed0f8e00f14cb9108f299387dd" title="splash::Dimensions\l::getPointer" alt="" coords="275,57,409,98"/>
-<area shape="rect" id="node4" href="$classsplash_1_1_domain.html#afdf3a9d343e35d12e63787cd3d8af9b1" title="splash::Domain::getOffset" alt="" coords="257,123,427,149"/>
+<area shape="rect" id="node2" href="$classsplash_1_1_parallel_data_collector.html#a518e20b60966a6cd31a60cae6444f704" title="splash::ParallelDataCollector\l::readAttributeInfo" alt="" coords="512,5,699,47"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_attribute_info.html#a6656bbb7cbc5cdadc1dc38f5b39e147b" title="splash::AttributeInfo\l::read" alt="" coords="537,71,674,112"/>
+<area shape="rect" id="node8" href="$classsplash_1_1_domain.html#a4e21610c3aa0941f80cd4157220c3bee" title="splash::Domain::getSize" alt="" coords="752,187,911,214"/>
+<area shape="rect" id="node9" href="$classsplash_1_1_dimensions.html#ae1e6c7ed0f8e00f14cb9108f299387dd" title="splash::Dimensions\l::getPointer" alt="" coords="538,289,673,331"/>
+<area shape="rect" id="node10" href="$classsplash_1_1_dimensions.html#a31bf0a35691ea52128ba12fbc63e1268" title="splash::Dimensions\l::getSize" alt="" coords="538,355,673,396"/>
+<area shape="rect" id="node11" href="$classsplash_1_1_domain.html#afdf3a9d343e35d12e63787cd3d8af9b1" title="splash::Domain::getOffset" alt="" coords="747,471,916,498"/>
+<area shape="rect" id="node12" href="$classsplash_1_1_parallel_domain_collector.html#ac455fb0e104ba4113dc23b955f2763d1" title="splash::ParallelDomainCollector\l::getGlobalDomain" alt="" coords="259,231,463,272"/>
+<area shape="rect" id="node13" href="$classsplash_1_1_parallel_data_collector.html#a7fca4de4e321de9f368db18e0cff1c0b" title="splash::ParallelDataCollector\l::read" alt="" coords="267,649,454,691"/>
+<area shape="rect" id="node14" href="$namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55" title="splash::log_msg" alt="" coords="303,715,418,742"/>
+<area shape="rect" id="node15" href="$classsplash_1_1_domain.html#aaac4adba7efd944951385d6fc92ab062" title="splash::Domain::toString" alt="" coords="280,817,441,843"/>
+<area shape="rect" id="node16" href="$classsplash_1_1_dimensions.html#a076da1a10e80c29eac5cf5dac65cba21" title="splash::Dimensions\l::toString" alt="" coords="538,784,673,825"/>
+<area shape="rect" id="node17" href="$classsplash_1_1_dimensions.html#a419bc5ad4cbadbd614aed299b11ff7f6" title="splash::Dimensions\l::getScalarSize" alt="" coords="293,868,428,909"/>
+<area shape="rect" id="node18" href="$classsplash_1_1_domain.html#a82cee15dc9e3916c2307cd761777b936" title="splash::Domain::testIntersection" alt="" coords="257,446,464,473"/>
+<area shape="rect" id="node20" href="$classsplash_1_1_domain_data.html#ad05556610dba5f945662ee87d2de0b34" title="splash::DomainData\l::setLoadingReference" alt="" coords="285,933,436,975"/>
+<area shape="rect" id="node22" href="$classsplash_1_1_domain_data.html#a63a2c3e601e2a17ce6b881e7c0d5792a" title="splash::DomainData\l::getData" alt="" coords="537,573,674,615"/>
+<area shape="rect" id="node23" href="$classsplash_1_1_data_container.html#a2cbfea058e35f5c584ac5a1edcc879b7" title="splash::DataContainer::add" alt="" coords="273,497,448,523"/>
+<area shape="rect" id="node24" href="$classsplash_1_1_data_container.html#aaed2cbd92106698e7bbd610693974237" title="splash::DataContainer\l::getNumSubdomains" alt="" coords="287,999,435,1040"/>
+<area shape="rect" id="node25" href="$classsplash_1_1_data_container.html#a6a11f9533e2ccd4f5bec2a9d0c73b07b" title="splash::DataContainer\l::getIndex" alt="" coords="287,1064,435,1105"/>
+<area shape="rect" id="node4" href="$classsplash_1_1_attribute_info.html#abb14b8b39361127ad764c2cefd838e41" title="splash::AttributeInfo\l::readNoThrow" alt="" coords="763,71,900,112"/>
+<area shape="rect" id="node5" href="$classsplash_1_1_collection_type.html#a53626447fa3040d3762a6295581060f3" title="splash::CollectionType\l::getDataType" alt="" coords="964,71,1115,112"/>
+<area shape="rect" id="node6" href="$classsplash_1_1_collection_type.html#aba7c1751cabf9728aea70070fcd21311" title="splash::CollectionType\l::getSize" alt="" coords="1163,37,1313,79"/>
+<area shape="rect" id="node7" href="$classsplash_1_1_collection_type.html#ad96de0ec7dac2f96d425d03b25700d40" title="splash::CollectionType\l::toString" alt="" coords="1163,103,1313,144"/>
+<area shape="rect" id="node19" href="$classsplash_1_1_domain.html#a231a6546dd6c9317e9f5d146c5462844" title="splash::Domain::getBack" alt="" coords="523,421,687,447"/>
+<area shape="rect" id="node21" href="$classsplash_1_1_dimensions.html#aacded30f48b262936a9f9fa4fa621680" title="splash::Dimensions::set" alt="" coords="526,941,685,967"/>
 </map>

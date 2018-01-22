@@ -1,3 +1,4 @@
 <map id="splash::ParallelDataCollector::remove" name="splash::ParallelDataCollector::remove">
-<area shape="rect" id="node2" href="$namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55" title="splash::log_msg" alt="" coords="240,13,355,39"/>
+<area shape="rect" id="node2" href="$namespacesplash.html#a2f6d74daf521e2d4d1f23729da93eb55" title="splash::log_msg" alt="" coords="276,5,391,32"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_parallel_data_collector.html#a1ee9fd425adccb804dcd90e2c57cfdd8" title="splash::ParallelDataCollector\l::getMaxID" alt="" coords="240,57,427,98"/>
 </map>

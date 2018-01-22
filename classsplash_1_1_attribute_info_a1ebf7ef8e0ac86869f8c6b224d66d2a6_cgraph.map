@@ -1,0 +1,6 @@
+<map id="splash::AttributeInfo::read" name="splash::AttributeInfo::read">
+<area shape="rect" id="node2" href="$classsplash_1_1_attribute_info.html#a8806eb77d2d425aa7e2574078268777d" title="splash::AttributeInfo\l::getMemSize" alt="" coords="191,39,328,80"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_attribute_info.html#a91f03bcffe321ecc399b455ff9559dec" title="splash::AttributeInfo\l::getDims" alt="" coords="376,39,513,80"/>
+<area shape="rect" id="node4" href="$classsplash_1_1_dimensions.html#ae1e6c7ed0f8e00f14cb9108f299387dd" title="splash::Dimensions\l::getPointer" alt="" coords="561,5,696,47"/>
+<area shape="rect" id="node5" href="$classsplash_1_1_dimensions.html#a83f2e53b87e1988799251143738264f5" title="splash::Dimensions\l::swapDims" alt="" coords="561,71,696,112"/>
+</map>

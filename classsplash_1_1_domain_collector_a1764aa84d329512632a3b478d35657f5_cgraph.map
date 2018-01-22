@@ -1,3 +1,10 @@
 <map id="splash::DomainCollector::appendDomain" name="splash::DomainCollector::appendDomain">
-<area shape="rect" id="node2" href="$classsplash_1_1_dimensions.html#aacded30f48b262936a9f9fa4fa621680" title="splash::Dimensions::set" alt="" coords="215,13,373,39"/>
+<area shape="rect" id="node2" href="$classsplash_1_1_dimensions.html#aacded30f48b262936a9f9fa4fa621680" title="splash::Dimensions::set" alt="" coords="224,5,383,32"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_serial_data_collector.html#a7d92fa08a37a7edbccd97a707c34a363" title="splash::SerialDataCollector\l::append" alt="" coords="215,57,392,98"/>
+<area shape="rect" id="node4" href="$classsplash_1_1_serial_data_collector.html#a38e8b5cd9d617e3421b1b625a4343187" title="splash::SerialDataCollector\l::readAttributeInfo" alt="" coords="215,122,392,163"/>
+<area shape="rect" id="node5" href="$classsplash_1_1_attribute_info.html#a6656bbb7cbc5cdadc1dc38f5b39e147b" title="splash::AttributeInfo\l::read" alt="" coords="235,187,372,229"/>
+<area shape="rect" id="node6" href="$classsplash_1_1_attribute_info.html#abb14b8b39361127ad764c2cefd838e41" title="splash::AttributeInfo\l::readNoThrow" alt="" coords="440,187,577,229"/>
+<area shape="rect" id="node7" href="$classsplash_1_1_collection_type.html#a53626447fa3040d3762a6295581060f3" title="splash::CollectionType\l::getDataType" alt="" coords="625,187,776,229"/>
+<area shape="rect" id="node8" href="$classsplash_1_1_collection_type.html#aba7c1751cabf9728aea70070fcd21311" title="splash::CollectionType\l::getSize" alt="" coords="824,154,975,195"/>
+<area shape="rect" id="node9" href="$classsplash_1_1_collection_type.html#ad96de0ec7dac2f96d425d03b25700d40" title="splash::CollectionType\l::toString" alt="" coords="824,219,975,261"/>
 </map>

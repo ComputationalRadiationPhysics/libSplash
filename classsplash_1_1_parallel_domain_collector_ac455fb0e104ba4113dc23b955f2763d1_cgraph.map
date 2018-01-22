@@ -1,5 +1,12 @@
 <map id="splash::ParallelDomainCollector::getGlobalDomain" name="splash::ParallelDomainCollector::getGlobalDomain">
-<area shape="rect" id="node2" href="$classsplash_1_1_domain.html#a4e21610c3aa0941f80cd4157220c3bee" title="splash::Domain::getSize" alt="" coords="263,5,421,32"/>
-<area shape="rect" id="node3" href="$classsplash_1_1_dimensions.html#ae1e6c7ed0f8e00f14cb9108f299387dd" title="splash::Dimensions\l::getPointer" alt="" coords="275,57,409,98"/>
-<area shape="rect" id="node4" href="$classsplash_1_1_domain.html#afdf3a9d343e35d12e63787cd3d8af9b1" title="splash::Domain::getOffset" alt="" coords="257,123,427,149"/>
+<area shape="rect" id="node2" href="$classsplash_1_1_parallel_data_collector.html#a518e20b60966a6cd31a60cae6444f704" title="splash::ParallelDataCollector\l::readAttributeInfo" alt="" coords="257,5,444,47"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_attribute_info.html#a6656bbb7cbc5cdadc1dc38f5b39e147b" title="splash::AttributeInfo\l::read" alt="" coords="282,71,419,112"/>
+<area shape="rect" id="node8" href="$classsplash_1_1_domain.html#a4e21610c3aa0941f80cd4157220c3bee" title="splash::Domain::getSize" alt="" coords="271,137,430,163"/>
+<area shape="rect" id="node9" href="$classsplash_1_1_dimensions.html#ae1e6c7ed0f8e00f14cb9108f299387dd" title="splash::Dimensions\l::getPointer" alt="" coords="283,188,418,229"/>
+<area shape="rect" id="node10" href="$classsplash_1_1_dimensions.html#a31bf0a35691ea52128ba12fbc63e1268" title="splash::Dimensions\l::getSize" alt="" coords="283,253,418,295"/>
+<area shape="rect" id="node11" href="$classsplash_1_1_domain.html#afdf3a9d343e35d12e63787cd3d8af9b1" title="splash::Domain::getOffset" alt="" coords="266,319,435,346"/>
+<area shape="rect" id="node4" href="$classsplash_1_1_attribute_info.html#abb14b8b39361127ad764c2cefd838e41" title="splash::AttributeInfo\l::readNoThrow" alt="" coords="492,71,629,112"/>
+<area shape="rect" id="node5" href="$classsplash_1_1_collection_type.html#a53626447fa3040d3762a6295581060f3" title="splash::CollectionType\l::getDataType" alt="" coords="677,71,828,112"/>
+<area shape="rect" id="node6" href="$classsplash_1_1_collection_type.html#aba7c1751cabf9728aea70070fcd21311" title="splash::CollectionType\l::getSize" alt="" coords="876,37,1027,79"/>
+<area shape="rect" id="node7" href="$classsplash_1_1_collection_type.html#ad96de0ec7dac2f96d425d03b25700d40" title="splash::CollectionType\l::toString" alt="" coords="876,103,1027,144"/>
 </map>

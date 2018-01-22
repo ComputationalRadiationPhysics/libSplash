@@ -1,4 +1,5 @@
 <map id="splash::Domain::testIntersection" name="splash::Domain::testIntersection">
-<area shape="rect" id="node2" href="$classsplash_1_1_domain.html#afdf3a9d343e35d12e63787cd3d8af9b1" title="splash::Domain::getOffset" alt="" coords="260,5,429,32"/>
-<area shape="rect" id="node3" href="$classsplash_1_1_domain.html#ac138156443cd496ecd2ea760abcaa4eb" title="splash::Domain::getBack" alt="" coords="263,56,427,83"/>
+<area shape="rect" id="node2" href="$classsplash_1_1_domain.html#afdf3a9d343e35d12e63787cd3d8af9b1" title="splash::Domain::getOffset" alt="" coords="472,5,641,32"/>
+<area shape="rect" id="node3" href="$classsplash_1_1_domain.html#a231a6546dd6c9317e9f5d146c5462844" title="splash::Domain::getBack" alt="" coords="260,56,424,83"/>
+<area shape="rect" id="node4" href="$classsplash_1_1_domain.html#a4e21610c3aa0941f80cd4157220c3bee" title="splash::Domain::getSize" alt="" coords="477,56,636,83"/>
 </map>
