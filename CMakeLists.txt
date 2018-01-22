@@ -194,9 +194,6 @@ if(NOT Splash_HAVE_COLLECTIVE)
 endif()
 
 # Splash headers
-set_target_properties(Splash PROPERTIES PUBLIC_HEADER
-    include/splash/splash.h
-)
 target_include_directories(Splash PUBLIC
     $<BUILD_INTERFACE:${Splash_SOURCE_DIR}/src/include>
     $<BUILD_INTERFACE:${Splash_BINARY_DIR}/include>
