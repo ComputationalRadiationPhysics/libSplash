@@ -8,7 +8,7 @@ Release 1.7.0
 This release adds modernized CMake scripts including CMake config
 packages on install with targets. A new `readAttributeInfo` method
 was added to the `DataCollector` for save reading of types and
-extends of attributes. On reads, the `offset` in `DataContainer` for
+extents of attributes. On reads, the `offset` in `DataContainer` for
 non-zero offsets in domains was fixed. Due to a bug in upsteam CMake,
 at least version 3.10.0 of CMake is required now.
 
