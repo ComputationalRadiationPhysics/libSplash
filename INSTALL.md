@@ -54,9 +54,9 @@ export CMAKE_PREFIX_PATH=<INSTALL PATH>:$CMAKE_PREFIX_PATH
 #   provides command line access to our tools
 export PATH=<INSTALL PATH>/bin:$PATH
 #   path for the linker if you link a dependent projectwithout CMake
-export LD_LIBRARY_PATH=$SPLASH_ROOT/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=<INSTALL PATH>/lib:$LD_LIBRARY_PATH
 #   provides our python modules, e.g. for xdmf creation
-export PYTHONPATH=$SPLASH_ROOT/bin:$PYTHONPATH
+export PYTHONPATH=<INSTALL PATH>/bin:$PYTHONPATH
 ```
 
 
