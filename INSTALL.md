@@ -71,8 +71,8 @@ Because we are linking to HDF5, the following **external dependencies** must be 
 If you are using CMake and did extend the `CMAKE_PREFIX_PATH`, linking against libSplash in your `CMakeLists.txt` is as easy as:
 ```cmake
 #   optional: specifiy (minimal) version, require Splash and specific components, e.g.
-#           (Splash 1.7.0 REQUIRED COMPONENTS PARALLEL)
-find_package(Splash 1.7.0 REQUIRED)
+#           (Splash 1.7.0 REQUIRED CONFIG COMPONENTS PARALLEL)
+find_package(Splash 1.7.0 REQUIRED CONFIG)
 
 target_link_libraries(YourTarget PUBLIC Splash::Splash)
 ```
