@@ -1,6 +1,35 @@
 Change Log for libSplash
 ================================================================
 
+Release 1.7.0
+-------------
+**Date:** 2018-01-22
+
+This release adds modernized CMake scripts including CMake config
+packages on install with targets. A new `readAttributeInfo` method
+was added to the `DataCollector` for save reading of types and
+extents of attributes. On reads, the `offset` in `DataContainer` for
+non-zero offsets in domains was fixed. Due to a bug in upsteam CMake,
+at least version 3.10.0 of CMake is required now.
+
+**Interface Changes**
+
+ - new read method: attribute meta info #248 #268
+ - keep info on H5 datatypes in collection types #259
+
+**Bug Fixes**
+
+ - `DataContainer`: fix offset read #263
+ - `FindHDF5.cmake`: use upstream CMake version #267
+
+**Misc**
+
+ - modern CMake3 scripts #269
+ - fix GitHub badges #254 #264
+ 
+Thanks to Axel Huebl and Alexander Grund for contributions to this release!
+
+
 Release 1.6.0
 -------------
 **Date:** 2016-10-28
