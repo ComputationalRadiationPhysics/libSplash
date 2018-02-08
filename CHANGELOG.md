@@ -15,6 +15,8 @@ at least version 3.10.0 of CMake is required now.
 **Interface Changes**
 
  - new read method: attribute meta info #248 #268
+   - the methods `readAttribute`/`readGlobalAttribute` are deprecated
+   - use safer `readAttributeInfo`/`readGlobalAttributeInfo` instead
  - keep info on H5 datatypes in collection types #259
 
 **Bug Fixes**
