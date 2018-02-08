@@ -3,7 +3,7 @@ Change Log for libSplash
 
 Release 1.7.0
 -------------
-**Date:** 2018-01-22
+**Date:** 2018-02-08
 
 This release adds modernized CMake scripts including CMake config
 packages on install with targets. A new `readAttributeInfo` method
