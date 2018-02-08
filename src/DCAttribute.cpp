@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2015 Felix Schmitt, Axel Huebl
+ * Copyright 2013-2016 Felix Schmitt, Axel Huebl, Alexander Grund
  *
  * This file is part of libSplash.
  *
@@ -20,77 +20,67 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
-#include <sstream>
-
+#include "splash/AttributeInfo.hpp"
 #include "splash/core/DCAttribute.hpp"
+#include "splash/core/H5IdWrapper.hpp"
+#include <cassert>
 
 namespace splash
 {
-
-    DCAttribute::DCAttribute()
-    {
-    }
-
     std::string DCAttribute::getExceptionString(const char *name, std::string msg)
     {
         return (std::string("Exception for DCAttribute [") + std::string(name) +
                 std::string("] ") + msg);
     }
 
+    AttributeInfo DCAttribute::readAttributeInfo(const char* name, hid_t parent)
+    throw (DCException)
+    {
+        H5AttributeId attr(H5Aopen(parent, name, H5P_DEFAULT));
+        if (!attr)
+            throw DCException(getExceptionString(name, "Attribute could not be opened for reading"));
+        return AttributeInfo(attr);
+    }
+
     void DCAttribute::readAttribute(const char* name, hid_t parent, void* dst)
     throw (DCException)
     {
-        hid_t attr = H5Aopen(parent, name, H5P_DEFAULT);
-        if (attr < 0)
+        H5AttributeId attr(H5Aopen(parent, name, H5P_DEFAULT));
+        if (!attr)
             throw DCException(getExceptionString(name, "Attribute could not be opened for reading"));
 
-        hid_t attr_type = H5Aget_type(attr);
-        if (attr_type < 0)
-        {
-            H5Aclose(attr);
+        H5TypeId attr_type(H5Aget_type(attr));
+        if (!attr_type)
             throw DCException(getExceptionString(name, "Could not get type of attribute"));
-        }
 
         if (H5Aread(attr, attr_type, dst) < 0)
-        {
-            H5Aclose(attr);
             throw DCException(getExceptionString(name, "Attribute could not be read"));
-        }
-
-        H5Aclose(attr);
     }
 
     void DCAttribute::writeAttribute(const char* name, const hid_t type, hid_t parent,
-                                     uint32_t ndims, const Dimensions dims, const void* src)
+                                     uint32_t ndims, Dimensions dims, const void* src)
     throw (DCException)
     {
-        hid_t attr = -1;
+        H5AttributeId attr;
         if (H5Aexists(parent, name))
-            attr = H5Aopen(parent, name, H5P_DEFAULT);
+            attr.reset(H5Aopen(parent, name, H5P_DEFAULT));
         else
         {
-            hid_t dsp;
+            dims.swapDims(ndims);
+            H5DataspaceId dsp;
             if( ndims == 1 && dims.getScalarSize() == 1 )
-                dsp = H5Screate(H5S_SCALAR);
+                dsp.reset(H5Screate(H5S_SCALAR));
             else
-                dsp = H5Screate_simple( ndims, dims.getPointer(), dims.getPointer() );
+                dsp.reset(H5Screate_simple( ndims, dims.getPointer(), dims.getPointer() ));
 
-            attr = H5Acreate(parent, name, type, dsp, H5P_DEFAULT, H5P_DEFAULT);
-            H5Sclose(dsp);
+            attr.reset(H5Acreate(parent, name, type, dsp, H5P_DEFAULT, H5P_DEFAULT));
         }
 
-        if (attr < 0)
+        if (!attr)
             throw DCException(getExceptionString(name, "Attribute could not be opened or created"));
 
         if (H5Awrite(attr, type, src) < 0)
-        {
-            H5Aclose(attr);
             throw DCException(getExceptionString(name, "Attribute could not be written"));
-        }
-
-        H5Aclose(attr);
     }
 
     void DCAttribute::writeAttribute(const char* name, const hid_t type, hid_t parent, const void* src)

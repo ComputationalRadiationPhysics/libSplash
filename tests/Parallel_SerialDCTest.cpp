@@ -132,6 +132,9 @@ void FilenameTest::testBaseName()
     dataCollector->write(2, ctInt, 1, Selection(Dimensions(1, 1, 1)), "data1", &data1);
     dataCollector->close();
 
+    // Wait till all wrote the file(s)
+    MPI_Barrier(MPI_COMM_WORLD);
+
     // Now file must exist
     CPPUNIT_ASSERT(fileExists(HDF5_BASE_FILE));
 

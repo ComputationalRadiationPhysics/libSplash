@@ -1,70 +1,116 @@
 language: cpp
+sudo: required
+dist: trusty
 
-branches:
-  except:
-    - axel
+cache:
+  apt: true
+  directories:
+    - $HOME/.cache/spack
+  pip: true
 
-compiler:
-  - gcc
-  - clang
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages: &common_deps
+      - gfortran
+      - libcppunit-dev
 
 env:
   global:
-    - BUILD=~/buildTmp
-    - SRC=$TRAVIS_BUILD_DIR
-  matrix:
-    - SPLASHPARALLEL=ON  SPLASHMPI=ON
-    - SPLASHPARALLEL=OFF SPLASHMPI=ON
-    - SPLASHPARALLEL=OFF SPLASHMPI=OFF
+    - BUILD: ~/buildTmp
+    - CXXFLAGS: "-Wall -Wextra -Woverloaded-virtual -Wshadow"
+    - SPACK_ROOT: $HOME/.cache/spack
+    - PATH: $PATH:$HOME/.cache/spack/bin
+
+matrix:
+  include:
+    # GCC 4.8.5
+    - env:
+        - SPLASHPARALLEL=ON SPLASHMPI=ON
+      compiler: gcc
+      addons: &mpi_deps
+        apt:
+          packages:
+            - *common_deps
+            - libopenmpi-dev
+            - openmpi-bin
+    - env:
+        - SPLASHPARALLEL=OFF SPLASHMPI=ON
+      compiler: gcc
+      addons: *mpi_deps
+    - env:
+        - SPLASHPARALLEL=OFF SPLASHMPI=OFF
+      compiler: gcc
+    # Clang 5.0.0
+    - env:
+        - SPLASHPARALLEL=ON SPLASHMPI=ON
+      compiler: clang
+      addons: *mpi_deps
+    - env:
+        - SPLASHPARALLEL=OFF SPLASHMPI=ON
+      compiler: clang
+      addons: *mpi_deps
+
+    - env:
+        - SPLASHPARALLEL=OFF SPLASHMPI=OFF
+      compiler: clang
+
+install:
+  - SPACK_FOUND=$(which spack >/dev/null && { echo 0; } || { echo 1; })
+  - if [ $SPACK_FOUND -ne 0 ]; then
+      mkdir -p $SPACK_ROOT &&
+      git clone --depth 50 https://github.com/spack/spack.git $SPACK_ROOT &&
+      cp $TRAVIS_BUILD_DIR/.travis/spack/*.yaml
+         $SPACK_ROOT/etc/spack/ &&
+      spack bootstrap;
+    fi
+  - source /etc/profile &&
+    source $SPACK_ROOT/share/spack/setup-env.sh
+  - COMPILERSPEC="%$CC"
+  - travis_wait spack install
+      cmake@3.10.0~openssl~ncurses
+      $COMPILERSPEC
+  - spack load cmake@3.10.0 $COMPILERSPEC
+  - if [ $SPLASHMPI == "ON" ]; then
+      travis_wait spack install
+        openmpi@1.6.5
+        $COMPILERSPEC &&
+      spack load openmpi@1.6.5 $COMPILERSPEC;
+    fi
+  - if [ $SPLASHPARALLEL == "ON" ]; then
+      travis_wait spack install
+        hdf5@1.8.12+mpi ^openmpi@1.6.5
+       $COMPILERSPEC &&
+      spack load hdf5@1.8.12+mpi ^openmpi@1.6.5 $COMPILERSPEC &&
+      spack load zlib $COMPILERSPEC &&
+      pip install urllib3[secure] --user &&
+      pip install h5py --user;
+    else
+      travis_wait spack install
+        hdf5@1.8.12~mpi
+        $COMPILERSPEC &&
+      spack load hdf5@1.8.12~mpi $COMPILERSPEC &&
+      spack load zlib $COMPILERSPEC &&
+      pip install urllib3[secure] --user &&
+      pip install h5py --user;
+    fi
+  - spack clean -a
 
 script:
-  - cd $BUILD
-# compile libSplash and install
-  - CXXFLAGS="-Werror" cmake -DCMAKE_BUILD_TYPE=Debug -DTOOLS_MPI=$SPLASHMPI $SRC
+  - mkdir -p $HOME/build 
+  - cd $HOME/build
+  - CXXFLAGS=$CXXFLAGS CXX=$CXX CC=$CC
+    cmake
+      -DCMAKE_BUILD_TYPE=Debug
+      -DSplash_USE_MPI=$SPLASHMPI
+      -DSplash_USE_PARALLEL=$SPLASHPARALLEL
+      -DSplash_HAVE_TESTS=ON
+      -DCMAKE_INSTALL_PREFIX=$HOME/splash-test-install
+      $TRAVIS_BUILD_DIR
+  - make -j 2
+  - CTEST_OUTPUT_ON_FAILURE=1 make test
+  - make install
   - make package
-  - sudo dpkg -i libsplash*.deb
-  - ls -hal /usr/share/pyshared/
-  - rm -rf $BUILD/*
-# compile examples/
-  - CXXFLAGS="-Werror" cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_MPI=$SPLASHMPI $SRC/examples
-  - make
-  - rm -rf $BUILD/*
-# compile and run tests/
-  - CXXFLAGS="-Werror" cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_MPI=$SPLASHMPI $SRC/tests
-  - make
-# run tests
-  - $SRC/tests/run_tests $BUILD
-  - $SRC/tests/run_parallel_tests $BUILD
+  # - dpkg -i libsplash*.deb
 
-before_script:
-  - uname -r
-  - lsb_release -a
-  - echo "$SRC"
-  - ls -hal $SRC
-  - ls -hal /usr/include
-# PPA providing hdf5 >= 1.8.6 and OpenMPI >= 1.5.1
-# -> remove legacy hdf5 and mpi packages/deps from travis
-  - sudo apt-get remove -qq libhdf5*
-  - sudo apt-get remove -qq libopenmpi* openmpi-bin || { echo "OpenMPI not installed"; }
-  - echo "yes" | sudo add-apt-repository ppa:james-page/openmpi
-  - echo "yes" | sudo add-apt-repository ppa:axel-huebl/libsplash
-  - sudo apt-get update -qq
-  - sudo apt-cache policy
-  - sudo apt-cache policy libhdf5-serial-dev
-  - sudo apt-cache policy libopenmpi-dev
-  - if [ "$SPLASHMPI" == "ON" ]; then export APTMPI="libopenmpi-dev openmpi-bin"; fi
-  - if [ "$SPLASHPARALLEL" == "ON" ]; then export APTHDF5="libhdf5-openmpi-7 libhdf5-openmpi-dev"; else export APTHDF5="libhdf5-serial-dev"; fi
-  - sudo dpkg --get-selections
-  - sudo apt-get install -qq -f libcppunit-dev
-  - sudo apt-get install -qq -f libboost-program-options-dev
-  - sudo apt-get -t o=LP-PPA-james-page-openmpi install -q -f $APTMPI
-  - sudo apt-get -t o=LP-PPA-axel-huebl-libsplash install -q -f $APTHDF5
-  - sudo apt-get install python-numpy cython
-  - sudo -H pip install --upgrade pip
-#   numpy and cython should be already satisfied
-  - export HDF5_DIR=/usr
-  - export C_INCLUDE_PATH=/usr/lib/openmpi/include
-  - pip install --user h5py
-  - python -c "import numpy; print(numpy.version.version)"
-  - python -c "import h5py; print(h5py.version.version)"
-  - mkdir -p $BUILD ~/lib

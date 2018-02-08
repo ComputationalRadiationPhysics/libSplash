@@ -24,11 +24,11 @@
 if [ $# -eq 0 ]; then
     echo "  WARNING:"
     echo "    No path for build director was given."
-    echo "    Will use \"build\" instead."
+    echo "    Will use \"$(pwd)\" instead."
 fi
 
-dir=${1:-build}
-
+dir=${1:-$(pwd)}
+echo $dir
 rm -rf $dir/h5
 mkdir $dir/h5
 
@@ -43,35 +43,40 @@ function testLast()
 }
 function testMPI()
 {
+    if [ $( whoami ) == "root" ]; then
+       APPEND_OK_ROOT_DOCKER="--allow-run-as-root"
+    fi
     if [ -e "$1" ]; then
         echo -e "\n$3\n"
-        mpirun -n $2 $1
+        mpirun $APPEND_OK_ROOT_DOCKER -n $2 $1
         last=$?
         testLast $last $1
         OK=$(( OK + $last ))
+    else
+        echo -e "\nWarning: Test $1 skipped!\n"
     fi
 }
 
-testMPI ./Parallel_SimpleDataTest.cpp.out 8 "Testing simple data read/write (parallel)..."
-testMPI ./Parallel_FilenameTest.cpp.out 1 "Testing file naming (parallel)..."
+testMPI ./Parallel_SimpleDataTest 8 "Testing simple data read/write (parallel)..."
+testMPI ./Parallel_FilenameTest 1 "Testing file naming (parallel)..."
 
-testMPI ./Parallel_SerialDC.cpp.out 8 "Testing SerialDataCollector (parallel)..."
+testMPI ./Parallel_SerialDCTest 8 "Testing SerialDataCollector (parallel)..."
 
-testMPI ./Parallel_ListFilesTest.cpp.out 1 "Testing list files (parallel)..."
+testMPI ./Parallel_ListFilesTest 1 "Testing list files (parallel)..."
 
-testMPI ./Parallel_DomainsTest.cpp.out 8 "Testing domains (parallel)..."
+testMPI ./Parallel_DomainsTest 8 "Testing domains (parallel)..."
 
-testMPI ./Parallel_AttributesTest.cpp.out 4 "Testing reading/writing attributes (parallel)..."
+testMPI ./Parallel_AttributesTest 4 "Testing reading/writing attributes (parallel)..."
 
-testMPI ./Parallel_RemoveTest.cpp.out 2 "Testing removing datasets (parallel)..."
+testMPI ./Parallel_RemoveTest 2 "Testing removing datasets (parallel)..."
 
-testMPI ./Parallel_ReferencesTest.cpp.out 2 "Testing references (parallel)..."
+testMPI ./Parallel_ReferencesTest 2 "Testing references (parallel)..."
 
-testMPI ./Parallel_ZeroAccessTest.cpp.out 2 "Testing zero accesses 2 (parallel)..."
+testMPI ./Parallel_ZeroAccessTest 2 "Testing zero accesses 2 (parallel)..."
 
-testMPI ./Parallel_ZeroAccessTest.cpp.out 4 "Testing zero accesses 4 (parallel)..."
+testMPI ./Parallel_ZeroAccessTest 4 "Testing zero accesses 4 (parallel)..."
 
-testMPI ./Parallel_ZeroAccessTest.cpp.out 7 "Testing zero accesses 7 (parallel)..."
+testMPI ./Parallel_ZeroAccessTest 7 "Testing zero accesses 7 (parallel)..."
 
 cd ..
 

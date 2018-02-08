@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2015 Felix Schmitt, Axel Huebl
+ * Copyright 2013-2016 Felix Schmitt, Axel Huebl, Alexander Grund
  *
  * This file is part of libSplash.
  *
@@ -51,7 +51,9 @@
 #include "splash/CollectionType.hpp"
 #include "splash/Dimensions.hpp"
 #include "splash/Selection.hpp"
+#include "splash/AttributeInfo.hpp"
 #include "splash/core/DCDataSet.hpp"
+#include "splash/core/splashMacros.hpp"
 
 namespace splash
 {
@@ -302,6 +304,23 @@ namespace splash
                 Dimensions stride) = 0;
 
         /**
+         * Reads global attribute meta information from HDF5 file.
+         *
+         * @param id ID for iteration.
+         * @param name Name for the attribute.
+         * @param mpiPosition Pointer to Dimensions class.
+         * Identifies MPI-position-specific custom group.
+         * Use NULL to read from default group.
+         *
+         * @return Pointer to heap allocated DCAttributeInfo instance or NULL if not found.
+         *         Must be freed by the caller.
+         */
+        virtual AttributeInfo readGlobalAttributeInfo(
+                int32_t id,
+                const char *name,
+                Dimensions *mpiPosition = NULL) = 0;
+
+        /**
          * Reads global attribute from HDF5 file.
          *
          * @param name Name for the attribute.
@@ -310,6 +329,7 @@ namespace splash
          * Identifies MPI-position-specific custom group.
          * Use NULL to read from default group.
          */
+        SPLASH_DEPRECATED("Use safer readGlobalAttributeInfo")
         virtual void readGlobalAttribute(
                 const char *name,
                 void* buf,
@@ -342,6 +362,25 @@ namespace splash
                 const void* buf) = 0;
 
         /**
+         * Reads attribute meta data from a single dataset.
+         *
+         * @param id ID for iteration.
+         * @param dataName Name of the dataset in group \p id to read attribute from.
+         * If dataName is NULL, the attribute is read from the iteration group.
+         * @param attrName Name of the attribute.
+         * @param mpiPosition Pointer to Dimensions class.
+         * Identifies MPI-position-specific file while in FAT_READ_MERGED mode.
+         * Use NULL to read from default file index.
+         *
+         * @return Pointer to heap allocated DCAttributeInfo instance or NULL if not found.
+         *         Must be freed by the caller.
+         */
+        virtual AttributeInfo readAttributeInfo(int32_t id,
+                const char *dataName,
+                const char *attrName,
+                Dimensions *mpiPosition = NULL) = 0;
+
+        /**
          * Reads an attribute from a single dataset.
          *
          * @param id ID for iteration.
@@ -353,6 +392,7 @@ namespace splash
          * Identifies MPI-position-specific file while in FAT_READ_MERGED mode.
          * Use NULL to read from default file index.
          */
+        SPLASH_DEPRECATED("Use safer readAttributeInfo")
         virtual void readAttribute(int32_t id,
                 const char *dataName,
                 const char *attrName,
