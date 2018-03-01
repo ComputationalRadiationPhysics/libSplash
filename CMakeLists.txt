@@ -392,7 +392,8 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/tools/splash2xdmf.py DESTINATION bin)
 #
 enable_testing()
 
-if($ENV{USER} STREQUAL root)
+# OpenMPI root guard: https://github.com/open-mpi/ompi/issues/4451
+if("$ENV{USER}" STREQUAL "root")
     set(MPI_ALLOW_ROOT --allow-run-as-root)
 endif()
 set(MPI_TEST_EXE ${MPIEXEC_EXECUTABLE} ${MPI_ALLOW_ROOT} ${MPIEXEC_NUMPROC_FLAG})
