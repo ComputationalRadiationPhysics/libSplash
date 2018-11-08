@@ -583,7 +583,10 @@ namespace splash
             // write data to the dataset
 
             if (H5Dwrite(dataset, this->datatype, dsp_src, dataspace, dsetWriteProperties, data) < 0)
+            {
+                H5Eprint(H5E_DEFAULT, stderr);
                 throw DCException(getExceptionString("write: Failed to write dataset"));
+            }
 
             H5Sclose(dsp_src);
         }
