@@ -1,6 +1,9 @@
 packages:
   cmake:
     version: [3.10.0]
+    paths:
+      cmake@3.10.0: /home/travis/.cache/cmake-3.10.0
+    buildable: False
   openmpi:
     version: [1.6.5]
     paths:
