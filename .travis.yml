@@ -6,6 +6,7 @@ cache:
   apt: true
   directories:
     - $HOME/.cache/spack
+    - $HOME/.cache/cmake-3.10.0
   pip: true
 
 addons:
@@ -67,17 +68,35 @@ install:
     fi
   - source /etc/profile &&
     source $SPACK_ROOT/share/spack/setup-env.sh
+  # required dependencies - CMake 3.10.0
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+      if [ ! -f $HOME/.cache/cmake-3.10.0/bin/cmake ]; then
+        wget -O cmake.sh https://cmake.org/files/v3.10/cmake-3.10.0-Linux-x86_64.sh &&
+        sh cmake.sh --skip-license --exclude-subdir --prefix=$HOME/.cache/cmake-3.10.0 &&
+        rm cmake.sh;
+      fi;
+    elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
+      if [ ! -d /Applications/CMake.app/Contents/ ]; then
+        curl -L -s -o cmake.dmg https://cmake.org/files/v3.10/cmake-3.10.0-Darwin-x86_64.dmg &&
+        yes | hdiutil mount cmake.dmg &&
+        sudo cp -R "/Volumes/cmake-3.10.0-Darwin-x86_64/CMake.app" /Applications &&
+        hdiutil detach /dev/disk1s1 &&
+        rm cmake.dmg;
+      fi;
+    fi
   - COMPILERSPEC="%$CC"
   - travis_wait spack install
-      cmake@3.10.0~openssl~ncurses
+      cmake
       $COMPILERSPEC
-  - spack load cmake@3.10.0 $COMPILERSPEC
+  - spack load cmake
+  # optional dependencies - OpenMPI
   - if [ $SPLASHMPI == "ON" ]; then
       travis_wait spack install
         openmpi@1.6.5
         $COMPILERSPEC &&
       spack load openmpi@1.6.5 $COMPILERSPEC;
     fi
+  # required dependencies - Parallel or Serial HDF5
   - if [ $SPLASHPARALLEL == "ON" ]; then
       travis_wait spack install
         hdf5@1.8.12+mpi ^openmpi@1.6.5
