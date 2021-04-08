@@ -77,9 +77,9 @@ namespace splash
                         if(strcmp("x", m0) == 0 && strcmp("y", m1) == 0 && strcmp("z", m2) == 0)
                             found = true;
 
-                        free(m2);
-                        free(m1);
-                        free(m0);
+                        H5free_memory(m2);
+                        H5free_memory(m1);
+                        H5free_memory(m0);
                     }
                 }
             }
