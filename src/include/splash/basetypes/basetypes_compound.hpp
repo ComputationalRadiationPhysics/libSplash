@@ -69,10 +69,13 @@ namespace splash
                     {                                                          \
                         hid_t mtype = H5Tget_member_type(datatype_id, i);      \
                         char* mname = H5Tget_member_name(datatype_id, i);      \
-                        if(H5Tequal(mtype, _h5_type) == 1 &&                   \
-                           strcmp(COMPOUND_ELEMENTS[i], mname) == 0)           \
+                        if(mname != NULL)                                      \
                         {                                                      \
-                            found = true;                                      \
+                            if(H5Tequal(mtype, _h5_type) == 1 &&               \
+                               strcmp(COMPOUND_ELEMENTS[i], mname) == 0)       \
+                            {                                                  \
+                               found = true;                                   \
+                            }                                                  \
                         }                                                      \
                         H5free_memory(mname);                                  \
                         H5Tclose(mtype);                                       \

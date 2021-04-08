@@ -74,8 +74,9 @@ namespace splash
                         char* m0 = H5Tget_member_name(datatype_id, 0);
                         char* m1 = H5Tget_member_name(datatype_id, 1);
                         char* m2 = H5Tget_member_name(datatype_id, 2);
-                        if(strcmp("x", m0) == 0 && strcmp("y", m1) == 0 && strcmp("z", m2) == 0)
-                            found = true;
+                        if(m0 != NULL && m1 != NULL && m2 != NULL)
+                            if(strcmp("x", m0) == 0 && strcmp("y", m1) == 0 && strcmp("z", m2) == 0)
+                                found = true;
 
                         H5free_memory(m2);
                         H5free_memory(m1);
