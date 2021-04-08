@@ -74,7 +74,7 @@ namespace splash
                         {                                                      \
                             found = true;                                      \
                         }                                                      \
-                        free(mname);                                           \
+                        H5free_memory(mname);                                  \
                         H5Tclose(mtype);                                       \
                     }                                                          \
                 }                                                              \

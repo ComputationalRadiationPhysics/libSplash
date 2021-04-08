@@ -71,8 +71,8 @@ public:
                 char* m1 = H5Tget_member_name(datatype_id,1);
                 if(strcmp("TRUE" , m0) == 0 && strcmp("FALSE", m1) == 0)
                     found = true;
-                free(m1);
-                free(m0);
+                H5free_memory(m1);
+                H5free_memory(m0);
             }
         }
 
